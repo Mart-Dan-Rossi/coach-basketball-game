@@ -1,0 +1,15 @@
+.customize-game-container {
+    display: flex;
+    justify-content: space-around;
+}
+
+.team-customization-container {
+    width: 50%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.player-customization-container {
+    
+}

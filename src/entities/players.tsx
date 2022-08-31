@@ -61,4 +61,18 @@ export class Player {
         this.lastAction = "Haven't do anithing yet";
         this.actionPoints = 0;
     }
+
+    playerPositionDetection = (playerPosition : string)=> {
+        if(playerPosition == "1"){
+            return "G"
+        } else if(playerPosition == "2"){
+            return "SG"
+        } else if(playerPosition == "3") {
+            return "SF"
+        } else if(playerPosition == "4") {
+            return "PF"
+        } else if(playerPosition == "5") {
+            return "C"
+        }
+    }
 }

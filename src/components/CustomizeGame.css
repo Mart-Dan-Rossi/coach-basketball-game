@@ -8,10 +8,63 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
+    flex-direction: column;
+}
+
+.max-team-points-input-container {
+    margin: 6px;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.max-team-points-input-container input {
+    width: 100%;
+    margin: 6px;
 }
 
 .player-customization-container {
-    padding: 12px;
     border: 3px solid black;
     margin: 6px;
+}
+
+.player-header {
+    padding: 12px;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid black;
+}
+
+.player-header > div {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0 5px;
+}
+
+.position-input {
+    width: 26px;
+    text-align: center;
+}
+
+.player-stats {
+    padding: 12px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.create-player-stat-input {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    width: 50%;
+    min-width: 200px;
+    padding: 0 5px;
+}
+
+.create-player-stat-input input {
+    width: 50%;
+    min-width: 130px;
 }

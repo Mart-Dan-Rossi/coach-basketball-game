@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { numberEntire } from '../utilities/exportableFunctions'
 import CreatePlayer from './CreatePlayer'
 
 interface Props {
@@ -6,8 +7,9 @@ interface Props {
 }
 
 function CreateTeam( { team }: Props) {
+    let maxTeamPoints = 70*5*9
 
-    const [totalTeamPoints, setTotalTeamPoints] = useState(80*5*9)
+    const [totalTeamPoints, setTotalTeamPoints] = useState(maxTeamPoints)
 
     const [player1Stats, setPlayer1Stats] = useState({
         name: "",
@@ -15,7 +17,7 @@ function CreateTeam( { team }: Props) {
         height: 165,
         weight: 60,
         atleticism: 50,
-        perimeterDefence: 60,
+        perimeterDefence: 50,
         insideDefence: 10,
         rebounding: 10,
         perimeterScoring: 50,
@@ -28,13 +30,13 @@ function CreateTeam( { team }: Props) {
         position: "2",
         height: 170,
         weight: 65,
-        atleticism: 50,
-        perimeterDefence: 50,
-        insideDefence: 20,
-        rebounding: 20,
+        atleticism: 40,
+        perimeterDefence: 45,
+        insideDefence: 15,
+        rebounding: 15,
         perimeterScoring: 50,
         insideScoring: 30,
-        playMaking: 10
+        playMaking: 40
     })    
 
     const [player3Stats, setPlayer3Stats] = useState({
@@ -42,7 +44,7 @@ function CreateTeam( { team }: Props) {
         position: "3",
         height: 175,
         weight: 70,
-        atleticism: 50,
+        atleticism: 40,
         perimeterDefence: 40,
         insideDefence: 30,
         rebounding: 30,
@@ -89,11 +91,19 @@ function CreateTeam( { team }: Props) {
     
     return (
         <div className={`team-${team}-customization-container team-customization-container`}>
-                <CreatePlayer player={player1Stats} playerSetter={setPlayer1Stats}/>
-                <CreatePlayer player={player2Stats} playerSetter={setPlayer2Stats}/>
-                <CreatePlayer player={player3Stats} playerSetter={setPlayer3Stats}/>
-                <CreatePlayer player={player4Stats} playerSetter={setPlayer4Stats}/>
-                <CreatePlayer player={player5Stats} playerSetter={setPlayer5Stats}/>
+            <div className='max-team-points-input-container'>
+                <label htmlFor='maxTeamPoints'>Max team points</label>
+                <input type="range" name="maxTeamPoints" id='maxTeamPoints-input' min="0" max={maxTeamPoints} value={totalTeamPoints} readOnly/>
+                <span className='maxTeamPoints-number'>{numberEntire(totalTeamPoints)}</span>
+            </div>
+
+            <div className='all-player-customization-container'>
+                <CreatePlayer player={player1Stats} playerSetter={setPlayer1Stats} totalTeamPoints={totalTeamPoints} setTotalTeamPoints={setTotalTeamPoints}/>
+                <CreatePlayer player={player2Stats} playerSetter={setPlayer2Stats} totalTeamPoints={totalTeamPoints} setTotalTeamPoints={setTotalTeamPoints}/>
+                <CreatePlayer player={player3Stats} playerSetter={setPlayer3Stats} totalTeamPoints={totalTeamPoints} setTotalTeamPoints={setTotalTeamPoints}/>
+                <CreatePlayer player={player4Stats} playerSetter={setPlayer4Stats} totalTeamPoints={totalTeamPoints} setTotalTeamPoints={setTotalTeamPoints}/>
+                <CreatePlayer player={player5Stats} playerSetter={setPlayer5Stats} totalTeamPoints={totalTeamPoints} setTotalTeamPoints={setTotalTeamPoints}/>
+            </div>
         </div>
     )
 }

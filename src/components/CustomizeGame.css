@@ -11,5 +11,7 @@
 }
 
 .player-customization-container {
-    
+    padding: 12px;
+    border: 3px solid black;
+    margin: 6px;
 }

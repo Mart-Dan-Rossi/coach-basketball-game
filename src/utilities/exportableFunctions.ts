@@ -1,6 +1,4 @@
 import { PlayerStat } from "../entities/myInterfaces"
-import { Player } from "../entities/players"
-import React from 'react';
 
 export function getMinStatPerPosition(thisStat: string, playerPosition: string){
     if(thisStat == "height") {
@@ -310,4 +308,12 @@ export function numberEntire(number: number) {
     entireNumber = Number(entireNumberInString)
     
     return entireNumber
+}
+
+export function calculatePlayerOverallRating(i: number, pointsUsedOnPlayersArray: number[]) {
+    let overallRating : number
+    //50 is the min overall rating
+    overallRating = 50 + ((pointsUsedOnPlayersArray[i-1] / 9))/2
+
+    return numberEntire(overallRating).toString()
 }

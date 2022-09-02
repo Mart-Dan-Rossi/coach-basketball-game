@@ -1,15 +1,27 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { PlayerStat } from '../entities/myInterfaces'
-import {getMinStatPerPosition, getMaxStatPerPosition, getValue, playerPositionDetection, firstLetterToUpper, separateCamelCaseBySpace} from '../utilities/exportableFunctions';
+import {getMinStatPerPosition, getMaxStatPerPosition, getValue, playerPositionDetection, firstLetterToUpper, separateCamelCaseBySpace, numberEntire} from '../utilities/exportableFunctions';
 
 interface Props {
     player: PlayerStat,
     playerSetter: React.Dispatch<React.SetStateAction<PlayerStat>>,
     totalTeamPoints: number,
     setTotalTeamPoints: React.Dispatch<React.SetStateAction<number>>
+    pointsUsedInPlayer: number,
+    setPointsUsedInPlayer: React.Dispatch<React.SetStateAction<number>>
 }
 
-function CreatePlayer( { player, playerSetter, totalTeamPoints, setTotalTeamPoints } : Props ) {
+function CreatePlayer( { player, playerSetter, totalTeamPoints, setTotalTeamPoints, pointsUsedInPlayer, setPointsUsedInPlayer} : Props ) {
+
+    const [pointsUsedInHeight, setPointsUsedInHeight] = useState(0)
+    const [pointsUsedInWeight, setPointsUsedInWeight] = useState(0)
+    const [pointsUsedInAtleticism, setPointsUsedInAtleticism] = useState(0)
+    const [pointsUsedInPerDef, setPointsUsedInPerDef] = useState(0)
+    const [pointsUsedInInsDef, setPointsUsedInInsDef] = useState(0)
+    const [pointsUsedInReb, setPointsUsedInReb] = useState(0)
+    const [pointsUsedInPerScor, setPointsUsedInPerScor] = useState(0)
+    const [pointsUsedInInsScor, setPointsUsedInInsScor] = useState(0)
+    const [pointsUsedInPlmkn, setPointsUsedInPlmkn] = useState(0)
 
     const nameOnkeydownHandler = (e :  React.ChangeEvent<HTMLInputElement>) => {
         let inputModified = e.target as HTMLInputElement
@@ -28,6 +40,39 @@ function CreatePlayer( { player, playerSetter, totalTeamPoints, setTotalTeamPoin
         }
     }
 
+    function pointsUsedOnThisSkill(statType: string){
+        if(statType == "height"){
+            return pointsUsedInHeight
+
+        } else if(statType == "weight"){
+            return pointsUsedInWeight
+
+        } else if(statType == "atleticism"){
+            return pointsUsedInAtleticism
+
+        } else if(statType == "perimeterDefence"){
+            return pointsUsedInPerDef
+
+        } else if(statType == "insideDefence"){
+            return pointsUsedInInsDef
+
+        } else if(statType == "rebounding"){
+            return pointsUsedInReb
+
+        } else if(statType == "perimeterScoring"){
+            return pointsUsedInPerScor
+
+        } else if(statType == "insideScoring"){
+            return pointsUsedInInsScor
+
+        } else if(statType == "playMaking"){
+            return pointsUsedInPlmkn
+
+        } else {
+            return 0
+        }
+        
+    }
 
     function inputOnChangeHandler(statType: string){   
         return (e: React.ChangeEvent<HTMLInputElement>)=> {
@@ -35,6 +80,7 @@ function CreatePlayer( { player, playerSetter, totalTeamPoints, setTotalTeamPoin
             let inputValue = Number(inputModified.value) as number
     
             let newPlayerStats = {...player}
+        
 
             let minStatValue = getMinStatPerPosition(statType, player.position)
             let maxStatValue = getMaxStatPerPosition(statType, player.position)
@@ -47,6 +93,10 @@ function CreatePlayer( { player, playerSetter, totalTeamPoints, setTotalTeamPoin
                     if(totalTeamPoints + teamPointsCost >= 0){
                         setTotalTeamPoints(totalTeamPoints + teamPointsCost)
                         newPlayerStats.height = inputValue
+                        let pointsUsedOnThisSkillOld = pointsUsedInHeight
+                        let pointsUsedOnThisSkill = ((inputValue - minStatValue) * 100) / statRange
+                        setPointsUsedInHeight(pointsUsedOnThisSkill)
+                        setPointsUsedInPlayer(pointsUsedInPlayer + pointsUsedOnThisSkill - pointsUsedOnThisSkillOld)
                     }
                 }
                 
@@ -56,6 +106,10 @@ function CreatePlayer( { player, playerSetter, totalTeamPoints, setTotalTeamPoin
                     if(totalTeamPoints + teamPointsCost >= 0){
                         setTotalTeamPoints(totalTeamPoints + teamPointsCost)
                         newPlayerStats.weight = inputValue
+                        let pointsUsedOnThisSkillOld = pointsUsedInWeight
+                        let pointsUsedOnThisSkill = ((inputValue - minStatValue) * 100) / statRange
+                        setPointsUsedInWeight(pointsUsedOnThisSkill)
+                        setPointsUsedInPlayer(pointsUsedInPlayer + pointsUsedOnThisSkill - pointsUsedOnThisSkillOld)
                     }
                 }
                 
@@ -65,6 +119,10 @@ function CreatePlayer( { player, playerSetter, totalTeamPoints, setTotalTeamPoin
                     if(totalTeamPoints + teamPointsCost >= 0){
                         setTotalTeamPoints(totalTeamPoints + teamPointsCost)
                         newPlayerStats.atleticism = inputValue
+                        let pointsUsedOnThisSkillOld = pointsUsedInAtleticism
+                        let pointsUsedOnThisSkill = ((inputValue - minStatValue) * 100) / statRange
+                        setPointsUsedInAtleticism(pointsUsedOnThisSkill)
+                        setPointsUsedInPlayer(pointsUsedInPlayer + pointsUsedOnThisSkill - pointsUsedOnThisSkillOld)
                     }
                 }
                 
@@ -74,6 +132,10 @@ function CreatePlayer( { player, playerSetter, totalTeamPoints, setTotalTeamPoin
                     if(totalTeamPoints + teamPointsCost >= 0){
                         setTotalTeamPoints(totalTeamPoints + teamPointsCost)
                         newPlayerStats.perimeterDefence = inputValue
+                        let pointsUsedOnThisSkillOld = pointsUsedInPerDef
+                        let pointsUsedOnThisSkill = ((inputValue - minStatValue) * 100) / statRange
+                        setPointsUsedInPerDef(pointsUsedOnThisSkill)
+                        setPointsUsedInPlayer(pointsUsedInPlayer + pointsUsedOnThisSkill - pointsUsedOnThisSkillOld)
                     }
                 }
                 
@@ -83,6 +145,10 @@ function CreatePlayer( { player, playerSetter, totalTeamPoints, setTotalTeamPoin
                     if(totalTeamPoints + teamPointsCost >= 0){
                         setTotalTeamPoints(totalTeamPoints + teamPointsCost)
                         newPlayerStats.insideDefence = inputValue
+                        let pointsUsedOnThisSkillOld = pointsUsedInInsDef
+                        let pointsUsedOnThisSkill = ((inputValue - minStatValue) * 100) / statRange
+                        setPointsUsedInInsDef(pointsUsedOnThisSkill)
+                        setPointsUsedInPlayer(pointsUsedInPlayer + pointsUsedOnThisSkill - pointsUsedOnThisSkillOld)
                     }
                 }
                 
@@ -92,6 +158,10 @@ function CreatePlayer( { player, playerSetter, totalTeamPoints, setTotalTeamPoin
                     if(totalTeamPoints + teamPointsCost >= 0){
                         setTotalTeamPoints(totalTeamPoints + teamPointsCost)
                         newPlayerStats.rebounding = inputValue
+                        let pointsUsedOnThisSkillOld = pointsUsedInReb
+                        let pointsUsedOnThisSkill = ((inputValue - minStatValue) * 100) / statRange
+                        setPointsUsedInReb(pointsUsedOnThisSkill)
+                        setPointsUsedInPlayer(pointsUsedInPlayer + pointsUsedOnThisSkill - pointsUsedOnThisSkillOld)
                     }
                 }
                 
@@ -101,6 +171,10 @@ function CreatePlayer( { player, playerSetter, totalTeamPoints, setTotalTeamPoin
                     if(totalTeamPoints + teamPointsCost >= 0){
                         setTotalTeamPoints(totalTeamPoints + teamPointsCost)
                         newPlayerStats.perimeterScoring = inputValue
+                        let pointsUsedOnThisSkillOld = pointsUsedInPerScor
+                        let pointsUsedOnThisSkill = ((inputValue - minStatValue) * 100) / statRange
+                        setPointsUsedInPerScor(pointsUsedOnThisSkill)
+                        setPointsUsedInPlayer(pointsUsedInPlayer + pointsUsedOnThisSkill - pointsUsedOnThisSkillOld)
                     }
                 }
                 
@@ -110,6 +184,10 @@ function CreatePlayer( { player, playerSetter, totalTeamPoints, setTotalTeamPoin
                     if(totalTeamPoints + teamPointsCost >= 0){
                         setTotalTeamPoints(totalTeamPoints + teamPointsCost)
                         newPlayerStats.insideScoring = inputValue
+                        let pointsUsedOnThisSkillOld = pointsUsedInInsScor
+                        let pointsUsedOnThisSkill = ((inputValue - minStatValue) * 100) / statRange
+                        setPointsUsedInInsScor(pointsUsedOnThisSkill)
+                        setPointsUsedInPlayer(pointsUsedInPlayer + pointsUsedOnThisSkill - pointsUsedOnThisSkillOld)
                     }
                 }
                 
@@ -119,9 +197,13 @@ function CreatePlayer( { player, playerSetter, totalTeamPoints, setTotalTeamPoin
                     if(totalTeamPoints + teamPointsCost >= 0){
                         setTotalTeamPoints(totalTeamPoints + teamPointsCost)
                         newPlayerStats.playMaking = inputValue
+                        let pointsUsedOnThisSkillOld = pointsUsedInPlmkn
+                        let pointsUsedOnThisSkill = ((inputValue - minStatValue) * 100) / statRange
+                        setPointsUsedInPlmkn(pointsUsedOnThisSkill)
+                        setPointsUsedInPlayer(pointsUsedInPlayer + pointsUsedOnThisSkill - pointsUsedOnThisSkillOld)
                     }
                 }
-            }          
+            }
                 
             playerSetter(newPlayerStats)
         }
@@ -131,12 +213,7 @@ function CreatePlayer( { player, playerSetter, totalTeamPoints, setTotalTeamPoin
     <div className={`player-${player.position}-customization-container player-customization-container`}>
         <div className="player-header">
             <div className='name-input-container'>
-                <label htmlFor='name'>Player name: </label>
                 <input type="text" name='name' placeholder='Player full name' className="name-input" value={player.name} onChange={nameOnkeydownHandler}/>
-            </div>
-            <div className="position-input-container">
-                <label htmlFor='position'>Player position: </label>
-                <input type="text" className="position-input" value={playerPositionDetection(player.position)} disabled/>
             </div>
         </div>
 
@@ -155,6 +232,7 @@ function CreatePlayer( { player, playerSetter, totalTeamPoints, setTotalTeamPoin
                                 max={getMaxStatPerPosition(stat, player.position)}
                                 onChange={inputOnChangeHandler(stat)}
                             />
+                            <span className="points-used-on-this-skill">{numberEntire(pointsUsedOnThisSkill(stat))}</span>
                         </div>
                     )
                 })

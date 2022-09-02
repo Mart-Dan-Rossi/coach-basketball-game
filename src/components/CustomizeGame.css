@@ -1,18 +1,40 @@
 .customize-game-container {
+    --color-grey : #F2F2F2;
+    --color-grey-selected: #ffeeb5;
+}
+
+.team-customization-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.arrow-go-right {
+    transform: rotate(180deg);
+}
+
+.customize-game-container {
     display: flex;
     justify-content: space-around;
+    flex-direction: column;
 }
 
 .team-customization-container {
-    width: 50%;
+    width: 100%;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     flex-direction: column;
+    align-items: center;
 }
 
 .max-team-points-input-container {
-    margin: 6px;
+    width: 100%;
+    padding: 10px;
     display: flex;
     flex-wrap: nowrap;
     justify-content: space-between;
@@ -20,27 +42,68 @@
 }
 
 .max-team-points-input-container input {
-    width: 100%;
+    width: 80%;
     margin: 6px;
 }
 
+.all-players-selectors {
+    display: flex;
+    justify-content: space-evenly;
+    text-align: center;
+
+    width: 100%;
+}
+
+.player-selector {
+    background-color: var(--color-grey);
+    padding: 0 25px;
+    border-radius: 4px;
+    user-select: none;
+}
+
+.player-selector.selected {
+    background-color: var(--color-grey-selected);
+}
+
+.player-selector>* {
+    margin: 8px;
+}
+
+.all-player-customization-container {
+    height: calc(100vh - 72px - 48px - 70px);
+    width: 100%;
+}
+
 .player-customization-container {
-    border: 3px solid black;
-    margin: 6px;
+    top: 10%;
+    background-color: var(--color-grey);
+}
+
+.all-player-customization-container p {
+    top: 30%;
+}
+
+.player-customization-container, .all-player-customization-container p {
+    width: 80%;
+    max-width: 600px;
+    margin: 0 auto;
+    position: relative;
+    top: 10%;
+    border-radius: 4px;
 }
 
 .player-header {
     padding: 12px;
-    display: flex;
-    justify-content: space-between;
     border-bottom: 1px solid black;
 }
 
-.player-header > div {
-    display: flex;
-    justify-content: space-between;
+.name-input-container {
+    text-align: center;
+}
+
+.name-input-container input {
     width: 100%;
-    padding: 0 5px;
+    text-align: center;
 }
 
 .position-input {
@@ -51,7 +114,9 @@
 .player-stats {
     padding: 12px;
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    flex-direction: column;
+    align-items: center;
 }
 
 .create-player-stat-input {
@@ -59,12 +124,20 @@
     justify-content: space-between;
     align-items: center;
 
-    width: 50%;
+    width: 100%;
     min-width: 200px;
     padding: 0 5px;
 }
 
+.create-player-stat-input label {
+    width: 136px;
+}
+
 .create-player-stat-input input {
-    width: 50%;
+    width: 65%;
     min-width: 130px;
+}
+
+.create-player-stat-input .points-used-on-this-skill {
+    width: 26px;
 }

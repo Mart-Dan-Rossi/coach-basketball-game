@@ -13,6 +13,14 @@
     margin: 0 auto;
 }
 
+.team-a {
+    background-color: rgba(0, 0, 255, 0.233);
+}
+
+.team-b {
+    background-color: rgba(255, 0, 0, 0.26);
+}
+
 .arrow-go-right {
     transform: rotate(180deg);
 }
@@ -81,6 +89,8 @@
 
 .all-player-customization-container p {
     top: 30%;
+    background-color: var(--color-grey);
+    padding: 10px;
 }
 
 .player-customization-container, .all-player-customization-container p {
@@ -95,6 +105,11 @@
 .player-header {
     padding: 12px;
     border-bottom: 1px solid black;
+}
+
+.player-header h3 {
+    text-align: center;
+    margin: 0;
 }
 
 .name-input-container {

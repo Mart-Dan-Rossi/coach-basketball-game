@@ -1,4 +1,4 @@
-import { PlayerStat } from "../entities/myInterfaces"
+import { PlayerEditableInfo, PlayerStats } from "../entities/myInterfaces"
 
 export function getMinStatPerPosition(thisStat: string, playerPosition: string){
     if(thisStat == "height") {
@@ -228,7 +228,7 @@ export function getMaxStatPerPosition(thisStat: string, playerPosition: string){
     }
 }
 
-export function getValue(key: string, player: PlayerStat) {
+export function getValue(key: string, player: PlayerEditableInfo) {
     if(key == "height") {
         return player.height
 
@@ -269,6 +269,8 @@ export function playerPositionDetection(playerPosition : string) {
         return "PF"
     } else if(playerPosition == "5") {
         return "C"
+    } else {
+        return "Not detected"
     }
 }
 
@@ -310,10 +312,50 @@ export function numberEntire(number: number) {
     return entireNumber
 }
 
-export function calculatePlayerOverallRating(i: number, pointsUsedOnPlayersArray: number[]) {
+export function calculatePlayerOverallRating(pointsUsedOnPlayer: number) {
     let overallRating : number
     //50 is the min overall rating
-    overallRating = 50 + ((pointsUsedOnPlayersArray[i-1] / 9))/2
+    overallRating = 50 + ((pointsUsedOnPlayer / 9))/2
 
     return numberEntire(overallRating).toString()
+}
+
+export function setPointsUsedOnThisSkill(statType: string, previousStats: PlayerStats, setter: React.Dispatch<React.SetStateAction<PlayerStats>>, pointsUsedOnThisSkill: number) {
+    let previousStatsCopy = previousStats
+    if(statType == "height"){
+        previousStatsCopy.height = pointsUsedOnThisSkill
+        setter(previousStatsCopy)
+
+    } else if(statType == "weight"){
+        previousStatsCopy.weight = pointsUsedOnThisSkill
+        setter(previousStatsCopy)
+
+    } else if(statType == "atleticism"){
+        previousStatsCopy.atleticism = pointsUsedOnThisSkill
+        setter(previousStatsCopy)
+
+    } else if(statType == "perimeterDefence"){
+        previousStatsCopy.perDef = pointsUsedOnThisSkill
+        setter(previousStatsCopy)
+
+    } else if(statType == "insideDefence"){
+        previousStatsCopy.insDef = pointsUsedOnThisSkill
+        setter(previousStatsCopy)
+
+    } else if(statType == "rebounding"){
+        previousStatsCopy.reb = pointsUsedOnThisSkill
+        setter(previousStatsCopy)
+
+    } else if(statType == "perimeterScoring"){
+        previousStatsCopy.perScor = pointsUsedOnThisSkill
+        setter(previousStatsCopy)
+
+    } else if(statType == "insideScoring"){
+        previousStatsCopy.insScor = pointsUsedOnThisSkill
+        setter(previousStatsCopy)
+
+    } else if(statType == "playMaking"){
+        previousStatsCopy.plmkn = pointsUsedOnThisSkill
+        setter(previousStatsCopy)
+    }
 }

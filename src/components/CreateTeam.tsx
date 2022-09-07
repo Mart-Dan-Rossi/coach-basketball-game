@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
+import { GameContext } from '../context/GameContext';
 import {calculatePlayerOverallRating, numberEntire, playerPositionDetection} from '../utilities/exportableFunctions';
 import CreatePlayer from './CreatePlayer'
 
@@ -9,97 +10,69 @@ interface Props {
 function CreateTeam( { team }: Props) {
     let maxTeamPoints = 70*5*9
 
-    const [totalTeamPoints, setTotalTeamPoints] = useState(maxTeamPoints)
+    const {
+        playerA1Stats,
+        playerA2Stats,
+        playerA3Stats,
+        playerA4Stats,
+        playerA5Stats,
+        setPlayerA1Stats,
+        setPlayerA2Stats,
+        setPlayerA3Stats,
+        setPlayerA4Stats,
+        setPlayerA5Stats,
+        setTeamAStats,
+        playerB1Stats,
+        playerB2Stats,
+        playerB3Stats,
+        playerB4Stats,
+        playerB5Stats,
+        setPlayerB1Stats,
+        setPlayerB2Stats,
+        setPlayerB3Stats,
+        setPlayerB4Stats,
+        setPlayerB5Stats,
+        setTeamBStats,
+    } = useContext(GameContext)
 
-    //Use the min values per position to fill this info
-    const [player1Stats, setPlayer1Stats] = useState({
-        name: "",
-        position: "1",
-        height: 165,
-        weight: 60,
-        atleticism: 60,
-        perimeterDefence: 50,
-        insideDefence: 10,
-        rebounding: 10,
-        perimeterScoring: 50,
-        insideScoring: 30,
-        playMaking: 40
-    })
-    const [pointsUsedInPlayer1, setPointsUsedInPlayer1] = useState(0)
+    const [totalTeamAPoints, setTotalTeamAPoints] = useState(maxTeamPoints)
 
-    //Use the min values per position to fill this info
-    const [player2Stats, setPlayer2Stats] = useState({
-        name: "",
-        position: "2",
-        height: 170,
-        weight: 65,
-        atleticism: 40,
-        perimeterDefence: 45,
-        insideDefence: 15,
-        rebounding: 15,
-        perimeterScoring: 50,
-        insideScoring: 30,
-        playMaking: 40
-    })    
-    const [pointsUsedInPlayer2, setPointsUsedInPlayer2] = useState(0)
+    const [pointsUsedInPlayerA1, setPointsUsedInPlayerA1] = useState(0)
+    const [pointsUsedInStatsPlayerA1, setPointsUsedInStatsPlayerA1] = useState({height: 0, weight: 0, atleticism: 0, perDef: 0, insDef: 0, reb: 0, perScor: 0, insScor: 0, plmkn: 0})
 
-    //Use the min values per position to fill this info
-    const [player3Stats, setPlayer3Stats] = useState({
-        name: "",
-        position: "3",
-        height: 175,
-        weight: 70,
-        atleticism: 40,
-        perimeterDefence: 40,
-        insideDefence: 30,
-        rebounding: 30,
-        perimeterScoring: 30,
-        insideScoring: 40,
-        playMaking: 10
-    })    
-    const [pointsUsedInPlayer3, setPointsUsedInPlayer3] = useState(0)
+    const [pointsUsedInPlayerA2, setPointsUsedInPlayerA2] = useState(0)
+    const [pointsUsedInStatsPlayerA2, setPointsUsedInStatsPlayerA2] = useState({height: 0, weight: 0, atleticism: 0, perDef: 0, insDef: 0, reb: 0, perScor: 0, insScor: 0, plmkn: 0})
 
-    //Use the min values per position to fill this info
-    const [player4Stats, setPlayer4Stats] = useState({
-        name: "",
-        position: "4",
-        height: 190,
-        weight: 80,
-        atleticism: 30,
-        perimeterDefence: 20,
-        insideDefence: 40,
-        rebounding: 50,
-        perimeterScoring: 10,
-        insideScoring: 60,
-        playMaking: 5
-    })
-    const [pointsUsedInPlayer4, setPointsUsedInPlayer4] = useState(0)
+    const [pointsUsedInPlayerA3, setPointsUsedInPlayerA3] = useState(0)
+    const [pointsUsedInStatsPlayerA3, setPointsUsedInStatsPlayerA3] = useState({height: 0, weight: 0, atleticism: 0, perDef: 0, insDef: 0, reb: 0, perScor: 0, insScor: 0, plmkn: 0})
 
-    //Use the min values per position to fill this info
-    const [player5Stats, setPlayer5Stats] = useState({
-        name: "",
-        position: "5",
-        height: 205,
-        weight: 90,
-        atleticism: 15,
-        perimeterDefence: 5,
-        insideDefence: 60,
-        rebounding: 60,
-        perimeterScoring: 5,
-        insideScoring: 65,
-        playMaking: 1
-    })    
-    const [pointsUsedInPlayer5, setPointsUsedInPlayer5] = useState(0)
+    const [pointsUsedInPlayerA4, setPointsUsedInPlayerA4] = useState(0)
+    const [pointsUsedInStatsPlayerA4, setPointsUsedInStatsPlayerA4] = useState({height: 0, weight: 0, atleticism: 0, perDef: 0, insDef: 0, reb: 0, perScor: 0, insScor: 0, plmkn: 0})
 
-    let pointsUsedOnPlayersArray = [pointsUsedInPlayer1, pointsUsedInPlayer2, pointsUsedInPlayer3, pointsUsedInPlayer4, pointsUsedInPlayer5]
+    const [pointsUsedInPlayerA5, setPointsUsedInPlayerA5] = useState(0)
+    const [pointsUsedInStatsPlayerA5, setPointsUsedInStatsPlayerA5] = useState({height: 0, weight: 0, atleticism: 0, perDef: 0, insDef: 0, reb: 0, perScor: 0, insScor: 0, plmkn: 0})
 
-    const [teamStats, setTeamStats] = useState({
-        player1Stats,
-        player2Stats,
-        player3Stats,
-        player4Stats,
-        player5Stats
-    })
+    let pointsUsedOnPlayersAArray = [pointsUsedInPlayerA1, pointsUsedInPlayerA2, pointsUsedInPlayerA3, pointsUsedInPlayerA4, pointsUsedInPlayerA5]
+
+    const [totalTeamBPoints, setTotalTeamBPoints] = useState(maxTeamPoints)
+
+    const [pointsUsedInPlayerB1, setPointsUsedInPlayerB1] = useState(0)
+    const [pointsUsedInStatsPlayerB1, setPointsUsedInStatsPlayerB1] = useState({height: 0, weight: 0, atleticism: 0, perDef: 0, insDef: 0, reb: 0, perScor: 0, insScor: 0, plmkn: 0})
+
+    const [pointsUsedInPlayerB2, setPointsUsedInPlayerB2] = useState(0)
+    const [pointsUsedInStatsPlayerB2, setPointsUsedInStatsPlayerB2] = useState({height: 0, weight: 0, atleticism: 0, perDef: 0, insDef: 0, reb: 0, perScor: 0, insScor: 0, plmkn: 0})
+
+    const [pointsUsedInPlayerB3, setPointsUsedInPlayerB3] = useState(0)
+    const [pointsUsedInStatsPlayerB3, setPointsUsedInStatsPlayerB3] = useState({height: 0, weight: 0, atleticism: 0, perDef: 0, insDef: 0, reb: 0, perScor: 0, insScor: 0, plmkn: 0})
+
+    const [pointsUsedInPlayerB4, setPointsUsedInPlayerB4] = useState(0)
+    const [pointsUsedInStatsPlayerB4, setPointsUsedInStatsPlayerB4] = useState({height: 0, weight: 0, atleticism: 0, perDef: 0, insDef: 0, reb: 0, perScor: 0, insScor: 0, plmkn: 0})
+
+    const [pointsUsedInPlayerB5, setPointsUsedInPlayerB5] = useState(0)
+    const [pointsUsedInStatsPlayerB5, setPointsUsedInStatsPlayerB5] = useState({height: 0, weight: 0, atleticism: 0, perDef: 0, insDef: 0, reb: 0, perScor: 0, insScor: 0, plmkn: 0})
+
+    let pointsUsedOnPlayersBArray = [pointsUsedInPlayerB1, pointsUsedInPlayerB2, pointsUsedInPlayerB3, pointsUsedInPlayerB4, pointsUsedInPlayerB5]
+    // console.log("pointsUsedOnPlayersBArray", pointsUsedOnPlayersBArray)
 
     const [createPlayer, setCreatePlayer] = useState(0)
 
@@ -125,7 +98,12 @@ function CreateTeam( { team }: Props) {
             playerSelector.push(
                 <div key={i} className={isThisPlayerSelected ? 'player-selector selected' : 'player-selector'} onClick={selectPlayer(i)}>
                     <h3>{playerPositionDetection(i.toString())}</h3>
-                    <h4>Player valoration <span>{calculatePlayerOverallRating(i, pointsUsedOnPlayersArray)}</span></h4>
+                    {
+                        team=="A" ? 
+                        <h4>Player valoration <span>{calculatePlayerOverallRating(pointsUsedOnPlayersAArray[i-1])}</span></h4>
+                        :
+                        <h4>Player valoration <span>{calculatePlayerOverallRating(pointsUsedOnPlayersBArray[i-1])}</span></h4>
+                    }
                 </div>
             )
         }
@@ -133,15 +111,20 @@ function CreateTeam( { team }: Props) {
     }
 
     function confirmTeamButtonHandler() {
-        setTeamStats({player1Stats, player2Stats, player3Stats, player4Stats, player5Stats})
+        if(team == "A"){
+            setTeamAStats({playerA1Stats, playerA2Stats, playerA3Stats, playerA4Stats, playerA5Stats})
+
+        } else if(team == "B"){
+            setTeamBStats({playerB1Stats, playerB2Stats, playerB3Stats, playerB4Stats, playerB5Stats})
+        }
     }
     
     return (
         <div className={`team-${team}-customization-container team-customization-container`}>
             <div className='max-team-points-input-container'>
                 <label htmlFor='maxTeamPoints'>Max team points</label>
-                <input type="range" name="maxTeamPoints" id='maxTeamPoints-input' min="0" max={maxTeamPoints} value={totalTeamPoints} readOnly/>
-                <span className='maxTeamPoints-number'>{numberEntire(totalTeamPoints)}</span>
+                <input type="range" name="maxTeamPoints" id='maxTeamPoints-input' min="0" max={maxTeamPoints} value={totalTeamAPoints} readOnly/>
+                <span className='maxTeamPoints-number'>{numberEntire(totalTeamAPoints)}</span>
             </div>
 
             {
@@ -150,23 +133,37 @@ function CreateTeam( { team }: Props) {
 
             <div className='all-player-customization-container'>
                 {
-                    createPlayer == 1 ?
-                    <CreatePlayer player={player1Stats} playerSetter={setPlayer1Stats} totalTeamPoints={totalTeamPoints} setTotalTeamPoints={setTotalTeamPoints} pointsUsedInPlayer={pointsUsedInPlayer1} setPointsUsedInPlayer={setPointsUsedInPlayer1}/>
-                    : createPlayer == 2 ?
-                    <CreatePlayer player={player2Stats} playerSetter={setPlayer2Stats} totalTeamPoints={totalTeamPoints} setTotalTeamPoints={setTotalTeamPoints} pointsUsedInPlayer={pointsUsedInPlayer2} setPointsUsedInPlayer={setPointsUsedInPlayer2}/>
-                    : createPlayer == 3 ?
-                    <CreatePlayer player={player3Stats} playerSetter={setPlayer3Stats} totalTeamPoints={totalTeamPoints} setTotalTeamPoints={setTotalTeamPoints} pointsUsedInPlayer={pointsUsedInPlayer3} setPointsUsedInPlayer={setPointsUsedInPlayer3}/>
-                    : createPlayer == 4 ?
-                    <CreatePlayer player={player4Stats} playerSetter={setPlayer4Stats} totalTeamPoints={totalTeamPoints} setTotalTeamPoints={setTotalTeamPoints} pointsUsedInPlayer={pointsUsedInPlayer4} setPointsUsedInPlayer={setPointsUsedInPlayer4}/>
-                    : createPlayer == 5 ?
-                    <CreatePlayer player={player5Stats} playerSetter={setPlayer5Stats} totalTeamPoints={totalTeamPoints} setTotalTeamPoints={setTotalTeamPoints} pointsUsedInPlayer={pointsUsedInPlayer5} setPointsUsedInPlayer={setPointsUsedInPlayer5}/>
-                    : createPlayer == 0 &&
-                    <p>Remember, you have 3150 points to spend among your 5 players. You can balance the score between them or enhance any of them.</p>
+                    team == "A" ?
+                        createPlayer == 1 ?
+                        <CreatePlayer playerPosition={playerPositionDetection(createPlayer.toString())} player={playerA1Stats} playerSetter={setPlayerA1Stats} totalTeamPoints={totalTeamAPoints} setTotalTeamPoints={setTotalTeamAPoints} pointsUsedInPlayer={pointsUsedInPlayerA1} setPointsUsedInPlayer={setPointsUsedInPlayerA1} pointsUsedInStats={pointsUsedInStatsPlayerA1} setPointsUsedInStats={setPointsUsedInStatsPlayerA1}/>
+                        : createPlayer == 2 ?
+                        <CreatePlayer playerPosition={playerPositionDetection(createPlayer.toString())} player={playerA2Stats} playerSetter={setPlayerA2Stats} totalTeamPoints={totalTeamAPoints} setTotalTeamPoints={setTotalTeamAPoints} pointsUsedInPlayer={pointsUsedInPlayerA2} setPointsUsedInPlayer={setPointsUsedInPlayerA2} pointsUsedInStats={pointsUsedInStatsPlayerA2} setPointsUsedInStats={setPointsUsedInStatsPlayerA2}/>
+                        : createPlayer == 3 ?
+                        <CreatePlayer playerPosition={playerPositionDetection(createPlayer.toString())} player={playerA3Stats} playerSetter={setPlayerA3Stats} totalTeamPoints={totalTeamAPoints} setTotalTeamPoints={setTotalTeamAPoints} pointsUsedInPlayer={pointsUsedInPlayerA3} setPointsUsedInPlayer={setPointsUsedInPlayerA3} pointsUsedInStats={pointsUsedInStatsPlayerA3} setPointsUsedInStats={setPointsUsedInStatsPlayerA3}/>
+                        : createPlayer == 4 ?
+                        <CreatePlayer playerPosition={playerPositionDetection(createPlayer.toString())} player={playerA4Stats} playerSetter={setPlayerA4Stats} totalTeamPoints={totalTeamAPoints} setTotalTeamPoints={setTotalTeamAPoints} pointsUsedInPlayer={pointsUsedInPlayerA4} setPointsUsedInPlayer={setPointsUsedInPlayerA4} pointsUsedInStats={pointsUsedInStatsPlayerA4} setPointsUsedInStats={setPointsUsedInStatsPlayerA4}/>
+                        : createPlayer == 5 ?
+                        <CreatePlayer playerPosition={playerPositionDetection(createPlayer.toString())} player={playerA5Stats} playerSetter={setPlayerA5Stats} totalTeamPoints={totalTeamAPoints} setTotalTeamPoints={setTotalTeamAPoints} pointsUsedInPlayer={pointsUsedInPlayerA5} setPointsUsedInPlayer={setPointsUsedInPlayerA5} pointsUsedInStats={pointsUsedInStatsPlayerA5} setPointsUsedInStats={setPointsUsedInStatsPlayerA5}/>
+                        : createPlayer == 0 &&
+                        <p>Remember, you have 3150 points to spend among your 5 players. You can balance the score between them or enhance any of them.</p>
+                    :
+                        createPlayer == 1 ?
+                        <CreatePlayer playerPosition={playerPositionDetection(createPlayer.toString())} player={playerB1Stats} playerSetter={setPlayerB1Stats} totalTeamPoints={totalTeamBPoints} setTotalTeamPoints={setTotalTeamBPoints} pointsUsedInPlayer={pointsUsedInPlayerB1} setPointsUsedInPlayer={setPointsUsedInPlayerB1} pointsUsedInStats={pointsUsedInStatsPlayerB1} setPointsUsedInStats={setPointsUsedInStatsPlayerB1}/>
+                        : createPlayer == 2 ?
+                        <CreatePlayer playerPosition={playerPositionDetection(createPlayer.toString())} player={playerB2Stats} playerSetter={setPlayerB2Stats} totalTeamPoints={totalTeamBPoints} setTotalTeamPoints={setTotalTeamBPoints} pointsUsedInPlayer={pointsUsedInPlayerB2} setPointsUsedInPlayer={setPointsUsedInPlayerB2} pointsUsedInStats={pointsUsedInStatsPlayerB2} setPointsUsedInStats={setPointsUsedInStatsPlayerB2}/>
+                        : createPlayer == 3 ?
+                        <CreatePlayer playerPosition={playerPositionDetection(createPlayer.toString())} player={playerB3Stats} playerSetter={setPlayerB3Stats} totalTeamPoints={totalTeamBPoints} setTotalTeamPoints={setTotalTeamBPoints} pointsUsedInPlayer={pointsUsedInPlayerB3} setPointsUsedInPlayer={setPointsUsedInPlayerB3} pointsUsedInStats={pointsUsedInStatsPlayerB3} setPointsUsedInStats={setPointsUsedInStatsPlayerB3}/>
+                        : createPlayer == 4 ?
+                        <CreatePlayer playerPosition={playerPositionDetection(createPlayer.toString())} player={playerB4Stats} playerSetter={setPlayerB4Stats} totalTeamPoints={totalTeamBPoints} setTotalTeamPoints={setTotalTeamBPoints} pointsUsedInPlayer={pointsUsedInPlayerB4} setPointsUsedInPlayer={setPointsUsedInPlayerB4} pointsUsedInStats={pointsUsedInStatsPlayerB4} setPointsUsedInStats={setPointsUsedInStatsPlayerB4}/>
+                        : createPlayer == 5 ?
+                        <CreatePlayer playerPosition={playerPositionDetection(createPlayer.toString())} player={playerB5Stats} playerSetter={setPlayerB5Stats} totalTeamPoints={totalTeamBPoints} setTotalTeamPoints={setTotalTeamBPoints} pointsUsedInPlayer={pointsUsedInPlayerB5} setPointsUsedInPlayer={setPointsUsedInPlayerB5} pointsUsedInStats={pointsUsedInStatsPlayerB5} setPointsUsedInStats={setPointsUsedInStatsPlayerB5}/>
+                        : createPlayer == 0 &&
+                        <p>Remember, you have 3150 points to spend among your 5 players. You can balance the score between them or enhance any of them.</p>
                 }                
             </div>
             <div className="confirm-team">
                 <span>You have to use all your points to confirm</span>
-                <button className={totalTeamPoints < 1 ? "confirm-team true" : "confirm-team"} onClick={confirmTeamButtonHandler}>Confirm team</button>
+                <button className={totalTeamAPoints < 1 ? "confirm-team true" : "confirm-team"} onClick={confirmTeamButtonHandler}>Confirm team</button>
             </div>
         </div>
     )

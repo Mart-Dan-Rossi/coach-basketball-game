@@ -47,7 +47,7 @@ function CustomizeGame() {
             <CreateTeam team = {"B"}/>
             </CSSTransition>
           </SwitchTransition>
-      }        
+      }
     </div>
   )
 }

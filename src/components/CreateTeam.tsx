@@ -112,10 +112,8 @@ function CreateTeam( { team }: Props) {
     }
 
     function confirmTeamButtonHandler() {
-        if(team == "A"){
+        if(totalTeamAPoints < 1 && totalTeamBPoints < 1) {
             setTeamAStats({playerA1Stats, playerA2Stats, playerA3Stats, playerA4Stats, playerA5Stats})
-
-        } else if(team == "B"){
             setTeamBStats({playerB1Stats, playerB2Stats, playerB3Stats, playerB4Stats, playerB5Stats})
         }
     }
@@ -124,8 +122,8 @@ function CreateTeam( { team }: Props) {
         <div className={`team-${team}-customization-container team-customization-container`}>
             <div className='max-team-points-input-container'>
                 <label htmlFor='maxTeamPoints'>Max team points</label>
-                <input type="range" name="maxTeamPoints" id='maxTeamPoints-input' min="0" max={maxTeamPoints} value={totalTeamAPoints} readOnly/>
-                <span className='maxTeamPoints-number'>{numberEntire(totalTeamAPoints)}</span>
+                <input type="range" name="maxTeamPoints" id='maxTeamPoints-input' min="0" max={maxTeamPoints} value={team == "A" ? totalTeamAPoints : totalTeamBPoints} readOnly/>
+                <span className='maxTeamPoints-number'>{team == "A" ? numberEntire(totalTeamAPoints) : numberEntire(totalTeamBPoints)}</span>
             </div>
 
             {
@@ -168,9 +166,9 @@ function CreateTeam( { team }: Props) {
                     </SwitchTransition>
                 }                
             </div>
-            <div className="confirm-team">
+            <div className="confirm-teams">
                 <span>You have to use all your points to confirm</span>
-                <button className={totalTeamAPoints < 1 ? "confirm-team true" : "confirm-team"} onClick={confirmTeamButtonHandler}>Confirm team</button>
+                <button className={totalTeamAPoints < 1 && totalTeamBPoints < 1 ? "true" : "false"} onClick={confirmTeamButtonHandler}>Confirm both teams</button>
             </div>
         </div>
     )

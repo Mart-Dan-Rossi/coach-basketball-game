@@ -38,6 +38,7 @@ function CreateTeam( { totalTeamAPoints, setTotalTeamAPoints, totalTeamBPoints, 
         setPlayerB4Stats,
         setPlayerB5Stats,
         setTeamBStats,
+        setTeamsCreated
     } = useContext(GameContext)
 
     const [pointsUsedInPlayerA1, setPointsUsedInPlayerA1] = useState(0)
@@ -115,6 +116,7 @@ function CreateTeam( { totalTeamAPoints, setTotalTeamAPoints, totalTeamBPoints, 
         if(totalTeamAPoints < 1 && totalTeamBPoints < 1) {
             setTeamAStats({playerA1Stats, playerA2Stats, playerA3Stats, playerA4Stats, playerA5Stats})
             setTeamBStats({playerB1Stats, playerB2Stats, playerB3Stats, playerB4Stats, playerB5Stats})
+            setTeamsCreated(true)
         }
     }
     
@@ -167,8 +169,12 @@ function CreateTeam( { totalTeamAPoints, setTotalTeamAPoints, totalTeamBPoints, 
                 }                
             </div>
             <div className="confirm-teams">
-                <span>You have to use all your points to confirm</span>
                 <button className={totalTeamAPoints < 2 && totalTeamBPoints < 2 ? "true" : "false"} onClick={confirmTeamButtonHandler}>Confirm both teams</button>
+                {totalTeamAPoints < 2 && totalTeamBPoints < 2 ?
+                    <span className='valid'>Ready to canfirm</span>
+                    :
+                    <span className='error'>You have to use all your points to confirm</span>
+                }
             </div>
         </div>
     )

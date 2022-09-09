@@ -174,11 +174,17 @@ export const GameContextProvider = ({ children }: props) =>{
         playerB5Stats
     })
 
+    const [teamsCreated, setTeamsCreated] = useState(false)
+
     return (
         <GameContext.Provider 
         value={
-            {playerA1Stats, playerA2Stats, playerA3Stats, playerA4Stats, playerA5Stats, setPlayerA1Stats, setPlayerA2Stats, setPlayerA3Stats, setPlayerA4Stats, setPlayerA5Stats, teamAStats, setTeamAStats,
-            playerB1Stats, playerB2Stats, playerB3Stats, playerB4Stats, playerB5Stats, setPlayerB1Stats, setPlayerB2Stats, setPlayerB3Stats, setPlayerB4Stats, setPlayerB5Stats, teamBStats, setTeamBStats}}>
+            {
+                playerA1Stats, playerA2Stats, playerA3Stats, playerA4Stats, playerA5Stats, setPlayerA1Stats, setPlayerA2Stats, setPlayerA3Stats, setPlayerA4Stats, setPlayerA5Stats, teamAStats, setTeamAStats,
+                playerB1Stats, playerB2Stats, playerB3Stats, playerB4Stats, playerB5Stats, setPlayerB1Stats, setPlayerB2Stats, setPlayerB3Stats, setPlayerB4Stats, setPlayerB5Stats, teamBStats, setTeamBStats,
+                teamsCreated,
+                setTeamsCreated
+            }}>
             { children }
         </GameContext.Provider>
     )

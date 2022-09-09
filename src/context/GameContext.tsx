@@ -1,4 +1,4 @@
-import { createContext } from "react"
+import React, { createContext } from "react"
 import {PlayerEditableInfo, TeamAStats, TeamBStats} from '../entities/myInterfaces';
 
 export interface GameContextProps {
@@ -25,7 +25,9 @@ export interface GameContextProps {
     setPlayerB4Stats: React.Dispatch<React.SetStateAction<PlayerEditableInfo>>,
     setPlayerB5Stats: React.Dispatch<React.SetStateAction<PlayerEditableInfo>>,
     teamBStats: TeamBStats,
-    setTeamBStats: React.Dispatch<React.SetStateAction<TeamBStats>>
+    setTeamBStats: React.Dispatch<React.SetStateAction<TeamBStats>>,
+    teamsCreated: boolean,
+    setTeamsCreated: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 

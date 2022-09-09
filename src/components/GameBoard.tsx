@@ -69,7 +69,7 @@ function GameBoard() {
                 gameBoard!.map((rowContent, rowIndex)=> {
                     return (rowContent.map((player, colIndex)=> {
                         return (
-                            <div key={`${colIndex} ${rowIndex}`} className={`tile ROW${rowIndex + 1} COL${colIndex +1}`}>
+                            <div key={`tile-${colIndex}-${rowIndex}`} className={`tile ROW${rowIndex + 1} COL${colIndex +1}`}>
                                 {
                                     player == 0 ?
                                         <></>

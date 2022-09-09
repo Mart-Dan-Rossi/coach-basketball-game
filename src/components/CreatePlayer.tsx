@@ -3,6 +3,7 @@ import { PlayerEditableInfo, PlayerStats } from '../entities/myInterfaces'
 import {getMinStatPerPosition, getMaxStatPerPosition, getValue, playerPositionDetection, firstLetterToUpper, separateCamelCaseBySpace, numberEntire, setPointsUsedOnThisSkill} from '../utilities/exportableFunctions';
 
 interface Props {
+    team: string,
     playerPosition: string,
     player: PlayerEditableInfo,
     playerSetter: React.Dispatch<React.SetStateAction<PlayerEditableInfo>>,
@@ -14,7 +15,7 @@ interface Props {
     setPointsUsedInStats: React.Dispatch<React.SetStateAction<PlayerStats>>
 }
 
-function CreatePlayer( { playerPosition, player, playerSetter, totalTeamPoints, setTotalTeamPoints, pointsUsedInPlayer, setPointsUsedInPlayer, pointsUsedInStats, setPointsUsedInStats} : Props ) {
+function CreatePlayer( { team, playerPosition, player, playerSetter, totalTeamPoints, setTotalTeamPoints, pointsUsedInPlayer, setPointsUsedInPlayer, pointsUsedInStats, setPointsUsedInStats} : Props ) {
 
     const nameOnkeydownHandler = (e :  React.ChangeEvent<HTMLInputElement>) => {
         let inputModified = e.target as HTMLInputElement
@@ -215,7 +216,7 @@ function CreatePlayer( { playerPosition, player, playerSetter, totalTeamPoints, 
             {
                 arrayOfKeysOfNumericProperties.map((stat, i) => {
                     return (
-                        <div key={`${stat}${i}`} className={`${stat}-input-container create-player-stat-input`}>
+                        <div key={`create-player-${stat}-input-${playerPosition}-${team}`} className={`${stat}-input-container create-player-stat-input`}>
                             <label htmlFor={`${stat}`}>{`${firstLetterToUpper(separateCamelCaseBySpace(stat))}: `}</label>
                             <input
                                 type="range"

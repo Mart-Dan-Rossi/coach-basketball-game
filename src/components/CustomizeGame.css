@@ -21,8 +21,13 @@
     background-color: rgba(255, 0, 0, 0.26);
 }
 
+.arrow-go-left {
+    cursor: pointer;
+}
+
 .arrow-go-right {
     transform: rotate(180deg);
+    cursor: pointer;
 }
 
 .customize-game-container {
@@ -69,6 +74,7 @@
     padding: 0 25px;
     border-radius: 4px;
     user-select: none;
+    cursor: pointer;
 }
 
 .player-selector.selected {
@@ -154,6 +160,7 @@
 .create-player-stat-input input {
     width: 65%;
     min-width: 130px;
+    cursor: pointer;
 }
 
 .create-player-stat-input .points-used-on-this-skill {

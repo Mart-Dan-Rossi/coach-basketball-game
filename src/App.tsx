@@ -1,17 +1,23 @@
-import React, { useContext, useState } from "react";
-import CustomizeGame from "./components/CustomizeGame";
-import GameBoard from "./components/GameBoard";
+import React, { useState } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import MainMenu from "./components/MainMenu";
+import Rules from "./components/Rules";
 import { GameContextProvider } from "./context/GameContextProvider";
-import {GameContext} from './context/GameContext';
-import Main from "./Main";
+import GameStarted from "./GameStarted";
 
 
-function App() {
-  
+function App() {  
   return (
     <>
       <GameContextProvider>
-        <Main/>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<MainMenu/>}/>
+            <Route path="/home" element={<MainMenu/>}/>
+            <Route path="/game-started" element={<GameStarted/>}/>
+            <Route path="/rules" element={<Rules />}/>
+          </Routes>
+        </BrowserRouter>
       </GameContextProvider>
     </>
   );

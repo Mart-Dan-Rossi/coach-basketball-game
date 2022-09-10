@@ -68,8 +68,9 @@
 
 .main-options a p {
     text-align: center;
-    margin: 15%;
     font-size: xx-large;
+    position: relative;
+    top: 32%;
 }
 
 footer {

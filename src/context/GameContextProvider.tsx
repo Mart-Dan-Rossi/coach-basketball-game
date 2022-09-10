@@ -176,6 +176,36 @@ export const GameContextProvider = ({ children }: props) =>{
 
     const [teamsCreated, setTeamsCreated] = useState(false)
 
+    const [pointsUsedInPlayerA1, setPointsUsedInPlayerA1] = useState(0)
+    const [pointsUsedInStatsPlayerA1, setPointsUsedInStatsPlayerA1] = useState({height: 0, weight: 0, atleticism: 0, perDef: 0, insDef: 0, reb: 0, perScor: 0, insScor: 0, plmkn: 0})
+
+    const [pointsUsedInPlayerA2, setPointsUsedInPlayerA2] = useState(0)
+    const [pointsUsedInStatsPlayerA2, setPointsUsedInStatsPlayerA2] = useState({height: 0, weight: 0, atleticism: 0, perDef: 0, insDef: 0, reb: 0, perScor: 0, insScor: 0, plmkn: 0})
+
+    const [pointsUsedInPlayerA3, setPointsUsedInPlayerA3] = useState(0)
+    const [pointsUsedInStatsPlayerA3, setPointsUsedInStatsPlayerA3] = useState({height: 0, weight: 0, atleticism: 0, perDef: 0, insDef: 0, reb: 0, perScor: 0, insScor: 0, plmkn: 0})
+
+    const [pointsUsedInPlayerA4, setPointsUsedInPlayerA4] = useState(0)
+    const [pointsUsedInStatsPlayerA4, setPointsUsedInStatsPlayerA4] = useState({height: 0, weight: 0, atleticism: 0, perDef: 0, insDef: 0, reb: 0, perScor: 0, insScor: 0, plmkn: 0})
+
+    const [pointsUsedInPlayerA5, setPointsUsedInPlayerA5] = useState(0)
+    const [pointsUsedInStatsPlayerA5, setPointsUsedInStatsPlayerA5] = useState({height: 0, weight: 0, atleticism: 0, perDef: 0, insDef: 0, reb: 0, perScor: 0, insScor: 0, plmkn: 0})
+
+    const [pointsUsedInPlayerB1, setPointsUsedInPlayerB1] = useState(0)
+    const [pointsUsedInStatsPlayerB1, setPointsUsedInStatsPlayerB1] = useState({height: 0, weight: 0, atleticism: 0, perDef: 0, insDef: 0, reb: 0, perScor: 0, insScor: 0, plmkn: 0})
+
+    const [pointsUsedInPlayerB2, setPointsUsedInPlayerB2] = useState(0)
+    const [pointsUsedInStatsPlayerB2, setPointsUsedInStatsPlayerB2] = useState({height: 0, weight: 0, atleticism: 0, perDef: 0, insDef: 0, reb: 0, perScor: 0, insScor: 0, plmkn: 0})
+
+    const [pointsUsedInPlayerB3, setPointsUsedInPlayerB3] = useState(0)
+    const [pointsUsedInStatsPlayerB3, setPointsUsedInStatsPlayerB3] = useState({height: 0, weight: 0, atleticism: 0, perDef: 0, insDef: 0, reb: 0, perScor: 0, insScor: 0, plmkn: 0})
+
+    const [pointsUsedInPlayerB4, setPointsUsedInPlayerB4] = useState(0)
+    const [pointsUsedInStatsPlayerB4, setPointsUsedInStatsPlayerB4] = useState({height: 0, weight: 0, atleticism: 0, perDef: 0, insDef: 0, reb: 0, perScor: 0, insScor: 0, plmkn: 0})
+
+    const [pointsUsedInPlayerB5, setPointsUsedInPlayerB5] = useState(0)
+    const [pointsUsedInStatsPlayerB5, setPointsUsedInStatsPlayerB5] = useState({height: 0, weight: 0, atleticism: 0, perDef: 0, insDef: 0, reb: 0, perScor: 0, insScor: 0, plmkn: 0})
+
     return (
         <GameContext.Provider 
         value={
@@ -183,7 +213,11 @@ export const GameContextProvider = ({ children }: props) =>{
                 playerA1Stats, playerA2Stats, playerA3Stats, playerA4Stats, playerA5Stats, setPlayerA1Stats, setPlayerA2Stats, setPlayerA3Stats, setPlayerA4Stats, setPlayerA5Stats, teamAStats, setTeamAStats,
                 playerB1Stats, playerB2Stats, playerB3Stats, playerB4Stats, playerB5Stats, setPlayerB1Stats, setPlayerB2Stats, setPlayerB3Stats, setPlayerB4Stats, setPlayerB5Stats, teamBStats, setTeamBStats,
                 teamsCreated,
-                setTeamsCreated
+                setTeamsCreated,
+                pointsUsedInPlayerA1, pointsUsedInPlayerA2, pointsUsedInPlayerA3, pointsUsedInPlayerA4, pointsUsedInPlayerA5, setPointsUsedInPlayerA1, setPointsUsedInPlayerA2, setPointsUsedInPlayerA3, setPointsUsedInPlayerA4, setPointsUsedInPlayerA5,
+                pointsUsedInStatsPlayerA1, pointsUsedInStatsPlayerA2, pointsUsedInStatsPlayerA3, pointsUsedInStatsPlayerA4, pointsUsedInStatsPlayerA5, setPointsUsedInStatsPlayerA1, setPointsUsedInStatsPlayerA2, setPointsUsedInStatsPlayerA3, setPointsUsedInStatsPlayerA4, setPointsUsedInStatsPlayerA5,
+                pointsUsedInStatsPlayerB1, pointsUsedInStatsPlayerB2, pointsUsedInStatsPlayerB3, pointsUsedInStatsPlayerB4, pointsUsedInStatsPlayerB5, setPointsUsedInStatsPlayerB1, setPointsUsedInStatsPlayerB2, setPointsUsedInStatsPlayerB3, setPointsUsedInStatsPlayerB4, setPointsUsedInStatsPlayerB5,
+                pointsUsedInPlayerB1, pointsUsedInPlayerB2, pointsUsedInPlayerB3, pointsUsedInPlayerB4, pointsUsedInPlayerB5, setPointsUsedInPlayerB1, setPointsUsedInPlayerB2, setPointsUsedInPlayerB3, setPointsUsedInPlayerB4, setPointsUsedInPlayerB5
             }}>
             { children }
         </GameContext.Provider>

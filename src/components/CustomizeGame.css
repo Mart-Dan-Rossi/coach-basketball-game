@@ -87,7 +87,7 @@
 
 .all-player-customization-container {
     height: max-content;
-    min-height: calc(100vh - 72px - 48px - 70px - 99px);
+    min-height: calc(100vh - 81px - 48px - 76px - 102px);
     width: 100%;
 }
 
@@ -155,6 +155,7 @@
 
 .create-player-stat-input label {
     width: 136px;
+    font-size: medium;
 }
 
 .create-player-stat-input input {
@@ -176,6 +177,7 @@
     background-color: white;
     padding: 10px;
     border-radius: 4px;
+    width: 361px;
 }
 
 .confirm-teams button {

@@ -13,7 +13,7 @@ function Main() {
   return (
     <>
         {
-          teamsCreated ?
+          !teamsCreated ?
             <GameBoard teamAStats={teamAStats} teamBStats={teamBStats}/>
             :
             <CustomizeGame />

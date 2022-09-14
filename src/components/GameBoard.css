@@ -1,0 +1,23 @@
+#gameboard {
+    width: max-content;
+    margin: 0 auto;
+
+    display: grid;
+    grid-template-columns: repeat(28, 1fr);
+    grid-template-rows: repeat(15, 1fr);
+
+    background-image: url("../../public/img/myCourt.jpg");
+    background-size: contain;
+}
+
+.tile {
+    width: 40px;
+    aspect-ratio: 1;
+
+    border: 1px solid black;
+}
+
+.player-img {
+    width: 100%;
+    vertical-align: -webkit-baseline-middle;
+}

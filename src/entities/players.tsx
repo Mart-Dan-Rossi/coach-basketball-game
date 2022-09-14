@@ -75,4 +75,12 @@ export class Player {
             return "C"
         }
     }
+
+    playerHaveTheBall() {
+        if(this.haveBall == true) {
+            return true
+        } else {
+            return false
+        }
+    }
 }

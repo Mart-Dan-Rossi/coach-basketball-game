@@ -24,6 +24,7 @@
 
 .player-tile-container {
     position: relative;
+    cursor: pointer;
 }
 
 .player-tile-container.expand .player-info-popup-in-board {
@@ -46,6 +47,7 @@
 }
 
 .player-info-popup-in-board {
+    cursor: default;
     position: absolute;
     top: 50%;
     
@@ -53,6 +55,7 @@
     align-items: center;
     flex-direction: column;
     width: max-content;
+    max-width: 165px;
 
     background-color: lightgray;
 
@@ -80,4 +83,29 @@
 
 .player-position {
     margin: 0 auto;
+}
+
+.player-stats-icon-container {
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center !important;
+}
+
+.player-stats-icon-container img {
+    height: 32px;
+    aspect-ratio: 1;
+    padding: 2px;
+    border-radius: 100px;
+}
+
+.player-stats-icon-container img.bronze {
+    background-color: #CD7F32;
+}
+
+.player-stats-icon-container img.silver {
+    background-color: silver;
+}
+
+.player-stats-icon-container img.gold {
+    background-color: gold;
 }

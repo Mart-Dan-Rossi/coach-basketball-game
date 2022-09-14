@@ -4,6 +4,7 @@ import { TeamAStats, TeamBStats } from '../entities/myInterfaces'
 import { Player } from '../entities/players'
 import { Team } from '../entities/team'
 import './GameBoard.css'
+import PlayerTileContainer from './PlayerTileContainer'
 
 
 interface Props {
@@ -210,14 +211,6 @@ function GameBoard( { teamAStats, teamBStats } : Props) {
     const teamB: Team = new Team("TeamB", playersTeamB)
     
     const match: Match = new Match(teamA, teamB)
-    let playerImg = ""
-
-    function playerTileContainerClickHandler() {
-        return (e: React.MouseEvent)=>{
-            e.preventDefault()
-            e.currentTarget!.classList.toggle("expand")
-        }
-    }
     
     match.start()
 
@@ -234,159 +227,9 @@ function GameBoard( { teamAStats, teamBStats } : Props) {
                                         <></>
                                         :
                                         player == 1 ?
-                                            <div className='player-tile-container' onClick={playerTileContainerClickHandler()}>
-                                                {
-                                                    teamA.teamHaveTheBall() ?
-                                                        teamA.players.map(element => {
-                                                            playerImg = ""
-                                                            let playerUbication = [element.ubicationX, element.ubicationY]
-                                                            let thisUbication = [colIndex+1, rowIndex+1]
-
-                                                            if(playerUbication == thisUbication) {
-                                                                if(element.playerHaveTheBall()) {
-                                                                    playerImg = "./img/players-img/AAtackWBall.png"
-                                                                    return (
-                                                                        <img className="player-img" src={playerImg} alt={`team A player atacking with ball in column ${colIndex+1} row ${rowIndex+1}`}/>
-                                                                    )
-                                                                } else {
-                                                                    playerImg = "./img/players-img/AAtack.png"
-                                                                    return (
-                                                                        <img className="player-img" src={playerImg} alt={`team A player atacking in column ${colIndex+1} row ${rowIndex+1}`}/>
-                                                                    )
-                                                                }
-                                                            }
-                                                        })
-                                                        :
-                                                        <img className="player-img" src={`./img/players-img/ADefend.png`} alt={`team A player defending in column ${colIndex+1} row ${rowIndex+1}`}/>
-
-                                                }
-                                                {
-                                                    teamA.players.map(element =>{
-                                                        if(element.ubicationX == colIndex+1 && element.ubicationY == rowIndex+1){
-                                                            return (
-                                                                <div key={"player-info-popup-in-board" + element.team + element.name + element.position} className='player-info-popup-in-board team-a'>
-                                                                    <div className='player-basic-info'>
-                                                                    <h4 className='player-position'>{element.playerPositionDetection()}</h4>
-                                                                    </div>
-                                                                    <div>
-                                                                        <h4>Heigth:</h4>
-                                                                        <span className="stat-value">{element.height.toString()}</span>
-                                                                    </div>
-                                                                    <div>
-                                                                        <h4>Weight:</h4>
-                                                                        <span className='stat-value'>{element.weight.toString()}</span>
-                                                                    </div>
-                                                                    <div>
-                                                                        <h4>Atleticism:</h4>
-                                                                        <span className='stat-value'>{element.atleticism.toString()}</span>
-                                                                    </div>
-                                                                    <div>
-                                                                        <h4>Per def:</h4>
-                                                                        <span className='stat-value'>{element.perimetrerDefence.toString()}</span>
-                                                                    </div>
-                                                                    <div>
-                                                                        <h4>Ins def:</h4>
-                                                                        <span className='stat-value'>{element.insideDefence.toString()}</span>
-                                                                    </div>
-                                                                    <div>
-                                                                        <h4>Rebounding:</h4>
-                                                                        <span className='stat-value'>{element.rebounding.toString()}</span>
-                                                                    </div>
-                                                                    <div>
-                                                                        <h4>Per scor:</h4>
-                                                                        <span className='stat-value'>{element.perimetrerScoring.toString()}</span>
-                                                                    </div>
-                                                                    <div>
-                                                                        <h4>Ins scor:</h4>
-                                                                        <span className='stat-value'>{element.insideScoring.toString()}</span>
-                                                                    </div>
-                                                                    <div>
-                                                                        <h4>Playmkn:</h4>
-                                                                        <span className='stat-value'>{element.playMaking.toString()}</span>
-                                                                    </div>
-                                                                </div>
-                                                            )
-                                                        }
-                                                    })
-                                                }
-                                            </div>                                            
+                                            <PlayerTileContainer team={teamA} colIndex={colIndex} rowIndex={rowIndex} teamLetterProps={"a"}/>
                                             :
-                                            <div className='player-tile-container' onClick={playerTileContainerClickHandler()}>
-                                                {
-                                                    teamB.teamHaveTheBall() ?
-                                                        teamB.players.map(element => {
-                                                            playerImg = ""
-                                                            let playerUbication = [element.ubicationX, element.ubicationY]
-                                                            let thisUbication = [colIndex+1, rowIndex+1]
-
-                                                            if(playerUbication == thisUbication) {
-                                                                if(element.playerHaveTheBall()) {
-                                                                    playerImg = "./img/players-img/BAtackWBall.png"
-                                                                    return (
-                                                                        <img key={"player img" + element.name + element.team + element.position} className="player-img" src={playerImg} alt={`team B player atacking with ball in column ${colIndex+1} row ${rowIndex+1}`}/>
-                                                                    )
-                                                                } else {
-                                                                    playerImg = "./img/players-img/BAtack.png"
-                                                                    return (
-                                                                        <img key={"player img" + element.name + element.team + element.position} className="player-img" src={playerImg} alt={`team B player atacking in column ${colIndex+1} row ${rowIndex+1}`}/>
-                                                                    )
-                                                                }
-                                                            }
-                                                        })
-                                                        :
-                                                        <img className="player-img" src={`./img/players-img/BDefend.png`} alt={`team B player defending in column ${colIndex+1} row ${rowIndex+1}`}/>
-
-                                                }
-                                                {
-                                                    teamB.players.map(element =>{
-                                                        if(element.ubicationX == colIndex+1 && element.ubicationY == rowIndex+1){
-                                                            return (
-                                                                <div key={"player-info-popup-in-board" + element.team + element.name + element.position} className='player-info-popup-in-board team-b'>
-                                                                    <div className='player-basic-info'>
-                                                                        <h4 className='player-position'>{element.playerPositionDetection()}</h4>
-                                                                    </div>
-                                                                    <div>
-                                                                        <h4>Heigth:</h4>
-                                                                        <span className="stat-value">{element.height.toString()} cm</span>
-                                                                    </div>
-                                                                    <div>
-                                                                        <h4>Weight:</h4>
-                                                                        <span className='stat-value'>{element.weight.toString()} kg</span>
-                                                                    </div>
-                                                                    <div>
-                                                                        <h4>Atleticism:</h4>
-                                                                        <span className='stat-value'>{element.atleticism.toString()}</span>
-                                                                    </div>
-                                                                    <div>
-                                                                        <h4>Per def:</h4>
-                                                                        <span className='stat-value'>{element.perimetrerDefence.toString()}</span>
-                                                                    </div>
-                                                                    <div>
-                                                                        <h4>Ins def:</h4>
-                                                                        <span className='stat-value'>{element.insideDefence.toString()}</span>
-                                                                    </div>
-                                                                    <div>
-                                                                        <h4>Rebounding:</h4>
-                                                                        <span className='stat-value'>{element.rebounding.toString()}</span>
-                                                                    </div>
-                                                                    <div>
-                                                                        <h4>Per scor:</h4>
-                                                                        <span className='stat-value'>{element.perimetrerScoring.toString()}</span>
-                                                                    </div>
-                                                                    <div>
-                                                                        <h4>Ins scor:</h4>
-                                                                        <span className='stat-value'>{element.insideScoring.toString()}</span>
-                                                                    </div>
-                                                                    <div>
-                                                                        <h4>Playmkn:</h4>
-                                                                        <span className='stat-value'>{element.playMaking.toString()}</span>
-                                                                    </div>
-                                                                </div>
-                                                            )
-                                                        }
-                                                    })
-                                                }
-                                            </div>
+                                            <PlayerTileContainer team={teamB} colIndex={colIndex} rowIndex={rowIndex} teamLetterProps={"b"}/>
                                 }
                             </div>
                         )

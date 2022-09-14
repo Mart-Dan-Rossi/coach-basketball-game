@@ -62,16 +62,16 @@ export class Player {
         this.actionPoints = 0;
     }
 
-    playerPositionDetection = (playerPosition : string)=> {
-        if(playerPosition == "1"){
+    playerPositionDetection = ()=> {
+        if(this.position == "1"){
             return "G"
-        } else if(playerPosition == "2"){
+        } else if(this.position == "2"){
             return "SG"
-        } else if(playerPosition == "3") {
+        } else if(this.position == "3") {
             return "SF"
-        } else if(playerPosition == "4") {
+        } else if(this.position == "4") {
             return "PF"
-        } else if(playerPosition == "5") {
+        } else if(this.position == "5") {
             return "C"
         }
     }

@@ -21,3 +21,63 @@
     width: 100%;
     vertical-align: -webkit-baseline-middle;
 }
+
+.player-tile-container {
+    position: relative;
+}
+
+.player-tile-container.expand .player-info-popup-in-board {
+    opacity: 1;
+    visibility: visible;
+}
+
+.player-info-popup-in-board.team-a {
+    right: 80%;
+    border-radius: 16px 0px 16px 16px;
+    -webkit-border-radius: 16px 0px 16px 16px;
+    -moz-border-radius: 16px 0px 16px 16px;
+}
+
+.player-info-popup-in-board.team-b {
+    left: 80%;
+    border-radius: 0px 16px 16px 16px;
+    -webkit-border-radius: 0px 16px 16px 16px;
+    -moz-border-radius: 0px 16px 16px 16px;
+}
+
+.player-info-popup-in-board {
+    position: absolute;
+    top: 50%;
+    
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    width: max-content;
+
+    background-color: lightgray;
+
+    padding: 10px;
+    z-index: 1;
+
+    border: 2px solid black;
+    visibility: hidden;
+    
+    opacity: 0;
+    transition: all 0.3s linear;
+}
+
+.player-info-popup-in-board>div {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.player-info-popup-in-board h4 {
+    padding: 5px;
+    margin: 0;
+}
+
+.player-position {
+    margin: 0 auto;
+}

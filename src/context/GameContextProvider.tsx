@@ -206,6 +206,17 @@ export const GameContextProvider = ({ children }: props) =>{
     const [pointsUsedInPlayerB5, setPointsUsedInPlayerB5] = useState(0)
     const [pointsUsedInStatsPlayerB5, setPointsUsedInStatsPlayerB5] = useState({height: 0, weight: 0, atleticism: 0, perDef: 0, insDef: 0, reb: 0, perScor: 0, insScor: 0, plmkn: 0})
 
+    const [teamAScore, setTeamAScore] = useState(0)
+
+    const [teamBScore, setTeamBScore] = useState(0)
+
+    const [gameClockMin, setGameClockMin] = useState(10)
+
+    const [gameClockSec, setGameClockSec] = useState(0)
+
+    const [gameQuarter, setGameQuarter] = useState(1)
+
+
     return (
         <GameContext.Provider 
         value={
@@ -217,7 +228,12 @@ export const GameContextProvider = ({ children }: props) =>{
                 pointsUsedInPlayerA1, pointsUsedInPlayerA2, pointsUsedInPlayerA3, pointsUsedInPlayerA4, pointsUsedInPlayerA5, setPointsUsedInPlayerA1, setPointsUsedInPlayerA2, setPointsUsedInPlayerA3, setPointsUsedInPlayerA4, setPointsUsedInPlayerA5,
                 pointsUsedInStatsPlayerA1, pointsUsedInStatsPlayerA2, pointsUsedInStatsPlayerA3, pointsUsedInStatsPlayerA4, pointsUsedInStatsPlayerA5, setPointsUsedInStatsPlayerA1, setPointsUsedInStatsPlayerA2, setPointsUsedInStatsPlayerA3, setPointsUsedInStatsPlayerA4, setPointsUsedInStatsPlayerA5,
                 pointsUsedInStatsPlayerB1, pointsUsedInStatsPlayerB2, pointsUsedInStatsPlayerB3, pointsUsedInStatsPlayerB4, pointsUsedInStatsPlayerB5, setPointsUsedInStatsPlayerB1, setPointsUsedInStatsPlayerB2, setPointsUsedInStatsPlayerB3, setPointsUsedInStatsPlayerB4, setPointsUsedInStatsPlayerB5,
-                pointsUsedInPlayerB1, pointsUsedInPlayerB2, pointsUsedInPlayerB3, pointsUsedInPlayerB4, pointsUsedInPlayerB5, setPointsUsedInPlayerB1, setPointsUsedInPlayerB2, setPointsUsedInPlayerB3, setPointsUsedInPlayerB4, setPointsUsedInPlayerB5
+                pointsUsedInPlayerB1, pointsUsedInPlayerB2, pointsUsedInPlayerB3, pointsUsedInPlayerB4, pointsUsedInPlayerB5, setPointsUsedInPlayerB1, setPointsUsedInPlayerB2, setPointsUsedInPlayerB3, setPointsUsedInPlayerB4, setPointsUsedInPlayerB5,
+                teamAScore, setTeamAScore,
+                teamBScore, setTeamBScore,
+                gameClockMin, setGameClockMin,
+                gameClockSec, setGameClockSec,
+                gameQuarter, setGameQuarter
             }}>
             { children }
         </GameContext.Provider>

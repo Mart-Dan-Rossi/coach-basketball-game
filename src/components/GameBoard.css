@@ -79,6 +79,8 @@
 .player-info-popup-in-board h4 {
     padding: 5px;
     margin: 0;
+    text-align: center;
+    width: 100%;
 }
 
 .player-position {

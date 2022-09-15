@@ -1,0 +1,25 @@
+.game-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.match-info-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    width: 1120px;
+    height: 80px;
+    background-color: black;
+    margin: 0 auto;
+}
+
+.team-score {
+    color: rgb(158, 158, 38);
+    background-color: lightgray;
+}
+
+.game-clock, .quarter-counter {
+    color: rgb(133, 15, 15);
+    
+}

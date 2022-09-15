@@ -122,7 +122,7 @@ function CreateTeam( { totalTeamAPoints, setTotalTeamAPoints, totalTeamBPoints, 
     }
 
     function confirmTeamButtonHandler() {
-        if(totalTeamAPoints < 1 && totalTeamBPoints < 1) {
+        if(totalTeamAPoints <= 2 && totalTeamBPoints <= 2) {
             setTeamAStats({playerA1Stats, playerA2Stats, playerA3Stats, playerA4Stats, playerA5Stats})
             setTeamBStats({playerB1Stats, playerB2Stats, playerB3Stats, playerB4Stats, playerB5Stats})
             setTeamsCreated(true)
@@ -178,8 +178,8 @@ function CreateTeam( { totalTeamAPoints, setTotalTeamAPoints, totalTeamBPoints, 
                 }                
             </div>
             <div className="confirm-teams">
-                <button className={totalTeamAPoints < 2 && totalTeamBPoints < 2 ? "true" : "false"} onClick={confirmTeamButtonHandler}>Confirm both teams</button>
-                {totalTeamAPoints < 2 && totalTeamBPoints < 2 ?
+                <button className={totalTeamAPoints <= 2 && totalTeamBPoints <= 2 ? "true" : "false"} onClick={confirmTeamButtonHandler}>Confirm both teams</button>
+                {totalTeamAPoints <= 2 && totalTeamBPoints <= 2 ?
                     <span className='valid'>Ready to canfirm</span>
                     :
                     <span className='error'>You have to use all your points to confirm</span>

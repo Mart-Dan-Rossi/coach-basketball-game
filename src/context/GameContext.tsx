@@ -77,6 +77,21 @@ export interface GameContextProps {
     setPointsUsedInStatsPlayerB3: React.Dispatch<React.SetStateAction<PlayerStats>>,
     setPointsUsedInStatsPlayerB4: React.Dispatch<React.SetStateAction<PlayerStats>>,
     setPointsUsedInStatsPlayerB5: React.Dispatch<React.SetStateAction<PlayerStats>>,
+
+    teamAScore: number,
+    setTeamAScore: React.Dispatch<React.SetStateAction<number>>,
+
+    teamBScore: number,
+    setTeamBScore: React.Dispatch<React.SetStateAction<number>>,
+
+    gameClockMin: number,
+    setGameClockMin: React.Dispatch<React.SetStateAction<number>>,
+
+    gameClockSec: number,
+    setGameClockSec: React.Dispatch<React.SetStateAction<number>>,
+
+    gameQuarter: number,
+    setGameQuarter: React.Dispatch<React.SetStateAction<number>>,
 }
 
 

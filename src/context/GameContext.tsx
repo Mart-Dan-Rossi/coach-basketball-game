@@ -92,6 +92,9 @@ export interface GameContextProps {
 
     gameQuarter: number,
     setGameQuarter: React.Dispatch<React.SetStateAction<number>>,
+
+    shotClock: number,
+    setShotClock: React.Dispatch<React.SetStateAction<number>>,
 }
 
 

@@ -216,6 +216,8 @@ export const GameContextProvider = ({ children }: props) =>{
 
     const [gameQuarter, setGameQuarter] = useState(1)
 
+    const [shotClock, setShotClock] = useState(24)
+
 
     return (
         <GameContext.Provider 
@@ -233,7 +235,8 @@ export const GameContextProvider = ({ children }: props) =>{
                 teamBScore, setTeamBScore,
                 gameClockMin, setGameClockMin,
                 gameClockSec, setGameClockSec,
-                gameQuarter, setGameQuarter
+                gameQuarter, setGameQuarter,
+                shotClock, setShotClock,
             }}>
             { children }
         </GameContext.Provider>

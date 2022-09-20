@@ -257,12 +257,7 @@ export const GameContextProvider = ({ children }: props) =>{
                 pointsUsedInStatsPlayerA1, pointsUsedInStatsPlayerA2, pointsUsedInStatsPlayerA3, pointsUsedInStatsPlayerA4, pointsUsedInStatsPlayerA5, setPointsUsedInStatsPlayerA1, setPointsUsedInStatsPlayerA2, setPointsUsedInStatsPlayerA3, setPointsUsedInStatsPlayerA4, setPointsUsedInStatsPlayerA5,
                 pointsUsedInStatsPlayerB1, pointsUsedInStatsPlayerB2, pointsUsedInStatsPlayerB3, pointsUsedInStatsPlayerB4, pointsUsedInStatsPlayerB5, setPointsUsedInStatsPlayerB1, setPointsUsedInStatsPlayerB2, setPointsUsedInStatsPlayerB3, setPointsUsedInStatsPlayerB4, setPointsUsedInStatsPlayerB5,
                 pointsUsedInPlayerB1, pointsUsedInPlayerB2, pointsUsedInPlayerB3, pointsUsedInPlayerB4, pointsUsedInPlayerB5, setPointsUsedInPlayerB1, setPointsUsedInPlayerB2, setPointsUsedInPlayerB3, setPointsUsedInPlayerB4, setPointsUsedInPlayerB5,
-                teamAScore, setTeamAScore,
-                teamBScore, setTeamBScore,
-                gameClockMin, setGameClockMin,
-                gameClockSec, setGameClockSec,
-                gameQuarter, setGameQuarter,
-                shotClock, setShotClock,
+
                 gameNarration, setGameNarration,
                 showMoveButton, setShowMoveButton,
                 showStealAttemptButton, setShowStealAttemptButton,

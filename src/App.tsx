@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import MainMenu from "./components/MainMenu";
 import Rules from "./components/Rules";

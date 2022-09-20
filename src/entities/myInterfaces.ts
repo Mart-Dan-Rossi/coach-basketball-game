@@ -24,7 +24,7 @@ export interface PlayerStats {
     plmkn: number;
 }
 
-export interface TeamAStats{
+export interface TeamAStats {
     playerA1Stats: PlayerEditableInfo,
     playerA2Stats: PlayerEditableInfo,
     playerA3Stats: PlayerEditableInfo,
@@ -32,10 +32,15 @@ export interface TeamAStats{
     playerA5Stats: PlayerEditableInfo
 }
 
-export interface TeamBStats{
+export interface TeamBStats {
     playerB1Stats: PlayerEditableInfo,
     playerB2Stats: PlayerEditableInfo,
     playerB3Stats: PlayerEditableInfo,
     playerB4Stats: PlayerEditableInfo,
     playerB5Stats: PlayerEditableInfo
+}
+
+export interface QuarterTimeLeft {
+    minutes: number;
+    seconds: number;
 }

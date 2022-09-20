@@ -1,15 +1,11 @@
-import React, { useContext } from 'react'
-import { GameContext } from '../context/GameContext'
+import React from 'react'
+import { Match } from '../entities/match';
 
-function MatchInfo() {
-    const {
-        teamAScore,
-        teamBScore,
-        gameClockMin,
-        gameClockSec,
-        gameQuarter,
-        shotClock
-      } = useContext(GameContext)
+interface Props {
+  match: Match
+}
+
+function MatchInfo( { match }: Props) {
 
       function setDisplayableTeamName(teamName: string) {
         if(teamName.length <= 11){
@@ -22,23 +18,23 @@ function MatchInfo() {
 
   return (
     <div className='match-info-container'>
-        <span className='team-score'>{teamAScore}</span>
+        <span className='team-score'>{match.teamA.points}</span>
         <span className="team-name team-a-name-in-scoreboard">{setDisplayableTeamName("TeamA")}</span>
 
         <div className="clocks-container">
           <div className="match-moment-container">
             <div className="game-clock-container">
-              <span className='game-clock'>{gameClockMin}</span>
+              <span className='game-clock'>{match.timeLeft.minutes}</span>
               <span>:</span>
-              <span className='game-clock'>{gameClockSec < 10 ? `0${gameClockSec}` : gameClockSec}</span>
+              <span className='game-clock'>{match.timeLeft.seconds < 10 ? `0${match.timeLeft.seconds}` : match.timeLeft.seconds}</span>
             </div>
-            <span className="quarter-counter">{gameQuarter}{gameQuarter == 1 ? "RST" : gameQuarter == 2 ? "ND" : gameQuarter == 3 ? "RD" : "RTH"}</span>
+            <span className="quarter-counter">{match.querter}{match.querter == 1 ? "RST" : match.querter == 2 ? "ND" : match.querter == 3 ? "RD" : "RTH"}</span>
           </div>
-          <span className="shot-clock">{shotClock}</span>
+          <span className="shot-clock">{match.shotClock}</span>
         </div>
 
         <span className="team-name team-b-name-in-scoreboard">{setDisplayableTeamName("TeamB")}</span>
-        <span className='team-score'>{teamBScore}</span>
+        <span className='team-score'>{match.teamB.points}</span>
     </div>
   )
 }

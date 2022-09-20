@@ -30,6 +30,25 @@ export class Player {
     lastAction: string;
     actionPoints: number;
 
+    //Player stats
+    points: number;
+    assists: number;
+    rebounds: number;
+    ofensiveRebounds: number;
+    blocks: number;
+    steals: number;
+    turnOvers: number;
+    fouls: number;
+    fieldGoalsMade: number;
+    fieldGoalsattempt: number;
+    freeThrowsMade: number;
+    freeThrowsAttempt: number;
+    triplesMade: number;
+    triplesAttempt: number;
+    
+
+
+
 
     constructor(name: string, position: string, height: number, weight: number, atleticism: number, perimetrerDefence: number, insideDefence: number, rebounding: number, perimetrerScoring: number, insideScoring: number, playMaking: number, ubicationX: number, ubicationY: number){
         //Info
@@ -60,6 +79,22 @@ export class Player {
         this.movementLeft = true;
         this.lastAction = "Haven't do anithing yet";
         this.actionPoints = 0;
+
+        //Player stats
+        this.points = 0;
+        this.assists = 0;
+        this.rebounds = 0;
+        this.ofensiveRebounds = 0;
+        this.blocks = 0;
+        this.steals = 0;
+        this.turnOvers = 0;
+        this.fouls = 0;
+        this.fieldGoalsMade = 0;
+        this.fieldGoalsattempt = 0;
+        this.freeThrowsMade = 0;
+        this.freeThrowsAttempt = 0;
+        this.triplesMade = 0;
+        this.triplesAttempt = 0;
     }
 
     playerPositionDetection = ()=> {

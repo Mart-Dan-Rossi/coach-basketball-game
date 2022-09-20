@@ -95,6 +95,34 @@ export interface GameContextProps {
 
     shotClock: number,
     setShotClock: React.Dispatch<React.SetStateAction<number>>,
+
+    gameNarration: string,
+    setGameNarration: React.Dispatch<React.SetStateAction<string>>,
+
+    showMoveButton: boolean,
+    setShowMoveButton: React.Dispatch<React.SetStateAction<boolean>>,
+    showStealAttemptButton: boolean,
+    setShowStealAttemptButton: React.Dispatch<React.SetStateAction<boolean>>,
+    showInterceptPassAttemptButton: boolean,
+    setShowInterceptPassAttemptButton: React.Dispatch<React.SetStateAction<boolean>>,
+    showWaitPressingButton: boolean,
+    setShowWaitPressingButton: React.Dispatch<React.SetStateAction<boolean>>,
+    showWaitCarefullyButton: boolean,
+    setShowWaitCarefullyButton: React.Dispatch<React.SetStateAction<boolean>>,
+    showPassButton: boolean,
+    setShowPassButton: React.Dispatch<React.SetStateAction<boolean>>,
+    showDribblingButton: boolean,
+    setShowDribblingButton: React.Dispatch<React.SetStateAction<boolean>>,
+    showWaitWithoutTheBallButton: boolean,
+    setShowWaitWithoutTheBallButton: React.Dispatch<React.SetStateAction<boolean>>,
+    showTripleThreatButton: boolean,
+    setShowTripleThreatButton: React.Dispatch<React.SetStateAction<boolean>>,
+    showShootButton: boolean,
+    setShowShootButton: React.Dispatch<React.SetStateAction<boolean>>,
+    showEndTurnButton: boolean,
+    setShowEndTurnButton: React.Dispatch<React.SetStateAction<boolean>>,
+    showConfirmButton: boolean,
+    setShowConfirmButton: React.Dispatch<React.SetStateAction<boolean>>,
 }
 
 

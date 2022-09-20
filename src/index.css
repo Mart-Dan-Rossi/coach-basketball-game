@@ -2,6 +2,11 @@
   box-sizing: border-box;
 }
 
+html {
+  --team-blue-color : rgb(82, 82, 255);
+  --team-red-color  : rgb(255, 79, 79);
+}
+
 a {
   text-decoration: none;
   color: black;
@@ -15,6 +20,8 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: var(--team-blue-color);
+  background: linear-gradient(90deg, var(--team-blue-color) 0%, var(--team-red-color) 100%);
 }
 
 code {

@@ -218,6 +218,32 @@ export const GameContextProvider = ({ children }: props) =>{
 
     const [shotClock, setShotClock] = useState(24)
 
+    const [gameNarration, setGameNarration] = useState("Game narration.")
+
+    const [showMoveButton, setShowMoveButton] = useState(true)
+    
+    const [showStealAttemptButton, setShowStealAttemptButton] = useState(true)
+
+    const [showInterceptPassAttemptButton, setShowInterceptPassAttemptButton] = useState(true)
+
+    const [showWaitPressingButton, setShowWaitPressingButton] = useState(true)
+
+    const [showWaitCarefullyButton, setShowWaitCarefullyButton] = useState(true)
+
+    const [showPassButton, setShowPassButton] = useState(true)
+
+    const [showDribblingButton, setShowDribblingButton] = useState(true)
+
+    const [showWaitWithoutTheBallButton, setShowWaitWithoutTheBallButton] = useState(true)
+
+    const [showTripleThreatButton, setShowTripleThreatButton] = useState(true)
+
+    const [showShootButton, setShowShootButton] = useState(true)
+
+    const [showEndTurnButton, setShowEndTurnButton] = useState(true)
+
+    const [showConfirmButton, setShowConfirmButton] = useState(true)
+
 
     return (
         <GameContext.Provider 
@@ -237,6 +263,19 @@ export const GameContextProvider = ({ children }: props) =>{
                 gameClockSec, setGameClockSec,
                 gameQuarter, setGameQuarter,
                 shotClock, setShotClock,
+                gameNarration, setGameNarration,
+                showMoveButton, setShowMoveButton,
+                showStealAttemptButton, setShowStealAttemptButton,
+                showInterceptPassAttemptButton, setShowInterceptPassAttemptButton,
+                showWaitPressingButton, setShowWaitPressingButton,
+                showWaitCarefullyButton, setShowWaitCarefullyButton,
+                showPassButton, setShowPassButton,
+                showDribblingButton, setShowDribblingButton,
+                showWaitWithoutTheBallButton, setShowWaitWithoutTheBallButton,
+                showTripleThreatButton, setShowTripleThreatButton,
+                showShootButton, setShowShootButton,
+                showEndTurnButton, setShowEndTurnButton,
+                showConfirmButton, setShowConfirmButton,
             }}>
             { children }
         </GameContext.Provider>

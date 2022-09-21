@@ -8,7 +8,9 @@ html {
 
 .game-container {
     display: flex;
-    flex-direction: column;
+    flex-direction: column;    
+    background: var(--team-blue-color);
+    background: linear-gradient(90deg, var(--team-blue-color) 0%, var(--team-red-color) 100%);
 }
 
 .match-info-container {

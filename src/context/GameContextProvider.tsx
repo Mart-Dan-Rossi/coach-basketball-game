@@ -206,19 +206,7 @@ export const GameContextProvider = ({ children }: props) =>{
     const [pointsUsedInPlayerB5, setPointsUsedInPlayerB5] = useState(0)
     const [pointsUsedInStatsPlayerB5, setPointsUsedInStatsPlayerB5] = useState({height: 0, weight: 0, atleticism: 0, perDef: 0, insDef: 0, reb: 0, perScor: 0, insScor: 0, plmkn: 0})
 
-    const [teamAScore, setTeamAScore] = useState(0)
-
-    const [teamBScore, setTeamBScore] = useState(0)
-
-    const [gameClockMin, setGameClockMin] = useState(10)
-
-    const [gameClockSec, setGameClockSec] = useState(0)
-
-    const [gameQuarter, setGameQuarter] = useState(1)
-
-    const [shotClock, setShotClock] = useState(24)
-
-    const [gameNarration, setGameNarration] = useState("Game narration.")
+    const [gameNarration, setGameNarration] = useState(["Game narration."])
 
     const [showMoveButton, setShowMoveButton] = useState(true)
     

@@ -20,8 +20,6 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: var(--team-blue-color);
-  background: linear-gradient(90deg, var(--team-blue-color) 0%, var(--team-red-color) 100%);
 }
 
 code {

@@ -1,5 +1,5 @@
 import React from 'react'
-import {useContext, useState} from 'react';
+import {useContext, useState, useEffect} from 'react';
 import {GameContext} from '../context/GameContext';
 import './MatchActionsContainer.css'
 
@@ -32,6 +32,12 @@ function MatchActionsContainer() {
   const [shootButtonSelected, setShootButtonSelected] = useState(false)
   const [endTurnButtonSelected, setEndTurnButtonSelected] = useState(false)
   const [confirmButtonSelected, setConfirmButtonSelected] = useState(false)
+
+  useEffect(() => {
+    return () => {
+    }
+  }, [gameNarration])
+  
 
   function clickActionButtonHanddler(previousValue: boolean, setter: React.Dispatch<React.SetStateAction<boolean>>) {
     return ()=>{
@@ -168,7 +174,11 @@ function MatchActionsContainer() {
       </div>  
 
       <div className='game-narration-container'>
-        <p>{gameNarration}</p>
+        {
+          gameNarration.map(string => {
+            return <p>{string}</p>
+          })
+        }
       </div>
     </div>
   )

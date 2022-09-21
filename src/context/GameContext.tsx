@@ -78,8 +78,8 @@ export interface GameContextProps {
     setPointsUsedInStatsPlayerB4: React.Dispatch<React.SetStateAction<PlayerStats>>,
     setPointsUsedInStatsPlayerB5: React.Dispatch<React.SetStateAction<PlayerStats>>,
 
-    gameNarration: string,
-    setGameNarration: React.Dispatch<React.SetStateAction<string>>,
+    gameNarration: string[],
+    setGameNarration: React.Dispatch<React.SetStateAction<string[]>>,
 
     showMoveButton: boolean,
     setShowMoveButton: React.Dispatch<React.SetStateAction<boolean>>,

@@ -359,3 +359,7 @@ export function setPointsUsedOnThisSkill(statType: string, previousStats: Player
         setter(previousStatsCopy)
     }
 }
+
+export function roll20SidesDice(){
+    return Math.random() * (21-1)+1;
+}

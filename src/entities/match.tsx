@@ -36,7 +36,7 @@ export class Match {
                 if(player.position === "5") {
                     pointsObteinedInTheJumpBallA = numberEntire(roll20SidesDice() + player.height + player.atleticism)
 
-                    newGameNarration.unshift(`${player.name === "" ? "the center of team A" : player.name}, get ${pointsObteinedInTheJumpBallA} points in the jump`)
+                    newGameNarration.unshift(`${player.name === "" ? "The center of team A" : player.name}, get ${pointsObteinedInTheJumpBallA} points in the jump`)
                     setGameNarration(newGameNarration)
                 }
             });
@@ -45,7 +45,7 @@ export class Match {
                 if(player.position === "5") {
                     pointsObteinedInTheJumpBallB = numberEntire(roll20SidesDice() + player.height + player.atleticism)
 
-                    newGameNarration.unshift(`${player.name === "" ? "the center of team B" : player.name}, get ${pointsObteinedInTheJumpBallB} points in the jump`) 
+                    newGameNarration.unshift(`${player.name === "" ? "The center of team B" : player.name}, get ${pointsObteinedInTheJumpBallB} points in the jump`) 
                     setGameNarration(newGameNarration)
                 }
             })

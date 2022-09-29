@@ -18,6 +18,7 @@ function MatchActionsContainer() {
     showShootButton,
     showEndTurnButton,
     showConfirmButton,
+    setShowConfirmButton
   } = useContext(GameContext)
   
   const [moveButtonSelected, setMoveButtonSelected] = useState(false)
@@ -33,6 +34,8 @@ function MatchActionsContainer() {
   const [endTurnButtonSelected, setEndTurnButtonSelected] = useState(false)
   const [confirmButtonSelected, setConfirmButtonSelected] = useState(false)
 
+
+
   useEffect(() => {
     return () => {
     }
@@ -41,7 +44,28 @@ function MatchActionsContainer() {
 
   function clickActionButtonHanddler(previousValue: boolean, setter: React.Dispatch<React.SetStateAction<boolean>>) {
     return ()=>{
+      previousValue ? setShowConfirmButton(false) : setShowConfirmButton(true)
+
+      setMoveButtonSelected(false)
+      setStealAttemptButtonSelected(false)
+      setInterceptPassAttemptButtonSelected(false)
+      setWaitPressingButtonSelected(false)
+      setWaitCarefullyButtonSelected(false)
+      setPassButtonSelected(false)
+      setDribblingButtonSelected(false)
+      setWaitWithoutTheBallButtonSelected(false)
+      setTripleThreatButtonSelected(false)
+      setShootButtonSelected(false)
+      setEndTurnButtonSelected(false)
+      setConfirmButtonSelected(false)
+
       setter(!previousValue)
+    }
+  }
+
+  function clickConfirmButtonHanddler() {
+    return ()=>{
+      console.log("confirmo")
     }
   }
 
@@ -160,23 +184,23 @@ function MatchActionsContainer() {
                   </button>
               }
 
+
+          </div>
               {
                 showConfirmButton &&
                   <button
-                    onClick={clickActionButtonHanddler(confirmButtonSelected, setConfirmButtonSelected)}
-                    className={ confirmButtonSelected ? "selected" : "" }
+                    onClick={clickConfirmButtonHanddler()}
+                    className={ confirmButtonSelected ? "selected confirm-button" : "confirm-button" }
                   >
                       Confirm
                   </button>
               }
-
-          </div>
       </div>  
 
       <div className='game-narration-container'>
         {
-          gameNarration.map(string => {
-            return <p>{string}</p>
+          gameNarration.map((string, index) => {
+            return <p key={`narrationRow${index}`}>{string}</p>
           })
         }
       </div>

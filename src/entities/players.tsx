@@ -99,7 +99,7 @@ export class Player {
 
     playerPositionDetection = ()=> {
         if(this.position == "1"){
-            return "G"
+            return "PG"
         } else if(this.position == "2"){
             return "SG"
         } else if(this.position == "3") {

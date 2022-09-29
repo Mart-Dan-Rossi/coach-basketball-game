@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Team } from '../entities/team'
 import './GameBoard.css'
 import PlayerTileContainer from './PlayerTileContainer'
@@ -11,6 +11,11 @@ interface Props {
 }
 
 function GameBoard( { gameBoard, teamA, teamB } : Props) {
+    useEffect(() => {    
+      return () => {
+      }
+    }, [gameBoard])
+    
 
   return (
     <div id='gameboard-container'>

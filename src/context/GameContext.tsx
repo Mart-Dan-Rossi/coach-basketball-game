@@ -105,6 +105,9 @@ export interface GameContextProps {
     setShowEndTurnButton: React.Dispatch<React.SetStateAction<boolean>>,
     showConfirmButton: boolean,
     setShowConfirmButton: React.Dispatch<React.SetStateAction<boolean>>,
+
+    gameBoard: number[][],
+    setGameBoard: React.Dispatch<React.SetStateAction<number[][]>>,
 }
 
 

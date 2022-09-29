@@ -9,7 +9,7 @@ interface Props {
     teamLetterProps: string
 }
 
-function PlayerTileContainer({team, colIndex, rowIndex, teamLetterProps} : Props) {
+function PlayerTileContainer({team, colIndex, rowIndex, teamLetterProps} : Props) {    
 
     function playerTileContainerClickHandler() {
         return (e: React.MouseEvent)=>{
@@ -23,27 +23,28 @@ function PlayerTileContainer({team, colIndex, rowIndex, teamLetterProps} : Props
     function drawPlayer() {
         return (
             team.teamHaveTheBall() ?
-            team.players.map(element => {
-                playerImg = ""
-                let playerUbication = [element.ubicationX, element.ubicationY]
-                let thisUbication = [colIndex+1, rowIndex+1]
+                team.players.map(thisPlayer => {
+                    playerImg = ""
+                    let playerUbication = [thisPlayer.ubicationX, thisPlayer.ubicationY]
+                    let thisUbication = [colIndex+1, rowIndex+1]
 
-                if(playerUbication == thisUbication) {
-                    if(element.playerHaveTheBall()) {
-                        playerImg = `./img/players-img/${teamLetterProps.toUpperCase()}AtackWBall.png`
-                        return (
-                            <img className="player-img" src={playerImg} alt={`team ${teamLetterProps.toUpperCase()} player atacking with ball in column ${colIndex+1} row ${rowIndex+1}`}/>
-                        )
-                    } else {
-                        playerImg = `./img/players-img/${teamLetterProps.toUpperCase()}Atack.png`
-                        return (
-                            <img className="player-img" src={playerImg} alt={`team ${teamLetterProps.toUpperCase()} player atacking in column ${colIndex+1} row ${rowIndex+1}`}/>
-                        )
+                    if(playerUbication == thisUbication) {
+                        console.log(thisPlayer.team, " ", thisPlayer.position, " ", thisPlayer.haveBall)
+                        if(thisPlayer.playerHaveTheBall()) {
+                            playerImg = `./img/players-img/${teamLetterProps.toUpperCase()}AtackWBall.png`
+                            return (
+                                <img className="player-img" src={playerImg} alt={`team ${teamLetterProps.toUpperCase()} player atacking with ball in column ${colIndex+1} row ${rowIndex+1}`}/>
+                            )
+                        } else {
+                            playerImg = `./img/players-img/${teamLetterProps.toUpperCase()}Atack.png`
+                            return (
+                                <img className="player-img" src={playerImg} alt={`team ${teamLetterProps.toUpperCase()} player atacking in column ${colIndex+1} row ${rowIndex+1}`}/>
+                            )
+                        }
                     }
-                }
-            })
-            :
-            <img className="player-img" src={`./img/players-img/${teamLetterProps.toUpperCase()}Defend.png`} alt={`team ${teamLetterProps.toUpperCase()} player defending in column ${colIndex+1} row ${rowIndex+1}`}/>
+                })
+                :
+                <img className="player-img" src={`./img/players-img/${teamLetterProps.toUpperCase()}Defend.png`} alt={`team ${teamLetterProps.toUpperCase()} player defending in column ${colIndex+1} row ${rowIndex+1}`}/>
         )
     }
 

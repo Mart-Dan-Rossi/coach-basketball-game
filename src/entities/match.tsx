@@ -20,19 +20,19 @@ export class Match {
         this.teamB = teamB
 
         //Match basic info
-        this.querter = 1;
+        this.querter = 1
         this.timeLeft = { minutes: 10, seconds: 0 }
         this.shotClock = 24
     }
     
-    jumpBall(gameNarration: string[], setGameNarration: React.Dispatch<React.SetStateAction<string[]>>, teamA: Team, teamB: Team) {        
+    jumpBall(gameNarration: string[], setGameNarration: React.Dispatch<React.SetStateAction<string[]>>) {        
         let pointsObteinedInTheJumpBallA = 0
         let pointsObteinedInTheJumpBallB = 0
 
         let newGameNarration = [...gameNarration]
 
         while (pointsObteinedInTheJumpBallA === pointsObteinedInTheJumpBallB) {
-            teamA.players.forEach(player => {
+            this.teamA.players.forEach(player => {
                 if(player.position === "5") {
                     pointsObteinedInTheJumpBallA = numberEntire(roll20SidesDice() + player.height + player.atleticism)
 
@@ -41,7 +41,7 @@ export class Match {
                 }
             });
             
-            teamB.players.forEach(player =>{
+            this.teamB.players.forEach(player =>{
                 if(player.position === "5") {
                     pointsObteinedInTheJumpBallB = numberEntire(roll20SidesDice() + player.height + player.atleticism)
 
@@ -51,22 +51,27 @@ export class Match {
             })
 
             let whoWinTheJump = pointsObteinedInTheJumpBallA - pointsObteinedInTheJumpBallB;
+
+            console.log(pointsObteinedInTheJumpBallA, "-", pointsObteinedInTheJumpBallB, "=", whoWinTheJump)
+
             if (whoWinTheJump > 0){
-                teamA.players.forEach(player => {
+                this.teamA.players.forEach(player => {
                     if(player.position === "1") {
-                        newGameNarration.unshift(`${teamA.name} won the jump. Now ${player.name === "" ? "the PG of team A" : player.name} have the ball.`)
+                        player.haveBall = true
+                        
+                        newGameNarration.unshift(`${this.teamA.name} won the jump. Now ${player.name === "" ? "the PG of team A" : player.name} have the ball.`)
                         setGameNarration(newGameNarration)
 
-                        player.haveBall = true;
                     }
                 });
             } else if (whoWinTheJump < 0){
-                teamB.players.forEach(player => {
+                this.teamB.players.forEach(player => {
                     if(player.position === "1") {
-                        newGameNarration.unshift(`${teamB.name} won the jump. Now ${player.name === "" ? "the PG of team B" : player.name} have the ball.`)
+                        player.haveBall = true
+
+                        newGameNarration.unshift(`${this.teamB.name} won the jump. Now ${player.name === "" ? "the PG of team B" : player.name} have the ball.`)
                         setGameNarration(newGameNarration)
 
-                        player.haveBall = true;
                     }
                 });
             } else{

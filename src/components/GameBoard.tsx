@@ -11,9 +11,8 @@ interface Props {
 }
 
 function GameBoard( { gameBoard, teamA, teamB } : Props) {
-    useEffect(() => {    
-      return () => {
-      }
+
+    useEffect(() => {
     }, [gameBoard])
     
 
@@ -30,9 +29,9 @@ function GameBoard( { gameBoard, teamA, teamB } : Props) {
                                         <></>
                                         :
                                         player == 1 ?
-                                            <PlayerTileContainer team={teamA} colIndex={colIndex} rowIndex={rowIndex} teamLetterProps={"a"}/>
+                                            <PlayerTileContainer team={teamA} col={colIndex+1} row={rowIndex+1} teamLetterProps={"a"}/>
                                             :
-                                            <PlayerTileContainer team={teamB} colIndex={colIndex} rowIndex={rowIndex} teamLetterProps={"b"}/>
+                                            <PlayerTileContainer team={teamB} col={colIndex+1} row={rowIndex+1} teamLetterProps={"b"}/>
                                 }
                             </div>
                         )

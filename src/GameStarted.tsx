@@ -11,10 +11,10 @@ function Main() {
   return (
     <>
         {
-          !teamsCreated ?
-            <GameContainer/>
-            :
+          teamsCreated ?
             <CustomizeGame />
+          :
+            <GameContainer/>
         }
     </>
   )

@@ -4,12 +4,12 @@ import {Player} from '../entities/players';
 
 interface Props {
     team: Team,
-    colIndex: number,
-    rowIndex: number,
+    col: number,
+    row: number,
     teamLetterProps: string
 }
 
-function PlayerTileContainer({team, colIndex, rowIndex, teamLetterProps} : Props) {    
+function PlayerTileContainer({team, col, row, teamLetterProps} : Props) {    
 
     function playerTileContainerClickHandler() {
         return (e: React.MouseEvent)=>{
@@ -23,28 +23,29 @@ function PlayerTileContainer({team, colIndex, rowIndex, teamLetterProps} : Props
     function drawPlayer() {
         return (
             team.teamHaveTheBall() ?
-                team.players.map(thisPlayer => {
+                team.players.map(player => {
                     playerImg = ""
-                    let playerUbication = [thisPlayer.ubicationX, thisPlayer.ubicationY]
-                    let thisUbication = [colIndex+1, rowIndex+1]
+                    let playerUbication = [player.ubicationX, player.ubicationY]
+                    let thisUbication = [col, row]
 
-                    if(playerUbication == thisUbication) {
-                        console.log(thisPlayer.team, " ", thisPlayer.position, " ", thisPlayer.haveBall)
-                        if(thisPlayer.playerHaveTheBall()) {
+                    
+                    if(playerUbication[0] == thisUbication[0] && playerUbication[1] == thisUbication[1]) {
+
+                        if(player.playerHaveTheBall()) {
                             playerImg = `./img/players-img/${teamLetterProps.toUpperCase()}AtackWBall.png`
                             return (
-                                <img className="player-img" src={playerImg} alt={`team ${teamLetterProps.toUpperCase()} player atacking with ball in column ${colIndex+1} row ${rowIndex+1}`}/>
-                            )
-                        } else {
+                                <img key={"ubication" + thisUbication[0] + "-" + thisUbication[1] + "" + player.position} className="player-img" src={playerImg} alt={`team ${teamLetterProps.toUpperCase()} player atacking with ball in column ${col+1} row ${row+1}`}/>
+                                )
+                            } else {
                             playerImg = `./img/players-img/${teamLetterProps.toUpperCase()}Atack.png`
                             return (
-                                <img className="player-img" src={playerImg} alt={`team ${teamLetterProps.toUpperCase()} player atacking in column ${colIndex+1} row ${rowIndex+1}`}/>
+                                <img key={"ubication" + thisUbication[0] + "-" + thisUbication[1] + "" + player.position} className="player-img" src={playerImg} alt={`team ${teamLetterProps.toUpperCase()} player atacking in column ${col+1} row ${row+1}`}/>
                             )
                         }
                     }
                 })
                 :
-                <img className="player-img" src={`./img/players-img/${teamLetterProps.toUpperCase()}Defend.png`} alt={`team ${teamLetterProps.toUpperCase()} player defending in column ${colIndex+1} row ${rowIndex+1}`}/>
+                <img className="player-img" src={`./img/players-img/${teamLetterProps.toUpperCase()}Defend.png`} alt={`team ${teamLetterProps.toUpperCase()} player defending in column ${col+1} row ${row+1}`}/>
         )
     }
 
@@ -122,7 +123,7 @@ function PlayerTileContainer({team, colIndex, rowIndex, teamLetterProps} : Props
             {drawPlayer()}
             {
                 team.players.map(player =>{
-                    if(player.ubicationX == colIndex+1 && player.ubicationY == rowIndex+1){
+                    if(player.ubicationX == col+1 && player.ubicationY == row+1){
                         return (
                             drawPlayerInfoPopupInBoard(player)
                         )

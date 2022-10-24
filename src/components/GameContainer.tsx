@@ -1,6 +1,6 @@
 import React from 'react'
 import GameBoard from './GameBoard';
-import {useContext, useEffect} from 'react';
+import {useContext, useEffect, useState} from 'react';
 import {GameContext} from '../context/GameContext';
 import './GameContainer.css'
 import MatchInfo from './MatchInfo';
@@ -16,7 +16,7 @@ export default function GameContainer() {
         gameNarration,
         setGameNarration,
         gameBoard,
-        setGameBoard
+        setGameBoard,
       } = useContext(GameContext)
 
     let newGameBoard = [...gameBoard]
@@ -198,21 +198,20 @@ export default function GameContainer() {
     
     const teamA: Team = new Team("TeamA", playersTeamA)
     const teamB: Team = new Team("TeamB", playersTeamB)
-    
     const match: Match = new Match(teamA, teamB)
-
+    
+    const [matchState, setMatchState] = useState(match)    
+    
     useEffect(() => {
-        setGameBoard(newGameBoard)
-        match.jumpBall(gameNarration, setGameNarration, teamA, teamB)
-      return () => {
-      }
+        match.jumpBall(gameNarration, setGameNarration)
+        setMatchState(match)
     }, [])
     
     
   return (
     <div className='game-container'>
-        <MatchInfo match={match}/>
-        <GameBoard gameBoard={gameBoard} teamA={teamA} teamB={teamB}/>
+        <MatchInfo match={matchState}/>
+        <GameBoard gameBoard={newGameBoard} teamA={matchState.teamA} teamB={matchState.teamB}/>
         <MatchActionsContainer />
     </div>
   )

@@ -52,8 +52,6 @@ export class Match {
 
             let whoWinTheJump = pointsObteinedInTheJumpBallA - pointsObteinedInTheJumpBallB;
 
-            console.log(pointsObteinedInTheJumpBallA, "-", pointsObteinedInTheJumpBallB, "=", whoWinTheJump)
-
             if (whoWinTheJump > 0){
                 this.teamA.players.forEach(player => {
                     if(player.position === "1") {

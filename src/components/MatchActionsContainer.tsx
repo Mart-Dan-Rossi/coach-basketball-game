@@ -24,8 +24,8 @@ function MatchActionsContainer() {
   const [moveButtonSelected, setMoveButtonSelected] = useState(false)
   const [stealAttemptButtonSelected, setStealAttemptButtonSelected] = useState(false)
   const [interceptPassAttemptButtonSelected, setInterceptPassAttemptButtonSelected] = useState(false)
-  const [waitPressingButtonSelected, setWaitPressingButtonSelected] = useState(false)
-  const [waitCarefullyButtonSelected, setWaitCarefullyButtonSelected] = useState(false)
+  const [waitPressingButtonSelected, setOverwhelmingWaitingButtonSelected] = useState(false)
+  const [waitCarefullyButtonSelected, setWaitWithCautionButtonSelected] = useState(false)
   const [passButtonSelected, setPassButtonSelected] = useState(false)
   const [dribblingButtonSelected, setDribblingButtonSelected] = useState(false)
   const [waitWithoutTheBallButtonSelected, setWaitWithoutTheBallButtonSelected] = useState(false)
@@ -49,8 +49,8 @@ function MatchActionsContainer() {
       setMoveButtonSelected(false)
       setStealAttemptButtonSelected(false)
       setInterceptPassAttemptButtonSelected(false)
-      setWaitPressingButtonSelected(false)
-      setWaitCarefullyButtonSelected(false)
+      setOverwhelmingWaitingButtonSelected(false)
+      setWaitWithCautionButtonSelected(false)
       setPassButtonSelected(false)
       setDribblingButtonSelected(false)
       setWaitWithoutTheBallButtonSelected(false)
@@ -107,20 +107,20 @@ function MatchActionsContainer() {
               {
                 showWaitPressingButton &&
                   <button
-                    onClick={clickActionButtonHanddler(waitPressingButtonSelected, setWaitPressingButtonSelected)}
+                    onClick={clickActionButtonHanddler(waitPressingButtonSelected, setOverwhelmingWaitingButtonSelected)}
                     className={ waitPressingButtonSelected ? "selected" : "" }
                   >
-                      Wait pressing
+                      Overwhelming waiting
                   </button>
               }
 
               {
                 showWaitCarefullyButton &&
                   <button
-                    onClick={clickActionButtonHanddler(waitCarefullyButtonSelected, setWaitCarefullyButtonSelected)}
+                    onClick={clickActionButtonHanddler(waitCarefullyButtonSelected, setWaitWithCautionButtonSelected)}
                     className={ waitCarefullyButtonSelected ? "selected" : "" }
                   >
-                      Wait carefully
+                      Wait with caution
                   </button>
               }
 

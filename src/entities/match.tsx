@@ -72,7 +72,7 @@ export class Match {
 
                     }
                 });
-            } else{
+            } else {
                 newGameNarration.unshift(`Both players touch the ball at the same time! The jump ball continues`)
                 setGameNarration(newGameNarration)
             }

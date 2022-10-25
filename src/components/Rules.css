@@ -1,0 +1,46 @@
+#root {
+    background: linear-gradient(90deg, var(--team-blue-color) 0%, var(--team-red-color) 100%);
+}
+
+.rules-container {
+    max-width: 1700px;
+    width: 90%;
+    margin: 0 auto;
+    padding: 20px 40px;
+
+    background-color: rgba(211, 211, 211, 0.685);
+}
+
+.rules-container-2 {
+    width: 100%;
+    margin: 0 auto;
+    padding: 10px 30px;
+    border: 6px double black;
+    border-radius: 20px;
+
+    box-shadow: 1px 1px 18px 2px rgba(0,0,0,0.82);
+    -webkit-box-shadow: 1px 1px 18px 2px rgba(0,0,0,0.82);
+    -moz-box-shadow: 1px 1px 18px 2px rgba(0,0,0,0.82);
+
+    background-color: white;
+}
+
+h2, h3 {
+    text-decoration: underline;
+}
+
+h4 {
+    font-size: 1.17em;
+}
+
+h5 {
+    font-size: 1em;
+}
+
+dt, .action-type-title, .font-weight-strong {
+    font-weight: 700;
+}
+
+.action-type-title {
+    text-decoration: underline;
+}

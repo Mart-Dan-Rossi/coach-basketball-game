@@ -6,7 +6,9 @@ function MainMenu() {
   return (
     <div className='main-menu'>
         <div className="flex-index">
-            <img className="logo" src="./Img/18679.png" alt="Basketball tactics logo"/>
+            <div className="game-logo-container">
+                <img className="logo" src="./Img/18679.png" alt="Basketball tactics logo"/>
+            </div>
             <div>
                 <span className="title">Basketball Tactics</span>
             </div>

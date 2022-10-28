@@ -24,8 +24,15 @@
     align-content: space-around;
 }
 
-.logo{
-    width: 10vw;
+.game-logo-container{
+    width: 100%;
+    height: 10vw;
+    display: flex;
+}
+
+.logo {
+    height: 100%;
+    margin: 0 auto;
 }
 
 .title{

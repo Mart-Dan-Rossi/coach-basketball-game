@@ -208,29 +208,29 @@ export const GameContextProvider = ({ children }: props) =>{
 
     const [gameNarration, setGameNarration] = useState(["Game narration."])
 
-    const [showMoveButton, setShowMoveButton] = useState(true)
+    const [showMoveButton, setShowMoveButton] = useState(false)
     
-    const [showStealAttemptButton, setShowStealAttemptButton] = useState(true)
+    const [showStealAttemptButton, setShowStealAttemptButton] = useState(false)
 
-    const [showInterceptPassAttemptButton, setShowInterceptPassAttemptButton] = useState(true)
+    const [showInterceptPassAttemptButton, setShowInterceptPassAttemptButton] = useState(false)
 
-    const [showWaitPressingButton, setShowWaitPressingButton] = useState(true)
+    const [showWaitPressingButton, setShowWaitPressingButton] = useState(false)
 
-    const [showWaitCarefullyButton, setShowWaitCarefullyButton] = useState(true)
+    const [showWaitCarefullyButton, setShowWaitCarefullyButton] = useState(false)
 
-    const [showPassButton, setShowPassButton] = useState(true)
+    const [showPassButton, setShowPassButton] = useState(false)
 
-    const [showDribblingButton, setShowDribblingButton] = useState(true)
+    const [showDribblingButton, setShowDribblingButton] = useState(false)
 
-    const [showWaitWithoutTheBallButton, setShowWaitWithoutTheBallButton] = useState(true)
+    const [showWaitWithoutTheBallButton, setShowWaitWithoutTheBallButton] = useState(false)
 
-    const [showTripleThreatButton, setShowTripleThreatButton] = useState(true)
+    const [showTripleThreatButton, setShowTripleThreatButton] = useState(false)
 
-    const [showShootButton, setShowShootButton] = useState(true)
+    const [showShootButton, setShowShootButton] = useState(false)
 
-    const [showEndTurnButton, setShowEndTurnButton] = useState(true)
+    const [showEndTurnButton, setShowEndTurnButton] = useState(false)
 
-    const [showConfirmButton, setShowConfirmButton] = useState(true)
+    const [showConfirmButton, setShowConfirmButton] = useState(false)
 
     const [gameBoard, setGameBoard] = useState([
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],

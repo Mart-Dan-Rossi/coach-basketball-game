@@ -49,57 +49,72 @@ function PlayerTileContainer({team, col, row, teamLetterProps} : Props) {
         )
     }
 
-    function drawPlayerInfoPopupInBoard(element: Player){
+    function drawPlayerInfoPopupInBoard(player: Player){
         return (
-            <div key={"player-info-popup-in-board" + element.team + element.name + element.position} className={`player-info-popup-in-board team-${teamLetterProps.toLowerCase()}`}>
+            <div key={"player-info-popup-in-board" + player.team + player.name + player.position} className={`player-info-popup-in-board team-${teamLetterProps.toLowerCase()}`}>
                 <div className='player-basic-info'>
-                    <h4 className='player-position'>{element.playerPositionDetection()}</h4>
+                    <h4 className='player-position'>{player.playerPositionDetection()}</h4>
                 </div>
                 <div className="player-stats-icon-container">
-                    { drawSkillsIconsInPlayers(element.atleticism, "./img/players-img/athlete.png", "this player is an athlete") }
+                    { drawSkillsIconsInPlayers(player.atleticism, "./img/players-img/athlete.png", "this player is an athlete") }
 
-                    { drawSkillsIconsInPlayers(element.perimetrerDefence, './img/players-img/perimeterDefender.png', 'this player is a good perimeter defender') }
+                    { drawSkillsIconsInPlayers(player.perimetrerDefence, './img/players-img/perimeterDefender.png', 'this player is a good perimeter defender') }
 
-                    { drawSkillsIconsInPlayers(element.insideDefence, './img/players-img/insideDefender.png', 'this player is a good paint defender') }
+                    { drawSkillsIconsInPlayers(player.insideDefence, './img/players-img/insideDefender.png', 'this player is a good paint defender') }
 
-                    { drawSkillsIconsInPlayers(element.rebounding, './img/players-img/rebounder.png', 'this player is a good rebounder') }
+                    { drawSkillsIconsInPlayers(player.rebounding, './img/players-img/rebounder.png', 'this player is a good rebounder') }
 
-                    { drawSkillsIconsInPlayers(element.perimetrerScoring, './img/players-img/perimeterScorer.png', 'this player is a good perimeter scorer') }
+                    { drawSkillsIconsInPlayers(player.perimetrerScoring, './img/players-img/perimeterScorer.png', 'this player is a good perimeter scorer') }
 
-                    { drawSkillsIconsInPlayers(element.insideScoring, './img/players-img/insideScorer.png', 'this player is a good inside scorer') }
+                    { drawSkillsIconsInPlayers(player.insideScoring, './img/players-img/insideScorer.png', 'this player is a good inside scorer') }
 
-                    { drawSkillsIconsInPlayers(element.playMaking, './img/players-img/playmaker.png', 'this player is a good playmaker') }
+                    { drawSkillsIconsInPlayers(player.playMaking, './img/players-img/playmaker.png', 'this player is a good playmaker') }
 
                 </div>
-                { drawStatRowOfPopup("Heigth", element.height) }
+                { drawStatRowOfPopup("Heigth", player.height) }
 
-                { drawStatRowOfPopup("Weight", element.weight) }
+                { drawStatRowOfPopup("Weight", player.weight) }
 
-                { drawStatRowOfPopup("Atleticism", element.atleticism) }
+                { drawStatRowOfPopup("Atleticism", player.atleticism) }
 
-                { drawStatRowOfPopup("Per def", element.perimetrerDefence) }
+                { drawStatRowOfPopup("Per def", player.perimetrerDefence) }
 
-                { drawStatRowOfPopup("Ins def", element.insideDefence) }
+                { drawStatRowOfPopup("Ins def", player.insideDefence) }
 
-                { drawStatRowOfPopup("Rebounding", element.rebounding) }
+                { drawStatRowOfPopup("Rebs", player.rebounding) }
 
-                { drawStatRowOfPopup("Per scor", element.perimetrerScoring) }
+                { drawStatRowOfPopup("Per scor", player.perimetrerScoring) }
 
-                { drawStatRowOfPopup("Ins scor", element.insideScoring) }
+                { drawStatRowOfPopup("Ins scor", player.insideScoring) }
 
-                { drawStatRowOfPopup("Playmkn", element.playMaking) }
+                { drawStatRowOfPopup("Playmkn", player.playMaking) }
+
+                { drawStatRowOfPopup("Action pts", player.actionPoints) }
+                
+                { drawStatRowOfPopup("Have turn", player.movementLeft) }
+
+
 
             </div>
         )
     }
 
-    function drawStatRowOfPopup(skillName: string, statValue: number) {
-        return (
-            <div>
-                <h4>{skillName}:</h4>
-                <span className="stat-value">{statValue.toString()}</span>
-            </div>
-        )
+    function drawStatRowOfPopup(skillName: string, statValue: number|boolean) {
+        if(skillName != "Have turn") {
+            return (
+                <div>
+                    <h4>{skillName}:</h4>
+                    <span className="stat-value">{statValue.toString()}</span>
+                </div>
+            )
+        } else {
+            return (
+                <div>
+                    <h4>{skillName}:</h4>
+                    <span className="stat-value">{statValue ? "Yes" : "No"}</span>
+                </div>
+            )
+        }
     }
 
     function drawSkillsIconsInPlayers(skillPoints: number, imgSrc: string, text: string) {

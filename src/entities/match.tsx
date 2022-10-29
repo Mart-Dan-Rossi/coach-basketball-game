@@ -76,6 +76,9 @@ export class Match {
                 newGameNarration.unshift(`Both players touch the ball at the same time! The jump ball continues`)
                 setGameNarration(newGameNarration)
             }
-        };        
+        };
+        
+        this.teamA.giveActionPointsToTeam()
+        this.teamB.giveActionPointsToTeam()
     }
 }

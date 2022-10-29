@@ -1,3 +1,4 @@
+import {playerPositionDetection, roll20SidesDice} from '../utilities/exportableFunctions';
 export class Player {
 
     //Info
@@ -116,6 +117,33 @@ export class Player {
             return true
         } else {
             return false
+        }
+    }
+
+    giveActionPointsToPlayer() {
+        this.actionPoints = 0
+        let diceResult = 1
+
+        if(this.height <= 192) {
+            this.actionPoints = 2
+
+            if(diceResult > 6) {
+                this.actionPoints += 1
+            }
+        } else if (this.height > 192 && this.height <= 208) {
+            this.actionPoints = 2
+
+            if(diceResult > 10) {
+                this.actionPoints += 1
+            }
+        } else if (this.height > 208) {
+            this.actionPoints = 1
+
+            if(diceResult > 3 && diceResult < 16) {
+                this.actionPoints += 1
+            } else if (diceResult >= 16) {
+                this.actionPoints += 2
+            }
         }
     }
 }

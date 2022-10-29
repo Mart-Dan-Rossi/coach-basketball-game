@@ -53,4 +53,10 @@ export class Team {
         });
         return doesTeamHaveTheBall
     }
+
+    giveActionPointsToTeam() {
+        this.players.forEach(player => {
+            player.giveActionPointsToPlayer()
+        });
+    }
 }

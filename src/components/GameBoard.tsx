@@ -1,7 +1,9 @@
-import React, { useEffect } from 'react'
+import React from 'react'
+import {useEffect, useContext} from 'react';
 import { Team } from '../entities/team'
 import './GameBoard.css'
-import PlayerTileContainer from './PlayerTileContainer'
+import PlayerImgContainer from './PlayerImgContainer'
+import {GameContext} from '../context/GameContext';
 
 
 interface Props {
@@ -12,10 +14,15 @@ interface Props {
 
 function GameBoard( { gameBoard, teamA, teamB } : Props) {
 
+    const {
+        setShowConfirmButton,
+        setConfirmButtonHandler
+      } = useContext(GameContext)
+
     useEffect(() => {
     }, [gameBoard])
 
-    function checkSelectedPlayerOnThisTile(team: Team, ubicationScaned: number[]) {
+    function paintPlayerOnThisTileAsSelected(team: Team, ubicationScaned: number[]) {
         team.players.forEach(player =>{
             let playerUbication = [player.ubicationX, player.ubicationY]
 
@@ -35,7 +42,7 @@ function GameBoard( { gameBoard, teamA, teamB } : Props) {
             if(teamA.teamTurn && teamNumber == 1) {
 
                 if(teamA.isAPlayerSelected()) {
-                    checkSelectedPlayerOnThisTile(teamA, thisUbication)
+                    paintPlayerOnThisTileAsSelected(teamA, thisUbication)
 
                 } else {
                     return("highlighted-tile")
@@ -44,13 +51,46 @@ function GameBoard( { gameBoard, teamA, teamB } : Props) {
             } else if(teamB.teamTurn && teamNumber == 2) {
 
                 if(teamB.isAPlayerSelected()) {
-                    checkSelectedPlayerOnThisTile(teamB, thisUbication)
+                    paintPlayerOnThisTileAsSelected(teamB, thisUbication)
 
                 } else {
                     return("highlighted-tile")
                 }
             }
         }
+    }
+
+    function clickTileHandler(teamNumber: number, col: number, row: number) {
+        return ()=> {
+            let thisUbication = [col, row]
+            if(teamNumber != 0) {
+                
+                if(teamA.teamTurn && teamNumber == 1) {
+                    if(teamA.isAPlayerSelected()) {
+
+                    } else {
+                        setConfirmButtonHandler(()=> ()=> selectPlayer(teamA, thisUbication))
+                    }
+                } else if(teamB.teamTurn && teamNumber == 2) {
+                    if(teamA.isAPlayerSelected()) {
+
+                    } else {
+                        setConfirmButtonHandler(()=> ()=> selectPlayer(teamB, thisUbication))
+                    }
+                }
+            }
+            setShowConfirmButton(true)
+        }
+    }
+
+    function selectPlayer(team: Team, ubicationScaned: number[]) {
+        team.players.forEach(player =>{
+            let playerUbication = [player.ubicationX, player.ubicationY]
+
+            if(playerUbication[0] == ubicationScaned[0] && playerUbication[1] == ubicationScaned[1]) {
+                player.playerSelected = true
+            }
+        })
     }
     
 
@@ -61,15 +101,19 @@ function GameBoard( { gameBoard, teamA, teamB } : Props) {
                 gameBoard!.map((rowContent, rowIndex)=> {
                     return (rowContent.map((player, colIndex)=> {
                         return (
-                            <div key={`tile-${colIndex+1}-${rowIndex+1}`} className={`tile ROW${rowIndex + 1} COL${colIndex +1} ${detectIfHighlightedNeeded(player, colIndex+1, rowIndex+1)}`}>
+                            <div
+                                key={`tile-${colIndex+1}-${rowIndex+1}`}
+                                className={`tile ROW${rowIndex + 1} COL${colIndex +1} ${detectIfHighlightedNeeded(player, colIndex+1, rowIndex+1)}`}
+                                onClick={clickTileHandler(player, colIndex+1, rowIndex+1)}
+                            >
                                 {
                                     player == 0 ?
                                         <></>
                                         :
                                         player == 1 ?
-                                            <PlayerTileContainer team={teamA} col={colIndex+1} row={rowIndex+1} teamLetterProps={"a"}/>
+                                            <PlayerImgContainer team={teamA} col={colIndex+1} row={rowIndex+1} teamLetterProps={"a"}/>
                                             :
-                                            <PlayerTileContainer team={teamB} col={colIndex+1} row={rowIndex+1} teamLetterProps={"b"}/>
+                                            <PlayerImgContainer team={teamB} col={colIndex+1} row={rowIndex+1} teamLetterProps={"b"}/>
                                 }
                             </div>
                         )

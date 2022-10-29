@@ -232,6 +232,8 @@ export const GameContextProvider = ({ children }: props) =>{
 
     const [showConfirmButton, setShowConfirmButton] = useState(false)
 
+    const [confirmButtonHandler, setConfirmButtonHandler] = useState(()=> ()=> {})
+
     const [gameBoard, setGameBoard] = useState([
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -278,7 +280,8 @@ export const GameContextProvider = ({ children }: props) =>{
                 showEndTurnButton, setShowEndTurnButton,
                 showConfirmButton, setShowConfirmButton,
 
-                gameBoard, setGameBoard
+                gameBoard, setGameBoard,
+                confirmButtonHandler, setConfirmButtonHandler,
             }}>
             { children }
         </GameContext.Provider>

@@ -66,12 +66,6 @@ export class Team {
         });
     }
 
-    coachSelectPlayer() {
-        this.players.forEach(player => {
-            
-        });
-    }
-
     isAPlayerSelected() {
         let anySelected = false
 

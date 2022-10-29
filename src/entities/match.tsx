@@ -97,12 +97,4 @@ export class Match {
         this.teamA.giveActionPointsToTeam()
         this.teamB.giveActionPointsToTeam()
     }
-
-    coachesSelectPlayer() {
-        if(this.teamA.teamHaveTheBall()) {
-            this.teamA.coachSelectPlayer()
-        } else {
-            this.teamB.coachSelectPlayer()
-        }
-    }
 }

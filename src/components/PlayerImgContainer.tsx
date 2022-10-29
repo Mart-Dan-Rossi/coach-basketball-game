@@ -9,9 +9,9 @@ interface Props {
     teamLetterProps: string
 }
 
-function PlayerTileContainer({team, col, row, teamLetterProps} : Props) {    
+function PlayerImgContainer({team, col, row, teamLetterProps} : Props) {    
 
-    function playerTileContainerClickHandler() {
+    function PlayerImgContainerClickHandler() {
         return (e: React.MouseEvent)=>{
             e.preventDefault()
             e.currentTarget!.classList.toggle("expand")
@@ -134,7 +134,7 @@ function PlayerTileContainer({team, col, row, teamLetterProps} : Props) {
 
   return (
     <div>
-        <div className='player-tile-container' onMouseLeave={playerTileContainerClickHandler()} onMouseEnter={playerTileContainerClickHandler()}>
+        <div className='player-tile-container' onMouseLeave={PlayerImgContainerClickHandler()} onMouseEnter={PlayerImgContainerClickHandler()}>
             {drawPlayer()}
             {
                 team.players.map(player =>{
@@ -150,4 +150,4 @@ function PlayerTileContainer({team, col, row, teamLetterProps} : Props) {
   )
 }
 
-export default PlayerTileContainer
+export default PlayerImgContainer

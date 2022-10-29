@@ -1,4 +1,5 @@
 import React, { createContext } from "react"
+import { Callback } from "webpack-cli";
 import {PlayerEditableInfo, TeamAStats, TeamBStats, PlayerStats} from '../entities/myInterfaces';
 
 export interface GameContextProps {
@@ -108,6 +109,9 @@ export interface GameContextProps {
 
     gameBoard: number[][],
     setGameBoard: React.Dispatch<React.SetStateAction<number[][]>>,
+
+    confirmButtonHandler: ()=>void,
+    setConfirmButtonHandler: React.Dispatch<React.SetStateAction<()=>void>>,
 }
 
 

@@ -18,7 +18,8 @@ function MatchActionsContainer() {
     showShootButton,
     showEndTurnButton,
     showConfirmButton: activateConfirmButton,
-    setShowConfirmButton
+    setShowConfirmButton,
+    confirmButtonHandler
   } = useContext(GameContext)
   
   const [moveButtonSelected, setMoveButtonSelected] = useState(false)
@@ -58,12 +59,7 @@ function MatchActionsContainer() {
       setEndTurnButtonSelected(false)
 
       setter(!previousValue)
-    }
-  }
-
-  function clickConfirmButtonHanddler() {
-    return ()=>{
-      console.log("confirm")
+      
     }
   }
 
@@ -186,7 +182,7 @@ function MatchActionsContainer() {
           </div>
               {
                   <button
-                  onClick={activateConfirmButton ? clickConfirmButtonHanddler(): ()=>{console.log("Select action first")}}
+                  onClick={activateConfirmButton ? ()=> confirmButtonHandler() : ()=>{console.log("Select action first")}}
                   className={ activateConfirmButton ? "confirm-button" : "disabled confirm-button" }
                   >
                       Confirm

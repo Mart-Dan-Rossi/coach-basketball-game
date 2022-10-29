@@ -8,6 +8,9 @@ export class Match {
     teamA: Team;
     teamB: Team;
 
+    //Match status
+    teamTurn: string
+
     //Match basic info
     querter: number;
     timeLeft: QuarterTimeLeft;
@@ -18,6 +21,9 @@ export class Match {
         // if(teams.length != 2) throw new Error(`Match can stast only with 2 teams. You have ${teams.length}`)
         this.teamA = teamA
         this.teamB = teamB
+
+        //Match status
+        this.teamTurn = ""
 
         //Match basic info
         this.querter = 1
@@ -60,6 +66,8 @@ export class Match {
                         newGameNarration.unshift(`${this.teamA.name} won the jump. Now ${player.name === "" ? "the PG of team A" : player.name} have the ball.`)
                         setGameNarration(newGameNarration)
 
+                        this.teamTurn = "TeamB"
+
                     }
                 });
             } else if (whoWinTheJump < 0){
@@ -70,6 +78,8 @@ export class Match {
                         newGameNarration.unshift(`${this.teamB.name} won the jump. Now ${player.name === "" ? "the PG of team B" : player.name} have the ball.`)
                         setGameNarration(newGameNarration)
 
+                        this.teamTurn = "TeamA"
+
                     }
                 });
             } else {
@@ -77,8 +87,22 @@ export class Match {
                 setGameNarration(newGameNarration)
             }
         };
-        
+
+        if(this.teamTurn == "TeamA") {
+            this.teamA.teamTurn = true
+        } else if(this.teamTurn == "TeamB") {
+            this.teamB.teamTurn = true
+        }
+
         this.teamA.giveActionPointsToTeam()
         this.teamB.giveActionPointsToTeam()
+    }
+
+    coachesSelectPlayer() {
+        if(this.teamA.teamHaveTheBall()) {
+            this.teamA.coachSelectPlayer()
+        } else {
+            this.teamB.coachSelectPlayer()
+        }
     }
 }

@@ -32,7 +32,6 @@ function MatchActionsContainer() {
   const [tripleThreatButtonSelected, setTripleThreatButtonSelected] = useState(false)
   const [shootButtonSelected, setShootButtonSelected] = useState(false)
   const [endTurnButtonSelected, setEndTurnButtonSelected] = useState(false)
-  const [confirmButtonSelected, setConfirmButtonSelected] = useState(false)
 
 
 
@@ -57,7 +56,6 @@ function MatchActionsContainer() {
       setTripleThreatButtonSelected(false)
       setShootButtonSelected(false)
       setEndTurnButtonSelected(false)
-      setConfirmButtonSelected(false)
 
       setter(!previousValue)
     }

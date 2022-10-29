@@ -23,6 +23,14 @@
     vertical-align: -webkit-baseline-middle;
 }
 
+.highlighted-tile {
+    background-color: rgba(128, 255, 0, 0.527);
+}
+
+.selected-tile {
+    background-color: rgb(73, 146, 0);
+}
+
 .player-tile-container {
     position: relative;
     cursor: pointer;

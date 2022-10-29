@@ -4,6 +4,9 @@ export class Team {
     name: string;
     players: Player[]
 
+    //Team status
+    teamTurn: boolean;
+
     //Team stats
     points: number;
     assists: number;
@@ -26,6 +29,9 @@ export class Team {
         this.players.forEach((player: Player) => {
             player.team = this.name
         })
+
+        //Team status
+        this.teamTurn = false
         
         //Team stats
         this.points = 0;
@@ -58,5 +64,21 @@ export class Team {
         this.players.forEach(player => {
             player.giveActionPointsToPlayer()
         });
+    }
+
+    coachSelectPlayer() {
+        this.players.forEach(player => {
+            
+        });
+    }
+
+    isAPlayerSelected() {
+        let anySelected = false
+
+        this.players.forEach(player =>{
+            player.playerSelected && (anySelected = true)
+        })
+
+        return anySelected
     }
 }

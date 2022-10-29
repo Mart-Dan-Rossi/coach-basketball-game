@@ -30,6 +30,7 @@ export class Player {
     movementLeft: boolean;
     lastAction: string;
     actionPoints: number;
+    playerSelected: boolean;
 
     //Player stats
     points: number;
@@ -80,6 +81,7 @@ export class Player {
         this.movementLeft = true;
         this.lastAction = "Haven't do anithing yet";
         this.actionPoints = 0;
+        this.playerSelected = false
 
         //Player stats
         this.points = 0;

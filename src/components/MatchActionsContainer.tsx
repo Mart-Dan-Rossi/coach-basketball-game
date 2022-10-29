@@ -17,7 +17,7 @@ function MatchActionsContainer() {
     showTripleThreatButton,
     showShootButton,
     showEndTurnButton,
-    showConfirmButton,
+    showConfirmButton: activateConfirmButton,
     setShowConfirmButton
   } = useContext(GameContext)
   
@@ -65,7 +65,7 @@ function MatchActionsContainer() {
 
   function clickConfirmButtonHanddler() {
     return ()=>{
-      console.log("confirmo")
+      console.log("confirm")
     }
   }
 
@@ -187,10 +187,9 @@ function MatchActionsContainer() {
 
           </div>
               {
-                showConfirmButton &&
                   <button
-                    onClick={clickConfirmButtonHanddler()}
-                    className={ confirmButtonSelected ? "selected confirm-button" : "confirm-button" }
+                  onClick={activateConfirmButton ? clickConfirmButtonHanddler(): ()=>{console.log("Select action first")}}
+                  className={ activateConfirmButton ? "confirm-button" : "disabled confirm-button" }
                   >
                       Confirm
                   </button>

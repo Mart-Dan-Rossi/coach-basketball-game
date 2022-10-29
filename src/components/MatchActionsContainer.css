@@ -63,6 +63,10 @@ button.confirm-button {
     margin: 20px 0 9px 0;
 }
 
+button.confirm-button.disabled {
+    background-color: gray;
+}
+
 .game-narration-container {
     width: var(--gameboard-width);
     background-color: black;

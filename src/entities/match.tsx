@@ -21,7 +21,7 @@ export class Match {
 
         //Match basic info
         this.querter = 1
-        this.timeLeft = { minutes: 10, seconds: 0 }
+        this.timeLeft = { minutes: 6, seconds: 0 }
         this.shotClock = 24
     }
     

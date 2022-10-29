@@ -123,7 +123,7 @@ function PlayerTileContainer({team, col, row, teamLetterProps} : Props) {
             {drawPlayer()}
             {
                 team.players.map(player =>{
-                    if(player.ubicationX == col+1 && player.ubicationY == row+1){
+                    if(player.ubicationX == col && player.ubicationY == row){
                         return (
                             drawPlayerInfoPopupInBoard(player)
                         )

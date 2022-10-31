@@ -17,8 +17,8 @@ function MatchActionsContainer() {
     showTripleThreatButton,
     showShootButton,
     showEndTurnButton,
-    showConfirmButton: activateConfirmButton,
-    setShowConfirmButton,
+    activateConfirmButton,
+    setActivateConfirmButton,
     confirmButtonHandler
   } = useContext(GameContext)
   
@@ -44,7 +44,7 @@ function MatchActionsContainer() {
 
   function clickActionButtonHanddler(previousValue: boolean, setter: React.Dispatch<React.SetStateAction<boolean>>) {
     return ()=>{
-      previousValue ? setShowConfirmButton(false) : setShowConfirmButton(true)
+      previousValue ? setActivateConfirmButton(false) : setActivateConfirmButton(true)
 
       setMoveButtonSelected(false)
       setStealAttemptButtonSelected(false)

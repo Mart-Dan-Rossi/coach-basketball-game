@@ -6,6 +6,7 @@ export class Team {
 
     //Team status
     teamTurn: boolean;
+    teamTurnLeft: boolean
 
     //Team stats
     points: number;
@@ -32,6 +33,7 @@ export class Team {
 
         //Team status
         this.teamTurn = false
+        this.teamTurnLeft = true
         
         //Team stats
         this.points = 0;

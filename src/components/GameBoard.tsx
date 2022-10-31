@@ -15,8 +15,13 @@ interface Props {
 function GameBoard( { gameBoard, teamA, teamB } : Props) {
 
     const {
-        setShowConfirmButton,
-        setConfirmButtonHandler
+        setActivateConfirmButton,
+        setConfirmButtonHandler,
+        setGameBoard,
+        playerClikedTeamA,
+        setPlayerClikedTeamA,
+        playerClikedTeamB,
+        setPlayerClikedTeamB
       } = useContext(GameContext)
 
     useEffect(() => {
@@ -25,10 +30,10 @@ function GameBoard( { gameBoard, teamA, teamB } : Props) {
     function paintPlayerOnThisTileAsSelected(team: Team, ubicationScaned: number[]) {
         team.players.forEach(player =>{
             let playerUbication = [player.ubicationX, player.ubicationY]
-
+            
             if(playerUbication[0] == ubicationScaned[0] && playerUbication[1] == ubicationScaned[1]) {
                 return (
-                    player.playerSelected ? "selected-tile" : ""
+                    player.playerSelected ? "selected-tile" : "highlighted-tile"
                 )
             }
         })
@@ -38,6 +43,10 @@ function GameBoard( { gameBoard, teamA, teamB } : Props) {
         
         if(teamNumber != 0) {
             let thisUbication = [col, row]
+
+            if(playerClikedTeamA[0] == col && playerClikedTeamA[1] == row || playerClikedTeamB[0] == col && playerClikedTeamB[1] == row){
+                return("selected-tile")
+            }
 
             if(teamA.teamTurn && teamNumber == 1) {
 
@@ -65,32 +74,48 @@ function GameBoard( { gameBoard, teamA, teamB } : Props) {
             let thisUbication = [col, row]
             if(teamNumber != 0) {
                 
-                if(teamA.teamTurn && teamNumber == 1) {
-                    if(teamA.isAPlayerSelected()) {
+                if(teamNumber == 1) {
+                    setPlayerClikedTeamA([col, row])
+                    if(teamA.teamTurn){
 
-                    } else {
-                        setConfirmButtonHandler(()=> ()=> selectPlayer(teamA, thisUbication))
+                        if(teamA.isAPlayerSelected()) {
+                            
+                        } else {
+                            setConfirmButtonHandler(()=> ()=> selectPlayer(teamA, thisUbication, teamB))
+                        }
                     }
-                } else if(teamB.teamTurn && teamNumber == 2) {
-                    if(teamA.isAPlayerSelected()) {
+                } else if(teamNumber == 2) {
+                    setPlayerClikedTeamB([col, row])
+                    if(teamB.teamTurn){
 
-                    } else {
-                        setConfirmButtonHandler(()=> ()=> selectPlayer(teamB, thisUbication))
+                        if(teamA.isAPlayerSelected()) {
+                            
+                        } else {
+                            setConfirmButtonHandler(()=> ()=> selectPlayer(teamB, thisUbication, teamA))
+                        }
                     }
                 }
             }
-            setShowConfirmButton(true)
+            setActivateConfirmButton(true)
+            setGameBoard(gameBoard)
         }
     }
-
-    function selectPlayer(team: Team, ubicationScaned: number[]) {
+    
+    function selectPlayer(team: Team, ubicationScaned: number[], otherTeam: Team) {
         team.players.forEach(player =>{
             let playerUbication = [player.ubicationX, player.ubicationY]
-
+            
             if(playerUbication[0] == ubicationScaned[0] && playerUbication[1] == ubicationScaned[1]) {
                 player.playerSelected = true
             }
         })
+        team.teamTurn = false
+        team.teamTurnLeft = false
+        if(otherTeam.teamTurnLeft) {
+            otherTeam.teamTurn = true
+        }
+        setActivateConfirmButton(false)
+        setGameBoard(gameBoard)
     }
     
 

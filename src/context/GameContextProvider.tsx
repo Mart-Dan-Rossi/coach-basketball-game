@@ -230,9 +230,12 @@ export const GameContextProvider = ({ children }: props) =>{
 
     const [showEndTurnButton, setShowEndTurnButton] = useState(false)
 
-    const [showConfirmButton, setShowConfirmButton] = useState(false)
+    const [activateConfirmButton, setActivateConfirmButton] = useState(false)
 
     const [confirmButtonHandler, setConfirmButtonHandler] = useState(()=> ()=> {})
+
+    const [playerClikedTeamA, setPlayerClikedTeamA] = useState([0, 0])
+    const [playerClikedTeamB, setPlayerClikedTeamB] = useState([0, 0])
 
     const [gameBoard, setGameBoard] = useState([
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -278,10 +281,13 @@ export const GameContextProvider = ({ children }: props) =>{
                 showTripleThreatButton, setShowTripleThreatButton,
                 showShootButton, setShowShootButton,
                 showEndTurnButton, setShowEndTurnButton,
-                showConfirmButton, setShowConfirmButton,
+                activateConfirmButton, setActivateConfirmButton,
 
                 gameBoard, setGameBoard,
                 confirmButtonHandler, setConfirmButtonHandler,
+
+                playerClikedTeamA, setPlayerClikedTeamA,
+                playerClikedTeamB, setPlayerClikedTeamB
             }}>
             { children }
         </GameContext.Provider>

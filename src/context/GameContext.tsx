@@ -104,14 +104,19 @@ export interface GameContextProps {
     setShowShootButton: React.Dispatch<React.SetStateAction<boolean>>,
     showEndTurnButton: boolean,
     setShowEndTurnButton: React.Dispatch<React.SetStateAction<boolean>>,
-    showConfirmButton: boolean,
-    setShowConfirmButton: React.Dispatch<React.SetStateAction<boolean>>,
+    activateConfirmButton: boolean,
+    setActivateConfirmButton: React.Dispatch<React.SetStateAction<boolean>>,
 
     gameBoard: number[][],
     setGameBoard: React.Dispatch<React.SetStateAction<number[][]>>,
 
     confirmButtonHandler: ()=>void,
     setConfirmButtonHandler: React.Dispatch<React.SetStateAction<()=>void>>,
+
+    playerClikedTeamA: number[],
+    setPlayerClikedTeamA: React.Dispatch<React.SetStateAction<number[]>>,
+    playerClikedTeamB: number[],
+    setPlayerClikedTeamB: React.Dispatch<React.SetStateAction<number[]>>
 }
 
 

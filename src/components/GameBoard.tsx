@@ -4,6 +4,7 @@ import { Team } from '../entities/team'
 import './GameBoard.css'
 import PlayerImgContainer from './PlayerImgContainer'
 import {GameContext} from '../context/GameContext';
+import { compareIniciatives } from '../utilities/exportableFunctions';
 
 
 interface Props {
@@ -77,7 +78,6 @@ function GameBoard( { gameBoard, teamA, teamB } : Props) {
                 if(teamNumber == 1) {
                     setPlayerClikedTeamA([col, row])
                     if(teamA.teamTurn){
-
                         if(teamA.isAPlayerSelected()) {
                             
                         } else {
@@ -87,8 +87,7 @@ function GameBoard( { gameBoard, teamA, teamB } : Props) {
                 } else if(teamNumber == 2) {
                     setPlayerClikedTeamB([col, row])
                     if(teamB.teamTurn){
-
-                        if(teamA.isAPlayerSelected()) {
+                        if(teamB.isAPlayerSelected()) {
                             
                         } else {
                             setConfirmButtonHandler(()=> ()=> selectPlayer(teamB, thisUbication, teamA))
@@ -102,18 +101,23 @@ function GameBoard( { gameBoard, teamA, teamB } : Props) {
     }
     
     function selectPlayer(team: Team, ubicationScaned: number[], otherTeam: Team) {
-        team.players.forEach(player =>{
+        team.players.forEach(player => {
             let playerUbication = [player.ubicationX, player.ubicationY]
             
             if(playerUbication[0] == ubicationScaned[0] && playerUbication[1] == ubicationScaned[1]) {
                 player.playerSelected = true
             }
         })
+        
         team.teamTurn = false
         team.teamTurnLeft = false
+
         if(otherTeam.teamTurnLeft) {
             otherTeam.teamTurn = true
+        } else {
+            compareIniciatives(teamA.returnSelectedPlayer()!, teamB.returnSelectedPlayer()!, teamA.teamHaveTheBall())
         }
+
         setActivateConfirmButton(false)
         setGameBoard(gameBoard)
     }

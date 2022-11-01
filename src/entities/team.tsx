@@ -71,10 +71,20 @@ export class Team {
     isAPlayerSelected() {
         let anySelected = false
 
-        this.players.forEach(player =>{
+        this.players.forEach(player => {
             player.playerSelected && (anySelected = true)
         })
 
         return anySelected
+    }
+
+    returnSelectedPlayer() {
+        let playerSelected
+        this.players.forEach(player => {
+            if(player.playerSelected) {
+                playerSelected = player
+            }
+        })
+        return playerSelected
     }
 }

@@ -31,6 +31,7 @@ export class Player {
     lastAction: string;
     actionPoints: number;
     playerSelected: boolean;
+    playerActive: boolean;
 
     //Player stats
     points: number;
@@ -83,6 +84,7 @@ export class Player {
         this.lastAction = "Haven't do anithing yet";
         this.actionPoints = 0;
         this.playerSelected = false
+        this.playerActive = false
 
         //Player stats
         this.points = 0;

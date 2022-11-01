@@ -5,6 +5,7 @@ import './GameBoard.css'
 import PlayerImgContainer from './PlayerImgContainer'
 import {GameContext} from '../context/GameContext';
 import { compareIniciatives } from '../utilities/exportableFunctions';
+import { Player } from '../entities/players';
 
 
 interface Props {
@@ -110,14 +111,18 @@ function GameBoard( { gameBoard, teamA, teamB } : Props) {
                 player.playerSelected = true
             }
         })
-        
+
+        let playerActive: Player
+
         team.teamTurn = false
         team.teamTurnLeft = false
 
         if(otherTeam.teamTurnLeft) {
             otherTeam.teamTurn = true
         } else {
-            compareIniciatives(teamA.returnSelectedPlayer()!, teamB.returnSelectedPlayer()!, teamA.teamHaveTheBall())
+            playerActive = compareIniciatives(teamA.returnSelectedPlayer()!, teamB.returnSelectedPlayer()!, teamA.teamHaveTheBall())
+
+            
         }
 
         setActivateConfirmButton(false)

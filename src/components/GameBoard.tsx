@@ -76,26 +76,28 @@ function GameBoard( { gameBoard, teamA, teamB } : Props) {
             if(teamNumber != 0) {
                 
                 if(teamNumber == 1) {
-                    setPlayerClikedTeamA([col, row])
                     if(teamA.teamTurn){
+                        setPlayerClikedTeamA([col, row])
                         if(teamA.isAPlayerSelected()) {
                             
                         } else {
                             setConfirmButtonHandler(()=> ()=> selectPlayer(teamA, thisUbication, teamB))
                         }
+                        setActivateConfirmButton(true)
+                        setGameBoard(gameBoard)
                     }
                 } else if(teamNumber == 2) {
-                    setPlayerClikedTeamB([col, row])
                     if(teamB.teamTurn){
+                        setPlayerClikedTeamB([col, row])
                         if(teamB.isAPlayerSelected()) {
                             
                         } else {
                             setConfirmButtonHandler(()=> ()=> selectPlayer(teamB, thisUbication, teamA))
                         }
+                        setActivateConfirmButton(true)
+                        setGameBoard(gameBoard)
                     }
                 }
-                setActivateConfirmButton(true)
-                setGameBoard(gameBoard)
             }
         }
     }

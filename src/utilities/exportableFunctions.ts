@@ -486,4 +486,9 @@ export function compareIniciatives(playerA: Player, playerB: Player, isTeamAAtac
         //Comparo las iniciativas
         compareIniciatives = defenderIniciative - atackerInisiative;
     }
+    if(compareIniciatives > 0) {
+        return defender
+    } else {
+        return atacker
+    }
 }

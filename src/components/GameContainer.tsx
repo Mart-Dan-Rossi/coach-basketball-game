@@ -34,6 +34,7 @@ export default function GameContainer() {
     
     const playerA1: Player = new Player(
         teamAStats.playerA1Stats.name,
+        "A",
         "1",
         teamAStats.playerA1Stats.height,
         teamAStats.playerA1Stats.weight,
@@ -50,6 +51,7 @@ export default function GameContainer() {
     
     const playerA2: Player = new Player(
         teamAStats.playerA2Stats.name,
+        "A",
         "2",
         teamAStats.playerA2Stats.height,
         teamAStats.playerA2Stats.weight,
@@ -66,6 +68,7 @@ export default function GameContainer() {
     
     const playerA3: Player = new Player(
         teamAStats.playerA3Stats.name,
+        "A",
         "3",
         teamAStats.playerA3Stats.height,
         teamAStats.playerA3Stats.weight,
@@ -82,6 +85,7 @@ export default function GameContainer() {
     
     const playerA4: Player = new Player(
         teamAStats.playerA4Stats.name,
+        "A",
         "4",
         teamAStats.playerA4Stats.height,
         teamAStats.playerA4Stats.weight,
@@ -98,6 +102,7 @@ export default function GameContainer() {
     
     const playerA5: Player = new Player(
         teamAStats.playerA5Stats.name,
+        "A",
         "5",
         teamAStats.playerA5Stats.height,
         teamAStats.playerA5Stats.weight,
@@ -115,6 +120,7 @@ export default function GameContainer() {
     
     const playerB1: Player = new Player(
         teamBStats.playerB1Stats.name,
+        "B",
         "1",
         teamBStats.playerB1Stats.height,
         teamBStats.playerB1Stats.weight,
@@ -131,6 +137,7 @@ export default function GameContainer() {
     
     const playerB2: Player = new Player(
         teamBStats.playerB2Stats.name,
+        "B",
         "2",
         teamBStats.playerB2Stats.height,
         teamBStats.playerB2Stats.weight,
@@ -147,6 +154,7 @@ export default function GameContainer() {
     
     const playerB3: Player = new Player(
         teamBStats.playerB3Stats.name,
+        "B",
         "3",
         teamBStats.playerB3Stats.height,
         teamBStats.playerB3Stats.weight,
@@ -163,6 +171,7 @@ export default function GameContainer() {
     
     const playerB4: Player = new Player(
         teamBStats.playerB4Stats.name,
+        "B",
         "4",
         teamBStats.playerB4Stats.height,
         teamBStats.playerB4Stats.weight,
@@ -179,6 +188,7 @@ export default function GameContainer() {
     
     const playerB5: Player = new Player(
         teamBStats.playerB5Stats.name,
+        "B",
         "5",
         teamBStats.playerB5Stats.height,
         teamBStats.playerB5Stats.weight,

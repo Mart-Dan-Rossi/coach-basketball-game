@@ -3,7 +3,7 @@ export class Player {
 
     //Info
     name: string;
-    team: string = "";
+    team: string;
     position: string;
 
     //Fisicality
@@ -52,9 +52,10 @@ export class Player {
 
 
 
-    constructor(name: string, position: string, height: number, weight: number, atleticism: number, perimetrerDefence: number, insideDefence: number, rebounding: number, perimetrerScoring: number, insideScoring: number, playMaking: number, ubicationX: number, ubicationY: number){
+    constructor(name: string, team: string, position: string, height: number, weight: number, atleticism: number, perimetrerDefence: number, insideDefence: number, rebounding: number, perimetrerScoring: number, insideScoring: number, playMaking: number, ubicationX: number, ubicationY: number){
         //Info
         this.name = name;
+        this.team = team;
         this.position = position;
 
         //Fisicality

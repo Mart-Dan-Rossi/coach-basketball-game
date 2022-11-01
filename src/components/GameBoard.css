@@ -31,6 +31,10 @@
     background-color: rgb(73, 146, 0);
 }
 
+.active-tile {
+    background-color: rgba(218, 165, 32, 0.712);
+}
+
 .player-tile-container {
     position: relative;
     cursor: pointer;

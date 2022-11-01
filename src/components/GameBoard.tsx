@@ -68,6 +68,14 @@ function GameBoard( { gameBoard, teamA, teamB } : Props) {
                     return("highlighted-tile")
                 }
             }
+
+            let teamAActivePlayerUbication = teamA.returnActivePlayerUbication()
+            let teamBActivePlayerUbication = teamB.returnActivePlayerUbication()
+
+            if(teamAActivePlayerUbication[0] == col && teamAActivePlayerUbication[1] == row || teamBActivePlayerUbication[0] == col && teamBActivePlayerUbication[1] == row){
+                return("active-tile")
+            }
+
         }
     }
 
@@ -122,7 +130,15 @@ function GameBoard( { gameBoard, teamA, teamB } : Props) {
         } else {
             playerActive = compareIniciatives(teamA.returnSelectedPlayer()!, teamB.returnSelectedPlayer()!, teamA.teamHaveTheBall())
 
-            
+            playerActive.playerActive = true
+            playerActive.playerSelected = false
+
+            if(playerActive.team == "A") {
+                setPlayerClikedTeamA([0, 0])
+            } else {
+                setPlayerClikedTeamB([0, 0])
+            }
+
         }
 
         setActivateConfirmButton(false)

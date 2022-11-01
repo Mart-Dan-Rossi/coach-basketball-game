@@ -77,6 +77,16 @@ export class Team {
 
         return anySelected
     }
+    
+    returnActivePlayerUbication() {
+        let activePlayerUbication = [0, 0]
+
+        this.players.forEach(player => {
+            player.playerActive && (activePlayerUbication = [player.ubicationX!, player.ubicationY!])
+        })
+
+        return activePlayerUbication
+    }
 
     returnSelectedPlayer() {
         let playerSelected
@@ -87,4 +97,5 @@ export class Team {
         })
         return playerSelected
     }
+
 }

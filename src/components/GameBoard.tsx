@@ -94,9 +94,9 @@ function GameBoard( { gameBoard, teamA, teamB } : Props) {
                         }
                     }
                 }
+                setActivateConfirmButton(true)
+                setGameBoard(gameBoard)
             }
-            setActivateConfirmButton(true)
-            setGameBoard(gameBoard)
         }
     }
     

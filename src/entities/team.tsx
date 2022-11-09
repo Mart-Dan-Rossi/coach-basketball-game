@@ -77,6 +77,16 @@ export class Team {
 
         return anySelected
     }
+
+    isAPlayerActive() {
+        let anyActive = false
+
+        this.players.forEach(player => {
+            player.playerActive && (anyActive = true)
+        })
+
+        return anyActive
+    }
     
     returnActivePlayerUbication() {
         let activePlayerUbication = [0, 0]

@@ -41,7 +41,7 @@ function GameBoard( { gameBoard, teamA, teamB } : Props) {
         })
     }
 
-    function detectIfHighlightedNeeded(teamNumber: number, col: number, row: number) {
+    function addClassIfNeeded(teamNumber: number, col: number, row: number) {
         
         if(teamNumber != 0) {
             let thisUbication = [col, row]
@@ -72,9 +72,16 @@ function GameBoard( { gameBoard, teamA, teamB } : Props) {
             let teamAActivePlayerUbication = teamA.returnActivePlayerUbication()
             let teamBActivePlayerUbication = teamB.returnActivePlayerUbication()
 
+            // console.log("this ubication", thisUbication)
+
+            // console.log("teamAActivePlayerUbication", teamAActivePlayerUbication)
+            // console.log("teamBActivePlayerUbication", teamBActivePlayerUbication)
+
             if(teamAActivePlayerUbication[0] == col && teamAActivePlayerUbication[1] == row || teamBActivePlayerUbication[0] == col && teamBActivePlayerUbication[1] == row){
                 return("active-tile")
             }
+
+            return("not-highlighted")
 
         }
     }
@@ -87,22 +94,22 @@ function GameBoard( { gameBoard, teamA, teamB } : Props) {
                 if(teamNumber == 1) {
                     if(teamA.teamTurn){
                         setPlayerClikedTeamA([col, row])
-                        if(teamA.isAPlayerSelected()) {
-                            
-                        } else {
-                            setConfirmButtonHandler(()=> ()=> selectPlayer(teamA, thisUbication, teamB))
+
+                        if(!teamA.isAPlayerSelected()) {
+                            setConfirmButtonHandler(()=> ()=> confirmPlayerSelection(teamA, thisUbication, teamB))
                         }
+
                         setActivateConfirmButton(true)
                         setGameBoard(gameBoard)
                     }
                 } else if(teamNumber == 2) {
                     if(teamB.teamTurn){
                         setPlayerClikedTeamB([col, row])
-                        if(teamB.isAPlayerSelected()) {
-                            
-                        } else {
-                            setConfirmButtonHandler(()=> ()=> selectPlayer(teamB, thisUbication, teamA))
+
+                        if(!teamB.isAPlayerSelected()) {
+                            setConfirmButtonHandler(()=> ()=> confirmPlayerSelection(teamB, thisUbication, teamA))
                         }
+
                         setActivateConfirmButton(true)
                         setGameBoard(gameBoard)
                     }
@@ -111,7 +118,7 @@ function GameBoard( { gameBoard, teamA, teamB } : Props) {
         }
     }
     
-    function selectPlayer(team: Team, ubicationScaned: number[], otherTeam: Team) {
+    function confirmPlayerSelection(team: Team, ubicationScaned: number[], otherTeam: Team) {
         team.players.forEach(player => {
             let playerUbication = [player.ubicationX, player.ubicationY]
             
@@ -133,7 +140,7 @@ function GameBoard( { gameBoard, teamA, teamB } : Props) {
             playerActive.playerActive = true
             playerActive.playerSelected = false
 
-            if(playerActive.team == "A") {
+            if(playerActive.team == "TeamA") {
                 setPlayerClikedTeamA([0, 0])
             } else {
                 setPlayerClikedTeamB([0, 0])
@@ -141,8 +148,8 @@ function GameBoard( { gameBoard, teamA, teamB } : Props) {
 
         }
 
-        setActivateConfirmButton(false)
         setGameBoard(gameBoard)
+        setActivateConfirmButton(false)
     }
     
 
@@ -155,7 +162,7 @@ function GameBoard( { gameBoard, teamA, teamB } : Props) {
                         return (
                             <div
                                 key={`tile-${colIndex+1}-${rowIndex+1}`}
-                                className={`tile ROW${rowIndex + 1} COL${colIndex +1} ${detectIfHighlightedNeeded(player, colIndex+1, rowIndex+1)}`}
+                                className={`tile ROW${rowIndex + 1} COL${colIndex +1} ${addClassIfNeeded(player, colIndex + 1, rowIndex + 1)}`}
                                 onClick={clickTileHandler(player, colIndex+1, rowIndex+1)}
                             >
                                 {

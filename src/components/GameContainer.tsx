@@ -221,7 +221,7 @@ export default function GameContainer() {
   return (
     <div className='game-container'>
         <MatchInfo match={matchState}/>
-        <GameBoard gameBoard={newGameBoard} teamA={matchState.teamA} teamB={matchState.teamB}/>
+        <GameBoard gameBoard={newGameBoard} match={matchState}/>
         <MatchActionsContainer />
     </div>
   )

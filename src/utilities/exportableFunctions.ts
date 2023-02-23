@@ -301,7 +301,7 @@ export function numberEntire(number: number) {
     let entireNumber: number
 
     for(let character of numberInString) {
-        if(character != ".") {
+        if(character != "." && character != ",") {
             entireNumberInString += character
         } else {
             break

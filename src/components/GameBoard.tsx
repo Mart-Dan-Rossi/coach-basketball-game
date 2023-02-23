@@ -6,15 +6,17 @@ import PlayerImgContainer from './PlayerImgContainer'
 import {GameContext} from '../context/GameContext';
 import { compareIniciatives } from '../utilities/exportableFunctions';
 import { Player } from '../entities/players';
+import { Match } from '../entities/match';
 
 
 interface Props {
     gameBoard: number[][],
-    teamA: Team,
-    teamB: Team
+    match: Match,
 }
 
-function GameBoard( { gameBoard, teamA, teamB } : Props) {
+function GameBoard( { gameBoard, match } : Props) {
+    const teamA = match.teamA
+    const teamB = match.teamB
 
     const {
         setActivateConfirmButton,
@@ -163,16 +165,16 @@ function GameBoard( { gameBoard, teamA, teamB } : Props) {
                             <div
                                 key={`tile-${colIndex+1}-${rowIndex+1}`}
                                 className={`tile ROW${rowIndex + 1} COL${colIndex +1} ${addClassIfNeeded(player, colIndex + 1, rowIndex + 1)}`}
-                                onClick={clickTileHandler(player, colIndex+1, rowIndex+1)}
+                                onClick={clickTileHandler(player, colIndex + 1, rowIndex + 1)}
                             >
                                 {
                                     player == 0 ?
                                         <></>
                                         :
                                         player == 1 ?
-                                            <PlayerImgContainer team={teamA} col={colIndex+1} row={rowIndex+1} teamLetterProps={"a"}/>
+                                            <PlayerImgContainer team={teamA} col={colIndex+1} row={rowIndex + 1} teamLetterProps={"a"}/>
                                             :
-                                            <PlayerImgContainer team={teamB} col={colIndex+1} row={rowIndex+1} teamLetterProps={"b"}/>
+                                            <PlayerImgContainer team={teamB} col={colIndex+1} row={rowIndex + 1} teamLetterProps={"b"}/>
                                 }
                             </div>
                         )

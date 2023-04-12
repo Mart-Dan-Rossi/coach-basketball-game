@@ -63,121 +63,108 @@ function MatchActionsContainer() {
     }
   }
 
+  const allActionsButtons = {
+    MOVE_BUTTON: {
+      text: "Move",
+      showState: showMoveButton,
+      selectedState: moveButtonSelected,
+      selectedSetter: setMoveButtonSelected
+    }
+    ,
+    STEAL_ATTEMPT_BUTTON: {
+      text: "Steal attempt",
+      showState: showStealAttemptButton,
+      selectedState: stealAttemptButtonSelected,
+      selectedSetter: setStealAttemptButtonSelected
+    }
+    ,
+    INTERCEPT_PASS_ATTEMPT_BUTTON: {
+      text: "Intercept pass attempt",
+      showState: showInterceptPassAttemptButton,
+      selectedState: interceptPassAttemptButtonSelected,
+      selectedSetter: setInterceptPassAttemptButtonSelected
+    }
+    ,
+    OVERWHELING_WAITING_BUTTON: {
+      text: "Overwhelming waiting",
+      showState: showWaitPressingButton,
+      selectedState: waitPressingButtonSelected,
+      selectedSetter: setOverwhelmingWaitingButtonSelected
+    }
+    ,
+    WAIT_WITH_CAUTION_BUTTON: {
+      text: "Wait with caution",
+      showState: showWaitCarefullyButton,
+      selectedState: waitCarefullyButtonSelected,
+      selectedSetter: setWaitWithCautionButtonSelected
+    }
+    ,
+    PASS_BUTTON: {
+      text: "Pass",
+      showState: showPassButton,
+      selectedState: passButtonSelected,
+      selectedSetter: setPassButtonSelected
+    }
+    ,
+    DRIBBLING_BUTTON: {
+      text: "Dribbling",
+      showState: showDribblingButton,
+      selectedState: dribblingButtonSelected,
+      selectedSetter: setDribblingButtonSelected
+    }
+    ,
+    WAIT_WITHOUT_THE_BALL_BUTTON: {
+      text: "Wait without the ball",
+      showState: showWaitWithoutTheBallButton,
+      selectedState: waitWithoutTheBallButtonSelected,
+      selectedSetter: setWaitWithoutTheBallButtonSelected
+    }
+    ,
+    TRIPLE_THREAT_BUTTON: {
+      text: "Triple threat",
+      showState: showTripleThreatButton,
+      selectedState: tripleThreatButtonSelected,
+      selectedSetter: setTripleThreatButtonSelected
+    }
+    ,
+    SHOOT_BUTTON: {
+      text: "Shoot",
+      showState: showShootButton,
+      selectedState: shootButtonSelected,
+      selectedSetter: setShootButtonSelected
+    }
+    ,
+    END_TURN_BUTTON: {
+      text: "End turn",
+      showState: showEndTurnButton,
+      selectedState: endTurnButtonSelected,
+      selectedSetter: setEndTurnButtonSelected
+    }
+
+  }
+
   return (
     <div>
       <div className='match-actions-container'>
           <h4>Actions</h4>
           <div className="actions-container">
-              {
-                showMoveButton &&
-                  <button
-                    onClick={clickActionButtonHanddler(moveButtonSelected, setMoveButtonSelected)}
-                    className={ moveButtonSelected ? "selected" : "" }
-                  >
-                      Move
-                  </button>
-              }
-
-              {
-                showStealAttemptButton &&
-                  <button
-                    onClick={clickActionButtonHanddler(stealAttemptButtonSelected, setStealAttemptButtonSelected)}
-                    className={ stealAttemptButtonSelected ? "selected" : "" }
-                  >
-                      Steal attempt
-                  </button>
-              }
-
-              {
-                showInterceptPassAttemptButton &&
-                  <button
-                    onClick={clickActionButtonHanddler(interceptPassAttemptButtonSelected, setInterceptPassAttemptButtonSelected)}
-                    className={ interceptPassAttemptButtonSelected ? "selected" : "" }
-                  >
-                      Intercept pass attempt
-                  </button>
-              }
-
-              {
-                showWaitPressingButton &&
-                  <button
-                    onClick={clickActionButtonHanddler(waitPressingButtonSelected, setOverwhelmingWaitingButtonSelected)}
-                    className={ waitPressingButtonSelected ? "selected" : "" }
-                  >
-                      Overwhelming waiting
-                  </button>
-              }
-
-              {
-                showWaitCarefullyButton &&
-                  <button
-                    onClick={clickActionButtonHanddler(waitCarefullyButtonSelected, setWaitWithCautionButtonSelected)}
-                    className={ waitCarefullyButtonSelected ? "selected" : "" }
-                  >
-                      Wait with caution
-                  </button>
-              }
-
-              {
-                showPassButton &&
-                  <button
-                    onClick={clickActionButtonHanddler(passButtonSelected, setPassButtonSelected)}
-                    className={ passButtonSelected ? "selected" : "" }
-                  >
-                      Pass
-                  </button>
-              }
-
-              {
-                showDribblingButton &&
-                  <button
-                    onClick={clickActionButtonHanddler(dribblingButtonSelected, setDribblingButtonSelected)}
-                    className={ dribblingButtonSelected ? "selected" : "" }
-                  >
-                      Dribbling
-                  </button>
-              }
-
-              {
-                showWaitWithoutTheBallButton &&
-                  <button
-                    onClick={clickActionButtonHanddler(waitWithoutTheBallButtonSelected, setWaitWithoutTheBallButtonSelected)}
-                    className={ waitWithoutTheBallButtonSelected ? "selected" : "" }
-                  >
-                      Wait without the ball
-                  </button>
-              }
-
-              {
-                showTripleThreatButton &&
-                  <button
-                    onClick={clickActionButtonHanddler(tripleThreatButtonSelected, setTripleThreatButtonSelected)}
-                    className={ tripleThreatButtonSelected ? "selected" : "" }
-                  >
-                      Triple threat
-                  </button>
-              }
-
-              {
-                showShootButton &&
-                  <button
-                    onClick={clickActionButtonHanddler(shootButtonSelected, setShootButtonSelected)}
-                    className={ shootButtonSelected ? "selected" : "" }
-                  >
-                      Shoot
-                  </button>
-              }
-
-              {
-                showEndTurnButton &&
-                  <button
-                    onClick={clickActionButtonHanddler(endTurnButtonSelected, setEndTurnButtonSelected)}
-                    className={ endTurnButtonSelected ? "selected" : "" }
-                  >
-                      End turn
-                  </button>
-              }
-
+            {
+              Object.values(allActionsButtons).map(action=> {
+                return (
+                  <>
+                  {
+                    action.showState &&
+                    <button
+                      onClick={clickActionButtonHanddler(action.selectedState, action.selectedSetter)}
+                      className={ action.selectedState ? "selected" : "" }
+                    >
+                        {action.text}
+                    </button>
+                  }
+                  </>
+                )
+              }) 
+            }
 
           </div>
               {

@@ -301,7 +301,7 @@ export function numberEntire(number: number) {
     let entireNumber: number
 
     for(let character of numberInString) {
-        if(character != "." && character != ",") {
+        if(character != ".") {
             entireNumberInString += character
         } else {
             break
@@ -405,6 +405,8 @@ export const ranges = {
 }
 
 export function playerZone(player: Player, teamAAtacking: boolean) {
+
+    //TODO check if zones are written correctly
     if(
         (!teamAAtacking && ((player.ubicationX! < 3) && (player.ubicationY! > 5) && (player.ubicationY! < 11) || (player.ubicationX! < 5) && (player.ubicationY! > 6) && (player.ubicationY! < 10)))
         || (teamAAtacking && ((player.ubicationX! > 26) && (player.ubicationY! > 5) && (player.ubicationY! < 11) || (player.ubicationX! > 24) && (player.ubicationY! > 6) && (player.ubicationY! < 10)))

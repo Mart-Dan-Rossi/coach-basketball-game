@@ -1,4 +1,5 @@
 import {playerPositionDetection, roll20SidesDice} from '../utilities/exportableFunctions';
+import { Team } from './team';
 export class Player {
 
     //Info
@@ -34,20 +35,22 @@ export class Player {
     playerActive: boolean;
 
     //Player stats
-    points: number;
-    assists: number;
-    rebounds: number;
-    ofensiveRebounds: number;
-    blocks: number;
-    steals: number;
-    turnOvers: number;
-    fouls: number;
-    fieldGoalsMade: number;
-    fieldGoalsattempt: number;
-    freeThrowsMade: number;
-    freeThrowsAttempt: number;
-    triplesMade: number;
-    triplesAttempt: number;
+    stats: {
+        points: number,
+        fieldGoalsMade: number,
+        fieldGoalsattempt: number,
+        triplesMade: number,
+        triplesAttempt: number,
+        freeThrowsMade: number,
+        freeThrowsAttempt: number,
+        assists: number,
+        turnOvers: number,
+        rebounds: number,
+        offensiveRebounds: number,
+        blocks: number,
+        steals: number,
+        fouls: number,
+    }
     
 
 
@@ -87,20 +90,96 @@ export class Player {
         this.playerActive = false
 
         //Player stats
-        this.points = 0;
-        this.assists = 0;
-        this.rebounds = 0;
-        this.ofensiveRebounds = 0;
-        this.blocks = 0;
-        this.steals = 0;
-        this.turnOvers = 0;
-        this.fouls = 0;
-        this.fieldGoalsMade = 0;
-        this.fieldGoalsattempt = 0;
-        this.freeThrowsMade = 0;
-        this.freeThrowsAttempt = 0;
-        this.triplesMade = 0;
-        this.triplesAttempt = 0;
+        this.stats = {
+            points: 0,
+            fieldGoalsMade: 0,
+            fieldGoalsattempt: 0,
+            triplesMade: 0,
+            triplesAttempt: 0,
+            freeThrowsMade: 0,
+            freeThrowsAttempt: 0,
+            assists: 0,
+            turnOvers: 0,
+            rebounds: 0,
+            offensiveRebounds: 0,
+            blocks: 0,
+            steals: 0,
+            fouls: 0,
+        }
+    }
+
+    statsAddShotAttempt(pointsIfMade: number, isItMade: boolean, wasThereAFoul: boolean) {
+        if(pointsIfMade == 1) {
+            this.stats.freeThrowsAttempt++
+
+            if(isItMade){
+                this.stats.freeThrowsMade++
+                this.stats.points++
+
+            }
+        } else if(pointsIfMade == 2) {
+            this.stats.fieldGoalsattempt++
+
+            if(isItMade){
+                this.stats.fieldGoalsMade++
+                this.stats.points += 2
+            }
+
+            if(wasThereAFoul && !isItMade) {
+                this.stats.fieldGoalsattempt--
+            }
+
+        } else if(pointsIfMade == 3) {
+            this.stats.fieldGoalsattempt++
+            this.stats.triplesAttempt++
+            
+            if(isItMade){
+                this.stats.fieldGoalsMade++
+                this.stats.triplesMade++
+                this.stats.points += 3
+
+            } else if(wasThereAFoul && !isItMade) {
+                this.stats.fieldGoalsattempt--
+                this.stats.triplesAttempt--
+            }
+            
+
+        }
+    }
+
+    statsAddAssist() {
+        this.stats.assists++
+        
+    }
+
+    statsAddRebound(atackingTeam: Team) {
+        if(atackingTeam.name == this.team) {
+            this.stats.offensiveRebounds++
+
+        } else {
+            this.stats.rebounds++
+
+        }
+    }
+
+    statsAddFoul() {
+        this.stats.fouls++
+
+    }
+
+    statsAddTurnOver() {
+        this.stats.turnOvers++
+
+    }
+
+    statsAddBlock() {
+        this.stats.blocks++
+
+    }
+
+    statsAddSteal() {
+        this.stats.steals++
+
     }
 
     playerPositionDetection = ()=> {

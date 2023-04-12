@@ -1,7 +1,8 @@
 import { QuarterTimeLeft } from "./myInterfaces";
 import { Team } from "./team";
-import {roll20SidesDice, numberEntire} from '../utilities/exportableFunctions';
+import {roll20SidesDice, numberEntire, playerZone, ranges, checkTilesThatWillInfluenceInTheCalculations} from '../utilities/exportableFunctions';
 import React from "react";
+import { Player } from "./players";
 
 
 export class Match {
@@ -16,7 +17,7 @@ export class Match {
     timeLeft: QuarterTimeLeft;
     shotClock: number;
 
-    constructor(teamA: Team, teamB: Team){
+    constructor(teamA: Team, teamB: Team) {
         //Change validation
         // if(teams.length != 2) throw new Error(`Match can stast only with 2 teams. You have ${teams.length}`)
         this.teamA = teamA
@@ -37,32 +38,41 @@ export class Match {
 
         let newGameNarration = [...gameNarration]
 
+        //I loop the calculation until ther's a winner
         while (pointsObteinedInTheJumpBallA === pointsObteinedInTheJumpBallB) {
+
+            //Check the centers points in the jump ball
             this.teamA.players.forEach(player => {
                 if(player.position === "5") {
                     pointsObteinedInTheJumpBallA = numberEntire(roll20SidesDice() + player.height + player.atleticism)
 
+                    //Give feedback
                     newGameNarration.unshift(`${player.name === "" ? "The center of team A" : player.name}, get ${pointsObteinedInTheJumpBallA} points in the jump`)
                     setGameNarration(newGameNarration)
                 }
             });
             
+            //Check the centers points in the jump ball
             this.teamB.players.forEach(player =>{
                 if(player.position === "5") {
                     pointsObteinedInTheJumpBallB = numberEntire(roll20SidesDice() + player.height + player.atleticism)
 
+                    //Give feedback
                     newGameNarration.unshift(`${player.name === "" ? "The center of team B" : player.name}, get ${pointsObteinedInTheJumpBallB} points in the jump`) 
                     setGameNarration(newGameNarration)
                 }
             })
 
+            //Check who win the jump ball
             let whoWinTheJump = pointsObteinedInTheJumpBallA - pointsObteinedInTheJumpBallB;
 
-            if (whoWinTheJump > 0){
+            if (whoWinTheJump > 0) {
+                //If teamA won the jump ball give it to the PG of that team
                 this.teamA.players.forEach(player => {
                     if(player.position === "1") {
                         player.haveBall = true
                         
+                        //Give feedback
                         newGameNarration.unshift(`${this.teamA.name} won the jump. Now ${player.name === "" ? "the PG of team A" : player.name} have the ball.`)
                         setGameNarration(newGameNarration)
 
@@ -70,11 +80,13 @@ export class Match {
 
                     }
                 });
-            } else if (whoWinTheJump < 0){
+            } else if (whoWinTheJump < 0) {
+                //If teamB won the jump ball give it to the PG of that team
                 this.teamB.players.forEach(player => {
                     if(player.position === "1") {
                         player.haveBall = true
 
+                        //Give feedback
                         newGameNarration.unshift(`${this.teamB.name} won the jump. Now ${player.name === "" ? "the PG of team B" : player.name} have the ball.`)
                         setGameNarration(newGameNarration)
 
@@ -83,18 +95,272 @@ export class Match {
                     }
                 });
             } else {
+                
+                //Give feedback
                 newGameNarration.unshift(`Both players touch the ball at the same time! The jump ball continues`)
                 setGameNarration(newGameNarration)
             }
         };
 
+        //Set the team with the ball
         if(this.teamTurn == "TeamA") {
             this.teamA.teamTurn = true
         } else if(this.teamTurn == "TeamB") {
             this.teamB.teamTurn = true
         }
 
+        //Give players action points
         this.teamA.giveActionPointsToTeam()
         this.teamB.giveActionPointsToTeam()
     }
+
+    calculateIfPassIsSuccesfull(passer: Player, receiver: Player, gameBoard: [[]]) {
+        //First i get what's the defending team
+        let teamDefending = passer.team == this.teamA.name ? this.teamB.name : this.teamA.name;
+        let totalDefensivePoints = 0;
+
+        //I'll use this to know who is the most likley defender to steal the ball. It have the player with the highest defensive points and the number of points he got
+        let defensorWithTheHighestDefensivePoints = [undefined, undefined] as [Player|undefined, number|undefined];
+
+        //The i get the pass points
+        let passPoints = passer.playMaking * 5 + passer.height * 2 + roll20SidesDice() * 5;
+
+        //The passer get a boost if he used the tripple threat beffore
+        if(passer.lastAction == "Tripple threat") {
+            passPoints = passPoints * 1.2
+        }
+
+        //Then i get the ubications that will have inpact in the calculation
+        let tilesThatWillInfluenceInCalculations = checkTilesThatWillInfluenceInTheCalculations(gameBoard, [passer.ubicationX!, passer.ubicationY!], [receiver.ubicationX!, receiver.ubicationY!])
+
+        
+        function calculateDefensivePointsPerDefensor(player: Player, inPassLine: boolean)  {
+            let points = 0;
+            let playerZoneUbication = playerZone(player, player.team == "TeamB")
+
+            //Do math to calculate points on each sector
+            if(playerZoneUbication == "error") {
+                points = 0
+
+            } else if(playerZoneUbication == ranges.closeToTheRim.id) {
+                points = player.insideDefence * 3 + player.atleticism + player.height - 190 + roll20SidesDice() * 3
+                
+            } else if(playerZoneUbication == ranges.inShortRange.id || playerZoneUbication == ranges.behindTheBoard.id) {
+                points = player.insideDefence * 1.5 + player.perimetrerDefence * 1.5 + player.atleticism + player.height * 0.5 - 170 + roll20SidesDice() * 3
+                
+            } else if(playerZoneUbication == ranges.inMidRange.id) {
+                points = player.insideDefence + player.perimetrerDefence * 2 + player.atleticism + 100 / (player.weight - 50) + roll20SidesDice() * 3
+                
+            } else if(playerZoneUbication as number >= ranges.outsideThe3PointLine.id) {
+                points = player.perimetrerDefence * 3 + player.atleticism + 100 / (player.weight) + roll20SidesDice() * 3
+                
+            }
+
+            if(!inPassLine) {
+                points = points * 0.2
+            }
+
+            if(defensorWithTheHighestDefensivePoints[1]! < points) {
+                defensorWithTheHighestDefensivePoints = [player, points]
+            }
+
+            return points
+
+        }
+
+        function checkDefensivePlayersPoints(i: number, team: Team, arrayOfUbications: any[] | [number[]], inPassLine: boolean) {
+            //Check every player to know his defensive points for this situation
+            team.players.forEach(player => {
+                if(player.ubicationX == arrayOfUbications[i][0] && player.ubicationY == arrayOfUbications[i][1]) {
+                    let defensivePlayerPoints = 0
+                    defensivePlayerPoints = calculateDefensivePointsPerDefensor(player, inPassLine)
+
+                    if(player.lastAction == "Overwhelming waiting") {
+                        defensivePlayerPoints = defensivePlayerPoints * 1.2
+                    }
+
+                    totalDefensivePoints += defensivePlayerPoints
+
+                }
+            });
+        }
+        
+        //I loop on the tiles where the ball goes over to set the defender team points in this situation
+        for(let i=0; i < tilesThatWillInfluenceInCalculations[0].length; i++) {
+            if(teamDefending == this.teamA.name) {
+                checkDefensivePlayersPoints(i, this.teamA, tilesThatWillInfluenceInCalculations[0], true)
+
+            } else if(teamDefending == this.teamB.name) {
+                checkDefensivePlayersPoints(i, this.teamB, tilesThatWillInfluenceInCalculations[0], true)
+            }
+            
+        }
+
+        //I loop on the tiles where the ball goes close to it to set the defender team points in this situation
+        for(let i=0; i < tilesThatWillInfluenceInCalculations[1].length; i++) {
+            if(teamDefending == this.teamA.name) {
+                checkDefensivePlayersPoints(i, this.teamA, tilesThatWillInfluenceInCalculations[1], false)
+
+            } else if(teamDefending == this.teamB.name) {
+                checkDefensivePlayersPoints(i, this.teamB, tilesThatWillInfluenceInCalculations[1], false)
+
+            }
+        }
+
+        //It returns a boolean saying if the pass is succesfull and the higher player defensive point to give him the ball in case the pass is not succesfull.
+        return [passPoints >= totalDefensivePoints, defensorWithTheHighestDefensivePoints[0]]
+    }
+    
+    calculateIfDribblingIsSuccesfull(dribbler: Player, endingUbication: number[], gameBoard: [[]]) {
+        let tilesThatWillInfluenceInCalculations = checkTilesThatWillInfluenceInTheCalculations(gameBoard, [dribbler.ubicationX!, dribbler.ubicationY!], endingUbication)
+        //TODO end this function (and remember to return the correct player, not the dribbler)
+        
+        
+        //It returns a boolean saying if the dribbling is succesfull and the higher player defensive point to give him the ball in case the dribbling is not succesfull.
+        return [true, dribbler]
+    }
+
+    calculateShotResult(shooter: Player, isFreeThrow: boolean) {
+        //First i get the defender team
+        let defendingTeam = shooter.team == "TeamA" ? this.teamB : this.teamA
+
+        //I get in what part of the field is him located to calculate with the propper math
+        let shooterZoneUbication = playerZone(shooter, shooter.team == "TeamB")
+        
+        function getShooterPointsInShot() {
+            let shooterPointsInShot = 0
+
+            //TODO Do math to calculate points on each sector
+            if(isFreeThrow) {
+                shooterPointsInShot = 0
+
+            } else if(shooterZoneUbication == "error") {
+                shooterPointsInShot = 0
+
+            } else if(shooterZoneUbication == ranges.closeToTheRim.id) {
+                shooterPointsInShot = 0
+
+            } else if(shooterZoneUbication == ranges.inShortRange.id || shooterZoneUbication == ranges.behindTheBoard.id) {
+                shooterPointsInShot = 0
+
+            } else if(shooterZoneUbication == ranges.inMidRange.id) {
+                shooterPointsInShot = 0
+
+            } else if(shooterZoneUbication == ranges.outsideThe3PointLine.id) {
+                shooterPointsInShot = 0
+
+            } else if(shooterZoneUbication == ranges.long3Range.id) {
+                shooterPointsInShot = 0
+
+            } else if(shooterZoneUbication == ranges.halfCourt.id) {
+                shooterPointsInShot = 0
+
+            } else if(shooterZoneUbication == ranges.behindHalfCourt.id) {
+                shooterPointsInShot = 0
+
+            } else if(shooterZoneUbication == ranges.theOtherRim.id) {
+                shooterPointsInShot = 0
+
+            }
+            
+            return shooterPointsInShot
+        }
+        
+        function getDefendersPointsInShot() {
+            let totalDefendersPoints = 0
+
+            //If it is a free throw ther's no defenders so totalDefendersPoints is going to be 0
+            if(!isFreeThrow) {
+                //If it was a field shot attempt it cheks the tiles around the shooter. To do so we use one loop for the X direction and one for the Y direction
+                for(let positionX = -2; positionX < 3; positionX++) {
+                    for(let positionY = -2; positionY < 3; positionY++) {
+                        //Then i ckeck if ther's a defender in the scanned ubication using the shooter ubication as center
+                        let defenderInThisUbication = defendingTeam.returnPlayerInThisPosition(shooter.ubicationX! + positionX, shooter.ubicationY! + positionY)
+                        let defenderPoints = 0
+
+                        //If there's a player located in this position
+                        if(defenderInThisUbication != undefined) {
+                            //I get in what part of the field is him located to calculate with the propper math
+                            let defenderZoneUbication = playerZone(defenderInThisUbication, defenderInThisUbication.team == "TeamB")
+
+                            //TODO Do math to calculate points on each sector
+                            if(defenderZoneUbication == "error") {
+                                defenderPoints = 0
+
+                            } else if(defenderZoneUbication == ranges.closeToTheRim.id) {
+                                defenderPoints = 0
+
+                            } else if(defenderZoneUbication == ranges.inShortRange.id || defenderZoneUbication == ranges.behindTheBoard.id) {
+                                defenderPoints = 0
+
+                            } else if(defenderZoneUbication == ranges.inMidRange.id) {
+                                defenderPoints = 0
+
+                            } else if(defenderZoneUbication == ranges.outsideThe3PointLine.id) {
+                                defenderPoints = 0
+
+                            } else if(defenderZoneUbication == ranges.long3Range.id) {
+                                defenderPoints = 0
+
+                            } else if(defenderZoneUbication == ranges.halfCourt.id) {
+                                defenderPoints = 0
+
+                            } else if(defenderZoneUbication == ranges.behindHalfCourt.id) {
+                                defenderPoints = 0
+
+                            } else if(defenderZoneUbication == ranges.theOtherRim.id) {
+                                defenderPoints = 0
+
+                            }
+
+                            //If the defender is right next to the shooter he gets a bonus for his defensive points
+                            if(Math.pow(positionX, 2) == 1 && Math.pow(positionY, 2) == 1) {
+                                defenderPoints = defenderPoints * 1.5
+                            }
+                        }
+
+                        totalDefendersPoints += defenderPoints
+                    }
+                }
+            }
+
+            return totalDefendersPoints
+        }
+
+        function calculateIfGoesIn() {
+            let isItIn = false
+            //I get the difference between the shooter points and the defenders points
+            let pointsComparation = getShooterPointsInShot() - getDefendersPointsInShot()
+            //I get a dice roll
+            let shotDiceRoll = roll20SidesDice()
+
+            //TODO Use both prev data to calculate if it goes in
+
+            return isItIn            
+        }
+
+        return (
+            calculateIfGoesIn() ?
+                (//If it goes in check if it was a free throw
+                        isFreeThrow ?
+                            //If it was a free throw it returns 1
+                            1
+                            : (//If it was not a free throw, check if it was inside the 3 point line
+                                (
+                                 shooterZoneUbication == ranges.closeToTheRim.id ||
+                                 shooterZoneUbication == ranges.inShortRange.id ||
+                                 shooterZoneUbication == ranges.behindTheBoard.id ||
+                                 shooterZoneUbication == ranges.inMidRange.id
+                                ) ?
+                                    //If it was inside the 3 point line it returns 2
+                                    2
+                                    //if not it returns 3
+                                    : 3
+                            )
+                )
+                //If it doesn't go in it returns 0
+                : 0
+        )
+    }
+
 }

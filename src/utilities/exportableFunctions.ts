@@ -365,6 +365,101 @@ export function roll20SidesDice() {
     return Math.random() * (21-1)+1;
 }
 
+export const ranges = {
+    closeToTheRim: {
+        id: 0,
+        text: "close to the rim"
+    },
+    behindTheBoard: {
+        id: 1,
+        text: "behind the board"
+    },
+    inShortRange: {
+        id: 2,
+        text: "in short range"
+    },
+    inMidRange: {
+        id: 3,
+        text: "in mid range"
+    },
+    outsideThe3PointLine: {
+        id: 4,
+        text: "outside the 3 point line"
+    },
+    long3Range: {
+        id: 5,
+        text: "long 3 range"
+    },
+    halfCourt: {
+        id: 6,
+        text: "half court"
+    },
+    behindHalfCourt: {
+        id: 7,
+        text: "behind the half court"
+    },
+    theOtherRim: {
+        id: 8,
+        text: "the other rim"
+    }
+}
+
+export function playerZone(player: Player, teamAAtacking: boolean) {
+    if(
+        (!teamAAtacking && ((player.ubicationX! < 3) && (player.ubicationY! > 5) && (player.ubicationY! < 11) || (player.ubicationX! < 5) && (player.ubicationY! > 6) && (player.ubicationY! < 10)))
+        || (teamAAtacking && ((player.ubicationX! > 26) && (player.ubicationY! > 5) && (player.ubicationY! < 11) || (player.ubicationX! > 24) && (player.ubicationY! > 6) && (player.ubicationY! < 10)))
+        ){
+        return ranges.closeToTheRim.id
+
+    } else if(
+        !teamAAtacking
+        || teamAAtacking) {
+        return ranges.behindTheBoard.id
+
+    } else if(
+        (!teamAAtacking && (player.ubicationX! < 4) && (player.ubicationY! == 5) || (player.ubicationX! < 6) && (player.ubicationX! > 2) && (player.ubicationY! == 6) || (player.ubicationX! == 5) && (player.ubicationY! > 6) && (player.ubicationY! < 10) || (player.ubicationX! < 6) && (player.ubicationX! > 2) && (player.ubicationY! == 10) || (player.ubicationX! < 4) && (player.ubicationY! == 11))
+        || (teamAAtacking && (player.ubicationX! > 24) && (player.ubicationY! == 5) || (player.ubicationX! > 22) && (player.ubicationX! < 27) && (player.ubicationY! == 6) || (player.ubicationX! == 24) && (player.ubicationY! > 6) && (player.ubicationY! < 10) || (player.ubicationX! > 22) && (player.ubicationX! < 27) && (player.ubicationY! == 10) || (player.ubicationX! > 25) && (player.ubicationY! == 11))) {
+        return ranges.inShortRange.id
+
+    } else if(
+        (!teamAAtacking && (player.ubicationX! < 2) && (player.ubicationY! == 3) || (player.ubicationX! < 5) && (player.ubicationY! == 4) || (player.ubicationX! < 6) && (player.ubicationX! > 3) && (player.ubicationY! == 5) || (player.ubicationX! == 6) && (player.ubicationY! > 5) && (player.ubicationY! < 11) || (player.ubicationX! < 6) && (player.ubicationX! > 3) && (player.ubicationY! == 11) || (player.ubicationX! < 5) && (player.ubicationY! == 12) || (player.ubicationX! == 1) && (player.ubicationY! == 13))
+        || teamAAtacking && (player.ubicationX! > 27) && (player.ubicationY! == 3) || (player.ubicationX! > 24) && (player.ubicationY! == 4) || (player.ubicationX! > 23) && (player.ubicationX! < 26) && (player.ubicationY! == 5) || (player.ubicationX! == 23) && (player.ubicationY! > 5) && (player.ubicationY! < 11) || (player.ubicationX! > 23) && (player.ubicationX! < 26) && (player.ubicationY! == 11) || (player.ubicationX! > 24) && (player.ubicationY! == 12) || (player.ubicationX! == 28) && (player.ubicationY! == 13)) {
+        return ranges.inMidRange.id
+
+    } else if(
+        (!teamAAtacking && (player.ubicationY! == 1) || (player.ubicationY! == 2) || (player.ubicationY! == 14) || (player.ubicationY! == 15) || (player.ubicationX! > 1) && (player.ubicationY! == 3) || (player.ubicationX! > 4) && (player.ubicationY! == 4) || (player.ubicationX! > 5) && (player.ubicationY! == 5) || (player.ubicationX! > 6) && (player.ubicationY! > 5) && (player.ubicationY! < 11) || (player.ubicationX! > 5) && (player.ubicationY! == 11) || (player.ubicationX! > 4) && (player.ubicationY! == 12) || (player.ubicationX! > 1) && (player.ubicationY! == 13))
+        || teamAAtacking && (player.ubicationY! == 1) || (player.ubicationY! == 2) || (player.ubicationY! == 14) || (player.ubicationY! == 15) || (player.ubicationX! < 28) && (player.ubicationY! == 3) || (player.ubicationX! < 25) && (player.ubicationY! == 4) || (player.ubicationX! < 24) && (player.ubicationY! == 5) || (player.ubicationX! < 23) && (player.ubicationY! > 5) && (player.ubicationY! < 11) || (player.ubicationX! < 24) && (player.ubicationY! == 11) || (player.ubicationX! < 25) && (player.ubicationY! == 12) || (player.ubicationX! < 28) && (player.ubicationY! == 13)){
+        return ranges.outsideThe3PointLine.id
+
+    } else if(
+        !teamAAtacking
+        || teamAAtacking) {
+        return ranges.long3Range.id
+
+    } else if(
+        !teamAAtacking
+        || teamAAtacking
+    ) {
+        return ranges.halfCourt.id
+
+    } else if(
+        !teamAAtacking
+        || teamAAtacking
+    ) {
+        return ranges.behindHalfCourt.id
+
+    } else if(
+        !teamAAtacking
+        || teamAAtacking
+    ) {
+        return ranges.theOtherRim.id
+
+    } else {
+        return "error"
+
+    }
+}
+
 export function compareIniciatives(playerA: Player, playerB: Player, isTeamAAtacking: boolean) {
     let defender = isTeamAAtacking ? playerB : playerA
     let atacker = isTeamAAtacking ? playerA : playerB
@@ -410,75 +505,86 @@ export function compareIniciatives(playerA: Player, playerB: Player, isTeamAAtac
         //If teah A is defending
         if (!isTeamAAtacking) {
             
+            if(playerZone(defender, !isTeamAAtacking) == "error") {
+                defenderIniciative = 0
+            }
             //If the player is close to the rim
-            if ((defender.ubicationX! < 3) && (defender.ubicationY! > 5) && (defender.ubicationY! < 11) || (defender.ubicationX! < 5) && (defender.ubicationY! > 6) && (defender.ubicationY! < 10)) {
+            else if (playerZone(defender, !isTeamAAtacking) == ranges.closeToTheRim.id) {
                 calculationIfDefensorIsCloseToTheRim();
             }
             //If the player is in short range
-            else if ((defender.ubicationX! < 4) && (defender.ubicationY! == 5) || (defender.ubicationX! < 6) && (defender.ubicationX! > 2) && (defender.ubicationY! == 6) || (defender.ubicationX! == 5) && (defender.ubicationY! > 6) && (defender.ubicationY! < 10) || (defender.ubicationX! < 6) && (defender.ubicationX! > 2) && (defender.ubicationY! == 10) || (defender.ubicationX! < 4) && (defender.ubicationY! == 11)) {
+            else if (playerZone(defender, !isTeamAAtacking) == ranges.inShortRange.id || playerZone(defender, !isTeamAAtacking) == ranges.behindTheBoard.id) {
                 calculationIfDefenderIsInShortRange();
             }
             //If the player is in mid range
-            else if ((defender.ubicationX! < 2) && (defender.ubicationY! == 3) || (defender.ubicationX! < 5) && (defender.ubicationY! == 4) || (defender.ubicationX! < 6) && (defender.ubicationX! > 3) && (defender.ubicationY! == 5) || (defender.ubicationX! == 6) && (defender.ubicationY! > 5) && (defender.ubicationY! < 11) || (defender.ubicationX! < 6) && (defender.ubicationX! > 3) && (defender.ubicationY! == 11) || (defender.ubicationX! < 5) && (defender.ubicationY! == 12) || (defender.ubicationX! == 1) && (defender.ubicationY! == 13)) {
+            else if (playerZone(defender, !isTeamAAtacking) == ranges.inMidRange.id) {
                 calculationIfDefenderIsInMidRange();
             }
-            //If he is outside 3 point range
-            else if ((defender.ubicationY! == 1) || (defender.ubicationY! == 2) || (defender.ubicationY! == 14) || (defender.ubicationY! == 15) || (defender.ubicationX! > 1) && (defender.ubicationY! == 3) || (defender.ubicationX! > 4) && (defender.ubicationY! == 4) || (defender.ubicationX! > 5) && (defender.ubicationY! == 5) || (defender.ubicationX! > 6) && (defender.ubicationY! > 5) && (defender.ubicationY! < 11) || (defender.ubicationX! > 5) && (defender.ubicationY! == 11) || (defender.ubicationX! > 4) && (defender.ubicationY! == 12) || (defender.ubicationX! > 1) && (defender.ubicationY! == 13)) {
+            //If he is outside 3 point range or farther away
+            else if (playerZone(defender, !isTeamAAtacking) as number <= ranges.outsideThe3PointLine.id) {
                 calculationIfDefenderIsOutsideThe3PointLine();
             }
         
+            if(playerZone(atacker, !isTeamAAtacking) == "error") {
+                atackerInisiative = 0
+            }
             //If the player is close to the rim
-            if ((atacker.ubicationX! < 3) && (atacker.ubicationY! > 5) && (atacker.ubicationY! < 11) || (atacker.ubicationX! < 5) && (atacker.ubicationY! > 6) && (atacker.ubicationY! < 10)) {
+            else if (playerZone(atacker, !isTeamAAtacking) == ranges.closeToTheRim.id) {
                 calculationIfAtackerIsCloseToTheRim();
             }
             //If the player is in short range
-            else if ((atacker.ubicationX! < 4) && (atacker.ubicationY! == 5) || (atacker.ubicationX! < 6) && (atacker.ubicationX! > 2) && (atacker.ubicationY! == 6) || (atacker.ubicationX! == 5) && (atacker.ubicationY! > 6) && (atacker.ubicationY! < 10) || (atacker.ubicationX! < 6) && (atacker.ubicationX! > 2) && (atacker.ubicationY! == 10) || (atacker.ubicationX! < 4) && (atacker.ubicationY! == 11)) {
+            else if (playerZone(atacker, !isTeamAAtacking) == ranges.inShortRange.id || playerZone(atacker, !isTeamAAtacking) == ranges.behindTheBoard.id) {
                 calculationIfAtackerIsInShortRange();
             }
             //If the player is in mid range
-            else if ((atacker.ubicationX! < 2) && (atacker.ubicationY! == 3) || (atacker.ubicationX! < 5) && (atacker.ubicationY! == 4) || (atacker.ubicationX! < 6) && (atacker.ubicationX! > 3) && (atacker.ubicationY! == 5) || (atacker.ubicationX! == 6) && (atacker.ubicationY! > 5) && (atacker.ubicationY! < 11) || (atacker.ubicationX! < 6) && (atacker.ubicationX! > 3) && (atacker.ubicationY! == 11) || (atacker.ubicationX! < 5) && (atacker.ubicationY! == 12) || (atacker.ubicationX! == 1) && (atacker.ubicationY! == 13)) {
+            else if (playerZone(atacker, !isTeamAAtacking) == ranges.inMidRange.id) {
                 calculationIfAtackerIsInMidRange();
             }
-            //If he is outside 3 point range
-            else if ((atacker.ubicationY! == 1) || (atacker.ubicationY! == 2) || (atacker.ubicationY! == 14) || (atacker.ubicationY! == 15) || (atacker.ubicationX! > 1) && (atacker.ubicationY! == 3) || (atacker.ubicationX! > 4) && (atacker.ubicationY! == 4) || (atacker.ubicationX! > 5) && (atacker.ubicationY! == 5) || (atacker.ubicationX! > 6) && (atacker.ubicationY! > 5) && (atacker.ubicationY! < 11) || (atacker.ubicationX! > 5) && (atacker.ubicationY! == 11) || (atacker.ubicationX! > 4) && (atacker.ubicationY! == 12) || (atacker.ubicationX! > 1) && (atacker.ubicationY! == 13)) {
+            //If he is outside 3 point range or farther away
+            else if (playerZone(atacker, !isTeamAAtacking) as number <= ranges.outsideThe3PointLine.id) {
                 calculationIfAtackerIsOutsideThe3PointLine();
             }
 
             //If teah B is defending
         } else if (isTeamAAtacking) {
 
-
+            if(playerZone(defender, isTeamAAtacking) == "error") {
+                defenderIniciative = 0
+            }
             //If the player is close to the rim
-            if ((defender.ubicationX! > 26) && (defender.ubicationY! > 5) && (defender.ubicationY! < 11) || (defender.ubicationX! > 24) && (defender.ubicationY! > 6) && (defender.ubicationY! < 10)) {
+            else if (playerZone(defender, isTeamAAtacking) == ranges.closeToTheRim.id) {
                 calculationIfDefensorIsCloseToTheRim();
             }
             //If the player is in short range
-            else if ((defender.ubicationX! > 24) && (defender.ubicationY! == 5) || (defender.ubicationX! > 22) && (defender.ubicationX! < 27) && (defender.ubicationY! == 6) || (defender.ubicationX! == 24) && (defender.ubicationY! > 6) && (defender.ubicationY! < 10) || (defender.ubicationX! > 22) && (defender.ubicationX! < 27) && (defender.ubicationY! == 10) || (defender.ubicationX! > 25) && (defender.ubicationY! == 11)) {
+            else if (playerZone(defender, isTeamAAtacking) == ranges.inShortRange.id || playerZone(defender, isTeamAAtacking) == ranges.behindTheBoard.id) {
                 calculationIfAtackerIsInShortRange();
             }
             //If the player is in mid range
-            else if ((defender.ubicationX! > 27) && (defender.ubicationY! == 3) || (defender.ubicationX! > 24) && (defender.ubicationY! == 4) || (defender.ubicationX! > 23) && (defender.ubicationX! < 26) && (defender.ubicationY! == 5) || (defender.ubicationX! == 23) && (defender.ubicationY! > 5) && (defender.ubicationY! < 11) || (defender.ubicationX! > 23) && (defender.ubicationX! < 26) && (defender.ubicationY! == 11) || (defender.ubicationX! > 24) && (defender.ubicationY! == 12) || (defender.ubicationX! == 28) && (defender.ubicationY! == 13)) {
+            else if (playerZone(defender, isTeamAAtacking) == ranges.inMidRange.id) {
                 calculationIfAtackerIsInMidRange();
             }
-            //If he is outside 3 point range
-            else if ((defender.ubicationY! == 1) || (defender.ubicationY! == 2) || (defender.ubicationY! == 14) || (defender.ubicationY! == 15) || (defender.ubicationX! < 28) && (defender.ubicationY! == 3) || (defender.ubicationX! < 25) && (defender.ubicationY! == 4) || (defender.ubicationX! < 24) && (defender.ubicationY! == 5) || (defender.ubicationX! < 23) && (defender.ubicationY! > 5) && (defender.ubicationY! < 11) || (defender.ubicationX! < 24) && (defender.ubicationY! == 11) || (defender.ubicationX! < 25) && (defender.ubicationY! == 12) || (defender.ubicationX! < 28) && (defender.ubicationY! == 13)) {
+            //If he is outside 3 point range or farther away
+            else if (playerZone(defender, isTeamAAtacking) as number <= ranges.outsideThe3PointLine.id) {
                 calculationIfDefenderIsOutsideThe3PointLine();
             }
         
+            if(playerZone(atacker, !isTeamAAtacking) == "error") {
+                atackerInisiative = 0
+            }
             //If the player is close to the rim
-            if ((atacker.ubicationX! > 26) && (atacker.ubicationY! > 5) && (atacker.ubicationY! < 11) || (atacker.ubicationX! > 24) && (atacker.ubicationY! > 6) && (atacker.ubicationY! < 10)) {
+            else if (playerZone(atacker, !isTeamAAtacking) == ranges.closeToTheRim.id) {
                 calculationIfAtackerIsCloseToTheRim();
             }
             //If the player is in short range
-            else if ((atacker.ubicationX! > 24) && (atacker.ubicationY! == 5) || (atacker.ubicationX! > 22) && (atacker.ubicationX! < 27) && (atacker.ubicationY! == 6) || (atacker.ubicationX! == 24) && (atacker.ubicationY! > 6) && (atacker.ubicationY! < 10) || (atacker.ubicationX! > 22) && (atacker.ubicationX! < 27) && (atacker.ubicationY! == 10) || (atacker.ubicationX! > 25) && (atacker.ubicationY! == 11)) {
+            else if (playerZone(atacker, !isTeamAAtacking) == ranges.inShortRange.id || playerZone(atacker, !isTeamAAtacking) == ranges.behindTheBoard.id) {
                 calculationIfAtackerIsInShortRange();
             }
             //If the player is in mid range
-            else if ((atacker.ubicationX! > 27) && (atacker.ubicationY! == 3) || (atacker.ubicationX! > 24) && (atacker.ubicationY! == 4) || (atacker.ubicationX! > 23) && (atacker.ubicationX! < 26) && (atacker.ubicationY! == 5) || (atacker.ubicationX! == 23) && (atacker.ubicationY! > 5) && (atacker.ubicationY! < 11) || (atacker.ubicationX! > 23) && (atacker.ubicationX! < 26) && (atacker.ubicationY! == 11) || (atacker.ubicationX! > 24) && (atacker.ubicationY! == 12) || (atacker.ubicationX! == 28) && (atacker.ubicationY! == 13)) {
+            else if (playerZone(atacker, !isTeamAAtacking) == ranges.inMidRange.id) {
                 calculationIfAtackerIsInMidRange();
             }
-            //If he is outside 3 point range
-            else if ((atacker.ubicationY! == 1) || (atacker.ubicationY! == 2) || (atacker.ubicationY! == 14) || (atacker.ubicationY! == 15) || (atacker.ubicationX! < 28) && (atacker.ubicationY! == 3) || (atacker.ubicationX! < 25) && (atacker.ubicationY! == 4) || (atacker.ubicationX! < 24) && (atacker.ubicationY! == 5) || (atacker.ubicationX! < 23) && (atacker.ubicationY! > 5) && (atacker.ubicationY! < 11) || (atacker.ubicationX! < 24) && (atacker.ubicationY! == 11) || (atacker.ubicationX! < 25) && (atacker.ubicationY! == 12) || (atacker.ubicationX! < 28) && (atacker.ubicationY! == 13)) {
+            //If he is outside 3 point range or farther away
+            else if (playerZone(atacker, !isTeamAAtacking) as number <= ranges.outsideThe3PointLine.id) {
                 calculationIfAtackerIsOutsideThe3PointLine();
             }
         }
@@ -491,4 +597,49 @@ export function compareIniciatives(playerA: Player, playerB: Player, isTeamAAtac
     } else {
         return atacker
     }
+}
+
+export function checkTilesThatWillInfluenceInTheCalculations(gameBoard: number[][], startingUbication: number[], endingUbication: number[]) {
+    const [width, height] = [gameBoard[0].length, gameBoard.length];
+
+    const x1 = startingUbication[0];
+    const y1 = startingUbication[1];
+    
+    const x2 = endingUbication[0];
+    const y2 = endingUbication[1];
+
+    let dx = x2! - x1!;
+    let dy = y2! - y1!;
+
+    let steps = Math.max(Math.abs(dx), Math.abs(dy));
+
+    let xIncrement = dx / steps;
+    let yIncrement = dy / steps;
+
+    let ballGoesOverThisPositions = [] as any[]|[number[]];
+    let ballGoesCloseToThisPositions = [] as any[]|[number[]];
+        
+    for (let i = 0; i <= steps; i++) {
+      let x = Math.round(x1! + i * xIncrement);
+      let y = Math.round(y1! + i * yIncrement);
+
+      if (x >= 0 && x < width && y >= 0 && y < height) {
+
+        ballGoesOverThisPositions.push([x, y]);
+
+        for (let j = -1; j <= 1; j++) {
+          for (let k = -1; k <= 1; k++) {
+            if (j === 0 && k === 0) {
+              continue;
+            }
+            let x2 = x + j;
+            let y2 = y + k;
+            if (x2 >= 0 && x2 < width && y2 >= 0 && y2 < height) {
+              ballGoesCloseToThisPositions.push([x2, y2]);
+            }
+          }
+        }
+      }
+    }
+    return [ballGoesOverThisPositions, ballGoesCloseToThisPositions]
 }

@@ -19,6 +19,17 @@ function GameBoard( { gameBoard, match } : Props) {
     const teamB = match.teamB
 
     const {
+        setShowMoveButton,
+        setShowStealAttemptButton,
+        setShowInterceptPassAttemptButton,
+        setShowWaitPressingButton,
+        setShowWaitCarefullyButton,
+        setShowPassButton,
+        setShowDribblingButton,
+        setShowWaitWithoutTheBallButton,
+        setShowTripleThreatButton,
+        setShowShootButton,
+        setShowEndTurnButton,
         setActivateConfirmButton,
         setConfirmButtonHandler,
         setGameBoard,
@@ -41,6 +52,46 @@ function GameBoard( { gameBoard, match } : Props) {
                 )
             }
         })
+    }
+
+    function showPosibleActionsButtons(teamActivePlayer : Player|undefined, team: Team) {
+        if(teamActivePlayer) {
+            if(team.teamHaveTheBall()) {
+                if(teamActivePlayer.actionPoints > 0.5) {
+                    if(teamActivePlayer.haveBall) {
+                        setShowTripleThreatButton(true)
+                        setShowPassButton(true)
+                    }
+                }
+                if(teamActivePlayer.actionPoints > 1) {
+                    if(teamActivePlayer.haveBall) {
+                        setShowDribblingButton(true)
+                        setShowShootButton(true)
+                    } else {
+                        setShowMoveButton(true)
+                        setShowWaitWithoutTheBallButton(true)
+                    }
+                }
+            } else {
+                if(teamActivePlayer.actionPoints > 0.5) {
+                    setShowWaitCarefullyButton(true)
+                }
+                if(teamActivePlayer.actionPoints > 1) {
+                    setShowWaitPressingButton(true)
+                    setShowMoveButton(true)
+
+                    const otherTeam = team.name == "TeamA" ? teamB : teamA
+                    
+                    const playerWithBall = otherTeam.returnPlayerWithBall()
+                    const xDistance = playerWithBall!.ubicationX! - teamActivePlayer.ubicationX!
+                    const yDistance = playerWithBall!.ubicationY! - teamActivePlayer.ubicationY!
+
+                    if(Math.pow(xDistance, 2) == 1 && Math.pow(yDistance, 2) == 1) {
+                        setShowStealAttemptButton(true)
+                    }
+                }
+            }
+        }
     }
 
     function addClassIfNeeded(teamNumber: number, col: number, row: number) {
@@ -71,15 +122,21 @@ function GameBoard( { gameBoard, match } : Props) {
                 }
             }
 
-            let teamAActivePlayerUbication = teamA.returnActivePlayerUbication()
-            let teamBActivePlayerUbication = teamB.returnActivePlayerUbication()
+            let teamAActivePlayer = teamA.returnActivePlayer() as Player|undefined
+            let teamBActivePlayer = teamB.returnActivePlayer() as Player|undefined
+
+            let teamAActivePlayerUbication = teamAActivePlayer && [teamAActivePlayer.ubicationX, teamAActivePlayer.ubicationY]
+            let teamBActivePlayerUbication = teamBActivePlayer && [teamBActivePlayer.ubicationX, teamBActivePlayer.ubicationY]
 
             // console.log("this ubication", thisUbication)
 
             // console.log("teamAActivePlayerUbication", teamAActivePlayerUbication)
             // console.log("teamBActivePlayerUbication", teamBActivePlayerUbication)
 
-            if(teamAActivePlayerUbication[0] == col && teamAActivePlayerUbication[1] == row || teamBActivePlayerUbication[0] == col && teamBActivePlayerUbication[1] == row){
+            if((teamAActivePlayerUbication && teamAActivePlayerUbication[0] == col && teamAActivePlayerUbication[1] == row) || (teamBActivePlayerUbication && teamBActivePlayerUbication[0] == col && teamBActivePlayerUbication[1] == row)){
+                showPosibleActionsButtons(teamAActivePlayer, teamA)
+                showPosibleActionsButtons(teamBActivePlayer, teamB)
+                        
                 return("active-tile")
             }
 

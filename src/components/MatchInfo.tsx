@@ -18,7 +18,7 @@ function MatchInfo( { match }: Props) {
 
   return (
     <div className='match-info-container'>
-        <span className='team-score'>{match.teamA.points}</span>
+        <span className='team-score'>{match.teamA.stats.points}</span>
         <span className="team-name team-a-name-in-scoreboard">{setDisplayableTeamName("TeamA")}</span>
 
         <div className="clocks-container">
@@ -34,7 +34,7 @@ function MatchInfo( { match }: Props) {
         </div>
 
         <span className="team-name team-b-name-in-scoreboard">{setDisplayableTeamName("TeamB")}</span>
-        <span className='team-score'>{match.teamB.points}</span>
+        <span className='team-score'>{match.teamB.stats.points}</span>
     </div>
   )
 }

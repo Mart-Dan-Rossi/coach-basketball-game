@@ -171,14 +171,14 @@ export class Team {
         return anyActive
     }
     
-    returnActivePlayerUbication() {
-        let activePlayerUbication = [0, 0]
+    returnActivePlayer() {
+        let activePlayer
 
         this.players.forEach(player => {
-            player.playerActive && (activePlayerUbication = [player.ubicationX!, player.ubicationY!])
+            player.playerActive && (activePlayer = player)
         })
 
-        return activePlayerUbication
+        return activePlayer
     }
 
     returnSelectedPlayer() {
@@ -206,6 +206,16 @@ export class Team {
             })
         }
         return playerInThisPosition
+    }
+
+    returnPlayerWithBall() {
+        let playerWithBall: Player|undefined
+        this.players.forEach(player => {
+            if(player.haveBall) {
+                playerWithBall = player
+            }
+        })
+        return playerWithBall
     }
 
 }

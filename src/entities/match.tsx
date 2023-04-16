@@ -16,20 +16,24 @@ export class Match {
     querter: number;
     timeLeft: QuarterTimeLeft;
     shotClock: number;
-
+    turnOver: boolean;
+    gameOver: boolean;
+    
     constructor(teamA: Team, teamB: Team) {
         //Change validation
         // if(teams.length != 2) throw new Error(`Match can stast only with 2 teams. You have ${teams.length}`)
         this.teamA = teamA
         this.teamB = teamB
-
+        
         //Match status
         this.teamTurn = ""
-
+        
         //Match basic info
         this.querter = 1
         this.timeLeft = { minutes: 6, seconds: 0 }
         this.shotClock = 24
+        this.turnOver = false
+        this.gameOver = false
     }
     
     jumpBall(gameNarration: string[], setGameNarration: React.Dispatch<React.SetStateAction<string[]>>) {        
@@ -112,6 +116,14 @@ export class Match {
         //Give players action points
         this.teamA.giveActionPointsToTeam()
         this.teamB.giveActionPointsToTeam()
+
+        //Run clock
+        if(this.timeLeft.seconds == 0) {
+            this.timeLeft.minutes--
+            this.timeLeft.seconds = 59
+        } else {
+            this.timeLeft.seconds--
+        }
     }
 
     calculateIfPassIsSuccesfull(passer: Player, receiver: Player, gameBoard: [[]]) {
@@ -361,6 +373,14 @@ export class Match {
                 //If it doesn't go in it returns 0
                 : 0
         )
+    }    
+
+    matchHandler(gameNarration: string[], setGameNarration: React.Dispatch<React.SetStateAction<string[]>>, match: Match,setMatchState: React.Dispatch<React.SetStateAction<Match>>) {
+        if(!this.gameOver) {
+            
+        }       
+
+        setMatchState(match)
     }
 
 }

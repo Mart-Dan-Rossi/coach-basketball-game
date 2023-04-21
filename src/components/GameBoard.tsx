@@ -134,7 +134,7 @@ function GameBoard( { gameBoard, match } : Props) {
             // console.log("teamAActivePlayerUbication", teamAActivePlayerUbication)
             // console.log("teamBActivePlayerUbication", teamBActivePlayerUbication)
 
-            if((teamAActivePlayerUbication && teamAActivePlayerUbication[0] == col && teamAActivePlayerUbication[1] == row) || (teamBActivePlayerUbication && teamBActivePlayerUbication[0] == col && teamBActivePlayerUbication[1] == row)){
+            if((teamAActivePlayerUbication && teamAActivePlayerUbication[0] == col && teamAActivePlayerUbication[1] == row) || (teamBActivePlayerUbication && teamBActivePlayerUbication[0] == col && teamBActivePlayerUbication[1] == row)) {
                 showPosibleActionsButtons(teamAActivePlayer, teamA)
                 showPosibleActionsButtons(teamBActivePlayer, teamB)
                         

@@ -35,6 +35,12 @@ export class Match {
         this.turnOver = false
         this.gameOver = false
     }
+
+    getActivePlayer() {
+        let activePlayer = this.teamA.returnActivePlayer() ?? this.teamB.returnActivePlayer()
+
+        return activePlayer as Player | undefined
+    }
     
     jumpBall(gameNarration: string[], setGameNarration: React.Dispatch<React.SetStateAction<string[]>>) {        
         let pointsObteinedInTheJumpBallA = 0

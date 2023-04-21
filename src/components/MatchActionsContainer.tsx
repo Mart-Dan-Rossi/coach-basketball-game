@@ -4,8 +4,13 @@ import {GameContext} from '../context/GameContext';
 import './MatchActionsContainer.css'
 import {  } from '../entities/myInterfaces';
 import { dribblingButtonFunction, endTurnButtonFunction, interceptPassAttemptButtonFunction, moveButtonFunction, overwhelmingWaitingButtonFunction, passButtonFunction, shootButtonFunction, stealAttemptButtonFunction, tripleThreatButtonFunction, waitWithCautionButtonFunction, waitWithoutTheBallButtonFunction } from '../utilities/exportableFunctions';
+import { Match } from '../entities/match';
 
-function MatchActionsContainer() {
+interface Props {
+  match: Match
+}
+
+function MatchActionsContainer( { match } : Props) {
   const {
     gameNarration,
     showMoveButton,
@@ -48,8 +53,6 @@ function MatchActionsContainer() {
   const [shootButtonSelected, setShootButtonSelected] = useState(false)
   const [endTurnButtonSelected, setEndTurnButtonSelected] = useState(false)
 
-  console.log("cbh: ", confirmButtonHandler)
-
   function hideActionsButtons() {
     setShowMoveButton(false)
     setShowStealAttemptButton(false)
@@ -66,8 +69,6 @@ function MatchActionsContainer() {
 
 
   useEffect(() => {
-    return () => {
-    }
   }, [gameNarration])
 
   const allActionsButtons = {
@@ -77,7 +78,10 @@ function MatchActionsContainer() {
       showState: showMoveButton,
       selectedState: moveButtonSelected,
       selectedSetter: setMoveButtonSelected,
-      actionFunction: ()=> {
+      actionFunction: (match: Match)=> {
+        let activePlayer = match.getActivePlayer()
+
+        
         moveButtonFunction()
       }
       ,
@@ -89,7 +93,10 @@ function MatchActionsContainer() {
       showState: showStealAttemptButton,
       selectedState: stealAttemptButtonSelected,
       selectedSetter: setStealAttemptButtonSelected,
-      actionFunction: ()=> {
+      actionFunction: (match: Match)=> {
+        let activePlayer = match.getActivePlayer()
+
+        
         stealAttemptButtonFunction()
       },
     }
@@ -100,7 +107,10 @@ function MatchActionsContainer() {
       showState: showInterceptPassAttemptButton,
       selectedState: interceptPassAttemptButtonSelected,
       selectedSetter: setInterceptPassAttemptButtonSelected,
-      actionFunction: ()=> {
+      actionFunction: (match: Match)=> {
+        let activePlayer = match.getActivePlayer()
+
+        
         interceptPassAttemptButtonFunction()
       },
     }
@@ -111,7 +121,10 @@ function MatchActionsContainer() {
       showState: showWaitPressingButton,
       selectedState: waitPressingButtonSelected,
       selectedSetter: setOverwhelmingWaitingButtonSelected,
-      actionFunction: ()=> {
+      actionFunction: (match: Match)=> {
+        let activePlayer = match.getActivePlayer()
+
+        
         overwhelmingWaitingButtonFunction()
       },
     }
@@ -122,7 +135,10 @@ function MatchActionsContainer() {
       showState: showWaitCarefullyButton,
       selectedState: waitCarefullyButtonSelected,
       selectedSetter: setWaitWithCautionButtonSelected,
-      actionFunction: ()=> {
+      actionFunction: (match: Match)=> {
+        let activePlayer = match.getActivePlayer()
+
+        
         waitWithCautionButtonFunction()
       },
     }
@@ -133,7 +149,10 @@ function MatchActionsContainer() {
       showState: showPassButton,
       selectedState: passButtonSelected,
       selectedSetter: setPassButtonSelected,
-      actionFunction: ()=> {
+      actionFunction: (match: Match)=> {
+        let activePlayer = match.getActivePlayer()
+
+        
         passButtonFunction()
       },
     }
@@ -144,7 +163,10 @@ function MatchActionsContainer() {
       showState: showDribblingButton,
       selectedState: dribblingButtonSelected,
       selectedSetter: setDribblingButtonSelected,
-      actionFunction: ()=> {
+      actionFunction: (match: Match)=> {
+        let activePlayer = match.getActivePlayer()
+
+        
         dribblingButtonFunction()
       },
     }
@@ -155,7 +177,10 @@ function MatchActionsContainer() {
       showState: showWaitWithoutTheBallButton,
       selectedState: waitWithoutTheBallButtonSelected,
       selectedSetter: setWaitWithoutTheBallButtonSelected,
-      actionFunction: ()=> {
+      actionFunction: (match: Match)=> {
+        let activePlayer = match.getActivePlayer()
+
+        
         waitWithoutTheBallButtonFunction()
       },
     }
@@ -166,7 +191,10 @@ function MatchActionsContainer() {
       showState: showTripleThreatButton,
       selectedState: tripleThreatButtonSelected,
       selectedSetter: setTripleThreatButtonSelected,
-      actionFunction: ()=> {
+      actionFunction: (match: Match)=> {
+        let activePlayer = match.getActivePlayer()
+
+        
         tripleThreatButtonFunction()
       },
     }
@@ -177,7 +205,10 @@ function MatchActionsContainer() {
       showState: showShootButton,
       selectedState: shootButtonSelected,
       selectedSetter: setShootButtonSelected,
-      actionFunction: ()=> {
+      actionFunction: (match: Match)=> {
+        let activePlayer = match.getActivePlayer()
+
+        
         shootButtonFunction()
       },
     }
@@ -188,7 +219,10 @@ function MatchActionsContainer() {
       showState: showEndTurnButton,
       selectedState: endTurnButtonSelected,
       selectedSetter: setEndTurnButtonSelected,
-      actionFunction: ()=> {
+      actionFunction: (match: Match)=> {
+        let activePlayer = match.getActivePlayer()
+
+        
         endTurnButtonFunction()
       },
     }
@@ -238,7 +272,7 @@ function MatchActionsContainer() {
           </div>
               {
                   <button
-                  onClick={activateConfirmButton ? ()=> {confirmButtonHandler()} : ()=>{console.log("Select action first")}}
+                  onClick={activateConfirmButton ? ()=> {confirmButtonHandler(match)} : ()=>{console.log("Select action first")}}
                   className={ activateConfirmButton ? "confirm-button" : "disabled confirm-button" }
                   >
                       Confirm

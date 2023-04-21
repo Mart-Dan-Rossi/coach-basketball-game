@@ -55,6 +55,7 @@ function GameBoard( { gameBoard, match } : Props) {
     }
 
     function showPosibleActionsButtons(teamActivePlayer : Player|undefined, team: Team) {
+        setShowEndTurnButton(true)
         if(teamActivePlayer) {
             if(team.teamHaveTheBall()) {
                 if(teamActivePlayer.actionPoints > 0.5) {

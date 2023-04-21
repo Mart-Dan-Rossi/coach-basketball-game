@@ -645,3 +645,60 @@ export function checkTilesThatWillInfluenceInTheCalculations(gameBoard: number[]
     }
     return [ballGoesOverThisPositions, ballGoesCloseToThisPositions]
 }
+
+
+//TODO Add this function
+export function moveButtonFunction(){
+    return console.log("moveButtonFunction")
+}
+
+//TODO Add this function
+export function stealAttemptButtonFunction(){
+    return console.log("stealAttemptButtonFunction")
+}
+
+//TODO Add this function
+export function interceptPassAttemptButtonFunction(){
+    return console.log("interceptPassAttemptButtonFunction")
+}
+
+//TODO Add this function
+export function overwhelmingWaitingButtonFunction(){
+    return console.log("overwhelmingWaitingButtonFunction")
+}
+
+//TODO Add this function
+export function waitWithCautionButtonFunction(){
+    return console.log("waitWithCautionButtonFunction")
+}
+
+//TODO Add this function
+export function passButtonFunction(){
+    return console.log("passButtonFunction")
+}
+
+//TODO Add this function
+export function dribblingButtonFunction(){
+    return console.log("dribblingButtonFunction")
+}
+
+//TODO Add this function
+export function waitWithoutTheBallButtonFunction(){
+    return console.log("waitWithoutTheBallButtonFunction")
+}
+
+//TODO Add this function
+export function tripleThreatButtonFunction(){
+    return console.log("tripleThreatButtonFunction")
+}
+
+//TODO Add this function
+export function shootButtonFunction(){
+    return console.log("shootButtonFunction")
+}
+
+//TODO Add this function
+export function endTurnButtonFunction(){
+    return console.log("endTurnButtonFunction")
+
+}

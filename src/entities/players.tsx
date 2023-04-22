@@ -33,6 +33,7 @@ export class Player {
     actionPoints: number;
     playerSelected: boolean;
     playerActive: boolean;
+    playerHaveTurn: boolean;
 
     //Player stats
     stats: {
@@ -88,6 +89,7 @@ export class Player {
         this.actionPoints = 0;
         this.playerSelected = false
         this.playerActive = false
+        this.playerHaveTurn = true
 
         //Player stats
         this.stats = {

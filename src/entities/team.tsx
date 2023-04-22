@@ -56,6 +56,14 @@ export class Team {
         }
     }
 
+    doesPlayersMovement() {
+        let movementRemaining = false
+        this.players.forEach(player => {
+            !movementRemaining && (movementRemaining = player.movementLeft)
+        });
+        return movementRemaining
+    }
+
     statsAddShotAttempt(pointsIfMade: number, isItMade: boolean, isItAnAssist: boolean, wasThereAFoul: boolean) {
         if(pointsIfMade == 1) {
             this.stats.freeThrowsAttempt++
@@ -159,6 +167,15 @@ export class Team {
         })
 
         return anySelected
+    }
+
+    getSelectedPlayer() {
+        let selectedPlayer: Player|undefined
+        
+        this.players.forEach(player => {
+            player.playerSelected && (selectedPlayer = player)
+        })
+        return selectedPlayer
     }
 
     isAPlayerActive() {

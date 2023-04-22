@@ -41,6 +41,42 @@ export class Match {
 
         return activePlayer as Player | undefined
     }
+
+    getSelectedPlayers() {
+        let teamASelectedPlayer: Player | undefined
+        let teamBSelectedPlayer: Player | undefined
+
+        this.teamA.isAPlayerSelected() && (teamASelectedPlayer = this.teamA.getSelectedPlayer())
+        this.teamB.isAPlayerSelected() && (teamBSelectedPlayer = this.teamB.getSelectedPlayer())
+
+        return [teamASelectedPlayer, teamBSelectedPlayer]
+    }
+
+    handleSelectedPlayersStatus() {
+        let activePlayer = this.getActivePlayer()
+        
+        activePlayer!.playerActive = false
+        activePlayer!.playerSelected = false
+        
+        let selectedPlayers = this.getSelectedPlayers()
+    
+        if(selectedPlayers[0] || selectedPlayers[1]) {
+          if(selectedPlayers[0]) {
+            selectedPlayers[0].playerSelected = true
+
+        }
+          if(selectedPlayers[1]) {
+            selectedPlayers[1].playerSelected = true
+
+        }
+        } else if(this.teamA.doesPlayersMovement() || this.teamB.doesPlayersMovement()) {
+          this.teamA.teamHaveTheBall() ?
+            this.teamTurn = "TeamB"
+            : this.teamTurn = "TeamA"
+          
+        }
+    
+      }
     
     jumpBall(gameNarration: string[], setGameNarration: React.Dispatch<React.SetStateAction<string[]>>) {        
         let pointsObteinedInTheJumpBallA = 0

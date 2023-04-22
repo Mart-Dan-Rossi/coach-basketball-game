@@ -79,10 +79,10 @@ function MatchActionsContainer( { match } : Props) {
       selectedState: moveButtonSelected,
       selectedSetter: setMoveButtonSelected,
       actionFunction: (match: Match)=> {
-        let activePlayer = match.getActivePlayer()
 
-        
         moveButtonFunction()
+        match.handleSelectedPlayersStatus()
+
       }
       ,
     }
@@ -94,10 +94,10 @@ function MatchActionsContainer( { match } : Props) {
       selectedState: stealAttemptButtonSelected,
       selectedSetter: setStealAttemptButtonSelected,
       actionFunction: (match: Match)=> {
-        let activePlayer = match.getActivePlayer()
 
-        
+        match.handleSelectedPlayersStatus()
         stealAttemptButtonFunction()
+        
       },
     }
     ,
@@ -108,10 +108,10 @@ function MatchActionsContainer( { match } : Props) {
       selectedState: interceptPassAttemptButtonSelected,
       selectedSetter: setInterceptPassAttemptButtonSelected,
       actionFunction: (match: Match)=> {
-        let activePlayer = match.getActivePlayer()
 
-        
+        match.handleSelectedPlayersStatus()
         interceptPassAttemptButtonFunction()
+        
       },
     }
     ,
@@ -122,10 +122,10 @@ function MatchActionsContainer( { match } : Props) {
       selectedState: waitPressingButtonSelected,
       selectedSetter: setOverwhelmingWaitingButtonSelected,
       actionFunction: (match: Match)=> {
-        let activePlayer = match.getActivePlayer()
 
-        
+        match.handleSelectedPlayersStatus()
         overwhelmingWaitingButtonFunction()
+        
       },
     }
     ,
@@ -136,10 +136,10 @@ function MatchActionsContainer( { match } : Props) {
       selectedState: waitCarefullyButtonSelected,
       selectedSetter: setWaitWithCautionButtonSelected,
       actionFunction: (match: Match)=> {
-        let activePlayer = match.getActivePlayer()
 
-        
+        match.handleSelectedPlayersStatus()
         waitWithCautionButtonFunction()
+        
       },
     }
     ,
@@ -150,10 +150,10 @@ function MatchActionsContainer( { match } : Props) {
       selectedState: passButtonSelected,
       selectedSetter: setPassButtonSelected,
       actionFunction: (match: Match)=> {
-        let activePlayer = match.getActivePlayer()
 
-        
+        match.handleSelectedPlayersStatus()
         passButtonFunction()
+        
       },
     }
     ,
@@ -164,10 +164,10 @@ function MatchActionsContainer( { match } : Props) {
       selectedState: dribblingButtonSelected,
       selectedSetter: setDribblingButtonSelected,
       actionFunction: (match: Match)=> {
-        let activePlayer = match.getActivePlayer()
 
-        
+        match.handleSelectedPlayersStatus()
         dribblingButtonFunction()
+        
       },
     }
     ,
@@ -178,10 +178,10 @@ function MatchActionsContainer( { match } : Props) {
       selectedState: waitWithoutTheBallButtonSelected,
       selectedSetter: setWaitWithoutTheBallButtonSelected,
       actionFunction: (match: Match)=> {
-        let activePlayer = match.getActivePlayer()
 
-        
+        match.handleSelectedPlayersStatus()
         waitWithoutTheBallButtonFunction()
+        
       },
     }
     ,
@@ -192,10 +192,10 @@ function MatchActionsContainer( { match } : Props) {
       selectedState: tripleThreatButtonSelected,
       selectedSetter: setTripleThreatButtonSelected,
       actionFunction: (match: Match)=> {
-        let activePlayer = match.getActivePlayer()
 
-        
+        match.handleSelectedPlayersStatus()
         tripleThreatButtonFunction()
+        
       },
     }
     ,
@@ -206,10 +206,10 @@ function MatchActionsContainer( { match } : Props) {
       selectedState: shootButtonSelected,
       selectedSetter: setShootButtonSelected,
       actionFunction: (match: Match)=> {
-        let activePlayer = match.getActivePlayer()
 
-        
+        match.handleSelectedPlayersStatus()
         shootButtonFunction()
+        
       },
     }
     ,
@@ -220,16 +220,16 @@ function MatchActionsContainer( { match } : Props) {
       selectedState: endTurnButtonSelected,
       selectedSetter: setEndTurnButtonSelected,
       actionFunction: (match: Match)=> {
-        let activePlayer = match.getActivePlayer()
 
-        
+        match.handleSelectedPlayersStatus()
         endTurnButtonFunction()
+        
       },
     }
     ,
   }  
 
-  function clickActionButtonHanddler(previousValueOfThisActionState: boolean, setter: React.Dispatch<React.SetStateAction<boolean>>, actionFunction: ()=> void) {
+  function clickActionButtonHanddler(previousValueOfThisActionState: boolean, setter: React.Dispatch<React.SetStateAction<boolean>>, actionFunction: (match: Match)=> void) {
     return ()=>{
       previousValueOfThisActionState ? setActivateConfirmButton(false) : setActivateConfirmButton(true)
       
@@ -245,6 +245,8 @@ function MatchActionsContainer( { match } : Props) {
       setConfirmButtonHandler(()=> actionFunction)
     }
   }
+
+  console.log("cfh: ", confirmButtonHandler)
 
   return (
     <div>
@@ -272,7 +274,7 @@ function MatchActionsContainer( { match } : Props) {
           </div>
               {
                   <button
-                  onClick={activateConfirmButton ? ()=> {confirmButtonHandler(match)} : ()=>{console.log("Select action first")}}
+                  onClick={activateConfirmButton ? ()=> {confirmButtonHandler()} : ()=>{console.log("Select action first")}}
                   className={ activateConfirmButton ? "confirm-button" : "disabled confirm-button" }
                   >
                       Confirm

@@ -70,7 +70,7 @@ export class Match {
 
         }
         } else if(this.teamA.doesPlayersMovement() || this.teamB.doesPlayersMovement()) {
-          this.teamA.teamHaveTheBall() ?
+          this.teamA.getPlayerWithBallOrUndefined() ?
             this.teamTurn = "TeamB"
             : this.teamTurn = "TeamA"
           
@@ -415,7 +415,30 @@ export class Match {
                 //If it doesn't go in it returns 0
                 : 0
         )
-    }    
+    }
+
+    getPlayerWithBall() {
+        if(this.teamA.getPlayerWithBallOrUndefined()) {
+
+        }
+    }
+
+    movePlayer(ubicationToMove: number[]) {
+
+    }
+
+    stealAttemptButtonFunction() {
+        //TODO end this function
+        let offensivePlayerPointsInSituation = 0
+
+        if(this.)
+
+        for(let dx = -1; dx < 2; dx++) {
+            for(let dy = -1; dy < 2; dy++) {
+                
+            }
+        }
+    }
 
     matchHandler(gameNarration: string[], setGameNarration: React.Dispatch<React.SetStateAction<string[]>>, match: Match,setMatchState: React.Dispatch<React.SetStateAction<Match>>) {
         if(!this.gameOver) {

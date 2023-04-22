@@ -57,7 +57,7 @@ function GameBoard( { gameBoard, match } : Props) {
     function showPosibleActionsButtons(teamActivePlayer : Player|undefined, team: Team) {
         setShowEndTurnButton(true)
         if(teamActivePlayer) {
-            if(team.teamHaveTheBall()) {
+            if(team.getPlayerWithBallOrUndefined()) {
                 if(teamActivePlayer.actionPoints > 0.5) {
                     if(teamActivePlayer.haveBall) {
                         setShowTripleThreatButton(true)
@@ -195,7 +195,7 @@ function GameBoard( { gameBoard, match } : Props) {
         if(otherTeam.teamTurnLeft) {
             otherTeam.teamTurn = true
         } else {
-            playerActive = compareIniciatives(teamA.returnSelectedPlayer()!, teamB.returnSelectedPlayer()!, teamA.teamHaveTheBall())
+            playerActive = compareIniciatives(teamA.returnSelectedPlayer()!, teamB.returnSelectedPlayer()!, teamA.getPlayerWithBallOrUndefined())
 
             playerActive.playerActive = true
             playerActive.playerSelected = false

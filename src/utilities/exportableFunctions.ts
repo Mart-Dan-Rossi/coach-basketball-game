@@ -404,7 +404,7 @@ export const ranges = {
     }
 }
 
-export function playerZone(player: Player, teamAAtacking: boolean) {
+export function playerZone(player: Player, teamAAtacking: Player | undefined) {
 
     //TODO check if zones are written correctly
     if(
@@ -462,7 +462,7 @@ export function playerZone(player: Player, teamAAtacking: boolean) {
     }
 }
 
-export function compareIniciatives(playerA: Player, playerB: Player, isTeamAAtacking: boolean) {
+export function compareIniciatives(playerA: Player, playerB: Player, isTeamAAtacking: Player | undefined) {
     let defender = isTeamAAtacking ? playerB : playerA
     let atacker = isTeamAAtacking ? playerA : playerB
 
@@ -650,11 +650,6 @@ export function checkTilesThatWillInfluenceInTheCalculations(gameBoard: number[]
 //TODO Add this function
 export function moveButtonFunction(){
     return console.log("moveButtonFunction")
-}
-
-//TODO Add this function
-export function stealAttemptButtonFunction(){
-    return console.log("stealAttemptButtonFunction")
 }
 
 //TODO Add this function

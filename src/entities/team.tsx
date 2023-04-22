@@ -114,7 +114,7 @@ export class Team {
     }
 
     statsAddRebound() {
-        if(this.teamHaveTheBall()) {
+        if(this.getPlayerWithBallOrUndefined()) {
             this.stats.offensiveRebounds++
 
         } else {
@@ -143,14 +143,13 @@ export class Team {
 
     }
 
-    teamHaveTheBall() {
-        let doesTeamHaveTheBall = false
+    getPlayerWithBallOrUndefined() {
         this.players.forEach(player => {
-            if(!doesTeamHaveTheBall && player.playerHaveTheBall()) {
-                doesTeamHaveTheBall = true
+            if(player.playerHaveTheBall()) {
+                return player
             }
         });
-        return doesTeamHaveTheBall
+        return undefined
     }
 
     giveActionPointsToTeam() {

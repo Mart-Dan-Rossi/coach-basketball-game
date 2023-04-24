@@ -219,11 +219,11 @@ export default function GameContainer() {
     }, [matchState])
     
     
-  return (
-    <div className='game-container'>
-        <MatchInfo match={matchState}/>
-        <GameBoard gameBoard={newGameBoard} match={matchState}/>
-        <MatchActionsContainer match={matchState}/>
-    </div>
-  )
+    return (
+      <div className='game-container'>
+          <MatchInfo match={matchState}/>
+          <GameBoard gameBoard={newGameBoard} match={matchState}/>
+          <MatchActionsContainer match={matchState} setMatchState={setMatchState}/>
+      </div>
+    )
 }

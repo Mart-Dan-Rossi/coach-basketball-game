@@ -463,7 +463,7 @@ export function playerZone(player: Player, teamAAtacking: boolean) {
     }
 }
 
-export function compareIniciatives(playerA: Player, playerB: Player, isTeamAAtacking: boolean) {
+export function compareIniciatives(playerA: Player, playerB: Player, isTeamAAtacking: Player | undefined) {
     let defender = isTeamAAtacking ? playerB : playerA
     let atacker = isTeamAAtacking ? playerA : playerB
 
@@ -508,7 +508,7 @@ export function compareIniciatives(playerA: Player, playerB: Player, isTeamAAtac
         //If teah A is defending
         if (!isTeamAAtacking) {
             
-            if(playerZone(defender, !isTeamAAtacking) == "error") {
+            if(playerZone(defender, !isTeamAAtacking?true:false) == "error") {
                 defenderIniciative = 0
             }
             //If the player is close to the rim
@@ -551,23 +551,23 @@ export function compareIniciatives(playerA: Player, playerB: Player, isTeamAAtac
             //If teah B is defending
         } else if (isTeamAAtacking) {
 
-            if(playerZone(defender, isTeamAAtacking) == "error") {
+            if(playerZone(defender, isTeamAAtacking?true:false) == "error") {
                 defenderIniciative = 0
             }
             //If the player is close to the rim
-            else if (playerZone(defender, isTeamAAtacking) == ranges.closeToTheRim.id) {
+            else if (playerZone(defender, isTeamAAtacking?true:false) == ranges.closeToTheRim.id) {
                 calculationIfDefensorIsCloseToTheRim();
             }
             //If the player is in short range
-            else if (playerZone(defender, isTeamAAtacking) == ranges.inShortRange.id || playerZone(defender, isTeamAAtacking) == ranges.behindTheBoard.id) {
+            else if (playerZone(defender, isTeamAAtacking?true:false) == ranges.inShortRange.id || playerZone(defender, isTeamAAtacking?true:false) == ranges.behindTheBoard.id) {
                 calculationIfAtackerIsInShortRange();
             }
             //If the player is in mid range
-            else if (playerZone(defender, isTeamAAtacking) == ranges.inMidRange.id) {
+            else if (playerZone(defender, isTeamAAtacking?true:false) == ranges.inMidRange.id) {
                 calculationIfAtackerIsInMidRange();
             }
             //If he is outside 3 point range or farther away
-            else if (playerZone(defender, isTeamAAtacking) as number <= ranges.outsideThe3PointLine.id) {
+            else if (playerZone(defender, isTeamAAtacking?true:false) as number <= ranges.outsideThe3PointLine.id) {
                 calculationIfDefenderIsOutsideThe3PointLine();
             }
         
@@ -654,7 +654,7 @@ export function moveButtonFunction(match: Match) {
 }
 
 //TODO Add this function
-export function stealAttemptButtonFunction() {
+export function stealAttemptButtonFunction(){
     return console.log("stealAttemptButtonFunction")
 }
 

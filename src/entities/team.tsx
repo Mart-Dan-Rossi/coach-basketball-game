@@ -66,15 +66,17 @@ export class Team {
         return movementRemaining
     }
 
-    teamHaveTheBall() {
-        let doesTeamHaveTheBall = false
+    getPlayerWithBallOrUndefined() {
         this.players.forEach(player => {
-            if(!doesTeamHaveTheBall && player.playerHaveTheBall()) {
-                doesTeamHaveTheBall = true
+            if(player.playerHaveTheBall()) {
+                return player
             }
         });
-        return doesTeamHaveTheBall
+        return undefined
     }
+    //----------------------------------------END STATS METHODS---------------------------------------------------------------------------------------------------------------
+
+    //---------------------------------START SET PLAYER STATUS METHODS--------------------------------------------------------------------------------------------------------
 
     isAnyPlayerSelected() {
         let anySelected = false
@@ -208,7 +210,7 @@ export class Team {
     }
 
     statsAddRebound() {
-        if(this.teamHaveTheBall()) {
+        if(this.getPlayerWithBallOrUndefined()) {
             this.stats.offensiveRebounds++
 
         } else {
@@ -237,9 +239,15 @@ export class Team {
 
     }
 
-    //----------------------------------------END STATS METHODS---------------------------------------------------------------------------------------------------------------
-
-    //---------------------------------START SET PLAYER STATUS METHODS--------------------------------------------------------------------------------------------------------
+    teamHaveTheBall() {
+        let doesTeamHaveTheBall = false
+        this.players.forEach(player => {
+            if(!doesTeamHaveTheBall && player.playerHaveTheBall()) {
+                doesTeamHaveTheBall = true
+            }
+        });
+        return doesTeamHaveTheBall
+    }
 
     giveActionPointsToTeam() {
         this.players.forEach(player => {

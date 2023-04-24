@@ -22,7 +22,7 @@ function PlayerImgContainer({team, col, row, teamLetterProps} : Props) {
 
     function drawPlayer() {
         return (
-            team.teamHaveTheBall() ?
+            team.getPlayerWithBallOrUndefined() ?
                 team.players.map(player => {
                     playerImg = ""
                     let playerUbication = [player.ubicationX, player.ubicationY]

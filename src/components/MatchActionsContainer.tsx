@@ -8,9 +8,10 @@ import { Match } from '../entities/match';
 
 interface Props {
   match: Match
+  setMatchState: React.Dispatch<React.SetStateAction<Match>>
 }
 
-function MatchActionsContainer( { match } : Props) {
+function MatchActionsContainer( { match, setMatchState } : Props) {
   const {
     gameNarration,
     showMoveButton,
@@ -40,6 +41,8 @@ function MatchActionsContainer( { match } : Props) {
     confirmButtonHandler,
     setConfirmButtonHandler,
   } = useContext(GameContext)
+
+  let matchCopy = match
   
   const [moveButtonSelected, setMoveButtonSelected] = useState(false)
   const [stealAttemptButtonSelected, setStealAttemptButtonSelected] = useState(false)
@@ -63,11 +66,13 @@ function MatchActionsContainer( { match } : Props) {
       showState: showMoveButton,
       selectedState: moveButtonSelected,
       selectedSetter: setMoveButtonSelected,
-      actionFunction: (match: Match)=> {
+      actionFunction: ()=> {
+        //TODO end this function
 
-        moveButtonFunction(match)
+        moveButtonFunction(matchCopy)
         match.handleSelectedPlayersStatus()
 
+        setMatchState(matchCopy)
       }
       ,
     }
@@ -78,11 +83,12 @@ function MatchActionsContainer( { match } : Props) {
       showState: showStealAttemptButton,
       selectedState: stealAttemptButtonSelected,
       selectedSetter: setStealAttemptButtonSelected,
-      actionFunction: (match: Match)=> {
+      actionFunction: ()=> {
+        //TODO end this function
 
-        match.handleSelectedPlayersStatus()
-        stealAttemptButtonFunction()
+        matchCopy.handleSelectedPlayersStatus()
         
+        setMatchState(matchCopy)
       },
     }
     ,
@@ -92,11 +98,13 @@ function MatchActionsContainer( { match } : Props) {
       showState: showInterceptPassAttemptButton,
       selectedState: interceptPassAttemptButtonSelected,
       selectedSetter: setInterceptPassAttemptButtonSelected,
-      actionFunction: (match: Match)=> {
+      actionFunction: ()=> {
+        //TODO end this function
 
-        match.handleSelectedPlayersStatus()
+        matchCopy.handleSelectedPlayersStatus()
         interceptPassAttemptButtonFunction()
         
+        setMatchState(matchCopy)
       },
     }
     ,
@@ -106,11 +114,13 @@ function MatchActionsContainer( { match } : Props) {
       showState: showWaitPressingButton,
       selectedState: waitPressingButtonSelected,
       selectedSetter: setOverwhelmingWaitingButtonSelected,
-      actionFunction: (match: Match)=> {
+      actionFunction: ()=> {
+        //TODO end this function
 
-        match.handleSelectedPlayersStatus()
+        matchCopy.handleSelectedPlayersStatus()
         overwhelmingWaitingButtonFunction()
         
+        setMatchState(matchCopy)
       },
     }
     ,
@@ -120,11 +130,13 @@ function MatchActionsContainer( { match } : Props) {
       showState: showWaitCarefullyButton,
       selectedState: waitCarefullyButtonSelected,
       selectedSetter: setWaitWithCautionButtonSelected,
-      actionFunction: (match: Match)=> {
+      actionFunction: ()=> {
+        //TODO end this function
 
-        match.handleSelectedPlayersStatus()
+        matchCopy.handleSelectedPlayersStatus()
         waitWithCautionButtonFunction()
         
+        setMatchState(matchCopy)
       },
     }
     ,
@@ -134,11 +146,13 @@ function MatchActionsContainer( { match } : Props) {
       showState: showPassButton,
       selectedState: passButtonSelected,
       selectedSetter: setPassButtonSelected,
-      actionFunction: (match: Match)=> {
+      actionFunction: ()=> {
+        //TODO end this function
 
-        match.handleSelectedPlayersStatus()
+        matchCopy.handleSelectedPlayersStatus()
         passButtonFunction()
         
+        setMatchState(matchCopy)
       },
     }
     ,
@@ -148,11 +162,13 @@ function MatchActionsContainer( { match } : Props) {
       showState: showDribblingButton,
       selectedState: dribblingButtonSelected,
       selectedSetter: setDribblingButtonSelected,
-      actionFunction: (match: Match)=> {
+      actionFunction: ()=> {
+        //TODO end this function
 
-        match.handleSelectedPlayersStatus()
+        matchCopy.handleSelectedPlayersStatus()
         dribblingButtonFunction()
         
+        setMatchState(matchCopy)
       },
     }
     ,
@@ -162,11 +178,13 @@ function MatchActionsContainer( { match } : Props) {
       showState: showWaitWithoutTheBallButton,
       selectedState: waitWithoutTheBallButtonSelected,
       selectedSetter: setWaitWithoutTheBallButtonSelected,
-      actionFunction: (match: Match)=> {
+      actionFunction: ()=> {
+        //TODO end this function
 
-        match.handleSelectedPlayersStatus()
+        matchCopy.handleSelectedPlayersStatus()
         waitWithoutTheBallButtonFunction()
         
+        setMatchState(matchCopy)
       },
     }
     ,
@@ -176,11 +194,13 @@ function MatchActionsContainer( { match } : Props) {
       showState: showTripleThreatButton,
       selectedState: tripleThreatButtonSelected,
       selectedSetter: setTripleThreatButtonSelected,
-      actionFunction: (match: Match)=> {
+      actionFunction: ()=> {
+        //TODO end this function
 
-        match.handleSelectedPlayersStatus()
+        matchCopy.handleSelectedPlayersStatus()
         tripleThreatButtonFunction()
         
+        setMatchState(matchCopy)
       },
     }
     ,
@@ -190,11 +210,13 @@ function MatchActionsContainer( { match } : Props) {
       showState: showShootButton,
       selectedState: shootButtonSelected,
       selectedSetter: setShootButtonSelected,
-      actionFunction: (match: Match)=> {
+      actionFunction: ()=> {
+        //TODO end this function
 
-        match.handleSelectedPlayersStatus()
+        matchCopy.handleSelectedPlayersStatus()
         shootButtonFunction()
         
+        setMatchState(matchCopy)
       },
     }
     ,
@@ -204,11 +226,13 @@ function MatchActionsContainer( { match } : Props) {
       showState: showEndTurnButton,
       selectedState: endTurnButtonSelected,
       selectedSetter: setEndTurnButtonSelected,
-      actionFunction: (match: Match)=> {
+      actionFunction: ()=> {
+        //TODO end this function
 
-        match.handleSelectedPlayersStatus()
+        matchCopy.handleSelectedPlayersStatus()
         endTurnButtonFunction()
         
+        setMatchState(matchCopy)
       },
     }
     ,

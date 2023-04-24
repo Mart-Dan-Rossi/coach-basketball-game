@@ -56,13 +56,107 @@ export class Team {
         }
     }
 
-    doesPlayersMovement() {
+    //--------------------------------------START GET INFO METHODS------------------------------------------------------------------------------------------------------------
+
+    doesPlayersHaveMovement() {
         let movementRemaining = false
         this.players.forEach(player => {
             !movementRemaining && (movementRemaining = player.movementLeft)
         });
         return movementRemaining
     }
+
+    teamHaveTheBall() {
+        let doesTeamHaveTheBall = false
+        this.players.forEach(player => {
+            if(!doesTeamHaveTheBall && player.playerHaveTheBall()) {
+                doesTeamHaveTheBall = true
+            }
+        });
+        return doesTeamHaveTheBall
+    }
+
+    isAnyPlayerSelected() {
+        let anySelected = false
+
+        this.players.forEach(player => {
+            player.playerSelected && (anySelected = true)
+        })
+
+        return anySelected
+    }
+
+    
+    getSelectedPlayer() {
+        let selectedPlayer: Player|undefined
+        
+        this.players.forEach(player => {
+            player.playerSelected && (selectedPlayer = player)
+        })
+        return selectedPlayer
+    }
+
+    isAPlayerActive() {
+        let anyActive = false
+
+        this.players.forEach(player => {
+            player.playerActive && (anyActive = true)
+        })
+
+        return anyActive
+    }
+    
+    returnActivePlayer() {
+        let activePlayer
+
+        this.players.forEach(player => {
+            player.playerActive && (activePlayer = player)
+        })
+
+        return activePlayer
+    }
+
+    returnSelectedPlayer() {
+        let playerSelected
+        this.players.forEach(player => {
+            if(player.playerSelected) {
+                playerSelected = player
+            }
+        })
+        return playerSelected
+    }
+
+    returnPlayerInThisPosition(positionX: number, positionY: number) {
+        let playerInThisPosition : Player|undefined
+        //IMPORTANT First i check if that ubication is inside the board
+        if(positionX > 0 && positionX < 29 && positionY > 0 && positionY < 16) {
+
+            //If it is inside the board i check every player ubication
+            this.players.forEach(player => {
+                //I use the first condition to cut the loop faster if a player is founded
+                if(playerInThisPosition == undefined && (player.ubicationX == positionX && player.ubicationY == positionY)) {
+                    //If there's a player in that ubication i return it
+                    playerInThisPosition = player
+                }
+            })
+        }
+        return playerInThisPosition
+    }
+
+    returnPlayerWithBall() {
+        let playerWithBall: Player|undefined
+        this.players.forEach(player => {
+            if(player.haveBall) {
+                playerWithBall = player
+            }
+        })
+        return playerWithBall
+    }
+
+    //---------------------------------------END GET INFO METHODS-------------------------------------------------------------------------------------------------------------
+
+
+    //---------------------------------------START STATS METHODS--------------------------------------------------------------------------------------------------------------
 
     statsAddShotAttempt(pointsIfMade: number, isItMade: boolean, isItAnAssist: boolean, wasThereAFoul: boolean) {
         if(pointsIfMade == 1) {
@@ -143,15 +237,9 @@ export class Team {
 
     }
 
-    teamHaveTheBall() {
-        let doesTeamHaveTheBall = false
-        this.players.forEach(player => {
-            if(!doesTeamHaveTheBall && player.playerHaveTheBall()) {
-                doesTeamHaveTheBall = true
-            }
-        });
-        return doesTeamHaveTheBall
-    }
+    //----------------------------------------END STATS METHODS---------------------------------------------------------------------------------------------------------------
+
+    //---------------------------------START SET PLAYER STATUS METHODS--------------------------------------------------------------------------------------------------------
 
     giveActionPointsToTeam() {
         this.players.forEach(player => {
@@ -159,80 +247,6 @@ export class Team {
         });
     }
 
-    isAPlayerSelected() {
-        let anySelected = false
-
-        this.players.forEach(player => {
-            player.playerSelected && (anySelected = true)
-        })
-
-        return anySelected
-    }
-
-    getSelectedPlayer() {
-        let selectedPlayer: Player|undefined
-        
-        this.players.forEach(player => {
-            player.playerSelected && (selectedPlayer = player)
-        })
-        return selectedPlayer
-    }
-
-    isAPlayerActive() {
-        let anyActive = false
-
-        this.players.forEach(player => {
-            player.playerActive && (anyActive = true)
-        })
-
-        return anyActive
-    }
-    
-    returnActivePlayer() {
-        let activePlayer
-
-        this.players.forEach(player => {
-            player.playerActive && (activePlayer = player)
-        })
-
-        return activePlayer
-    }
-
-    returnSelectedPlayer() {
-        let playerSelected
-        this.players.forEach(player => {
-            if(player.playerSelected) {
-                playerSelected = player
-            }
-        })
-        return playerSelected
-    }
-
-    returnPlayerInThisPosition(positionX: number, positionY: number) {
-        let playerInThisPosition : Player|undefined
-        //IMPORTANT First i check if that ubication is inside the board
-        if(positionX > 0 && positionX < 29 && positionY > 0 && positionY < 16) {
-
-            //If it is inside the board i check every player ubication
-            this.players.forEach(player => {
-                //I use the first condition to cut the loop faster if a player is founded
-                if(playerInThisPosition == undefined && (player.ubicationX == positionX && player.ubicationY == positionY)) {
-                    //If there's a player in that ubication i return it
-                    playerInThisPosition = player
-                }
-            })
-        }
-        return playerInThisPosition
-    }
-
-    returnPlayerWithBall() {
-        let playerWithBall: Player|undefined
-        this.players.forEach(player => {
-            if(player.haveBall) {
-                playerWithBall = player
-            }
-        })
-        return playerWithBall
-    }
+    //----------------------------------END SET PLAYER STATUS METHODS---------------------------------------------------------------------------------------------------------
 
 }

@@ -53,21 +53,6 @@ function MatchActionsContainer( { match } : Props) {
   const [shootButtonSelected, setShootButtonSelected] = useState(false)
   const [endTurnButtonSelected, setEndTurnButtonSelected] = useState(false)
 
-  function hideActionsButtons() {
-    setShowMoveButton(false)
-    setShowStealAttemptButton(false)
-    setShowInterceptPassAttemptButton(false)
-    setShowWaitPressingButton(false)
-    setShowWaitCarefullyButton(false)
-    setShowPassButton(false)
-    setShowDribblingButton(false)
-    setShowWaitWithoutTheBallButton(false)
-    setShowTripleThreatButton(false)
-    setShowShootButton(false)
-    setShowEndTurnButton(false)
-  }
-
-
   useEffect(() => {
   }, [gameNarration])
 
@@ -80,7 +65,7 @@ function MatchActionsContainer( { match } : Props) {
       selectedSetter: setMoveButtonSelected,
       actionFunction: (match: Match)=> {
 
-        moveButtonFunction()
+        moveButtonFunction(match)
         match.handleSelectedPlayersStatus()
 
       }

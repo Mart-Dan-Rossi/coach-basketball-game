@@ -42,6 +42,20 @@ function GameBoard( { gameBoard, match } : Props) {
     useEffect(() => {
     }, [gameBoard])
 
+    function hideActionsButtons() {
+      setShowMoveButton(false)
+      setShowStealAttemptButton(false)
+      setShowInterceptPassAttemptButton(false)
+      setShowWaitPressingButton(false)
+      setShowWaitCarefullyButton(false)
+      setShowPassButton(false)
+      setShowDribblingButton(false)
+      setShowWaitWithoutTheBallButton(false)
+      setShowTripleThreatButton(false)
+      setShowShootButton(false)
+      setShowEndTurnButton(false)
+    }
+
     function paintPlayerOnThisTileAsSelected(team: Team, ubicationScaned: number[]) {
         team.players.forEach(player =>{
             let playerUbication = [player.ubicationX, player.ubicationY]
@@ -96,6 +110,7 @@ function GameBoard( { gameBoard, match } : Props) {
     }
 
     function addClassIfNeeded(teamNumber: number, col: number, row: number) {
+        //TODO add cases where choaches have to pick a tile to do an action
         
         if(teamNumber != 0) {
             let thisUbication = [col, row]
@@ -106,7 +121,7 @@ function GameBoard( { gameBoard, match } : Props) {
 
             if(teamA.teamTurn && teamNumber == 1) {
 
-                if(teamA.isAPlayerSelected()) {
+                if(teamA.isAnyPlayerSelected()) {
                     paintPlayerOnThisTileAsSelected(teamA, thisUbication)
 
                 } else {
@@ -115,7 +130,7 @@ function GameBoard( { gameBoard, match } : Props) {
 
             } else if(teamB.teamTurn && teamNumber == 2) {
 
-                if(teamB.isAPlayerSelected()) {
+                if(teamB.isAnyPlayerSelected()) {
                     paintPlayerOnThisTileAsSelected(teamB, thisUbication)
 
                 } else {
@@ -147,6 +162,8 @@ function GameBoard( { gameBoard, match } : Props) {
     }
 
     function clickTileHandler(teamNumber: number, col: number, row: number) {
+        //TODO add cases where choaches have to pick a tile to do an action
+        
         return ()=> {
             let thisUbication = [col, row]
             if(teamNumber != 0) {
@@ -155,7 +172,7 @@ function GameBoard( { gameBoard, match } : Props) {
                     if(teamA.teamTurn){
                         setPlayerClikedTeamA([col, row])
 
-                        if(!teamA.isAPlayerSelected()) {
+                        if(!teamA.isAnyPlayerSelected()) {
                             setConfirmButtonHandler(()=> ()=> confirmPlayerSelection(teamA, thisUbication, teamB))
                         }
 
@@ -166,7 +183,7 @@ function GameBoard( { gameBoard, match } : Props) {
                     if(teamB.teamTurn){
                         setPlayerClikedTeamB([col, row])
 
-                        if(!teamB.isAPlayerSelected()) {
+                        if(!teamB.isAnyPlayerSelected()) {
                             setConfirmButtonHandler(()=> ()=> confirmPlayerSelection(teamB, thisUbication, teamA))
                         }
 

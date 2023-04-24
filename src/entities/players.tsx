@@ -110,6 +110,36 @@ export class Player {
         }
     }
 
+    //---------------------------------START GET INFO METHODS--------------------------------------------------------------------------------------------------------
+
+    
+    playerPositionDetection = ()=> {
+        if(this.position == "1"){
+            return "PG"
+        } else if(this.position == "2"){
+            return "SG"
+        } else if(this.position == "3") {
+            return "SF"
+        } else if(this.position == "4") {
+            return "PF"
+        } else if(this.position == "5") {
+            return "C"
+        }
+    }
+
+    playerHaveTheBall() {
+        if(this.haveBall == true) {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    //----------------------------------END GET INFO METHODS---------------------------------------------------------------------------------------------------------
+
+
+    //----------------------------------START STATS METHODS----------------------------------------------------------------------------------------------------------
+    
     statsAddShotAttempt(pointsIfMade: number, isItMade: boolean, wasThereAFoul: boolean) {
         if(pointsIfMade == 1) {
             this.stats.freeThrowsAttempt++
@@ -183,28 +213,10 @@ export class Player {
         this.stats.steals++
 
     }
-
-    playerPositionDetection = ()=> {
-        if(this.position == "1"){
-            return "PG"
-        } else if(this.position == "2"){
-            return "SG"
-        } else if(this.position == "3") {
-            return "SF"
-        } else if(this.position == "4") {
-            return "PF"
-        } else if(this.position == "5") {
-            return "C"
-        }
-    }
-
-    playerHaveTheBall() {
-        if(this.haveBall == true) {
-            return true
-        } else {
-            return false
-        }
-    }
+    //-----------------------------------END STATS METHODS-----------------------------------------------------------------------------------------------------------
+    
+    
+    //----------------------------START SET PLAYER STATUS METHODS----------------------------------------------------------------------------------------------------
 
     giveActionPointsToPlayer() {
         this.actionPoints = 0
@@ -232,4 +244,6 @@ export class Player {
             }
         }
     }
+
+    //-----------------------------END SET PLAYER STATUS METHODS-----------------------------------------------------------------------------------------------------
 }

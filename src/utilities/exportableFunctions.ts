@@ -1,5 +1,6 @@
 import { PlayerEditableInfo, PlayerStats } from "../entities/myInterfaces"
 import { Player } from "../entities/players"
+import { Match } from '../entities/match';
 
 export function getMinStatPerPosition(thisStat: string, playerPosition: string) {
     if(thisStat == "height") {
@@ -410,7 +411,7 @@ export function playerZone(player: Player, teamAAtacking: boolean) {
     if(
         (!teamAAtacking && ((player.ubicationX! < 3) && (player.ubicationY! > 5) && (player.ubicationY! < 11) || (player.ubicationX! < 5) && (player.ubicationY! > 6) && (player.ubicationY! < 10)))
         || (teamAAtacking && ((player.ubicationX! > 26) && (player.ubicationY! > 5) && (player.ubicationY! < 11) || (player.ubicationX! > 24) && (player.ubicationY! > 6) && (player.ubicationY! < 10)))
-        ){
+        ) {
         return ranges.closeToTheRim.id
 
     } else if(
@@ -430,7 +431,7 @@ export function playerZone(player: Player, teamAAtacking: boolean) {
 
     } else if(
         (!teamAAtacking && (player.ubicationY! == 1) || (player.ubicationY! == 2) || (player.ubicationY! == 14) || (player.ubicationY! == 15) || (player.ubicationX! > 1) && (player.ubicationY! == 3) || (player.ubicationX! > 4) && (player.ubicationY! == 4) || (player.ubicationX! > 5) && (player.ubicationY! == 5) || (player.ubicationX! > 6) && (player.ubicationY! > 5) && (player.ubicationY! < 11) || (player.ubicationX! > 5) && (player.ubicationY! == 11) || (player.ubicationX! > 4) && (player.ubicationY! == 12) || (player.ubicationX! > 1) && (player.ubicationY! == 13))
-        || teamAAtacking && (player.ubicationY! == 1) || (player.ubicationY! == 2) || (player.ubicationY! == 14) || (player.ubicationY! == 15) || (player.ubicationX! < 28) && (player.ubicationY! == 3) || (player.ubicationX! < 25) && (player.ubicationY! == 4) || (player.ubicationX! < 24) && (player.ubicationY! == 5) || (player.ubicationX! < 23) && (player.ubicationY! > 5) && (player.ubicationY! < 11) || (player.ubicationX! < 24) && (player.ubicationY! == 11) || (player.ubicationX! < 25) && (player.ubicationY! == 12) || (player.ubicationX! < 28) && (player.ubicationY! == 13)){
+        || teamAAtacking && (player.ubicationY! == 1) || (player.ubicationY! == 2) || (player.ubicationY! == 14) || (player.ubicationY! == 15) || (player.ubicationX! < 28) && (player.ubicationY! == 3) || (player.ubicationX! < 25) && (player.ubicationY! == 4) || (player.ubicationX! < 24) && (player.ubicationY! == 5) || (player.ubicationX! < 23) && (player.ubicationY! > 5) && (player.ubicationY! < 11) || (player.ubicationX! < 24) && (player.ubicationY! == 11) || (player.ubicationX! < 25) && (player.ubicationY! == 12) || (player.ubicationX! < 28) && (player.ubicationY! == 13)) {
         return ranges.outsideThe3PointLine.id
 
     } else if(
@@ -648,57 +649,57 @@ export function checkTilesThatWillInfluenceInTheCalculations(gameBoard: number[]
 
 
 //TODO Add this function
-export function moveButtonFunction(){
+export function moveButtonFunction(match: Match) {
     return console.log("moveButtonFunction")
 }
 
 //TODO Add this function
-export function stealAttemptButtonFunction(){
+export function stealAttemptButtonFunction() {
     return console.log("stealAttemptButtonFunction")
 }
 
 //TODO Add this function
-export function interceptPassAttemptButtonFunction(){
+export function interceptPassAttemptButtonFunction() {
     return console.log("interceptPassAttemptButtonFunction")
 }
 
 //TODO Add this function
-export function overwhelmingWaitingButtonFunction(){
+export function overwhelmingWaitingButtonFunction() {
     return console.log("overwhelmingWaitingButtonFunction")
 }
 
 //TODO Add this function
-export function waitWithCautionButtonFunction(){
+export function waitWithCautionButtonFunction() {
     return console.log("waitWithCautionButtonFunction")
 }
 
 //TODO Add this function
-export function passButtonFunction(){
+export function passButtonFunction() {
     return console.log("passButtonFunction")
 }
 
 //TODO Add this function
-export function dribblingButtonFunction(){
+export function dribblingButtonFunction() {
     return console.log("dribblingButtonFunction")
 }
 
 //TODO Add this function
-export function waitWithoutTheBallButtonFunction(){
+export function waitWithoutTheBallButtonFunction() {
     return console.log("waitWithoutTheBallButtonFunction")
 }
 
 //TODO Add this function
-export function tripleThreatButtonFunction(){
+export function tripleThreatButtonFunction() {
     return console.log("tripleThreatButtonFunction")
 }
 
 //TODO Add this function
-export function shootButtonFunction(){
+export function shootButtonFunction() {
     return console.log("shootButtonFunction")
 }
 
 //TODO Add this function
-export function endTurnButtonFunction(){
+export function endTurnButtonFunction() {
     return console.log("endTurnButtonFunction")
 
 }

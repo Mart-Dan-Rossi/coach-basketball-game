@@ -128,11 +128,7 @@ export class Player {
     }
 
     playerHaveTheBall() {
-        if(this.haveBall == true) {
-            return true
-        } else {
-            return false
-        }
+        return this.haveBall
     }
 
     //----------------------------------END GET INFO METHODS---------------------------------------------------------------------------------------------------------

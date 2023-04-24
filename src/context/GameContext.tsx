@@ -107,6 +107,10 @@ export interface GameContextProps {
     activateConfirmButton: boolean,
     setActivateConfirmButton: React.Dispatch<React.SetStateAction<boolean>>,
 
+    actionConfirmed: string,
+    setActionConfirmed: React.Dispatch<React.SetStateAction<string>>,
+
+
     gameBoard: number[][],
     setGameBoard: React.Dispatch<React.SetStateAction<number[][]>>,
 

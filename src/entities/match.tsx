@@ -465,14 +465,6 @@ export class Match {
             this.timeLeft.seconds--
         }
     }
-            
-    matchHandler(gameNarration: string[], setGameNarration: React.Dispatch<React.SetStateAction<string[]>>, match: Match,setMatchState: React.Dispatch<React.SetStateAction<Match>>) {
-        if(!this.gameOver) {
-            
-        }       
-        
-        setMatchState(match)
-    }
 
     //------------------------------------END MATCH HANDLER METHODS-----------------------------------------------------------------------------------------------------------
             

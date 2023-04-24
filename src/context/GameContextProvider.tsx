@@ -232,6 +232,8 @@ export const GameContextProvider = ({ children }: props) =>{
 
     const [activateConfirmButton, setActivateConfirmButton] = useState(false)
 
+    const [actionConfirmed, setActionConfirmed] = useState("")
+
     const [confirmButtonHandler, setConfirmButtonHandler] = useState(()=> ()=> {})
 
     const [playerClikedTeamA, setPlayerClikedTeamA] = useState([0, 0])
@@ -282,6 +284,8 @@ export const GameContextProvider = ({ children }: props) =>{
                 showShootButton, setShowShootButton,
                 showEndTurnButton, setShowEndTurnButton,
                 activateConfirmButton, setActivateConfirmButton,
+
+                actionConfirmed, setActionConfirmed,
 
                 gameBoard, setGameBoard,
                 confirmButtonHandler, setConfirmButtonHandler,

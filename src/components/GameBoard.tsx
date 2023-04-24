@@ -19,6 +19,7 @@ function GameBoard( { gameBoard, match } : Props) {
     const teamB = match.teamB
 
     const {
+        actionConfirmed,
         setShowMoveButton,
         setShowStealAttemptButton,
         setShowInterceptPassAttemptButton,
@@ -69,15 +70,20 @@ function GameBoard( { gameBoard, match } : Props) {
     }
 
     function showPosibleActionsButtons(teamActivePlayer : Player|undefined, team: Team) {
-        setShowEndTurnButton(true)
         if(teamActivePlayer) {
+            //End turn button is allways shown
+            setShowEndTurnButton(true)
+
+            //If the player is part of the atacking team
             if(team.getPlayerWithBallOrUndefined()) {
+                //And have more than 0.5 action points
                 if(teamActivePlayer.actionPoints > 0.5) {
                     if(teamActivePlayer.haveBall) {
                         setShowTripleThreatButton(true)
                         setShowPassButton(true)
                     }
                 }
+                //And have more than 1 action point
                 if(teamActivePlayer.actionPoints > 1) {
                     if(teamActivePlayer.haveBall) {
                         setShowDribblingButton(true)
@@ -87,17 +93,27 @@ function GameBoard( { gameBoard, match } : Props) {
                         setShowWaitWithoutTheBallButton(true)
                     }
                 }
+
+            //Else if the player is part of the defending team
             } else {
+
+                //And have more than 0.5 action points
                 if(teamActivePlayer.actionPoints > 0.5) {
                     setShowWaitCarefullyButton(true)
                 }
+
+                //And have more than 1 action point
                 if(teamActivePlayer.actionPoints > 1) {
                     setShowWaitPressingButton(true)
                     setShowMoveButton(true)
 
+                    //And check if ther's an atacking player with the ball next to him
                     const otherTeam = team.name == "TeamA" ? teamB : teamA
+
+                    // console.log("team: ", team, "otherTeam: ", otherTeam)
                     
                     const playerWithBall = otherTeam.returnPlayerWithBall()
+
                     const xDistance = playerWithBall!.ubicationX! - teamActivePlayer.ubicationX!
                     const yDistance = playerWithBall!.ubicationY! - teamActivePlayer.ubicationY!
 
@@ -112,8 +128,43 @@ function GameBoard( { gameBoard, match } : Props) {
     function addClassIfNeeded(teamNumber: number, col: number, row: number) {
         //TODO add cases where choaches have to pick a tile to do an action
         
+        let thisUbication = [col, row]
+        let activePlayer = match.getActivePlayer()!
+        
+        if(actionConfirmed == "move") {
+
+            for(let dx = -1; dx < 3; dx++) {
+                for(let dy = -1; dy < 3; dy ++) {
+                    //Don't add class to player tile
+
+                    if(!(dx == 0 && dy == 0)) {
+                        //If the scanned ubication is around the active player
+                        if(activePlayer.ubicationX! + dx == thisUbication[0] && activePlayer.ubicationY! + dy == thisUbication[1]) {
+
+                            //The player have more than 1.5 action points and the tile is in the diagonal or less than 1.5 points and the sile is next to the player
+                            if((activePlayer.actionPoints > 1.5 && (Math.pow(dx, 2) + Math.pow(dy, 2) == 2)) || (activePlayer.actionPoints < 1.5 && (dx == 0 || dy == 0))) {
+                                let isAplayerInThatTile = false
+
+                                match.teamA.players.forEach(player => {
+                                    isAplayerInThatTile = !isAplayerInThatTile && player.ubicationX == thisUbication[0] && player.ubicationY == thisUbication[1]
+                                })
+
+                                match.teamB.players.forEach(player => {
+                                    isAplayerInThatTile = !isAplayerInThatTile && player.ubicationX == thisUbication[0] && player.ubicationY == thisUbication[1]
+                                })
+
+                                if(!isAplayerInThatTile) {
+                                    return("highlighted-tile")
+
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
         if(teamNumber != 0) {
-            let thisUbication = [col, row]
 
             if(playerClikedTeamA[0] == col && playerClikedTeamA[1] == row || playerClikedTeamB[0] == col && playerClikedTeamB[1] == row){
                 return("selected-tile")
@@ -163,36 +214,45 @@ function GameBoard( { gameBoard, match } : Props) {
 
     function clickTileHandler(teamNumber: number, col: number, row: number) {
         //TODO add cases where choaches have to pick a tile to do an action
-        
-        return ()=> {
-            let thisUbication = [col, row]
-            if(teamNumber != 0) {
+        if(actionConfirmed == "move") {
+            return ()=> {
+                let thisUbication = [col, row]
+
+            }
+        } else {
+            return ()=> {
                 
-                if(teamNumber == 1) {
-                    if(teamA.teamTurn){
-                        setPlayerClikedTeamA([col, row])
-
-                        if(!teamA.isAnyPlayerSelected()) {
-                            setConfirmButtonHandler(()=> ()=> confirmPlayerSelection(teamA, thisUbication, teamB))
+                let thisUbication = [col, row]
+                
+                if(teamNumber != 0) {
+                    
+                    if(teamNumber == 1) {
+                        if(teamA.teamTurn){
+                            setPlayerClikedTeamA([col, row])
+    
+                            if(!teamA.isAnyPlayerSelected()) {
+                                setConfirmButtonHandler(()=> ()=> confirmPlayerSelection(teamA, thisUbication, teamB))
+                            }
+    
+                            setActivateConfirmButton(true)
+                            setGameBoard(gameBoard)
                         }
-
-                        setActivateConfirmButton(true)
-                        setGameBoard(gameBoard)
-                    }
-                } else if(teamNumber == 2) {
-                    if(teamB.teamTurn){
-                        setPlayerClikedTeamB([col, row])
-
-                        if(!teamB.isAnyPlayerSelected()) {
-                            setConfirmButtonHandler(()=> ()=> confirmPlayerSelection(teamB, thisUbication, teamA))
+                    } else if(teamNumber == 2) {
+                        if(teamB.teamTurn){
+                            setPlayerClikedTeamB([col, row])
+    
+                            if(!teamB.isAnyPlayerSelected()) {
+                                setConfirmButtonHandler(()=> ()=> confirmPlayerSelection(teamB, thisUbication, teamA))
+                            }
+    
+                            setActivateConfirmButton(true)
+                            setGameBoard(gameBoard)
                         }
-
-                        setActivateConfirmButton(true)
-                        setGameBoard(gameBoard)
                     }
                 }
             }
         }
+        
     }
     
     function confirmPlayerSelection(team: Team, ubicationScaned: number[], otherTeam: Team) {
@@ -230,35 +290,35 @@ function GameBoard( { gameBoard, match } : Props) {
     }
     
 
-  return (
-    <div id='gameboard-container'>
-        <div id="gameboard">
-            {
-                gameBoard!.map((rowContent, rowIndex)=> {
-                    return (rowContent.map((player, colIndex)=> {
-                        return (
-                            <div
-                                key={`tile-${colIndex+1}-${rowIndex+1}`}
-                                className={`tile ROW${rowIndex + 1} COL${colIndex +1} ${addClassIfNeeded(player, colIndex + 1, rowIndex + 1)}`}
-                                onClick={clickTileHandler(player, colIndex + 1, rowIndex + 1)}
-                            >
-                                {
-                                    player == 0 ?
-                                        <></>
-                                        :
-                                        player == 1 ?
-                                            <PlayerImgContainer team={teamA} col={colIndex+1} row={rowIndex + 1} teamLetterProps={"a"}/>
-                                            :
-                                            <PlayerImgContainer team={teamB} col={colIndex+1} row={rowIndex + 1} teamLetterProps={"b"}/>
-                                }
-                            </div>
-                        )
-                    }))
-                })
-            }
-        </div>
-    </div>
-  )
+    return (
+      <div id='gameboard-container'>
+          <div id="gameboard">
+              {
+                  gameBoard!.map((rowContent, rowIndex)=> {
+                      return (rowContent.map((player, colIndex)=> {
+                          return (
+                              <div
+                                  key={`tile-${colIndex+1}-${rowIndex+1}`}
+                                  className={`tile ROW${rowIndex + 1} COL${colIndex +1} ${addClassIfNeeded(player, colIndex + 1, rowIndex + 1)}`}
+                                  onClick={clickTileHandler(player, colIndex + 1, rowIndex + 1)}
+                              >
+                                  {
+                                      player == 0 ?
+                                          <></>
+                                          :
+                                          player == 1 ?
+                                              <PlayerImgContainer team={teamA} col={colIndex+1} row={rowIndex + 1} teamLetterProps={"a"}/>
+                                              :
+                                              <PlayerImgContainer team={teamB} col={colIndex+1} row={rowIndex + 1} teamLetterProps={"b"}/>
+                                  }
+                              </div>
+                          )
+                      }))
+                  })
+              }
+          </div>
+      </div>
+    )
 }
 
 export default GameBoard

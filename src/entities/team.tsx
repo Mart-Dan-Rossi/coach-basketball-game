@@ -67,12 +67,13 @@ export class Team {
     }
 
     getPlayerWithBallOrUndefined() {
+        let playerWithBall = undefined
         this.players.forEach(player => {
             if(player.playerHaveTheBall()) {
-                return player
+                playerWithBall = player
             }
         });
-        return undefined
+        return playerWithBall
     }
     //----------------------------------------END STATS METHODS---------------------------------------------------------------------------------------------------------------
 
@@ -147,6 +148,7 @@ export class Team {
 
     returnPlayerWithBall() {
         let playerWithBall: Player|undefined
+
         this.players.forEach(player => {
             if(player.haveBall) {
                 playerWithBall = player

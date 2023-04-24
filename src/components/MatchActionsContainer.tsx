@@ -40,6 +40,7 @@ function MatchActionsContainer( { match, setMatchState } : Props) {
     setActivateConfirmButton,
     confirmButtonHandler,
     setConfirmButtonHandler,
+    setActionConfirmed,
   } = useContext(GameContext)
 
   let matchCopy = match
@@ -67,12 +68,7 @@ function MatchActionsContainer( { match, setMatchState } : Props) {
       selectedState: moveButtonSelected,
       selectedSetter: setMoveButtonSelected,
       actionFunction: ()=> {
-        //TODO end this function
-
-        moveButtonFunction(matchCopy)
-        match.handleSelectedPlayersStatus()
-
-        setMatchState(matchCopy)
+        setActionConfirmed("move")
       }
       ,
     }
@@ -84,11 +80,7 @@ function MatchActionsContainer( { match, setMatchState } : Props) {
       selectedState: stealAttemptButtonSelected,
       selectedSetter: setStealAttemptButtonSelected,
       actionFunction: ()=> {
-        //TODO end this function
-
-        matchCopy.handleSelectedPlayersStatus()
-        
-        setMatchState(matchCopy)
+        setActionConfirmed("steal attempt")
       },
     }
     ,
@@ -99,12 +91,7 @@ function MatchActionsContainer( { match, setMatchState } : Props) {
       selectedState: interceptPassAttemptButtonSelected,
       selectedSetter: setInterceptPassAttemptButtonSelected,
       actionFunction: ()=> {
-        //TODO end this function
-
-        matchCopy.handleSelectedPlayersStatus()
-        interceptPassAttemptButtonFunction()
-        
-        setMatchState(matchCopy)
+        setActionConfirmed("intercept pass attempt")
       },
     }
     ,
@@ -115,12 +102,7 @@ function MatchActionsContainer( { match, setMatchState } : Props) {
       selectedState: waitPressingButtonSelected,
       selectedSetter: setOverwhelmingWaitingButtonSelected,
       actionFunction: ()=> {
-        //TODO end this function
-
-        matchCopy.handleSelectedPlayersStatus()
-        overwhelmingWaitingButtonFunction()
-        
-        setMatchState(matchCopy)
+        setActionConfirmed("overwhelming waiting")
       },
     }
     ,
@@ -131,12 +113,7 @@ function MatchActionsContainer( { match, setMatchState } : Props) {
       selectedState: waitCarefullyButtonSelected,
       selectedSetter: setWaitWithCautionButtonSelected,
       actionFunction: ()=> {
-        //TODO end this function
-
-        matchCopy.handleSelectedPlayersStatus()
-        waitWithCautionButtonFunction()
-        
-        setMatchState(matchCopy)
+        setActionConfirmed("wait with caution")
       },
     }
     ,
@@ -147,12 +124,7 @@ function MatchActionsContainer( { match, setMatchState } : Props) {
       selectedState: passButtonSelected,
       selectedSetter: setPassButtonSelected,
       actionFunction: ()=> {
-        //TODO end this function
-
-        matchCopy.handleSelectedPlayersStatus()
-        passButtonFunction()
-        
-        setMatchState(matchCopy)
+        setActionConfirmed("pass")
       },
     }
     ,
@@ -163,12 +135,7 @@ function MatchActionsContainer( { match, setMatchState } : Props) {
       selectedState: dribblingButtonSelected,
       selectedSetter: setDribblingButtonSelected,
       actionFunction: ()=> {
-        //TODO end this function
-
-        matchCopy.handleSelectedPlayersStatus()
-        dribblingButtonFunction()
-        
-        setMatchState(matchCopy)
+        setActionConfirmed("dribbling")
       },
     }
     ,
@@ -179,12 +146,7 @@ function MatchActionsContainer( { match, setMatchState } : Props) {
       selectedState: waitWithoutTheBallButtonSelected,
       selectedSetter: setWaitWithoutTheBallButtonSelected,
       actionFunction: ()=> {
-        //TODO end this function
-
-        matchCopy.handleSelectedPlayersStatus()
-        waitWithoutTheBallButtonFunction()
-        
-        setMatchState(matchCopy)
+        setActionConfirmed("wait without the ball")
       },
     }
     ,
@@ -195,12 +157,7 @@ function MatchActionsContainer( { match, setMatchState } : Props) {
       selectedState: tripleThreatButtonSelected,
       selectedSetter: setTripleThreatButtonSelected,
       actionFunction: ()=> {
-        //TODO end this function
-
-        matchCopy.handleSelectedPlayersStatus()
-        tripleThreatButtonFunction()
-        
-        setMatchState(matchCopy)
+        setActionConfirmed("triple threat")
       },
     }
     ,
@@ -211,12 +168,7 @@ function MatchActionsContainer( { match, setMatchState } : Props) {
       selectedState: shootButtonSelected,
       selectedSetter: setShootButtonSelected,
       actionFunction: ()=> {
-        //TODO end this function
-
-        matchCopy.handleSelectedPlayersStatus()
-        shootButtonFunction()
-        
-        setMatchState(matchCopy)
+        setActionConfirmed("shoot")
       },
     }
     ,
@@ -227,12 +179,7 @@ function MatchActionsContainer( { match, setMatchState } : Props) {
       selectedState: endTurnButtonSelected,
       selectedSetter: setEndTurnButtonSelected,
       actionFunction: ()=> {
-        //TODO end this function
-
-        matchCopy.handleSelectedPlayersStatus()
-        endTurnButtonFunction()
-        
-        setMatchState(matchCopy)
+        setActionConfirmed("end turn")
       },
     }
     ,
@@ -255,12 +202,15 @@ function MatchActionsContainer( { match, setMatchState } : Props) {
     }
   }
 
-  console.log("cfh: ", confirmButtonHandler)
-
   return (
     <div>
       <div className='match-actions-container'>
-          <h4>Actions</h4>
+          <div className='header-container'>
+            <span>{/*Decorative div, do not delete*/}</span>
+            <h4>Actions</h4>
+            <span>{ match.getActivePlayer() ? `Points left: ${ match.getActivePlayer()!.actionPoints }` : "" }</span>            
+          </div>
+          
           <div className="actions-container">
             {
               Object.values(allActionsButtons).map(action=> {

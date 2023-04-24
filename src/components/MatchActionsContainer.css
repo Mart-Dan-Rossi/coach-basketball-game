@@ -12,8 +12,23 @@ html {
     border-radius: 12px;
 }
 
+.header-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.header-container * {
+    margin: 5px 1rem;
+    width: 30%;
+}
+
+.header-container span {
+    text-align: end;
+    font-weight: bold;
+}
+
 h4 {
-    margin: 5px;
+    display: inline-block;
 }
 
 .actions-container {

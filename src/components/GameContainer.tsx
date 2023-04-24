@@ -210,11 +210,16 @@ export default function GameContainer() {
     const teamB: Team = new Team("TeamB", playersTeamB)
     const match: Match = new Match(teamA, teamB)
     
-    const [matchState, setMatchState] = useState(match)  
-      
+    const [matchState, setMatchState] = useState(match)
+
+    function matchHandler() {
+        if(matchState.querter == 1 && matchState.timeLeft.minutes == 6) {
+            matchState.jumpBall(gameNarration, setGameNarration)
+        }        
+    }
     
     useEffect(() => {
-        match.jumpBall(gameNarration, setGameNarration)
+        matchHandler()
 
     }, [matchState])
     

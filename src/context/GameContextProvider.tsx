@@ -236,6 +236,8 @@ export const GameContextProvider = ({ children }: props) =>{
 
     const [confirmButtonHandler, setConfirmButtonHandler] = useState(()=> ()=> {})
 
+    const [tileClicked, setTileClicked] = useState([0, 0])
+
     const [playerClikedTeamA, setPlayerClikedTeamA] = useState([0, 0])
     const [playerClikedTeamB, setPlayerClikedTeamB] = useState([0, 0])
 
@@ -290,8 +292,10 @@ export const GameContextProvider = ({ children }: props) =>{
                 gameBoard, setGameBoard,
                 confirmButtonHandler, setConfirmButtonHandler,
 
+                tileClicked, setTileClicked,
+
                 playerClikedTeamA, setPlayerClikedTeamA,
-                playerClikedTeamB, setPlayerClikedTeamB
+                playerClikedTeamB, setPlayerClikedTeamB,
             }}>
             { children }
         </GameContext.Provider>

@@ -20,6 +20,7 @@ function GameBoard( { gameBoard, match } : Props) {
 
     const {
         actionConfirmed,
+        setActionConfirmed,
         setShowMoveButton,
         setShowStealAttemptButton,
         setShowInterceptPassAttemptButton,
@@ -34,6 +35,8 @@ function GameBoard( { gameBoard, match } : Props) {
         setActivateConfirmButton,
         setConfirmButtonHandler,
         setGameBoard,
+        tileClicked,
+        setTileClicked,
         playerClikedTeamA,
         setPlayerClikedTeamA,
         playerClikedTeamB,
@@ -55,6 +58,7 @@ function GameBoard( { gameBoard, match } : Props) {
       setShowTripleThreatButton(false)
       setShowShootButton(false)
       setShowEndTurnButton(false)
+      setActivateConfirmButton(false)
     }
 
     function paintPlayerOnThisTileAsSelected(team: Team, ubicationScaned: number[]) {
@@ -132,9 +136,10 @@ function GameBoard( { gameBoard, match } : Props) {
         let activePlayer = match.getActivePlayer()!
         
         if(actionConfirmed == "move") {
+            hideActionsButtons()
 
-            for(let dx = -1; dx < 3; dx++) {
-                for(let dy = -1; dy < 3; dy ++) {
+            for(let dx = -1; dx < 2; dx++) {
+                for(let dy = -1; dy < 2; dy ++) {
                     //Don't add class to player tile
 
                     if(!(dx == 0 && dy == 0)) {
@@ -142,19 +147,15 @@ function GameBoard( { gameBoard, match } : Props) {
                         if(activePlayer.ubicationX! + dx == thisUbication[0] && activePlayer.ubicationY! + dy == thisUbication[1]) {
 
                             //The player have more than 1.5 action points and the tile is in the diagonal or less than 1.5 points and the sile is next to the player
-                            if((activePlayer.actionPoints > 1.5 && (Math.pow(dx, 2) + Math.pow(dy, 2) == 2)) || (activePlayer.actionPoints < 1.5 && (dx == 0 || dy == 0))) {
-                                let isAplayerInThatTile = false
+                            if((activePlayer.actionPoints >= 1.5 && (Math.pow(dx, 2) + Math.pow(dy, 2) == 2)) || (activePlayer.actionPoints >= 1 && (dx == 0 || dy == 0))) {
+                                
+                                if(teamNumber == 0) {
+                                    if(tileClicked[0] == thisUbication[0] + dx && tileClicked[1] == thisUbication[1] + dy){
+                                        return("selected-tile pointer")
+                                    } else {
+                                        return("highlighted-tile pointer")
 
-                                match.teamA.players.forEach(player => {
-                                    isAplayerInThatTile = !isAplayerInThatTile && player.ubicationX == thisUbication[0] && player.ubicationY == thisUbication[1]
-                                })
-
-                                match.teamB.players.forEach(player => {
-                                    isAplayerInThatTile = !isAplayerInThatTile && player.ubicationX == thisUbication[0] && player.ubicationY == thisUbication[1]
-                                })
-
-                                if(!isAplayerInThatTile) {
-                                    return("highlighted-tile")
+                                    }
 
                                 }
                             }
@@ -166,7 +167,7 @@ function GameBoard( { gameBoard, match } : Props) {
         
         if(teamNumber != 0) {
 
-            if(playerClikedTeamA[0] == col && playerClikedTeamA[1] == row || playerClikedTeamB[0] == col && playerClikedTeamB[1] == row){
+            if(playerClikedTeamA[0] == col && playerClikedTeamA[1] == row || playerClikedTeamB[0] == col && playerClikedTeamB[1] == row) {
                 return("selected-tile")
             }
 
@@ -217,7 +218,39 @@ function GameBoard( { gameBoard, match } : Props) {
         if(actionConfirmed == "move") {
             return ()=> {
                 let thisUbication = [col, row]
+                let activePlayer = match.getActivePlayer()!
+            
+                for(let dx = -1; dx < 2; dx++) {
+                    for(let dy = -1; dy < 2; dy ++) {
+                        //Don't add class to player tile
+                    
+                        if(!(dx == 0 && dy == 0)) {
+                            //If the scanned ubication is around the active player
+                            if(activePlayer.ubicationX! + dx == thisUbication[0] && activePlayer.ubicationY! + dy == thisUbication[1]) {
+                            
+                                //The player have more than 1.5 action points and the tile is in the diagonal or less than 1.5 points and the sile is next to the player
+                                if((activePlayer.actionPoints >= 1.5 && (Math.pow(dx, 2) + Math.pow(dy, 2) == 2)) || (activePlayer.actionPoints >= 1 && (dx == 0 || dy == 0))) {
+                                    
+                                    if(teamNumber == 0) {
+                                        setTileClicked(thisUbication)
+                                        
+                                        setConfirmButtonHandler(()=> ()=> {
+                                            setActionConfirmed("")
 
+                                            activePlayer!.ubicationX = thisUbication[0]
+                                            activePlayer!.ubicationY = thisUbication[1]
+
+                                            match.handleSelectedPlayersStatus()
+                                        })
+                                    }
+
+                                    setActivateConfirmButton(true)
+                                    setGameBoard(gameBoard)
+                                }
+                            }
+                        }
+                    }
+                }
             }
         } else {
             return ()=> {

@@ -186,7 +186,7 @@ function MatchActionsContainer( { match, setMatchState } : Props) {
   }  
 
   function clickActionButtonHanddler(previousValueOfThisActionState: boolean, setter: React.Dispatch<React.SetStateAction<boolean>>, actionFunction: (match: Match)=> void) {
-    return ()=>{
+    return ()=> {
       previousValueOfThisActionState ? setActivateConfirmButton(false) : setActivateConfirmButton(true)
       
       let actionContent = Object.values(allActionsButtons)
@@ -213,12 +213,13 @@ function MatchActionsContainer( { match, setMatchState } : Props) {
           
           <div className="actions-container">
             {
-              Object.values(allActionsButtons).map(action=> {
+              Object.values(allActionsButtons).map(action => {
                 return (
                   <>
                   {
                     action.showState &&
                     <button
+                      key={action.text}
                       onClick={clickActionButtonHanddler(action.selectedState, action.selectedSetter, action.actionFunction)}
                       className={ action.selectedState ? "selected" : "" }
                     >

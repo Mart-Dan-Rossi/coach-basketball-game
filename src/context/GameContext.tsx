@@ -117,6 +117,9 @@ export interface GameContextProps {
     confirmButtonHandler: ()=>void,
     setConfirmButtonHandler: React.Dispatch<React.SetStateAction<()=>void>>,
 
+    tileClicked: number[],
+    setTileClicked: React.Dispatch<React.SetStateAction<number[]>>,
+
     playerClikedTeamA: number[],
     setPlayerClikedTeamA: React.Dispatch<React.SetStateAction<number[]>>,
     playerClikedTeamB: number[],

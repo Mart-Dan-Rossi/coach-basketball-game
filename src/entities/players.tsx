@@ -241,5 +241,31 @@ export class Player {
         }
     }
 
+    setActivePlayer(value: boolean) {
+        this.playerActive = value
+    }
+
+    setPlayerSelected(value: boolean) {
+        this.playerSelected = value
+    }
+
+    
     //-----------------------------END SET PLAYER STATUS METHODS-----------------------------------------------------------------------------------------------------
+
+
+    
+    //----------------------------------START PLAYER ACTIONS---------------------------------------------------------------------------------------------------------
+    
+    movePlayer(dx: number, dy: number) {
+        this.ubicationX! += dx
+        this.ubicationY! += dy
+
+    }
+
+    restActionPoints(points: number) {
+        this.actionPoints -= points
+    }
+
+    //-----------------------------------END PLAYER ACTIONS----------------------------------------------------------------------------------------------------------
+
 }

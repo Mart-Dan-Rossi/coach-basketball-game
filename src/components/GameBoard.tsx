@@ -222,85 +222,55 @@ function GameBoard( { gameBoard, match, setMatchState } : Props) {
         }
     }
 
-    function movePlayer(activePlayer: Player, dx: number, dy: number) {   
-        
-        setActionConfirmed("")
-        
-        console.log(activePlayer)
-        console.log("x", activePlayer.ubicationX, "y", activePlayer.ubicationY)
-        console.log(gameBoard)
-
-        gameBoard[activePlayer.ubicationY! - 1][activePlayer.ubicationX! - 1] = 0
-        
-        activePlayer.ubicationX! += dx
-        activePlayer.ubicationY! += dy
-
-        console.log(activePlayer)
-        
-        gameBoard[activePlayer.ubicationY! - 1][activePlayer.ubicationY! - 1] = activePlayer.team == "teamA" ? 1 : 2
-
-        if(activePlayer.team == "teamA") {
-            match.teamA.players[Number(activePlayer.position) - 1].ubicationX = activePlayer.ubicationX
-            match.teamA.players[Number(activePlayer.position) - 1].ubicationY = activePlayer.ubicationY
-
-        } else {
-            match.teamB.players[Number(activePlayer.position) - 1].ubicationX = activePlayer.ubicationX
-            match.teamB.players[Number(activePlayer.position) - 1].ubicationY = activePlayer.ubicationY
-        }
-
-        console.log(match)
-
-        setMatchState(match)
-        setGameBoard(gameBoard)
-
-        // console.log(match)
-        // console.log(gameBoard)
-        setActivateConfirmButton(false)
-    }
-
-    let currentActivePlayer = ["", 0]
-
     function clickTileHandler(teamNumber: number, col: number, row: number) {
         //TODO add cases where choaches have to pick a tile to do an action
         if(actionConfirmed == "move") {
             return ()=> {
                 let thisUbication = [col, row]
                 let activePlayer = match.getActivePlayer()!
-            
+                
                 for(let dx = -1; dx < 2; dx++) {
                     for(let dy = -1; dy < 2; dy ++) {
                         //Don't add class to player tile
-                    
+                        
                         if(!(dx == 0 && dy == 0)) {
                             //If the scanned ubication is around the active player
                             if(activePlayer.ubicationX! + dx == thisUbication[0] && activePlayer.ubicationY! + dy == thisUbication[1]) {
+                                console.log(match)
                                 //The player have more than 1.5 action points and the tile is in the diagonal or less than 1.5 points and the sile is next to the player
                                 if((activePlayer.actionPoints >= 1.5 && (Math.pow(dx, 2) + Math.pow(dy, 2) == 2)) || (activePlayer.actionPoints >= 1 && (dx == 0 || dy == 0))) {
                                     
-                                    if(teamNumber == 0) {
-                                        if(activePlayer.playerActive) {
-                                            currentActivePlayer = [activePlayer.team, Number(activePlayer.position) - 1]
-
-                                        }
+                                    if(teamNumber == 0) {                                       
                                         setTileClicked(thisUbication)
-                                        setMatchState(match)
                                         setFinalisingAction(false)
                                         
-                                        setConfirmButtonHandler(()=> ()=>{
-
-                                            let pIATeam = currentActivePlayer[0] == "TeamA" ? teamA : teamB
-                                            let pIA = pIATeam.players[currentActivePlayer[1] as number]
-
+                                        setConfirmButtonHandler(()=> ()=> {
+                                            
+                                            let gameBoardCopy = gameBoard
+                                            
                                             let actionPointsToDecrease = (Math.pow(dx, 2) + Math.pow(dy, 2) == 2) ? 1.5 : 1
-                                            pIA!.actionPoints -= actionPointsToDecrease
+                                            activePlayer!.restActionPoints(actionPointsToDecrease)                                            
+                                            
+                                            gameBoardCopy[activePlayer.ubicationY! - 1][activePlayer.ubicationX! - 1] = 0
 
-                                            movePlayer(pIA!, dx, dy)
+                                            activePlayer.movePlayer(dx, dy)
+
+                                            console.log(activePlayer)
+                                            
+                                            gameBoardCopy[activePlayer.ubicationY! - 1][activePlayer.ubicationX! - 1] = activePlayer.team == "TeamA" ? 1 : 2
+
+                                            setActionConfirmed("")
+        
+                                            setMatchState(match)
+                                            setGameBoard(gameBoardCopy)
+
+                                            setActivateConfirmButton(false)
                                             
                                         })
                                     }
                                     
                                     setActivateConfirmButton(true)
-                                    setGameBoard(gameBoard)
+                                    // setGameBoard(gameBoard)
                                 }
                             }
                         }
@@ -354,16 +324,16 @@ function GameBoard( { gameBoard, match, setMatchState } : Props) {
 
         let playerActive: Player
 
-        team.teamTurn = false
-        team.teamTurnLeft = false
+        team.setTeamTurn(false)
+        team.setTeamTurnLeft(false)
 
         if(otherTeam.teamTurnLeft) {
-            otherTeam.teamTurn = true
+            otherTeam.setTeamTurn(true)
         } else {
             playerActive = compareIniciatives(teamA.returnSelectedPlayer()!, teamB.returnSelectedPlayer()!, teamA.getPlayerWithBallOrUndefined())
 
-            playerActive.playerActive = true
-            playerActive.playerSelected = false
+            playerActive.setActivePlayer(true)
+            playerActive.setPlayerSelected(false)
 
             if(playerActive.team == "TeamA") {
                 setPlayerClikedTeamA([0, 0])

@@ -75,11 +75,8 @@ export class Team {
         });
         return playerWithBall
     }
-    //----------------------------------------END STATS METHODS---------------------------------------------------------------------------------------------------------------
 
-    //---------------------------------START SET PLAYER STATUS METHODS--------------------------------------------------------------------------------------------------------
-
-    isAnyPlayerSelected() {
+        isAnyPlayerSelected() {
         let anySelected = false
 
         this.players.forEach(player => {
@@ -88,7 +85,6 @@ export class Team {
 
         return anySelected
     }
-
     
     getSelectedPlayer() {
         let selectedPlayer: Player|undefined
@@ -156,8 +152,19 @@ export class Team {
         })
         return playerWithBall
     }
-
     //---------------------------------------END GET INFO METHODS-------------------------------------------------------------------------------------------------------------
+
+    //---------------------------------START SET PLAYER STATUS METHODS--------------------------------------------------------------------------------------------------------
+
+    setTeamTurn(value: boolean) {
+        this.teamTurn = value
+    }
+
+    setTeamTurnLeft(value: boolean) {
+        this.teamTurnLeft = value
+    }
+
+    //----------------------------------END SET PLAYER STATUS METHODS---------------------------------------------------------------------------------------------------------
 
 
     //---------------------------------------START STATS METHODS--------------------------------------------------------------------------------------------------------------

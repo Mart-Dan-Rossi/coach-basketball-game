@@ -222,98 +222,90 @@ function GameBoard( { gameBoard, match, setMatchState } : Props) {
         }
     }
 
-    function movePlayerFlow(col: number, row: number, teamNumber: number) {
-        return ()=> {
-            let thisUbication = [col, row]
-            let activePlayer = match.getActivePlayer()!
-            
-            for(let dx = -1; dx < 2; dx++) {
-                for(let dy = -1; dy < 2; dy ++) {
-                    //Don't add class to player tile
-                    
-                    if(!(dx == 0 && dy == 0)) {
-                        //If the scanned ubication is around the active player
-                        if(activePlayer.ubicationX! + dx == thisUbication[0] && activePlayer.ubicationY! + dy == thisUbication[1]) {
-                            
-                            //The player have more than 1.5 action points and the tile is in the diagonal or less than 1.5 points and the sile is next to the player
-                            if((activePlayer.actionPoints >= 1.5 && (Math.pow(dx, 2) + Math.pow(dy, 2) == 2)) || (activePlayer.actionPoints >= 1 && (dx == 0 || dy == 0))) {
+    function clickTileHandler(teamNumber: number, col: number, row: number) {
+        //TODO add cases where choaches have to pick a tile to do an action
+        if(actionConfirmed == "move") {
+            return ()=> {
+                let thisUbication = [col, row]
+                let activePlayer = match.getActivePlayer()!
+                
+                for(let dx = -1; dx < 2; dx++) {
+                    for(let dy = -1; dy < 2; dy ++) {
+                        //Don't add class to player tile
+                        
+                        if(!(dx == 0 && dy == 0)) {
+                            //If the scanned ubication is around the active player
+                            if(activePlayer.ubicationX! + dx == thisUbication[0] && activePlayer.ubicationY! + dy == thisUbication[1]) {
                                 
-                                if(teamNumber == 0) {                                       
-                                    setTileClicked(thisUbication)
-                                    setFinalisingAction(false)
+                                //The player have more than 1.5 action points and the tile is in the diagonal or less than 1.5 points and the sile is next to the player
+                                if((activePlayer.actionPoints >= 1.5 && (Math.pow(dx, 2) + Math.pow(dy, 2) == 2)) || (activePlayer.actionPoints >= 1 && (dx == 0 || dy == 0))) {
                                     
-                                    setConfirmButtonHandler(()=> ()=> {
+                                    if(teamNumber == 0) {                                       
+                                        setTileClicked(thisUbication)
+                                        setFinalisingAction(false)
                                         
-                                        let gameBoardCopy = gameBoard
-                                        
-                                        let actionPointsToDecrease = (Math.pow(dx, 2) + Math.pow(dy, 2) == 2) ? 1.5 : 1
-                                        activePlayer!.restActionPoints(actionPointsToDecrease)                                            
-                                        
-                                        gameBoardCopy[activePlayer.ubicationY! - 1][activePlayer.ubicationX! - 1] = 0
-
-                                        activePlayer.movePlayer(dx, dy)
-                                        
-                                        gameBoardCopy[activePlayer.ubicationY! - 1][activePlayer.ubicationX! - 1] = activePlayer.team == "TeamA" ? 1 : 2
-
-                                        setActionConfirmed("")
+                                        setConfirmButtonHandler(()=> ()=> {
+                                            
+                                            let gameBoardCopy = gameBoard
+                                            
+                                            let actionPointsToDecrease = (Math.pow(dx, 2) + Math.pow(dy, 2) == 2) ? 1.5 : 1
+                                            activePlayer!.restActionPoints(actionPointsToDecrease)                                            
+                                            
+                                            gameBoardCopy[activePlayer.ubicationY! - 1][activePlayer.ubicationX! - 1] = 0
     
-                                        setMatchState(match)
-                                        setGameBoard(gameBoardCopy)
-
-                                        setActivateConfirmButton(false)
-                                        
-                                    })
+                                            activePlayer.movePlayer(dx, dy)
+                                            
+                                            gameBoardCopy[activePlayer.ubicationY! - 1][activePlayer.ubicationX! - 1] = activePlayer.team == "TeamA" ? 1 : 2
+    
+                                            setActionConfirmed("")
+        
+                                            setMatchState(match)
+                                            setGameBoard(gameBoardCopy)
+    
+                                            setActivateConfirmButton(false)
+                                            
+                                        })
+                                    }
+                                    
+                                    setActivateConfirmButton(true)
                                 }
-                                
-                                setActivateConfirmButton(true)
                             }
                         }
                     }
                 }
             }
-        }
-    }
-
-    function selectPlayerFlow(col: number, row: number, teamNumber: number) {
-        return ()=> {
+        } else {
+            return ()=> {
                 
-            let thisUbication = [col, row]
-            
-            if(teamNumber != 0) {
+                let thisUbication = [col, row]
                 
-                if(teamNumber == 1) {
-                    if(teamA.teamTurn){
-                        setPlayerClikedTeamA([col, row])
-
-                        if(!teamA.isAnyPlayerSelected()) {
-                            setConfirmButtonHandler(()=> ()=> confirmPlayerSelection(teamA, thisUbication, teamB))
+                if(teamNumber != 0) {
+                    
+                    if(teamNumber == 1) {
+                        if(teamA.teamTurn){
+                            setPlayerClikedTeamA([col, row])
+    
+                            if(!teamA.isAnyPlayerSelected()) {
+                                setConfirmButtonHandler(()=> ()=> confirmPlayerSelection(teamA, thisUbication, teamB))
+                            }
+    
+                            setActivateConfirmButton(true)
+                            setGameBoard(gameBoard)
                         }
-
-                        setActivateConfirmButton(true)
-                        setGameBoard(gameBoard)
-                    }
-                } else if(teamNumber == 2) {
-                    if(teamB.teamTurn){
-                        setPlayerClikedTeamB([col, row])
-
-                        if(!teamB.isAnyPlayerSelected()) {
-                            setConfirmButtonHandler(()=> ()=> confirmPlayerSelection(teamB, thisUbication, teamA))
+                    } else if(teamNumber == 2) {
+                        if(teamB.teamTurn){
+                            setPlayerClikedTeamB([col, row])
+    
+                            if(!teamB.isAnyPlayerSelected()) {
+                                setConfirmButtonHandler(()=> ()=> confirmPlayerSelection(teamB, thisUbication, teamA))
+                            }
+    
+                            setActivateConfirmButton(true)
+                            setGameBoard(gameBoard)
                         }
-
-                        setActivateConfirmButton(true)
-                        setGameBoard(gameBoard)
                     }
                 }
             }
-        }
-    }
-
-    function clickTileHandler(teamNumber: number, col: number, row: number) {
-        //TODO add cases where choaches have to pick a tile to do an action
-        if(actionConfirmed == "move") {
-            movePlayerFlow(col, row, teamNumber)
-        } else {
-            selectPlayerFlow(col, row, teamNumber)
         }
         
     }

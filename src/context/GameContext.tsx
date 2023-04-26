@@ -109,6 +109,8 @@ export interface GameContextProps {
 
     actionConfirmed: string,
     setActionConfirmed: React.Dispatch<React.SetStateAction<string>>,
+    finalisingAction: boolean,
+    setFinalisingAction: React.Dispatch<React.SetStateAction<boolean>>,
 
 
     gameBoard: number[][],
@@ -123,7 +125,8 @@ export interface GameContextProps {
     playerClikedTeamA: number[],
     setPlayerClikedTeamA: React.Dispatch<React.SetStateAction<number[]>>,
     playerClikedTeamB: number[],
-    setPlayerClikedTeamB: React.Dispatch<React.SetStateAction<number[]>>
+    setPlayerClikedTeamB: React.Dispatch<React.SetStateAction<number[]>>,
+
 }
 
 

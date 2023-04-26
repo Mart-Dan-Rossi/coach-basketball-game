@@ -26,17 +26,7 @@ function MatchActionsContainer( { match, setMatchState } : Props) {
     showShootButton,
     showEndTurnButton,
     activateConfirmButton,
-    setShowMoveButton,
-    setShowStealAttemptButton,
-    setShowInterceptPassAttemptButton,
-    setShowWaitPressingButton,
-    setShowWaitCarefullyButton,
-    setShowPassButton,
-    setShowDribblingButton,
-    setShowWaitWithoutTheBallButton,
-    setShowTripleThreatButton,
-    setShowShootButton,
-    setShowEndTurnButton,
+    setFinalisingAction,
     setActivateConfirmButton,
     confirmButtonHandler,
     setConfirmButtonHandler,
@@ -69,6 +59,7 @@ function MatchActionsContainer( { match, setMatchState } : Props) {
       selectedSetter: setMoveButtonSelected,
       actionFunction: ()=> {
         setActionConfirmed("move")
+        setFinalisingAction(true)
       }
       ,
     }
@@ -125,6 +116,7 @@ function MatchActionsContainer( { match, setMatchState } : Props) {
       selectedSetter: setPassButtonSelected,
       actionFunction: ()=> {
         setActionConfirmed("pass")
+        setFinalisingAction(true)
       },
     }
     ,
@@ -136,6 +128,7 @@ function MatchActionsContainer( { match, setMatchState } : Props) {
       selectedSetter: setDribblingButtonSelected,
       actionFunction: ()=> {
         setActionConfirmed("dribbling")
+        setFinalisingAction(true)
       },
     }
     ,

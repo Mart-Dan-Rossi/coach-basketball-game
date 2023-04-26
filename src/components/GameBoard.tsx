@@ -222,25 +222,35 @@ function GameBoard( { gameBoard, match, setMatchState } : Props) {
         }
     }
 
-    function movePlayer(activePlayer: Player, thisUbication: number[]) {   
+    function movePlayer(activePlayer: Player, dx: number, dy: number) {   
         
         setActionConfirmed("")
+        
+        console.log(activePlayer)
+        console.log("x", activePlayer.ubicationX, "y", activePlayer.ubicationY)
+        console.log(gameBoard)
+
+        gameBoard[activePlayer.ubicationY! - 1][activePlayer.ubicationX! - 1] = 0
+        
+        activePlayer.ubicationX! += dx
+        activePlayer.ubicationY! += dy
 
         console.log(activePlayer)
-        console.log(activePlayer.ubicationX!, activePlayer.ubicationY!)
-        console.log(gameBoard)
-        gameBoard[activePlayer.ubicationY!-1][activePlayer.ubicationX!-1] = 0
         
-        activePlayer.ubicationX = thisUbication[0]
-        activePlayer.ubicationY = thisUbication[1]
+        gameBoard[activePlayer.ubicationY! - 1][activePlayer.ubicationY! - 1] = activePlayer.team == "teamA" ? 1 : 2
 
+        if(activePlayer.team == "teamA") {
+            match.teamA.players[Number(activePlayer.position) - 1].ubicationX = activePlayer.ubicationX
+            match.teamA.players[Number(activePlayer.position) - 1].ubicationY = activePlayer.ubicationY
 
-        gameBoard[thisUbication[1] - 1][thisUbication[0] - 1] = activePlayer.team == "teamA" ? 1 : 2
+        } else {
+            match.teamB.players[Number(activePlayer.position) - 1].ubicationX = activePlayer.ubicationX
+            match.teamB.players[Number(activePlayer.position) - 1].ubicationY = activePlayer.ubicationY
+        }
 
-        match.handleSelectedPlayersStatus()
+        console.log(match)
 
         setMatchState(match)
-
         setGameBoard(gameBoard)
 
         // console.log(match)
@@ -268,16 +278,24 @@ function GameBoard( { gameBoard, match, setMatchState } : Props) {
                                 if((activePlayer.actionPoints >= 1.5 && (Math.pow(dx, 2) + Math.pow(dy, 2) == 2)) || (activePlayer.actionPoints >= 1 && (dx == 0 || dy == 0))) {
                                     
                                     if(teamNumber == 0) {
-                                        currentActivePlayer = [activePlayer.team, activePlayer.position]
+                                        if(activePlayer.playerActive) {
+                                            currentActivePlayer = [activePlayer.team, Number(activePlayer.position) - 1]
+
+                                        }
                                         setTileClicked(thisUbication)
                                         setMatchState(match)
                                         setFinalisingAction(false)
                                         
                                         setConfirmButtonHandler(()=> ()=>{
+
                                             let pIATeam = currentActivePlayer[0] == "TeamA" ? teamA : teamB
                                             let pIA = pIATeam.players[currentActivePlayer[1] as number]
 
-                                            movePlayer(pIA!, thisUbication)
+                                            let actionPointsToDecrease = (Math.pow(dx, 2) + Math.pow(dy, 2) == 2) ? 1.5 : 1
+                                            pIA!.actionPoints -= actionPointsToDecrease
+
+                                            movePlayer(pIA!, dx, dy)
+                                            
                                         })
                                     }
                                     

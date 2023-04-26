@@ -236,7 +236,7 @@ function GameBoard( { gameBoard, match, setMatchState } : Props) {
                         if(!(dx == 0 && dy == 0)) {
                             //If the scanned ubication is around the active player
                             if(activePlayer.ubicationX! + dx == thisUbication[0] && activePlayer.ubicationY! + dy == thisUbication[1]) {
-                                console.log(match)
+                                
                                 //The player have more than 1.5 action points and the tile is in the diagonal or less than 1.5 points and the sile is next to the player
                                 if((activePlayer.actionPoints >= 1.5 && (Math.pow(dx, 2) + Math.pow(dy, 2) == 2)) || (activePlayer.actionPoints >= 1 && (dx == 0 || dy == 0))) {
                                     
@@ -254,8 +254,6 @@ function GameBoard( { gameBoard, match, setMatchState } : Props) {
                                             gameBoardCopy[activePlayer.ubicationY! - 1][activePlayer.ubicationX! - 1] = 0
 
                                             activePlayer.movePlayer(dx, dy)
-
-                                            console.log(activePlayer)
                                             
                                             gameBoardCopy[activePlayer.ubicationY! - 1][activePlayer.ubicationX! - 1] = activePlayer.team == "TeamA" ? 1 : 2
 
@@ -270,7 +268,6 @@ function GameBoard( { gameBoard, match, setMatchState } : Props) {
                                     }
                                     
                                     setActivateConfirmButton(true)
-                                    // setGameBoard(gameBoard)
                                 }
                             }
                         }

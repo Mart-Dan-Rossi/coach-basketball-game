@@ -248,6 +248,10 @@ export class Player {
     setPlayerSelected(value: boolean) {
         this.playerSelected = value
     }
+    
+    setHaveBall(value: boolean) {
+        this.haveBall = value
+    }
 
     
     //-----------------------------END SET PLAYER STATUS METHODS-----------------------------------------------------------------------------------------------------
@@ -264,6 +268,10 @@ export class Player {
 
     restActionPoints(points: number) {
         this.actionPoints -= points
+    }
+
+    resetActionPoints() {
+        this.actionPoints = 0
     }
 
     //-----------------------------------END PLAYER ACTIONS----------------------------------------------------------------------------------------------------------

@@ -8,7 +8,7 @@ interface Props {
 function MatchInfo( { match }: Props) {
 
       function setDisplayableTeamName(teamName: string) {
-        if(teamName.length <= 11){
+        if(teamName.length <= 11) {
           return teamName
         } else {
           let displayableTeamName = teamName.slice(0, 6) + "..."

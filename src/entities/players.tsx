@@ -57,7 +57,7 @@ export class Player {
 
 
 
-    constructor(name: string, team: string, position: string, height: number, weight: number, atleticism: number, perimetrerDefence: number, insideDefence: number, rebounding: number, perimetrerScoring: number, insideScoring: number, playMaking: number, ubicationX: number, ubicationY: number){
+    constructor(name: string, team: string, position: string, height: number, weight: number, atleticism: number, perimetrerDefence: number, insideDefence: number, rebounding: number, perimetrerScoring: number, insideScoring: number, playMaking: number, ubicationX: number, ubicationY: number) {
         //Info
         this.name = name;
         this.team = team;
@@ -114,9 +114,9 @@ export class Player {
 
     
     playerPositionDetection = ()=> {
-        if(this.position == "1"){
+        if(this.position == "1") {
             return "PG"
-        } else if(this.position == "2"){
+        } else if(this.position == "2") {
             return "SG"
         } else if(this.position == "3") {
             return "SF"
@@ -140,7 +140,7 @@ export class Player {
         if(pointsIfMade == 1) {
             this.stats.freeThrowsAttempt++
 
-            if(isItMade){
+            if(isItMade) {
                 this.stats.freeThrowsMade++
                 this.stats.points++
 
@@ -148,7 +148,7 @@ export class Player {
         } else if(pointsIfMade == 2) {
             this.stats.fieldGoalsattempt++
 
-            if(isItMade){
+            if(isItMade) {
                 this.stats.fieldGoalsMade++
                 this.stats.points += 2
             }
@@ -161,7 +161,7 @@ export class Player {
             this.stats.fieldGoalsattempt++
             this.stats.triplesAttempt++
             
-            if(isItMade){
+            if(isItMade) {
                 this.stats.fieldGoalsMade++
                 this.stats.triplesMade++
                 this.stats.points += 3

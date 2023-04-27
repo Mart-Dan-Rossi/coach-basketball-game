@@ -100,7 +100,7 @@ function CreateTeam( { totalTeamAPoints, setTotalTeamAPoints, totalTeamBPoints, 
     function addPlayersSelectors() {
         let playerSelector = []
         let isThisPlayerSelected: boolean
-        for(let i = 1; i<=5; i++){
+        for(let i = 1; i<=5; i++) {
             if(createPlayer == i) {
                 isThisPlayerSelected = true
             } else {
@@ -144,7 +144,7 @@ function CreateTeam( { totalTeamAPoints, setTotalTeamAPoints, totalTeamBPoints, 
             <div className='all-player-customization-container'>
                 {
                     <SwitchTransition>
-                        <CSSTransition classNames="fade" key={`fade-${team}-player-${createPlayer.toString()}`} addEndListener={(node, done) =>{node.addEventListener("transitionend", done, false)}}>
+                        <CSSTransition classNames="fade" key={`fade-${team}-player-${createPlayer.toString()}`} addEndListener={(node, done) => {node.addEventListener("transitionend", done, false)}}>
                             {
                             team == "A" ?
                                 createPlayer == 1 ?

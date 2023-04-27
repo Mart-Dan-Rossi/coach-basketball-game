@@ -15,22 +15,10 @@ export default function GameContainer() {
         teamBStats,
         gameNarration,
         setGameNarration,
-        gameBoard,
-        setGameBoard,
       } = useContext(GameContext)
-
-    let newGameBoard = [...gameBoard]
 
     const teamAInitialPositions = [[13, 1], [13, 5], [13, 9], [13, 14], [14, 8]]
     const teamBInitialPositions = [[16, 2], [16, 6], [16, 10], [16, 15], [15, 8]]
-
-    teamAInitialPositions.forEach(position => {
-        newGameBoard[position[1]-1][position[0]-1] = 1
-    });
-    
-    teamBInitialPositions.forEach(position => {
-        newGameBoard[position[1]-1][position[0]-1] = 2
-    });
     
     const playerA1: Player = new Player(
         teamAStats.playerA1Stats.name,
@@ -227,7 +215,7 @@ export default function GameContainer() {
     return (
       <div className='game-container'>
           <MatchInfo match={matchState}/>
-          <GameBoard gameBoard={newGameBoard} match={matchState} setMatchState={setMatchState}/>
+          <GameBoard match={matchState} setMatchState={setMatchState}/>
           <MatchActionsContainer match={matchState} setMatchState={setMatchState}/>
       </div>
     )

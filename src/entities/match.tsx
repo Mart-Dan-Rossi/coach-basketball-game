@@ -81,7 +81,7 @@ export class Match {
             });
             
             //Check the centers points in the jump ball
-            this.teamB.players.forEach(player =>{
+            this.teamB.players.forEach(player => {
                 if(player.position === "5") {
                     pointsObteinedInTheJumpBallB = numberEntire(roll20SidesDice() + player.height + player.atleticism)
                     
@@ -145,7 +145,7 @@ export class Match {
         this.runClock()
     }    
     
-    calculateIfPassIsSuccesfull(passer: Player, receiver: Player, gameBoard: [[]]) {
+    calculateIfPassIsSuccesfull(passer: Player, receiver: Player, gameBoard: number[][]) {
         //First i get what's the defending team
         let teamDefending = passer.team == this.teamA.name ? this.teamB.name : this.teamA.name;
         let totalDefensivePoints = 0;
@@ -238,44 +238,17 @@ export class Match {
             }
         }
 
-        passer.haveBall = false
+        passer.setHaveBall(false)
 
         //If the pass have more points than the defensive points
-        if(passPoints >= totalDefensivePoints){
+        if(passPoints >= totalDefensivePoints) {
             //The receiver gets the ball
-            receiver.haveBall = true
-
-            //If the receiver is from team A
-            if(receiver.team == "TeamA") {
-                //The team B keeps defending and they are the next to pick a player for choosing next actions
-                this.teamTurn = "TeamB"
-                this.teamB.teamTurn = true
-
-            } else {
-                //Else the team A is now defending and they are the next to pick a player for choosing next actions
-                this.teamTurn = "TeamA"
-                this.teamA.teamTurn = true
-
-            }
+            receiver.setHaveBall(true)
 
         //If the total defensive points are higher than pass points
         } else {
             //The player with the highest defensive points involved in this situation steal the ball
-            defensorWithTheHighestDefensivePoints[0]!.haveBall = true
-
-            //So if the player who steal the ball is from team A
-            if(defensorWithTheHighestDefensivePoints[0]!.team == "TeamA") {
-
-                //The team B is now defending and they are the next to pick a player for choosing next actions
-                this.teamTurn = "TeamB"
-                this.teamB.teamTurn = true
-
-            } else {
-                //Else the team A is now defending and they are the next to pick a player for choosing next actions
-                this.teamTurn = "TeamA"
-                this.teamA.teamTurn = true
-
-            }
+            defensorWithTheHighestDefensivePoints[0]!.setHaveBall(true)            
         }
     }
     

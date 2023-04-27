@@ -22,13 +22,13 @@ function CustomizeGame() {
         </svg>
         { showTeam ?
             <SwitchTransition>
-              <CSSTransition classNames="fade" key={"teamA-create-team"} addEndListener={(node, done) =>{node.addEventListener("transitionend", done, false)}}>
+              <CSSTransition classNames="fade" key={"teamA-create-team"} addEndListener={(node, done) => {node.addEventListener("transitionend", done, false)}}>
                 <h2>Create team A</h2>
               </CSSTransition>
             </SwitchTransition>
             :
             <SwitchTransition>
-              <CSSTransition classNames="fade" key={"teamB-create-team"} addEndListener={(node, done) =>{node.addEventListener("transitionend", done, false)}}>
+              <CSSTransition classNames="fade" key={"teamB-create-team"} addEndListener={(node, done) => {node.addEventListener("transitionend", done, false)}}>
                 <h2>Create team B</h2>
               </CSSTransition>
             </SwitchTransition>
@@ -41,13 +41,13 @@ function CustomizeGame() {
       {
         showTeam ? 
           <SwitchTransition>
-            <CSSTransition classNames="fade" key={"create-team-A"} addEndListener={(node, done) =>{node.addEventListener("transitionend", done, false)}}>
+            <CSSTransition classNames="fade" key={"create-team-A"} addEndListener={(node, done) => {node.addEventListener("transitionend", done, false)}}>
               <CreateTeam totalTeamAPoints={totalTeamAPoints} setTotalTeamAPoints={setTotalTeamAPoints} totalTeamBPoints={totalTeamBPoints} setTotalTeamBPoints={setTotalTeamBPoints} maxTeamPoints={maxTeamPoints} team = {"A"}/> 
             </CSSTransition>
           </SwitchTransition>
           :
           <SwitchTransition>
-            <CSSTransition classNames="fade" key={"create-team-B"} addEndListener={(node, done) =>{node.addEventListener("transitionend", done, false)}}>
+            <CSSTransition classNames="fade" key={"create-team-B"} addEndListener={(node, done) => {node.addEventListener("transitionend", done, false)}}>
             <CreateTeam totalTeamAPoints={totalTeamAPoints} setTotalTeamAPoints={setTotalTeamAPoints} totalTeamBPoints={totalTeamBPoints} setTotalTeamBPoints={setTotalTeamBPoints} maxTeamPoints={maxTeamPoints} team = {"B"}/>
             </CSSTransition>
           </SwitchTransition>

@@ -12,7 +12,7 @@ interface Props {
 function PlayerImgContainer({team, col, row, teamLetterProps} : Props) {    
 
     function PlayerImgContainerClickHandler() {
-        return (e: React.MouseEvent)=>{
+        return (e: React.MouseEvent)=> {
             e.preventDefault()
             e.currentTarget!.classList.toggle("expand")
         }
@@ -49,7 +49,7 @@ function PlayerImgContainer({team, col, row, teamLetterProps} : Props) {
         )
     }
 
-    function drawPlayerInfoPopupInBoard(player: Player){
+    function drawPlayerInfoPopupInBoard(player: Player) {
         return (
             <div key={"player-info-popup-in-board" + player.team + player.name + player.position} className={`player-info-popup-in-board team-${teamLetterProps.toLowerCase()}`}>
                 <div className='player-basic-info'>
@@ -137,8 +137,8 @@ function PlayerImgContainer({team, col, row, teamLetterProps} : Props) {
         <div className='player-tile-container' onMouseLeave={PlayerImgContainerClickHandler()} onMouseEnter={PlayerImgContainerClickHandler()}>
             {drawPlayer()}
             {
-                team.players.map(player =>{
-                    if(player.ubicationX == col && player.ubicationY == row){
+                team.players.map(player => {
+                    if(player.ubicationX == col && player.ubicationY == row) {
                         return (
                             drawPlayerInfoPopupInBoard(player)
                         )

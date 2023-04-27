@@ -3,7 +3,6 @@ import {useContext, useState, useEffect} from 'react';
 import {GameContext} from '../context/GameContext';
 import './MatchActionsContainer.css'
 import {  } from '../entities/myInterfaces';
-import { dribblingButtonFunction, endTurnButtonFunction, interceptPassAttemptButtonFunction, moveButtonFunction, overwhelmingWaitingButtonFunction, passButtonFunction, shootButtonFunction, stealAttemptButtonFunction, tripleThreatButtonFunction, waitWithCautionButtonFunction, waitWithoutTheBallButtonFunction } from '../utilities/exportableFunctions';
 import { Match } from '../entities/match';
 
 interface Props {
@@ -208,18 +207,17 @@ function MatchActionsContainer( { match, setMatchState } : Props) {
             {
               Object.values(allActionsButtons).map(action => {
                 return (
-                  <>
+                  <div className={action.showState ? "" : "display-none"} key={action.text}>
                   {
                     action.showState &&
                     <button
-                      key={action.text}
                       onClick={clickActionButtonHanddler(action.selectedState, action.selectedSetter, action.actionFunction)}
                       className={ action.selectedState ? "selected" : "" }
                     >
                         {action.text}
                     </button>
                   }
-                  </>
+                  </div>
                 )
               }) 
             }
@@ -227,7 +225,7 @@ function MatchActionsContainer( { match, setMatchState } : Props) {
           </div>
               {
                   <button
-                  onClick={activateConfirmButton ? ()=> {confirmButtonHandler()} : ()=>{console.log("Select action first")}}
+                  onClick={activateConfirmButton ? ()=> {confirmButtonHandler()} : ()=> {console.log("Select action first")}}
                   className={ activateConfirmButton ? "confirm-button" : "disabled confirm-button" }
                   >
                       Confirm

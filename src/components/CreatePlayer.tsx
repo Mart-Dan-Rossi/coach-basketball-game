@@ -34,32 +34,32 @@ function CreatePlayer( { team, playerPosition, player, playerSetter, totalTeamPo
         }
     }
 
-    function pointsUsedOnThisSkill(statType: string){
-        if(statType == "height"){
+    function pointsUsedOnThisSkill(statType: string) {
+        if(statType == "height") {
             return pointsUsedInStats.height
 
-        } else if(statType == "weight"){
+        } else if(statType == "weight") {
             return pointsUsedInStats.weight
 
-        } else if(statType == "atleticism"){
+        } else if(statType == "atleticism") {
             return pointsUsedInStats.atleticism
 
-        } else if(statType == "perimeterDefence"){
+        } else if(statType == "perimeterDefence") {
             return pointsUsedInStats.perDef
 
-        } else if(statType == "insideDefence"){
+        } else if(statType == "insideDefence") {
             return pointsUsedInStats.insDef
 
-        } else if(statType == "rebounding"){
+        } else if(statType == "rebounding") {
             return pointsUsedInStats.reb
 
-        } else if(statType == "perimeterScoring"){
+        } else if(statType == "perimeterScoring") {
             return pointsUsedInStats.perScor
 
-        } else if(statType == "insideScoring"){
+        } else if(statType == "insideScoring") {
             return pointsUsedInStats.insScor
 
-        } else if(statType == "playMaking"){
+        } else if(statType == "playMaking") {
             return pointsUsedInStats.plmkn
 
         } else {
@@ -68,7 +68,7 @@ function CreatePlayer( { team, playerPosition, player, playerSetter, totalTeamPo
         
     }
 
-    function inputOnChangeHandler(statType: string){   
+    function inputOnChangeHandler(statType: string) {   
         return (e: React.ChangeEvent<HTMLInputElement>)=> {
             let inputModified = e.target as HTMLInputElement
             let inputValue = Number(inputModified.value) as number
@@ -81,10 +81,10 @@ function CreatePlayer( { team, playerPosition, player, playerSetter, totalTeamPo
             let statRange = maxStatValue - minStatValue
 
             
-            if(statType == "height"){
+            if(statType == "height") {
                 if(totalTeamPoints <= 0 && inputValue < newPlayerStats.height || totalTeamPoints > 0) {
                     let teamPointsCost = ((newPlayerStats.height - inputValue) *  100) / statRange
-                    if(totalTeamPoints + teamPointsCost >= 0){
+                    if(totalTeamPoints + teamPointsCost >= 0) {
                         setTotalTeamPoints(totalTeamPoints + teamPointsCost)
                         newPlayerStats.height = inputValue
                         let pointsUsedOnThisSkillOld = pointsUsedInStats.height
@@ -94,10 +94,10 @@ function CreatePlayer( { team, playerPosition, player, playerSetter, totalTeamPo
                     }
                 }
                 
-            } else if(statType == "weight"){
+            } else if(statType == "weight") {
                 if(totalTeamPoints <= 0 && inputValue < newPlayerStats.weight || totalTeamPoints > 0) {
                     let teamPointsCost = ((newPlayerStats.weight - inputValue) *  100) / statRange
-                    if(totalTeamPoints + teamPointsCost >= 0){
+                    if(totalTeamPoints + teamPointsCost >= 0) {
                         setTotalTeamPoints(totalTeamPoints + teamPointsCost)
                         newPlayerStats.weight = inputValue
                         let pointsUsedOnThisSkillOld = pointsUsedInStats.weight
@@ -107,10 +107,10 @@ function CreatePlayer( { team, playerPosition, player, playerSetter, totalTeamPo
                     }
                 }
                 
-            } else if(statType == "atleticism"){
+            } else if(statType == "atleticism") {
                 if(totalTeamPoints <= 0 && inputValue < newPlayerStats.atleticism || totalTeamPoints > 0) {
                     let teamPointsCost = ((newPlayerStats.atleticism - inputValue) *  100) / statRange
-                    if(totalTeamPoints + teamPointsCost >= 0){
+                    if(totalTeamPoints + teamPointsCost >= 0) {
                         setTotalTeamPoints(totalTeamPoints + teamPointsCost)
                         newPlayerStats.atleticism = inputValue
                         let pointsUsedOnThisSkillOld = pointsUsedInStats.atleticism
@@ -120,10 +120,10 @@ function CreatePlayer( { team, playerPosition, player, playerSetter, totalTeamPo
                     }
                 }
                 
-            } else if(statType == "perimeterDefence"){
+            } else if(statType == "perimeterDefence") {
                 if(totalTeamPoints <= 0 && inputValue < newPlayerStats.perimeterDefence || totalTeamPoints > 0) {
                     let teamPointsCost = ((newPlayerStats.perimeterDefence - inputValue) *  100) / statRange
-                    if(totalTeamPoints + teamPointsCost >= 0){
+                    if(totalTeamPoints + teamPointsCost >= 0) {
                         setTotalTeamPoints(totalTeamPoints + teamPointsCost)
                         newPlayerStats.perimeterDefence = inputValue
                         let pointsUsedOnThisSkillOld = pointsUsedInStats.perDef
@@ -133,10 +133,10 @@ function CreatePlayer( { team, playerPosition, player, playerSetter, totalTeamPo
                     }
                 }
                 
-            } else if(statType == "insideDefence"){
+            } else if(statType == "insideDefence") {
                 if(totalTeamPoints <= 0 && inputValue < newPlayerStats.insideDefence || totalTeamPoints > 0) {
                     let teamPointsCost = ((newPlayerStats.insideDefence - inputValue) *  100) / statRange
-                    if(totalTeamPoints + teamPointsCost >= 0){
+                    if(totalTeamPoints + teamPointsCost >= 0) {
                         setTotalTeamPoints(totalTeamPoints + teamPointsCost)
                         newPlayerStats.insideDefence = inputValue
                         let pointsUsedOnThisSkillOld = pointsUsedInStats.insDef
@@ -146,10 +146,10 @@ function CreatePlayer( { team, playerPosition, player, playerSetter, totalTeamPo
                     }
                 }
                 
-            } else if(statType == "rebounding"){
+            } else if(statType == "rebounding") {
                 if(totalTeamPoints <= 0 && inputValue < newPlayerStats.rebounding || totalTeamPoints > 0) {
                     let teamPointsCost = ((newPlayerStats.rebounding - inputValue) *  100) / statRange
-                    if(totalTeamPoints + teamPointsCost >= 0){
+                    if(totalTeamPoints + teamPointsCost >= 0) {
                         setTotalTeamPoints(totalTeamPoints + teamPointsCost)
                         newPlayerStats.rebounding = inputValue
                         let pointsUsedOnThisSkillOld = pointsUsedInStats.reb
@@ -159,10 +159,10 @@ function CreatePlayer( { team, playerPosition, player, playerSetter, totalTeamPo
                     }
                 }
                 
-            } else if(statType == "perimeterScoring"){
+            } else if(statType == "perimeterScoring") {
                 if(totalTeamPoints <= 0 && inputValue < newPlayerStats.perimeterScoring || totalTeamPoints > 0) {
                     let teamPointsCost = ((newPlayerStats.perimeterScoring - inputValue) *  100) / statRange
-                    if(totalTeamPoints + teamPointsCost >= 0){
+                    if(totalTeamPoints + teamPointsCost >= 0) {
                         setTotalTeamPoints(totalTeamPoints + teamPointsCost)
                         newPlayerStats.perimeterScoring = inputValue
                         let pointsUsedOnThisSkillOld = pointsUsedInStats.perScor
@@ -172,10 +172,10 @@ function CreatePlayer( { team, playerPosition, player, playerSetter, totalTeamPo
                     }
                 }
                 
-            } else if(statType == "insideScoring"){
+            } else if(statType == "insideScoring") {
                 if(totalTeamPoints <= 0 && inputValue < newPlayerStats.insideScoring || totalTeamPoints > 0) {
                     let teamPointsCost = ((newPlayerStats.insideScoring - inputValue) *  100) / statRange
-                    if(totalTeamPoints + teamPointsCost >= 0){
+                    if(totalTeamPoints + teamPointsCost >= 0) {
                         setTotalTeamPoints(totalTeamPoints + teamPointsCost)
                         newPlayerStats.insideScoring = inputValue
                         let pointsUsedOnThisSkillOld = pointsUsedInStats.insScor
@@ -185,10 +185,10 @@ function CreatePlayer( { team, playerPosition, player, playerSetter, totalTeamPo
                     }
                 }
                 
-            } else if(statType == "playMaking"){
+            } else if(statType == "playMaking") {
                 if(totalTeamPoints <= 0 && inputValue < newPlayerStats.playMaking || totalTeamPoints > 0) {
                     let teamPointsCost = ((newPlayerStats.playMaking - inputValue) *  100) / statRange
-                    if(totalTeamPoints + teamPointsCost >= 0){
+                    if(totalTeamPoints + teamPointsCost >= 0) {
                         setTotalTeamPoints(totalTeamPoints + teamPointsCost)
                         newPlayerStats.playMaking = inputValue
                         let pointsUsedOnThisSkillOld = pointsUsedInStats.plmkn

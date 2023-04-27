@@ -173,7 +173,7 @@ export class Team {
         if(pointsIfMade == 1) {
             this.stats.freeThrowsAttempt++
 
-            if(isItMade){
+            if(isItMade) {
                 this.stats.freeThrowsMade++
                 this.stats.points++
 
@@ -181,7 +181,7 @@ export class Team {
         } else if(pointsIfMade == 2) {
             this.stats.fieldGoalsattempt++
 
-            if(isItMade){
+            if(isItMade) {
                 this.stats.fieldGoalsMade++
                 this.stats.points += 2
 
@@ -199,7 +199,7 @@ export class Team {
             this.stats.fieldGoalsattempt++
             this.stats.triplesAttempt++
             
-            if(isItMade){
+            if(isItMade) {
                 this.stats.fieldGoalsMade++
                 this.stats.triplesMade++
                 this.stats.points += 3

@@ -112,10 +112,6 @@ export interface GameContextProps {
     finalisingAction: boolean,
     setFinalisingAction: React.Dispatch<React.SetStateAction<boolean>>,
 
-
-    gameBoard: number[][],
-    setGameBoard: React.Dispatch<React.SetStateAction<number[][]>>,
-
     confirmButtonHandler: ()=>void,
     setConfirmButtonHandler: React.Dispatch<React.SetStateAction<()=>void>>,
 

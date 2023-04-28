@@ -145,7 +145,7 @@ export class Match {
         this.runClock()
     }    
     
-    calculateIfPassIsSuccesfull(passer: Player, receiver: Player, gameBoard: number[][]) {
+    handlePassAction(passer: Player, receiver: Player, gameBoard: number[][]) {
         //First i get what's the defending team
         let teamDefending = passer.team == this.teamA.name ? this.teamB.name : this.teamA.name;
         let totalDefensivePoints = 0;
@@ -238,6 +238,7 @@ export class Match {
             }
         }
 
+        passer.setLastAction("pass")
         passer.setHaveBall(false)
 
         //If the pass have more points than the defensive points

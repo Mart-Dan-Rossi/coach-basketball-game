@@ -253,6 +253,10 @@ export class Player {
         this.haveBall = value
     }
 
+    setLastAction(action: string) {
+        this.lastAction = action
+    }
+
     
     //-----------------------------END SET PLAYER STATUS METHODS-----------------------------------------------------------------------------------------------------
 

@@ -65,7 +65,7 @@ function GameBoard( { match, setMatchState } : Props) {
     } = useContext(GameContext)
 
     useEffect(() => {
-    }, [gameBoard])
+    }, [gameBoard, playerClikedTeamA, playerClikedTeamB])
 
     teamA.players.forEach(player => {
         gameBoard[player.ubicationY!-1][player.ubicationX!-1] = 1
@@ -162,37 +162,53 @@ function GameBoard( { match, setMatchState } : Props) {
         
         let thisUbication = [col, row]
         let activePlayer = match.getActivePlayer()!
-        
-        if(actionConfirmed == "move" || actionConfirmed == "dribbling") {
+
+        if(actionConfirmed == "move" || actionConfirmed == "dribbling" || actionConfirmed == "pass") {
+            finalisingAction && setActivateConfirmButton(false)
             hideActionsButtons()
+
+        }
+        
+        if(actionConfirmed != "") {
             
-            if(finalisingAction) {
-                setActivateConfirmButton(false)
-                
-            }
+            if(actionConfirmed == "move" || actionConfirmed == "dribbling") {
 
-            for(let dx = -1; dx < 2; dx++) {
-                for(let dy = -1; dy < 2; dy ++) {
-                    //Don't add class to player tile
-
-                    if(!(dx == 0 && dy == 0)) {
-                        //If the scanned ubication is around the active player
-                        if(activePlayer.ubicationX! + dx == thisUbication[0] && activePlayer.ubicationY! + dy == thisUbication[1]) {
-
-                            //The player have more than 1.5 action points and the tile is in the diagonal or less than 1.5 points and the sile is next to the player
-                            if((activePlayer.actionPoints >= 1.5 && (Math.pow(dx, 2) + Math.pow(dy, 2) == 2)) || (activePlayer.actionPoints >= 1 && (dx == 0 || dy == 0))) {
-                                
-                                if(teamNumber == 0) {
-                                    if(tileClicked[0] == thisUbication[0] && tileClicked[1] == thisUbication[1]) {
-                                        return("selected-tile pointer")
-                                    } else {
-                                        return("highlighted-tile pointer")
-
+                for(let dx = -1; dx < 2; dx++) {
+                    for(let dy = -1; dy < 2; dy ++) {
+                        //Don't add class to player tile
+    
+                        if(!(dx == 0 && dy == 0)) {
+                            //If the scanned ubication is around the active player
+                            if(activePlayer.ubicationX! + dx == thisUbication[0] && activePlayer.ubicationY! + dy == thisUbication[1]) {
+    
+                                //The player have more than 1.5 action points and the tile is in the diagonal or less than 1.5 points and the sile is next to the player
+                                if((activePlayer.actionPoints >= 1.5 && (Math.pow(dx, 2) + Math.pow(dy, 2) == 2)) || (activePlayer.actionPoints >= 1 && (dx == 0 || dy == 0))) {
+                                    
+                                    if(teamNumber == 0) {
+                                        if(tileClicked[0] == thisUbication[0] && tileClicked[1] == thisUbication[1]) {
+                                            return("selected-tile pointer")
+                                        } else {
+                                            return("highlighted-tile pointer")
+    
+                                        }
+    
                                     }
-
                                 }
                             }
                         }
+                    }
+                }
+
+            } else if(actionConfirmed == "pass") {
+                let activePlayer = match.getActivePlayer()
+
+                if(activePlayer!.ubicationX == thisUbication[0] && activePlayer!.ubicationY == thisUbication[1]) {
+                    return("active-tile")
+                } else if(teamNumber == (activePlayer!.team == "TeamA" ? 1 : 2)) {
+                    if(playerClikedTeamA[0] == col && playerClikedTeamA[1] == row || playerClikedTeamB[0] == col && playerClikedTeamB[1] == row) {
+                        return("selected-tile")
+                    } else {
+                        return("highlighted-tile")
                     }
                 }
             }
@@ -247,7 +263,6 @@ function GameBoard( { match, setMatchState } : Props) {
     }
 
     function clickTileHandler(teamNumber: number, col: number, row: number) {
-        console.log(actionConfirmed)
         //TODO add cases where choaches have to pick a tile to do an action
         if(actionConfirmed == "move" || actionConfirmed == "dribbling") {
             return ()=> {
@@ -300,18 +315,19 @@ function GameBoard( { match, setMatchState } : Props) {
         } else if(actionConfirmed == "pass") {
             return ()=> {
                 let thisUbication = [col, row]
-                console.log("in")
 
                 if(teamNumber != 0) {
                     let team = teamNumber == 1 ? teamA : teamB
                     let setPlayerClicked = teamNumber == 1 ? setPlayerClikedTeamA : setPlayerClikedTeamB
 
+                    setPlayerClicked(thisUbication)
+
                     team.players.forEach(player => {
                         if(!player.playerActive && player.ubicationX == col && player.ubicationY == row) {
-                            setPlayerClicked([col, row])
-
+                            setFinalisingAction(false)
+                            
                             setConfirmButtonHandler(()=> ()=> confirmPassToPlayer(team, thisUbication))
-
+                            
                             setActivateConfirmButton(true)
                         }
                     });
@@ -358,32 +374,25 @@ function GameBoard( { match, setMatchState } : Props) {
 
         team.players.forEach(player => {
             let playerUbication = [player.ubicationX, player.ubicationY]
-
-            let playerClicked = player.team == "TeamA" ? playerClikedTeamA : playerClikedTeamB
-            
-            if(playerUbication[0] == playerClicked[0] && playerUbication[1] == playerClicked[1]) {
-                receiver = player
-
-            }
-            
             
             if(playerUbication[0] == ubicationScaned[0] && playerUbication[1] == ubicationScaned[1]) {
                 player.setHaveBall(false)
+                receiver = player
 
             }
         })
-
-        console.log("receiver: ", receiver!)
-
+        
         match.handlePassAction(passer, receiver!, gameBoard)
-
-        console.log(match)
 
         if(passer.team == "TeamA") {
             setPlayerClikedTeamA([0, 0])
         } else {
             setPlayerClikedTeamB([0, 0])
         }
+
+        setActionConfirmed("")
+        
+        setMatchState(match)
 
         setActivateConfirmButton(false)
     }

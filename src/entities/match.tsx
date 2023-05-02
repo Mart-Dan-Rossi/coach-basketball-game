@@ -143,7 +143,7 @@ export class Match {
         
         //Run clock
         this.runClock()
-    }    
+    }
     
     handlePassAction(passer: Player, receiver: Player, gameBoard: number[][]) {
         //First i get what's the defending team
@@ -239,6 +239,7 @@ export class Match {
         }
 
         passer.setLastAction("pass")
+        passer.restActionPoints(0.5)
         passer.setHaveBall(false)
 
         //If the pass have more points than the defensive points

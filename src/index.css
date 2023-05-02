@@ -17,6 +17,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.game-container {
+  user-select: none;
+}
+
 .back-button-container {
   position: absolute;
   width: 45px;

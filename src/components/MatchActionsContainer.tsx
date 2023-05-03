@@ -171,7 +171,7 @@ function MatchActionsContainer( { match, setMatchState } : Props) {
       selectedState: endTurnButtonSelected,
       selectedSetter: setEndTurnButtonSelected,
       actionFunction: ()=> {
-        match.handleSelectedPlayersStatus()
+        matchCopy.handleSelectedPlayersStatus()
       },
     }
     ,

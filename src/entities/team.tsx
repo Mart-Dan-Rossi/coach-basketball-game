@@ -106,7 +106,7 @@ export class Team {
     }
     
     returnActivePlayer() {
-        let activePlayer
+        let activePlayer: Player|undefined
 
         this.players.forEach(player => {
             player.playerActive && (activePlayer = player)

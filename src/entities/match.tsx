@@ -13,7 +13,7 @@ export class Match {
     teamTurn: string
 
     //Match basic info
-    querter: number;
+    quarter: number;
     timeLeft: QuarterTimeLeft;
     shotClock: number;
     turnOver: boolean;
@@ -29,7 +29,7 @@ export class Match {
         this.teamTurn = ""
         
         //Match basic info
-        this.querter = 1
+        this.quarter = 1
         this.timeLeft = { minutes: 6, seconds: 0 }
         this.shotClock = 24
         this.turnOver = false
@@ -98,13 +98,13 @@ export class Match {
                 //If teamA won the jump ball give it to the PG of that team
                 this.teamA.players.forEach(player => {
                     if(player.position === "1") {
-                        player.haveBall = true
+                        player.setHaveBall(true)
                         
                         //Give feedback
                         newGameNarration.unshift(`${this.teamA.name} won the jump. Now ${player.name === "" ? "the PG of team A" : player.name} have the ball.`)
                         setGameNarration(newGameNarration)
                         
-                        this.teamTurn = "TeamB"
+                        this.setTeamTurn("TeamB")
                         
                     }
                 });
@@ -112,13 +112,13 @@ export class Match {
                 //If teamB won the jump ball give it to the PG of that team
                 this.teamB.players.forEach(player => {
                     if(player.position === "1") {
-                        player.haveBall = true
+                        player.setHaveBall(true)
                         
                         //Give feedback
                         newGameNarration.unshift(`${this.teamB.name} won the jump. Now ${player.name === "" ? "the PG of team B" : player.name} have the ball.`)
                         setGameNarration(newGameNarration)
                         
-                        this.teamTurn = "TeamA"
+                        this.setTeamTurn("TeamA")
                         
                     }
                 });
@@ -132,9 +132,9 @@ export class Match {
         
         //Set the team with the ball
         if(this.teamTurn == "TeamA") {
-            this.teamA.teamTurn = true
+            this.teamA.setTeamTurn(true)
         } else if(this.teamTurn == "TeamB") {
-            this.teamB.teamTurn = true
+            this.teamB.setTeamTurn(true)
         }
         
         //Give players action points
@@ -406,28 +406,47 @@ export class Match {
 
 
     //-----------------------------------START MATCH HANDLER METHODS----------------------------------------------------------------------------------------------------------
+    setTeamTurn(team: string) {
+        this.teamTurn = team
+    }
+    
     handleSelectedPlayersStatus() {
         let activePlayer = this.getActivePlayer()
-        
-        activePlayer!.playerActive = false
-        activePlayer!.playerSelected = false
+
+        activePlayer!.resetActionPoints()
+        activePlayer!.setActivePlayer(false)
+        activePlayer!.setPlayerSelected(false)
         
         let selectedPlayers = this.getSelectedPlayers()
     
         if(selectedPlayers[0] || selectedPlayers[1]) {
           if(selectedPlayers[0]) {
-            selectedPlayers[0].playerSelected = true
+            selectedPlayers[0].setPlayerSelected(true)
 
         }
           if(selectedPlayers[1]) {
-            selectedPlayers[1].playerSelected = true
+            selectedPlayers[1].setPlayerSelected(true)
 
         }
         } else if(this.teamA.doesPlayersHaveMovement() || this.teamB.doesPlayersHaveMovement()) {
-          this.teamA.teamHaveTheBall() ?
-            this.teamTurn = "TeamB"
-            : this.teamTurn = "TeamA"
-          
+            if(this.teamA.teamHaveTheBall()) {
+                this.setTeamTurn("TeamB")
+                this.teamB.setTeamTurn(true)
+            } else {
+                this.setTeamTurn("TeamA")
+                this.teamA.setTeamTurn(true)
+            }
+            
+        } else {
+            this.runClock()
+            
+            if(this.teamA.teamHaveTheBall()) {
+                this.setTeamTurn("TeamA")
+                this.teamA.setTeamTurn(true)
+            } else {
+                this.setTeamTurn("TeamB")
+                this.teamB.setTeamTurn(true)
+            }
         }
     
     }
@@ -438,6 +457,20 @@ export class Match {
             this.timeLeft.seconds = 59
         } else {
             this.timeLeft.seconds--
+        }
+
+        if(this.timeLeft.minutes == 0 && this.timeLeft.seconds == 0) {
+            if(this.quarter < 4) {
+                this.quarter++
+                this.timeLeft.minutes = 6
+
+            } else if(this.teamA.stats.points == this.teamB.stats.points) {
+                this.quarter++
+                this.timeLeft.minutes = 3
+                
+            } else {
+                this.gameOver = true
+            }
         }
     }
 

@@ -201,7 +201,7 @@ export default function GameContainer() {
     const [matchState, setMatchState] = useState(match)
 
     function matchHandler() {
-        if(matchState.querter == 1 && matchState.timeLeft.minutes == 6) {
+        if(matchState.quarter == 1 && matchState.timeLeft.minutes == 6) {
             matchState.jumpBall(gameNarration, setGameNarration)
         }        
     }

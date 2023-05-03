@@ -239,8 +239,9 @@ function GameBoard( { match, setMatchState } : Props) {
                 }
             }
 
-            let teamAActivePlayer = teamA.returnActivePlayer() as Player|undefined
-            let teamBActivePlayer = teamB.returnActivePlayer() as Player|undefined
+            let teamAActivePlayer = teamA.returnActivePlayer()
+            let teamBActivePlayer = teamB.returnActivePlayer()
+            console.log(match)
 
             let teamAActivePlayerUbication = teamAActivePlayer && [teamAActivePlayer.ubicationX, teamAActivePlayer.ubicationY]
             let teamBActivePlayerUbication = teamBActivePlayer && [teamBActivePlayer.ubicationX, teamBActivePlayer.ubicationY]

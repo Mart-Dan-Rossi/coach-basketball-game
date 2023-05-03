@@ -28,7 +28,7 @@ function MatchInfo( { match }: Props) {
               <span>:</span>
               <span className='game-clock'>{match.timeLeft.seconds < 10 ? `0${match.timeLeft.seconds}` : match.timeLeft.seconds}</span>
             </div>
-            <span className="quarter-counter">{match.querter}{match.querter == 1 ? "RST" : match.querter == 2 ? "ND" : match.querter == 3 ? "RD" : "RTH"}</span>
+            <span className="quarter-counter">{match.quarter}{match.quarter == 1 ? "RST" : match.quarter == 2 ? "ND" : match.quarter == 3 ? "RD" : "RTH"}</span>
           </div>
           <span className="shot-clock">{match.shotClock}</span>
         </div>

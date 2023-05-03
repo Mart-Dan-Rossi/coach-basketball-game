@@ -162,14 +162,26 @@ function GameBoard( { match, setMatchState } : Props) {
         
         let thisUbication = [col, row]
         let activePlayer = match.getActivePlayer()!
-
-        if(actionConfirmed == "move" || actionConfirmed == "dribbling" || actionConfirmed == "pass") {
-            finalisingAction && setActivateConfirmButton(false)
-            hideActionsButtons()
-
-        }
         
         if(actionConfirmed != "") {
+            if(actionConfirmed == "move" || actionConfirmed == "dribbling" || actionConfirmed == "pass") {
+                finalisingAction && setActivateConfirmButton(false)
+                hideActionsButtons()
+    
+            } else {
+                setActivateConfirmButton(false)
+
+                let teamASelectedPlayer = match.teamA.getSelectedPlayer()
+                let teamBSelectedPlayer = match.teamB.getSelectedPlayer()
+
+                if(!teamASelectedPlayer && !teamBSelectedPlayer) {
+                    hideActionsButtons()
+                }
+                
+                if(col == 28 && row == 15) {
+                    setActionConfirmed("")
+                }
+            }
             
             if(actionConfirmed == "move" || actionConfirmed == "dribbling") {
 
@@ -250,10 +262,13 @@ function GameBoard( { match, setMatchState } : Props) {
             // console.log("teamAActivePlayerUbication", teamAActivePlayerUbication)
             // console.log("teamBActivePlayerUbication", teamBActivePlayerUbication)
 
-            if((teamAActivePlayerUbication && teamAActivePlayerUbication[0] == col && teamAActivePlayerUbication[1] == row) || (teamBActivePlayerUbication && teamBActivePlayerUbication[0] == col && teamBActivePlayerUbication[1] == row)) {
+            if(teamAActivePlayerUbication && teamAActivePlayerUbication[0] == col && teamAActivePlayerUbication[1] == row) {
                 showPosibleActionsButtons(teamAActivePlayer, teamA)
+                
+                return("active-tile")
+            } else if(teamBActivePlayerUbication && teamBActivePlayerUbication[0] == col && teamBActivePlayerUbication[1] == row) {
                 showPosibleActionsButtons(teamBActivePlayer, teamB)
-                        
+                
                 return("active-tile")
             }
 

@@ -65,7 +65,7 @@ function GameBoard( { match, setMatchState } : Props) {
     } = useContext(GameContext)
 
     useEffect(() => {
-    }, [gameBoard, playerClikedTeamA, playerClikedTeamB])
+    }, [gameBoard, playerClikedTeamA, playerClikedTeamB, match])
 
     teamA.players.forEach(player => {
         gameBoard[player.ubicationY!-1][player.ubicationX!-1] = 1
@@ -141,8 +141,6 @@ function GameBoard( { match, setMatchState } : Props) {
 
                     //And check if ther's an atacking player with the ball next to him
                     const otherTeam = team.name == "TeamA" ? teamB : teamA
-
-                    // console.log("team: ", team, "otherTeam: ", otherTeam)
                     
                     const playerWithBall = otherTeam.returnPlayerWithBall()
 
@@ -211,7 +209,9 @@ function GameBoard( { match, setMatchState } : Props) {
                     }
                 }
 
-            } else if(actionConfirmed == "pass") {
+            }
+            
+            if(actionConfirmed == "pass") {
                 let activePlayer = match.getActivePlayer()
 
                 if(activePlayer!.ubicationX == thisUbication[0] && activePlayer!.ubicationY == thisUbication[1]) {
@@ -224,54 +224,60 @@ function GameBoard( { match, setMatchState } : Props) {
                     }
                 }
             }
+
+            if(actionConfirmed == "end turn") {
+                hideActionsButtons()
+
+                setPlayerClikedTeamA([0, 0])
+                setPlayerClikedTeamB([0, 0])
+            }
         }
         
         if(teamNumber != 0) {
-
+            
             if(playerClikedTeamA[0] == col && playerClikedTeamA[1] == row || playerClikedTeamB[0] == col && playerClikedTeamB[1] == row) {
+                // console.log("playerCliked")
                 return("selected-tile")
             }
-
+            
             if((teamA.teamTurn) && teamNumber == 1) {
-
+                // console.log("teamTurn && teamNumber A")
                 if(teamA.isAnyPlayerSelected()) {
                     paintPlayerOnThisTileAsSelected(teamA, thisUbication)
-
+                    
                 } else {
                     return("highlighted-tile")
                 }
-
+                
             } else if((teamB.teamTurn) && teamNumber == 2) {
-
+                // console.log("teamTurn && teamNumber B")
                 if(teamB.isAnyPlayerSelected()) {
                     paintPlayerOnThisTileAsSelected(teamB, thisUbication)
-
+                    
                 } else {
                     return("highlighted-tile")
                 }
             }
-
+            
             let teamAActivePlayer = teamA.returnActivePlayer()
             let teamBActivePlayer = teamB.returnActivePlayer()
-
+            
             let teamAActivePlayerUbication = teamAActivePlayer && [teamAActivePlayer.ubicationX, teamAActivePlayer.ubicationY]
             let teamBActivePlayerUbication = teamBActivePlayer && [teamBActivePlayer.ubicationX, teamBActivePlayer.ubicationY]
 
-            // console.log("this ubication", thisUbication)
-
-            // console.log("teamAActivePlayerUbication", teamAActivePlayerUbication)
-            // console.log("teamBActivePlayerUbication", teamBActivePlayerUbication)
-
-            if(teamAActivePlayerUbication && teamAActivePlayerUbication[0] == col && teamAActivePlayerUbication[1] == row) {
+            if(teamAActivePlayerUbication && teamAActivePlayerUbication[0] == thisUbication[0] && teamAActivePlayerUbication[1] == thisUbication[1]) {
+                // console.log("teamActivePlayerUbication == thisUbication")
                 showPosibleActionsButtons(teamAActivePlayer, teamA)
                 
                 return("active-tile")
-            } else if(teamBActivePlayerUbication && teamBActivePlayerUbication[0] == col && teamBActivePlayerUbication[1] == row) {
+            } else if(teamBActivePlayerUbication && teamBActivePlayerUbication[0] == thisUbication[0] && teamBActivePlayerUbication[1] == thisUbication[1]) {
+                // console.log("teamActivePlayerUbication == thisUbication")
                 showPosibleActionsButtons(teamBActivePlayer, teamB)
                 
                 return("active-tile")
             }
 
+            // console.log("not-highlighted")
             return("not-highlighted")
 
         }

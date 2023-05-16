@@ -410,28 +410,38 @@ export class Match {
         this.teamTurn = team
     }
     
-    handleSelectedPlayersStatus() {
+    handleSelectedPlayersStatus(turnLeft: boolean) {
+        
         let activePlayer = this.getActivePlayer()
 
-        activePlayer!.resetActionPoints()
         activePlayer!.setActivePlayer(false)
         activePlayer!.setPlayerSelected(false)
+        
+        if(!turnLeft) {
+            activePlayer!.resetActionPoints()
+            activePlayer!.setPlayerHaveTurn (false)
+        }
         
         let selectedPlayers = this.getSelectedPlayers()
     
         if(selectedPlayers[0] || selectedPlayers[1]) {
-          if(selectedPlayers[0]) {
-            selectedPlayers[0].setPlayerSelected(true)
 
+          if(selectedPlayers[0]) {
+              selectedPlayers[0].setPlayerSelected(false)
+              selectedPlayers[0].setActivePlayer(true)
+              
         }
           if(selectedPlayers[1]) {
-            selectedPlayers[1].setPlayerSelected(true)
+              selectedPlayers[1].setPlayerSelected(false)
+            selectedPlayers[1].setActivePlayer(true)
 
         }
         } else if(this.teamA.doesPlayersHaveMovement() || this.teamB.doesPlayersHaveMovement()) {
+
             if(this.teamA.teamHaveTheBall()) {
                 this.setTeamTurn("TeamB")
                 this.teamB.setTeamTurn(true)
+
             } else {
                 this.setTeamTurn("TeamA")
                 this.teamA.setTeamTurn(true)
@@ -443,6 +453,7 @@ export class Match {
             if(this.teamA.teamHaveTheBall()) {
                 this.setTeamTurn("TeamA")
                 this.teamA.setTeamTurn(true)
+
             } else {
                 this.setTeamTurn("TeamB")
                 this.teamB.setTeamTurn(true)

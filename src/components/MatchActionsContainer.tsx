@@ -172,7 +172,10 @@ function MatchActionsContainer( { match, setMatchState } : Props) {
       selectedSetter: setEndTurnButtonSelected,
       actionFunction: ()=> {
         setActionConfirmed("end turn")
-        matchCopy.handleSelectedPlayersStatus()
+
+        setEndTurnButtonSelected(false)
+
+        matchCopy.handleSelectedPlayersStatus(false)
 
       },
     }

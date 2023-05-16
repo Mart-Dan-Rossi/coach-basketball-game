@@ -241,6 +241,10 @@ export class Player {
         }
     }
 
+    setPlayerHaveTurn(value: boolean) {
+        this.playerHaveTurn = value
+    }
+
     setActivePlayer(value: boolean) {
         this.playerActive = value
     }

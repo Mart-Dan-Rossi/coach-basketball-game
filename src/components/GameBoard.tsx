@@ -73,7 +73,10 @@ function GameBoard( { match, setMatchState } : Props) {
     
     teamB.players.forEach(player => {
         gameBoard[player.ubicationY!-1][player.ubicationX!-1] = 2
-    });
+    });    
+
+    let teamAAnySelected = teamA.isAnyPlayerSelected()
+    let teamBAnySelected = teamB.isAnyPlayerSelected()
 
     function hideActionsButtons() {
       setShowMoveButton(false)
@@ -159,9 +162,10 @@ function GameBoard( { match, setMatchState } : Props) {
         //TODO add cases where choaches have to pick a tile to do an action
         
         let thisUbication = [col, row]
-        let activePlayer = match.getActivePlayer()!
         
         if(actionConfirmed != "") {
+            let activePlayer = match.getActivePlayer()!
+
             if(actionConfirmed == "move" || actionConfirmed == "dribbling" || actionConfirmed == "pass") {
                 finalisingAction && setActivateConfirmButton(false)
                 hideActionsButtons()
@@ -242,19 +246,19 @@ function GameBoard( { match, setMatchState } : Props) {
             
             if((teamA.teamTurn) && teamNumber == 1) {
                 // console.log("teamTurn && teamNumber A")
-                if(teamA.isAnyPlayerSelected()) {
+                if(teamAAnySelected) {
                     paintPlayerOnThisTileAsSelected(teamA, thisUbication)
                     
-                } else {
+                } else if(teamA.playerOnThisTileHaveTurnLeft(thisUbication)) {
                     return("highlighted-tile")
                 }
                 
             } else if((teamB.teamTurn) && teamNumber == 2) {
                 // console.log("teamTurn && teamNumber B")
-                if(teamB.isAnyPlayerSelected()) {
+                if(teamBAnySelected) {
                     paintPlayerOnThisTileAsSelected(teamB, thisUbication)
                     
-                } else {
+                } else if(teamB.playerOnThisTileHaveTurnLeft(thisUbication)) {
                     return("highlighted-tile")
                 }
             }
@@ -370,7 +374,7 @@ function GameBoard( { match, setMatchState } : Props) {
                         if(teamA.teamTurn) {
                             setPlayerClikedTeamA([col, row])
                             
-                            if(!teamA.isAnyPlayerSelected()) {
+                            if(!teamAAnySelected) {
                                     setConfirmButtonHandler(()=> ()=> confirmPlayerSelection(teamA, thisUbication, teamB))                                
                             }
                             
@@ -380,7 +384,7 @@ function GameBoard( { match, setMatchState } : Props) {
                         if(teamB.teamTurn) {
                             setPlayerClikedTeamB([col, row])
     
-                            if(!teamB.isAnyPlayerSelected()) {
+                            if(!teamBAnySelected) {
                                 setConfirmButtonHandler(()=> ()=> confirmPlayerSelection(teamB, thisUbication, teamA))                                
                             }
     
@@ -425,7 +429,12 @@ function GameBoard( { match, setMatchState } : Props) {
     }
     
     function confirmPlayerSelection(team: Team, ubicationScaned: number[], otherTeam: Team) {
+        let teamStillHaveTurnLeft = false
         team.players.forEach(player => {
+            if(!teamStillHaveTurnLeft && player.playerHaveTurn) {
+                teamStillHaveTurnLeft = player.playerHaveTurn
+            }
+
             let playerUbication = [player.ubicationX, player.ubicationY]
             
             if(playerUbication[0] == ubicationScaned[0] && playerUbication[1] == ubicationScaned[1]) {
@@ -433,10 +442,13 @@ function GameBoard( { match, setMatchState } : Props) {
             }
         })
 
-        let playerActive: Player
-
         team.setTeamTurn(false)
         team.setTeamTurnLeft(false)
+        //TODO fix this to keep the game flow
+        // team.setTeamTurnLeft(teamStillHaveTurnLeft)
+        
+        let playerActive: Player
+                
 
         if(otherTeam.teamTurnLeft) {
             otherTeam.setTeamTurn(true)

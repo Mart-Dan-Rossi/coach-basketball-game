@@ -152,6 +152,23 @@ export class Team {
         })
         return playerWithBall
     }
+
+    playerOnThisTileHaveTurnLeft(ubicationScaned: number[]) {
+        let haveTurnLeft = false
+
+        this.players.forEach(player => {
+            if(!haveTurnLeft) {
+
+                if(player.ubicationX == ubicationScaned[0] && player.ubicationY == ubicationScaned[1]) {
+                    haveTurnLeft = player.playerHaveTurn
+
+                }
+            }
+        })
+
+        return haveTurnLeft
+    }
+    
     //---------------------------------------END GET INFO METHODS-------------------------------------------------------------------------------------------------------------
 
     //---------------------------------START SET PLAYER STATUS METHODS--------------------------------------------------------------------------------------------------------

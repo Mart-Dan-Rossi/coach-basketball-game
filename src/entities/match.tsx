@@ -410,14 +410,14 @@ export class Match {
         this.teamTurn = team
     }
     
-    handleSelectedPlayersStatus(turnLeft: boolean) {
+    handleSelectedPlayersStatus(playerSillHaveTurnLeft: boolean) {
         
         let activePlayer = this.getActivePlayer()
 
         activePlayer!.setActivePlayer(false)
         activePlayer!.setPlayerSelected(false)
         
-        if(!turnLeft) {
+        if(!playerSillHaveTurnLeft) {
             activePlayer!.resetActionPoints()
             activePlayer!.setPlayerHaveTurn (false)
         }
@@ -427,12 +427,12 @@ export class Match {
         if(selectedPlayers[0] || selectedPlayers[1]) {
 
           if(selectedPlayers[0]) {
-              selectedPlayers[0].setPlayerSelected(false)
-              selectedPlayers[0].setActivePlayer(true)
+            selectedPlayers[0].setPlayerSelected(false)
+            selectedPlayers[0].setActivePlayer(true)
               
         }
           if(selectedPlayers[1]) {
-              selectedPlayers[1].setPlayerSelected(false)
+            selectedPlayers[1].setPlayerSelected(false)
             selectedPlayers[1].setActivePlayer(true)
 
         }

@@ -277,6 +277,28 @@ function GameBoard( { match, setMatchState } : Props) {
         }
     }
 
+    function movePlayer(activePlayer: Player, dx: number, dy: number) {
+        return ()=> ()=> {
+
+            gameBoard[activePlayer.ubicationY! - 1][activePlayer.ubicationX! - 1] = 0
+            
+            let actionPointsToDecrease = (Math.pow(dx, 2) + Math.pow(dy, 2) == 2) ? 1.5 : 1
+            activePlayer!.restActionPoints(actionPointsToDecrease)
+
+            activePlayer.movePlayer(dx, dy)
+            gameBoard[activePlayer.ubicationY! - 1][activePlayer.ubicationX! - 1] = activePlayer.team == "TeamA" ? 1 : 2
+
+            activePlayer.setLastAction(actionConfirmed)
+
+            setActionConfirmed("")
+
+            setMatchState(match)
+
+            setActivateConfirmButton(false)
+        }
+        
+    }
+
     function clickTileHandler(teamNumber: number, col: number, row: number) {
         //TODO add cases where choaches have to pick a tile to do an action
         if(actionConfirmed == "move" || actionConfirmed == "dribbling") {
@@ -299,25 +321,7 @@ function GameBoard( { match, setMatchState } : Props) {
                                         setTileClicked(thisUbication)
                                         setFinalisingAction(false)
                                         
-                                        setConfirmButtonHandler(()=> ()=> {
-                                            
-                                            gameBoard[activePlayer.ubicationY! - 1][activePlayer.ubicationX! - 1] = 0
-                                            
-                                            let actionPointsToDecrease = (Math.pow(dx, 2) + Math.pow(dy, 2) == 2) ? 1.5 : 1
-                                            activePlayer!.restActionPoints(actionPointsToDecrease)
-    
-                                            activePlayer.movePlayer(dx, dy)
-                                            gameBoard[activePlayer.ubicationY! - 1][activePlayer.ubicationX! - 1] = activePlayer.team == "TeamA" ? 1 : 2
-
-                                            activePlayer.setLastAction(actionConfirmed)
-
-                                            setActionConfirmed("")
-        
-                                            setMatchState(match)
-    
-                                            setActivateConfirmButton(false)
-                                            
-                                        })
+                                        setConfirmButtonHandler(movePlayer(activePlayer, dx, dy))
                                     }
                                     
                                     setActivateConfirmButton(true)
@@ -341,7 +345,7 @@ function GameBoard( { match, setMatchState } : Props) {
                         if(!player.playerActive && player.ubicationX == col && player.ubicationY == row) {
                             setFinalisingAction(false)
                             
-                            setConfirmButtonHandler(()=> ()=> confirmPassToPlayer(team, thisUbication))
+                            setConfirmButtonHandler(confirmPassToPlayer(team, thisUbication))
                             
                             setActivateConfirmButton(true)
                         }
@@ -384,32 +388,34 @@ function GameBoard( { match, setMatchState } : Props) {
     }
 
     function confirmPassToPlayer(team: Team, ubicationScaned: number[]) {
-        let receiver: Player
-        let passer = match.getActivePlayer()!
+        return ()=> ()=> { 
+            let receiver: Player
+            let passer = match.getActivePlayer()!
 
-        team.players.forEach(player => {
-            let playerUbication = [player.ubicationX, player.ubicationY]
-            
-            if(playerUbication[0] == ubicationScaned[0] && playerUbication[1] == ubicationScaned[1]) {
-                player.setHaveBall(false)
-                receiver = player
+            team.players.forEach(player => {
+                let playerUbication = [player.ubicationX, player.ubicationY]
 
+                if(playerUbication[0] == ubicationScaned[0] && playerUbication[1] == ubicationScaned[1]) {
+                    player.setHaveBall(false)
+                    receiver = player
+
+                }
+            })
+
+            match.handlePassAction(passer, receiver!, gameBoard)
+
+            if(passer.team == "TeamA") {
+                setPlayerClikedTeamA([0, 0])
+            } else {
+                setPlayerClikedTeamB([0, 0])
             }
-        })
-        
-        match.handlePassAction(passer, receiver!, gameBoard)
 
-        if(passer.team == "TeamA") {
-            setPlayerClikedTeamA([0, 0])
-        } else {
-            setPlayerClikedTeamB([0, 0])
+            setActionConfirmed("")
+
+            setMatchState(match)
+
+            setActivateConfirmButton(false)
         }
-
-        setActionConfirmed("")
-        
-        setMatchState(match)
-
-        setActivateConfirmButton(false)
     }
     
     function confirmPlayerSelection(team: Team, ubicationScaned: number[], otherTeam: Team) {

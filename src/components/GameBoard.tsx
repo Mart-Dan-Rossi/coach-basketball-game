@@ -245,7 +245,7 @@ function GameBoard( { match, setMatchState } : Props) {
             }
             
             if((teamA.teamTurn) && teamNumber == 1) {
-                // console.log("teamTurn && teamNumber A")
+                console.log("teamTurn && teamNumber A")
                 if(teamAAnySelected) {
                     paintPlayerOnThisTileAsSelected(teamA, thisUbication)
                     
@@ -254,7 +254,7 @@ function GameBoard( { match, setMatchState } : Props) {
                 }
                 
             } else if((teamB.teamTurn) && teamNumber == 2) {
-                // console.log("teamTurn && teamNumber B")
+                console.log("teamTurn && teamNumber B")
                 if(teamBAnySelected) {
                     paintPlayerOnThisTileAsSelected(teamB, thisUbication)
                     
@@ -281,7 +281,7 @@ function GameBoard( { match, setMatchState } : Props) {
                 return("active-tile")
             }
 
-            // console.log("not-highlighted")
+            console.log("not-highlighted")
             return("not-highlighted")
 
         }
@@ -444,11 +444,8 @@ function GameBoard( { match, setMatchState } : Props) {
 
         team.setTeamTurn(false)
         team.setTeamTurnLeft(false)
-        //TODO fix this to keep the game flow
-        // team.setTeamTurnLeft(teamStillHaveTurnLeft)
-        
-        let playerActive: Player
-                
+
+        let playerActive: Player                
 
         if(otherTeam.teamTurnLeft) {
             otherTeam.setTeamTurn(true)

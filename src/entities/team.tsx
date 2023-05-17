@@ -5,8 +5,9 @@ export class Team {
     players: Player[]
 
     //Team status
-    teamTurn: boolean;
+    teamTurn: boolean
     teamTurnLeft: boolean
+    turnInInstantLeft: boolean
 
     //Team stats
     stats: {
@@ -36,6 +37,7 @@ export class Team {
         //Team status
         this.teamTurn = false
         this.teamTurnLeft = true
+        this.turnInInstantLeft = true
         
         //Team stats
         this.stats = {
@@ -180,6 +182,10 @@ export class Team {
     setTeamTurnLeft(value: boolean) {
         this.teamTurnLeft = value
     }
+    
+    setTurnInInstantLeft(value: boolean) {
+        this.turnInInstantLeft = value
+    }
 
     //----------------------------------END SET PLAYER STATUS METHODS---------------------------------------------------------------------------------------------------------
 
@@ -279,6 +285,18 @@ export class Team {
         this.players.forEach(player => {
             player.giveActionPointsToPlayer()
         });
+    }
+
+    giveMovementLeftToAllPlayers() {
+        this.players.forEach(player => {
+            player.setMovementLeft(true)
+        })
+    }
+
+    givePlayerHaveTurnToAllPlayers() {
+        this.players.forEach(player => {
+            player.setPlayerHaveTurn(true)
+        })
     }
 
     //----------------------------------END SET PLAYER STATUS METHODS---------------------------------------------------------------------------------------------------------

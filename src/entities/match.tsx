@@ -420,28 +420,36 @@ export class Match {
         if(!playerSillHaveTurnLeft) {
             activePlayer!.resetActionPoints()
             activePlayer!.setPlayerHaveTurn (false)
+            activePlayer!.setMovementLeft(false)
         }
         
         let selectedPlayers = this.getSelectedPlayers()
     
         if(selectedPlayers[0] || selectedPlayers[1]) {
 
-          if(selectedPlayers[0]) {
-            selectedPlayers[0].setPlayerSelected(false)
-            selectedPlayers[0].setActivePlayer(true)
-              
-        }
-          if(selectedPlayers[1]) {
-            selectedPlayers[1].setPlayerSelected(false)
-            selectedPlayers[1].setActivePlayer(true)
+            if(selectedPlayers[0]) {
+                selectedPlayers[0].setPlayerSelected(false)
+                selectedPlayers[0].setActivePlayer(true)              
+            }
 
-        }
+            if(selectedPlayers[1]) {
+                selectedPlayers[1].setPlayerSelected(false)
+                selectedPlayers[1].setActivePlayer(true)
+
+            }
         } else if(this.teamA.doesPlayersHaveMovement() || this.teamB.doesPlayersHaveMovement()) {
+            if(this.teamA.doesPlayersHaveMovement()) {
+                this.teamA.setTeamTurnLeft(true)
+            }
+
+            if(this.teamB.doesPlayersHaveMovement()) {
+                this.teamB.setTeamTurnLeft(true)
+            }
 
             if(this.teamA.teamHaveTheBall()) {
                 this.setTeamTurn("TeamB")
                 this.teamB.setTeamTurn(true)
-
+                
             } else {
                 this.setTeamTurn("TeamA")
                 this.teamA.setTeamTurn(true)
@@ -449,7 +457,7 @@ export class Match {
             
         } else {
             this.runClock()
-            
+
             if(this.teamA.teamHaveTheBall()) {
                 this.setTeamTurn("TeamA")
                 this.teamA.setTeamTurn(true)
@@ -482,6 +490,20 @@ export class Match {
             } else {
                 this.gameOver = true
             }
+        }
+
+        //If the game is not over
+        if(this.timeLeft.minutes > 0 || this.timeLeft.seconds > 0 || this.teamA.stats.points == this.teamB.stats.points) {
+
+            //Give players action points and movement left
+            this.teamA.giveActionPointsToTeam()
+            this.teamA.giveMovementLeftToAllPlayers()
+            this.teamA.givePlayerHaveTurnToAllPlayers()
+            
+            this.teamB.giveActionPointsToTeam()
+            this.teamB.giveMovementLeftToAllPlayers()
+            this.teamB.givePlayerHaveTurnToAllPlayers()
+
         }
     }
 

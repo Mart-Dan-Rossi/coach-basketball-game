@@ -257,6 +257,10 @@ export class Player {
         this.haveBall = value
     }
 
+    setMovementLeft(value: boolean) {
+        this.movementLeft = value
+    }
+
     setLastAction(action: string) {
         this.lastAction = action
     }

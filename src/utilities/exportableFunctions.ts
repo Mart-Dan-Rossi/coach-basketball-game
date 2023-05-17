@@ -405,28 +405,151 @@ export const ranges = {
     }
 }
 
+export function isCloseToTheRim(teamAAtacking: boolean, ubicationX: number, ubicationY: number) {
+    return (
+        (
+            !teamAAtacking &&
+            
+            (
+                (ubicationX == 2) && (ubicationY > 5) && (ubicationY < 11)
+                ||
+                (ubicationX == 3) && (ubicationY > 6) && (ubicationY < 11)
+            )
+        )
+        ||
+        (
+            teamAAtacking &&
+            
+            (
+                (ubicationX == 27) && (ubicationY > 5) && (ubicationY < 11)
+                ||
+                (ubicationX == 26) && (ubicationY > 6) && (ubicationY < 11)
+            )
+        )
+    )
+    
+}
+
+export function isBehindTheBoard(teamAAtacking: boolean, ubicationX: number, ubicationY: number) {
+    return (        
+        (
+            !teamAAtacking &&
+            (
+                (ubicationX == 1) && (ubicationY > 5) && (ubicationY < 11)
+            )
+        )
+        ||
+        (
+            teamAAtacking &&
+            (
+                (ubicationX == 28) && (ubicationY > 5) && (ubicationY < 11)
+            )
+        )
+    )
+
+}
+
+export function isInShortRange(teamAAtacking: boolean, ubicationX: number, ubicationY: number) {
+    return (
+        (
+            !teamAAtacking &&
+            (
+                (ubicationX < 5) && (ubicationX > 1) &&
+                    (
+                        ubicationY == 5
+                        ||
+                        ubicationY == 11
+                    )
+                ||
+                (ubicationX < 6) && (ubicationX > 2) &&
+                    (
+                        ubicationY == 6
+                        ||
+                        ubicationY == 10
+                    )
+                ||
+                (ubicationX == 5) && (ubicationY > 5) && (ubicationY < 11)
+                ||
+                (ubicationX == 7) && (ubicationY == 8)
+            )
+        )
+        ||
+        (
+            teamAAtacking &&
+            (
+                (ubicationX > 24) && (ubicationX < 28) &&
+                    (
+                        ubicationY == 5
+                        ||
+                        ubicationY == 11
+                    )
+                ||
+                (ubicationX > 23) && (ubicationX < 27) &&
+                    (
+                        ubicationY == 6
+                        ||
+                        ubicationY == 10
+                    )
+                ||
+                (ubicationX == 5) && (ubicationY > 5) && (ubicationY < 11)
+                ||
+                (ubicationX == 7) && (ubicationY == 8)
+            )
+        )
+    )
+}
+
+export function isInMidRange(teamAAtacking: boolean, ubicationX: number, ubicationY: number) {
+    return (
+        (
+            !teamAAtacking &&
+            (ubicationX < 2) && (ubicationY == 3)
+            ||
+            (ubicationX < 5) && (ubicationY == 4)
+            ||
+            (ubicationX < 6) && (ubicationX > 3) && (ubicationY == 5)
+            ||
+            (ubicationX == 6) && (ubicationY > 5) && (ubicationY < 11)
+            ||
+            (ubicationX < 6) && (ubicationX > 3) && (ubicationY == 11)
+            ||
+            (ubicationX < 5) && (ubicationY == 12)
+            ||
+            (ubicationX == 1) && (ubicationY == 13)
+        )
+        ||
+        (
+            teamAAtacking &&
+            (ubicationX > 27) && (ubicationY == 3)
+            ||
+            (ubicationX > 24) && (ubicationY == 4)
+            ||
+            (ubicationX > 23) && (ubicationX < 26) && (ubicationY == 5)
+            ||
+            (ubicationX == 23) && (ubicationY > 5) && (ubicationY < 11)
+            ||
+            (ubicationX > 23) && (ubicationX < 26) && (ubicationY == 11)
+            ||
+            (ubicationX > 24) && (ubicationY == 12)
+            ||
+            (ubicationX == 28) && (ubicationY == 13)
+        )
+    )
+}
+
 export function playerZone(player: Player, teamAAtacking: boolean) {
 
     //TODO check if zones are written correctly
-    if(
-        (!teamAAtacking && ((player.ubicationX! < 3) && (player.ubicationY! > 5) && (player.ubicationY! < 11) || (player.ubicationX! < 5) && (player.ubicationY! > 6) && (player.ubicationY! < 10)))
-        || (teamAAtacking && ((player.ubicationX! > 26) && (player.ubicationY! > 5) && (player.ubicationY! < 11) || (player.ubicationX! > 24) && (player.ubicationY! > 6) && (player.ubicationY! < 10)))
-        ) {
+    if(isCloseToTheRim(teamAAtacking, player.ubicationX!, player.ubicationY!)) {
         return ranges.closeToTheRim.id
 
-    } else if(
-        !teamAAtacking
-        || teamAAtacking) {
+    } else if(isBehindTheBoard(teamAAtacking, player.ubicationX!, player.ubicationY!)) {
         return ranges.behindTheBoard.id
 
-    } else if(
-        (!teamAAtacking && (player.ubicationX! < 4) && (player.ubicationY! == 5) || (player.ubicationX! < 6) && (player.ubicationX! > 2) && (player.ubicationY! == 6) || (player.ubicationX! == 5) && (player.ubicationY! > 6) && (player.ubicationY! < 10) || (player.ubicationX! < 6) && (player.ubicationX! > 2) && (player.ubicationY! == 10) || (player.ubicationX! < 4) && (player.ubicationY! == 11))
-        || (teamAAtacking && (player.ubicationX! > 24) && (player.ubicationY! == 5) || (player.ubicationX! > 22) && (player.ubicationX! < 27) && (player.ubicationY! == 6) || (player.ubicationX! == 24) && (player.ubicationY! > 6) && (player.ubicationY! < 10) || (player.ubicationX! > 22) && (player.ubicationX! < 27) && (player.ubicationY! == 10) || (player.ubicationX! > 25) && (player.ubicationY! == 11))) {
+    } else if(isInShortRange(teamAAtacking, player.ubicationX!, player.ubicationY!)) {
         return ranges.inShortRange.id
 
-    } else if(
-        (!teamAAtacking && (player.ubicationX! < 2) && (player.ubicationY! == 3) || (player.ubicationX! < 5) && (player.ubicationY! == 4) || (player.ubicationX! < 6) && (player.ubicationX! > 3) && (player.ubicationY! == 5) || (player.ubicationX! == 6) && (player.ubicationY! > 5) && (player.ubicationY! < 11) || (player.ubicationX! < 6) && (player.ubicationX! > 3) && (player.ubicationY! == 11) || (player.ubicationX! < 5) && (player.ubicationY! == 12) || (player.ubicationX! == 1) && (player.ubicationY! == 13))
-        || teamAAtacking && (player.ubicationX! > 27) && (player.ubicationY! == 3) || (player.ubicationX! > 24) && (player.ubicationY! == 4) || (player.ubicationX! > 23) && (player.ubicationX! < 26) && (player.ubicationY! == 5) || (player.ubicationX! == 23) && (player.ubicationY! > 5) && (player.ubicationY! < 11) || (player.ubicationX! > 23) && (player.ubicationX! < 26) && (player.ubicationY! == 11) || (player.ubicationX! > 24) && (player.ubicationY! == 12) || (player.ubicationX! == 28) && (player.ubicationY! == 13)) {
+    } else if(isInMidRange(teamAAtacking, player.ubicationX!, player.ubicationY!)) {
         return ranges.inMidRange.id
 
     } else if(

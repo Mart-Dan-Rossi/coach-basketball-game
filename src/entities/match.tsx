@@ -48,9 +48,11 @@ export class Match {
 
     getShooter() {
         let shooter = undefined
-        
+
+        //Get the shooter if it's on the teamA
         shooter = this.teamA.getShooter()
 
+        //Else, get the shooter on the teamB
         !shooter && (shooter = this.teamB.getShooter())
         
         return shooter

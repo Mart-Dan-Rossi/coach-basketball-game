@@ -161,6 +161,9 @@ function MatchActionsContainer( { match, setMatchState } : Props) {
       selectedSetter: setShootButtonSelected,
       actionFunction: ()=> {
         setActionConfirmed("shoot")
+
+        matchCopy.shotAttemptedStatus()
+        
       },
     }
     ,

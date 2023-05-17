@@ -3,37 +3,38 @@ import { Team } from './team';
 export class Player {
 
     //Info
-    name: string;
-    team: string;
-    position: string;
+    name: string
+    team: string
+    position: string
 
     //Fisicality
-    height: number;
-    weight: number;
-    atleticism: number;
+    height: number
+    weight: number
+    atleticism: number
 
     //Defensive atributes
-    perimetrerDefence: number;
-    insideDefence: number;
+    perimetrerDefence: number
+    insideDefence: number
 
     //Mix atribute
-    rebounding: number;
+    rebounding: number
 
      //Ofensive atributes
-    perimetrerScoring: number;
-    insideScoring: number;
-    playMaking: number;
+    perimetrerScoring: number
+    insideScoring: number
+    playMaking: number
 
     //Player status
-    ubicationX: number|undefined;
-    ubicationY: number|undefined;
-    haveBall: boolean;
-    movementLeft: boolean;
-    lastAction: string;
-    actionPoints: number;
-    playerSelected: boolean;
-    playerActive: boolean;
-    playerHaveTurn: boolean;
+    ubicationX: number|undefined
+    ubicationY: number|undefined
+    haveBall: boolean
+    movementLeft: boolean
+    lastAction: string
+    actionPoints: number
+    playerSelected: boolean
+    playerActive: boolean
+    playerHaveTurn: boolean
+    shotAttempt: boolean
 
     //Player stats
     stats: {
@@ -90,6 +91,7 @@ export class Player {
         this.playerSelected = false
         this.playerActive = false
         this.playerHaveTurn = true
+        this.shotAttempt = false
 
         //Player stats
         this.stats = {
@@ -255,6 +257,10 @@ export class Player {
     
     setHaveBall(value: boolean) {
         this.haveBall = value
+    }
+
+    setShotAttempt(value: boolean) {
+        this.shotAttempt = value
     }
 
     setMovementLeft(value: boolean) {

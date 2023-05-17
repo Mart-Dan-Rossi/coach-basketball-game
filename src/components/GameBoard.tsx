@@ -245,7 +245,7 @@ function GameBoard( { match, setMatchState } : Props) {
             }
             
             if((teamA.teamTurn) && teamNumber == 1) {
-                console.log("teamTurn && teamNumber A")
+                // console.log("teamTurn && teamNumber A")
                 if(teamAAnySelected) {
                     paintPlayerOnThisTileAsSelected(teamA, thisUbication)
                     
@@ -254,7 +254,7 @@ function GameBoard( { match, setMatchState } : Props) {
                 }
                 
             } else if((teamB.teamTurn) && teamNumber == 2) {
-                console.log("teamTurn && teamNumber B")
+                // console.log("teamTurn && teamNumber B")
                 if(teamBAnySelected) {
                     paintPlayerOnThisTileAsSelected(teamB, thisUbication)
                     

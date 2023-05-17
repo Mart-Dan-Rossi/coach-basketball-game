@@ -6,18 +6,19 @@ import { Player } from "./players";
 
 
 export class Match {
-    teamA: Team;
-    teamB: Team;
+    teamA: Team
+    teamB: Team
 
     //Match status
     teamTurn: string
+    shotHasBeenAttempted: boolean
 
     //Match basic info
-    quarter: number;
-    timeLeft: QuarterTimeLeft;
-    shotClock: number;
-    turnOver: boolean;
-    gameOver: boolean;
+    quarter: number
+    timeLeft: QuarterTimeLeft
+    shotClock: number
+    turnOver: boolean
+    gameOver: boolean
     
     constructor(teamA: Team, teamB: Team) {
         //Change validation
@@ -27,6 +28,7 @@ export class Match {
         
         //Match status
         this.teamTurn = ""
+        this.shotHasBeenAttempted = false
         
         //Match basic info
         this.quarter = 1
@@ -42,6 +44,16 @@ export class Match {
         let activePlayer = this.teamA.returnActivePlayer() ?? this.teamB.returnActivePlayer()
 
         return activePlayer as Player | undefined
+    }
+
+    getShooter() {
+        let shooter = undefined
+        
+        shooter = this.teamA.getShooter()
+
+        !shooter && (shooter = this.teamB.getShooter())
+        
+        return shooter
     }
     
     getSelectedPlayers() {
@@ -263,8 +275,11 @@ export class Match {
         return [true, dribbler]
     }
     
-    calculateShotResult(shooter: Player, isFreeThrow: boolean) {
-        //First i get the defender team
+    calculateShotResult() {
+        //First i get the shooter
+        let shooter = this.getShooter()!
+
+        //Then i get the defender team
         let defendingTeam = shooter.team == "TeamA" ? this.teamB : this.teamA
         
         //I get in what part of the field is him located to calculate with the propper math
@@ -274,7 +289,7 @@ export class Match {
             let shooterPointsInShot = 0
             
             //TODO Do math to calculate points on each sector
-            if(isFreeThrow) {
+            if(/*TODO isFreeThrow*/ false) {
                 shooterPointsInShot = 0
                 
             } else if(shooterZoneUbication == "error") {
@@ -305,6 +320,8 @@ export class Match {
                 shooterPointsInShot = 0
                 
             }
+
+            //After that i handle who get's the ball after the shot
             
             return shooterPointsInShot
         }
@@ -313,7 +330,7 @@ export class Match {
             let totalDefendersPoints = 0
             
             //If it is a free throw ther's no defenders so totalDefendersPoints is going to be 0
-            if(!isFreeThrow) {
+            if(!false/*TODO isFreeThrow*/) {
                 //If it was a field shot attempt it cheks the tiles around the shooter. To do so we use one loop for the X direction and one for the Y direction
                 for(let positionX = -2; positionX < 3; positionX++) {
                     for(let positionY = -2; positionY < 3; positionY++) {
@@ -385,7 +402,7 @@ export class Match {
         let pointsToAdd = 0;
         
         if(calculateIfGoesIn()) {
-            if(isFreeThrow) {
+            if(/*TODO isFreeThrow*/ false) {
                 pointsToAdd = 1
             } else if(
                 shooterZoneUbication == ranges.closeToTheRim.id ||
@@ -400,6 +417,10 @@ export class Match {
         }
 
         return pointsToAdd
+    }
+
+    setShotHasBeenAttempted(value: boolean) {
+        this.shotHasBeenAttempted = value
     }
 
     //------------------------------------END PLAYER ACTIONS METHODS----------------------------------------------------------------------------------------------------------
@@ -469,6 +490,19 @@ export class Match {
         }
     
     }
+
+    shotAttemptedStatus() {
+        let activePlayer = this.getActivePlayer()!
+        
+        activePlayer!.setActivePlayer(false)
+        activePlayer!.setPlayerSelected(false)
+        activePlayer!.resetActionPoints()
+        activePlayer!.setPlayerHaveTurn (false)
+        activePlayer!.setMovementLeft(false)
+
+        this.setShotHasBeenAttempted(true)
+        activePlayer.setShotAttempt(true)
+    }
     
     runClock() {
         if(this.timeLeft.seconds == 0) {
@@ -490,6 +524,10 @@ export class Match {
             } else {
                 this.gameOver = true
             }
+        }
+
+        if(this.shotHasBeenAttempted) {
+            this.calculateShotResult()
         }
 
         if(!this.gameOver) {

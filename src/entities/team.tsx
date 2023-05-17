@@ -87,6 +87,17 @@ export class Team {
 
         return anySelected
     }
+
+    getShooter() {
+        let shooter = undefined as undefined|Player
+        this.players.forEach(player => {
+            if(player.shotAttempt) {
+                shooter = player
+            }
+        })
+
+        return shooter
+    }
     
     getSelectedPlayer() {
         let selectedPlayer: Player|undefined

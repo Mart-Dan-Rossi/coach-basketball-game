@@ -492,8 +492,7 @@ export class Match {
             }
         }
 
-        //If the game is not over
-        if(this.timeLeft.minutes > 0 || this.timeLeft.seconds > 0 || this.teamA.stats.points == this.teamB.stats.points) {
+        if(!this.gameOver) {
 
             //Give players action points and movement left
             this.teamA.giveActionPointsToTeam()

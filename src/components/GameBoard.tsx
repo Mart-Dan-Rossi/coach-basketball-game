@@ -238,6 +238,13 @@ function GameBoard( { match, setMatchState } : Props) {
         }
         
         if(teamNumber != 0) {
+            let shooter = match.getShooter()
+
+            if(shooter) {
+                if(shooter.ubicationX == thisUbication[0] && shooter.ubicationY == thisUbication[1]) {
+                    return("shooter-tile")
+                }
+            }
             
             if(playerClikedTeamA[0] == col && playerClikedTeamA[1] == row || playerClikedTeamB[0] == col && playerClikedTeamB[1] == row) {
                 // console.log("playerCliked")
@@ -281,9 +288,8 @@ function GameBoard( { match, setMatchState } : Props) {
                 return("active-tile")
             }
 
-            console.log("not-highlighted")
-            return("not-highlighted")
 
+            return("not-highlighted")
         }
     }
 

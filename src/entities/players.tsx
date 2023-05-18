@@ -1,4 +1,4 @@
-import {playerPositionDetection, roll20SidesDice} from '../utilities/exportableFunctions';
+import {getMaxStatPerPosition, getMinStatPerPosition, playerPositionDetection, roll20SidesDice} from '../utilities/exportableFunctions';
 import { Team } from './team';
 export class Player {
 
@@ -131,6 +131,26 @@ export class Player {
 
     playerHaveTheBall() {
         return this.haveBall
+    }
+
+    getHeightPoints() {
+        let minHeight = getMinStatPerPosition("height", this.position)
+        let maxHeight = getMaxStatPerPosition("height", this.position)
+
+        let minMaxDifference = maxHeight - minHeight
+        let playerDifferenceToMax = maxHeight - this.height
+
+        return ((playerDifferenceToMax * 100) / minMaxDifference)
+    }
+
+    getWeightPoints() {
+        let minWeight = getMinStatPerPosition("weight", this.position)
+        let maxWeight = getMaxStatPerPosition("weight", this.position)
+
+        let minMaxDifference = maxWeight - minWeight
+        let playerDifferenceToMax = maxWeight - this.weight
+
+        return ((playerDifferenceToMax * 100) / minMaxDifference)
     }
 
     //----------------------------------END GET INFO METHODS---------------------------------------------------------------------------------------------------------

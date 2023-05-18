@@ -290,40 +290,44 @@ export class Match {
         function getShooterPointsInShot() {
             let shooterPointsInShot = 0
             
+            let multiplier = 1
+            if(shooter.lastAction == "Triple threat") {
+                multiplier = 1.2
+            }
+
             //TODO Do math to calculate points on each sector
-            if(/*TODO isFreeThrow*/ false) {
+            if(shooterZoneUbication == "error") {
                 shooterPointsInShot = 0
                 
-            } else if(shooterZoneUbication == "error") {
+            } else if(/*TODO isFreeThrow*/ false) {
                 shooterPointsInShot = 0
                 
             } else if(shooterZoneUbication == ranges.closeToTheRim.id) {
-                shooterPointsInShot = 0
+                shooterPointsInShot = (shooter.insideScoring * 5 + shooter.playMaking * 0.5 + shooter.atleticism * 3 + shooter.getWeightPoints() * 2 + shooter.getHeightPoints() * 2 + roll20SidesDice() * 5) * multiplier
                 
             } else if(shooterZoneUbication == ranges.inShortRange.id || shooterZoneUbication == ranges.behindTheBoard.id) {
-                shooterPointsInShot = 0
+                shooterPointsInShot = (shooter.insideScoring * 4 + shooter.perimetrerScoring * 0.5 + shooter.playMaking * 1.5 + shooter.atleticism * 3 + shooter.getWeightPoints() + shooter.getHeightPoints() + roll20SidesDice() * 5) * multiplier
                 
             } else if(shooterZoneUbication == ranges.inMidRange.id) {
-                shooterPointsInShot = 0
+                shooterPointsInShot = (shooter.insideScoring + shooter.perimetrerScoring * 4 + shooter.playMaking * 1.5 + shooter.getHeightPoints() + roll20SidesDice() * 5) * multiplier
                 
             } else if(shooterZoneUbication == ranges.outsideThe3PointLine.id) {
-                shooterPointsInShot = 0
+                shooterPointsInShot = (shooter.perimetrerScoring * 6 + shooter.playMaking - shooter.getHeightPoints() * 0.5 - shooter.getWeightPoints() * 0.5 + roll20SidesDice() * 4.5) * multiplier
                 
             } else if(shooterZoneUbication == ranges.long3Range.id) {
-                shooterPointsInShot = 0
+                shooterPointsInShot = (shooter.perimetrerScoring * 5 + shooter.playMaking * 0.5 - shooter.getHeightPoints() * 0.5 - shooter.getWeightPoints() + roll20SidesDice() * 3.5) * multiplier
                 
             } else if(shooterZoneUbication == ranges.halfCourt.id) {
-                shooterPointsInShot = 0
+                shooterPointsInShot = (shooter.perimetrerScoring * 4 - shooter.getHeightPoints() * 0.5 - shooter.getWeightPoints() + roll20SidesDice() * 2) * multiplier
                 
             } else if(shooterZoneUbication == ranges.behindHalfCourt.id) {
-                shooterPointsInShot = 0
+                shooterPointsInShot = (shooter.perimetrerScoring * 3 - shooter.getHeightPoints() - shooter.getWeightPoints() + roll20SidesDice()) * multiplier
                 
             } else if(shooterZoneUbication == ranges.theOtherRim.id) {
-                shooterPointsInShot = 0
+                shooterPointsInShot = (shooter.perimetrerScoring * 2 - shooter.getHeightPoints() - shooter.getWeightPoints() * 1.5 + roll20SidesDice() * 0.5) * multiplier
                 
             }
 
-            //After that i handle who get's the ball after the shot
             
             return shooterPointsInShot
         }
@@ -337,7 +341,7 @@ export class Match {
                 for(let positionX = -2; positionX < 3; positionX++) {
                     for(let positionY = -2; positionY < 3; positionY++) {
                         //Then i ckeck if ther's a defender in the scanned ubication using the shooter ubication as center
-                        let defenderInThisUbication = defendingTeam.returnPlayerInThisPosition(shooter.ubicationX! + positionX, shooter.ubicationY! + positionY)
+                        let defenderInThisUbication = defendingTeam.returnPlayerInThisPosition((shooter.ubicationX! + positionX), (shooter.ubicationY! + positionY))
                         let defenderPoints = 0
                         
                         //If there's a player located in this position
@@ -345,33 +349,37 @@ export class Match {
                             //I get in what part of the field is him located to calculate with the propper math
                             let defenderZoneUbication = playerZone(defenderInThisUbication, defenderInThisUbication.team == "TeamB")
                             
+                            let multiplier = 1
+                            if(defenderInThisUbication.lastAction == "overwhelming waiting") {
+                                multiplier = 1.4
+                            }
                             //TODO Do math to calculate points on each sector
                             if(defenderZoneUbication == "error") {
                                 defenderPoints = 0
                                 
                             } else if(defenderZoneUbication == ranges.closeToTheRim.id) {
-                                defenderPoints = 0
+                                defenderPoints = (defenderInThisUbication.insideDefence * 4 + defenderInThisUbication.atleticism * 2 + defenderInThisUbication.getWeightPoints() + defenderInThisUbication.getHeightPoints() + roll20SidesDice() * 6) * multiplier
                                 
                             } else if(defenderZoneUbication == ranges.inShortRange.id || defenderZoneUbication == ranges.behindTheBoard.id) {
-                                defenderPoints = 0
+                                defenderPoints = (defenderInThisUbication.insideDefence * 3 + defenderInThisUbication.perimetrerDefence * 0.5 + defenderInThisUbication.atleticism * 2.5 + defenderInThisUbication.getWeightPoints() * 0.5 + defenderInThisUbication.getHeightPoints() + roll20SidesDice() * 5) * multiplier
                                 
                             } else if(defenderZoneUbication == ranges.inMidRange.id) {
-                                defenderPoints = 0
+                                defenderPoints = (defenderInThisUbication.insideDefence + defenderInThisUbication.perimetrerDefence * 4 - shooter.getWeightPoints() + defenderInThisUbication.getHeightPoints() + roll20SidesDice() * 5) * multiplier
                                 
                             } else if(defenderZoneUbication == ranges.outsideThe3PointLine.id) {
-                                defenderPoints = 0
+                                defenderPoints = (0) * multiplier
                                 
                             } else if(defenderZoneUbication == ranges.long3Range.id) {
-                                defenderPoints = 0
+                                defenderPoints = (0) * multiplier
                                 
                             } else if(defenderZoneUbication == ranges.halfCourt.id) {
-                                defenderPoints = 0
+                                defenderPoints = (0) * multiplier
                                 
                             } else if(defenderZoneUbication == ranges.behindHalfCourt.id) {
-                                defenderPoints = 0
+                                defenderPoints = (0) * multiplier
                                 
                             } else if(defenderZoneUbication == ranges.theOtherRim.id) {
-                                defenderPoints = 0
+                                defenderPoints = (0) * multiplier
                                 
                             }
                             
@@ -416,6 +424,9 @@ export class Match {
             } else {
                 pointsToAdd = 3
             }
+            //After that i handle who get's the ball after the shot
+        } else {
+            //If it doesn't goes in handle who get's the rebound
         }
 
         return pointsToAdd

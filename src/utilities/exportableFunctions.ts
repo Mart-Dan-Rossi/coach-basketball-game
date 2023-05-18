@@ -841,133 +841,137 @@ export function isInLong3Range(teamAAtacking: boolean, ubicationX: number, ubica
 
 export function isCloseToHalfCourt(teamAAtacking: boolean, ubicationX: number, ubicationY: number) {    
     return (
-        !teamAAtacking &&
         (
+            !teamAAtacking &&
             (
-                ((ubicationX < 15) && (ubicationX > 9))
-                &&
                 (
-                    (ubicationY == 1)
-                    ||
-                    (ubicationY == 15)
+                    ((ubicationX < 15) && (ubicationX > 9))
+                    &&
+                    (
+                        (ubicationY == 1)
+                        ||
+                        (ubicationY == 15)
+                    )
                 )
-            )
-            ||
-            (
-                ((ubicationX < 16) && (ubicationX > 10))
-                &&
+                ||
                 (
-                    (ubicationY == 2)
-                    ||
-                    (ubicationY == 14)
+                    ((ubicationX < 16) && (ubicationX > 10))
+                    &&
+                    (
+                        (ubicationY == 2)
+                        ||
+                        (ubicationY == 14)
+                    )
                 )
-            )
-            ||
-            (
-                ((ubicationX < 16) && (ubicationX > 11))
-                &&
+                ||
                 (
-                    (ubicationY == 3)
-                    ||
-                    (ubicationY == 13)
+                    ((ubicationX < 16) && (ubicationX > 11))
+                    &&
+                    (
+                        (ubicationY == 3)
+                        ||
+                        (ubicationY == 13)
+                    )
                 )
-            )
-            ||
-            (
-                ((ubicationX < 17) && (ubicationX > 11))
-                &&
+                ||
                 (
-                    (ubicationY == 4)
-                    ||
-                    (ubicationY == 12)
+                    ((ubicationX < 17) && (ubicationX > 11))
+                    &&
+                    (
+                        (ubicationY == 4)
+                        ||
+                        (ubicationY == 12)
+                    )
                 )
-            )
-            ||
-            (
-                ((ubicationX < 17) && (ubicationX > 12))
-                &&
+                ||
                 (
-                    (ubicationY == 5)
-                    ||
-                    (ubicationY == 11)
+                    ((ubicationX < 17) && (ubicationX > 12))
+                    &&
+                    (
+                        (ubicationY == 5)
+                        ||
+                        (ubicationY == 11)
+                    )
                 )
-            )
-            ||
-            (
-                ((ubicationX < 18) && (ubicationX > 13))
-                &&
-                ((ubicationY < 11) && (ubicationY > 5))
-            )
-            ||
-            (
-                (ubicationX == 18)
-                &&
-                (ubicationY == 8)
+                ||
+                (
+                    ((ubicationX < 18) && (ubicationX > 13))
+                    &&
+                    ((ubicationY < 11) && (ubicationY > 5))
+                )
+                ||
+                (
+                    (ubicationX == 18)
+                    &&
+                    (ubicationY == 8)
+                )
             )
         )
         ||
-        teamAAtacking &&
         (
+            teamAAtacking &&
             (
-                ((ubicationX > 14) && (ubicationX < 20))
-                &&
                 (
-                    (ubicationY == 1)
-                    ||
-                    (ubicationY == 15)
+                    ((ubicationX > 14) && (ubicationX < 20))
+                    &&
+                    (
+                        (ubicationY == 1)
+                        ||
+                        (ubicationY == 15)
+                    )
                 )
-            )
-            ||
-            (
-                ((ubicationX > 13) && (ubicationX > 19))
-                &&
+                ||
                 (
-                    (ubicationY == 2)
-                    ||
-                    (ubicationY == 14)
+                    ((ubicationX > 13) && (ubicationX > 19))
+                    &&
+                    (
+                        (ubicationY == 2)
+                        ||
+                        (ubicationY == 14)
+                    )
                 )
-            )
-            ||
-            (
-                ((ubicationX > 13) && (ubicationX < 18))
-                &&
+                ||
                 (
-                    (ubicationY == 3)
-                    ||
-                    (ubicationY == 13)
+                    ((ubicationX > 13) && (ubicationX < 18))
+                    &&
+                    (
+                        (ubicationY == 3)
+                        ||
+                        (ubicationY == 13)
+                    )
                 )
-            )
-            ||
-            (
-                ((ubicationX > 12) && (ubicationX < 18))
-                &&
+                ||
                 (
-                    (ubicationY == 4)
-                    ||
-                    (ubicationY == 12)
+                    ((ubicationX > 12) && (ubicationX < 18))
+                    &&
+                    (
+                        (ubicationY == 4)
+                        ||
+                        (ubicationY == 12)
+                    )
                 )
-            )
-            ||
-            (
-                ((ubicationX > 12) && (ubicationX < 17))
-                &&
+                ||
                 (
-                    (ubicationY == 5)
-                    ||
-                    (ubicationY == 11)
+                    ((ubicationX > 12) && (ubicationX < 17))
+                    &&
+                    (
+                        (ubicationY == 5)
+                        ||
+                        (ubicationY == 11)
+                    )
                 )
-            )
-            ||
-            (
-                ((ubicationX > 11) && (ubicationX < 16))
-                &&
-                ((ubicationY < 11) && (ubicationY > 5))
-            )
-            ||
-            (
-                (ubicationX == 11)
-                &&
-                (ubicationY == 8)
+                ||
+                (
+                    ((ubicationX > 11) && (ubicationX < 16))
+                    &&
+                    ((ubicationY < 11) && (ubicationY > 5))
+                )
+                ||
+                (
+                    (ubicationX == 11)
+                    &&
+                    (ubicationY == 8)
+                )
             )
         )
     )
@@ -975,101 +979,105 @@ export function isCloseToHalfCourt(teamAAtacking: boolean, ubicationX: number, u
 
 export function isBehindTheHalfCourt(teamAAtacking: boolean, ubicationX: number, ubicationY: number) {
     return (
-        !teamAAtacking &&
         (
+            !teamAAtacking &&
             (
-                ((ubicationX < 19) && (ubicationX > 14))
-                &&
                 (
-                    (ubicationY == 1)
-                    ||
-                    (ubicationY == 15)
+                    ((ubicationX < 19) && (ubicationX > 14))
+                    &&
+                    (
+                        (ubicationY == 1)
+                        ||
+                        (ubicationY == 15)
+                    )
                 )
-            )
-            ||
-            (
-                ((ubicationX < 20) && (ubicationX > 15))
-                &&
+                ||
                 (
-                    ((ubicationY < 4) && (ubicationY > 1))
-                    ||
-                    ((ubicationY < 15) && (ubicationY > 12))
+                    ((ubicationX < 20) && (ubicationX > 15))
+                    &&
+                    (
+                        ((ubicationY < 4) && (ubicationY > 1))
+                        ||
+                        ((ubicationY < 15) && (ubicationY > 12))
+                    )
                 )
-            )
-            ||
-            (
-                ((ubicationX < 21) && (ubicationX > 16))
-                &&
+                ||
                 (
-                    ((ubicationY < 6) && (ubicationY > 3))
-                    ||
-                    ((ubicationY < 13) && (ubicationY > 10))
+                    ((ubicationX < 21) && (ubicationX > 16))
+                    &&
+                    (
+                        ((ubicationY < 6) && (ubicationY > 3))
+                        ||
+                        ((ubicationY < 13) && (ubicationY > 10))
+                    )
                 )
-            )
-            ||
-            (
-                ((ubicationX < 22) && (ubicationX > 17))
-                &&
+                ||
                 (
-                    ((ubicationY < 8) && (ubicationY > 5))
-                    ||
-                    ((ubicationY < 11) && (ubicationY > 8))
+                    ((ubicationX < 22) && (ubicationX > 17))
+                    &&
+                    (
+                        ((ubicationY < 8) && (ubicationY > 5))
+                        ||
+                        ((ubicationY < 11) && (ubicationY > 8))
+                    )
                 )
-            )
-            ||
-            (
-                ((ubicationX < 22) && (ubicationX > 18))
-                &&
-                (ubicationY == 8)
+                ||
+                (
+                    ((ubicationX < 22) && (ubicationX > 18))
+                    &&
+                    (ubicationY == 8)
+                )
             )
         )
         ||
-        teamAAtacking &&
         (
+            teamAAtacking &&
             (
-                ((ubicationX > 10) && (ubicationX < 15))
-                &&
                 (
-                    (ubicationY == 1)
-                    ||
-                    (ubicationY == 15)
+                    ((ubicationX > 10) && (ubicationX < 15))
+                    &&
+                    (
+                        (ubicationY == 1)
+                        ||
+                        (ubicationY == 15)
+                    )
                 )
-            )
-            ||
-            (
-                ((ubicationX > 9) && (ubicationX < 14))
-                &&
+                ||
                 (
-                    ((ubicationY < 4) && (ubicationY > 1))
-                    ||
-                    ((ubicationY < 15) && (ubicationY > 12))
+                    ((ubicationX > 9) && (ubicationX < 14))
+                    &&
+                    (
+                        ((ubicationY < 4) && (ubicationY > 1))
+                        ||
+                        ((ubicationY < 15) && (ubicationY > 12))
+                    )
                 )
-            )
-            ||
-            (
-                ((ubicationX > 8) && (ubicationX < 13))
-                &&
+                ||
                 (
-                    ((ubicationY < 6) && (ubicationY > 3))
-                    ||
-                    ((ubicationY < 13) && (ubicationY > 10))
+                    ((ubicationX > 8) && (ubicationX < 13))
+                    &&
+                    (
+                        ((ubicationY < 6) && (ubicationY > 3))
+                        ||
+                        ((ubicationY < 13) && (ubicationY > 10))
+                    )
                 )
-            )
-            ||
-            (
-                ((ubicationX > 7) && (ubicationX < 12))
-                &&
+                ||
                 (
-                    ((ubicationY < 8) && (ubicationY > 5))
-                    ||
-                    ((ubicationY < 11) && (ubicationY > 8))
+                    ((ubicationX > 7) && (ubicationX < 12))
+                    &&
+                    (
+                        ((ubicationY < 8) && (ubicationY > 5))
+                        ||
+                        ((ubicationY < 11) && (ubicationY > 8))
+                    )
                 )
-            )
-            ||
-            (
-                ((ubicationX > 7) && (ubicationX < 11))
-                &&
-                (ubicationY == 8)
+                ||
+                (
+                    ((ubicationX > 7) && (ubicationX < 11))
+                    &&
+                    (ubicationY == 8)
+                )
             )
         )
     )
@@ -1077,89 +1085,92 @@ export function isBehindTheHalfCourt(teamAAtacking: boolean, ubicationX: number,
 
 export function isIntheOtherRim(teamAAtacking: boolean, ubicationX: number, ubicationY: number) {
     return (
-        !teamAAtacking &&
         (
+            !teamAAtacking &&
             (
-                (ubicationX > 18)
-                &&
                 (
-                    (ubicationY == 1)
-                    ||
-                    (ubicationY == 15)
+                    (ubicationX > 18)
+                    &&
+                    (
+                        (ubicationY == 1)
+                        ||
+                        (ubicationY == 15)
+                    )
                 )
-            )
-            ||
-            (
-                (ubicationX > 19)
-                &&
+                ||
                 (
-                    ((ubicationY < 4) && (ubicationY > 1))
-                    ||
-                    ((ubicationY < 15) && (ubicationY > 12))
+                    (ubicationX > 19)
+                    &&
+                    (
+                        ((ubicationY < 4) && (ubicationY > 1))
+                        ||
+                        ((ubicationY < 15) && (ubicationY > 12))
+                    )
                 )
-            )
-            ||
-            (
-                (ubicationX > 20)
-                &&
+                ||
                 (
-                    ((ubicationY < 6) && (ubicationY > 3))
-                    ||
-                    ((ubicationY < 13) && (ubicationY > 10))
+                    (ubicationX > 20)
+                    &&
+                    (
+                        ((ubicationY < 6) && (ubicationY > 3))
+                        ||
+                        ((ubicationY < 13) && (ubicationY > 10))
+                    )
                 )
-            )
-            ||
-            (
-                (ubicationX > 21)
-                &&
-                ((ubicationY < 11) && (ubicationY > 5))
+                ||
+                (
+                    (ubicationX > 21)
+                    &&
+                    ((ubicationY < 11) && (ubicationY > 5))
+                )
             )
         )
         ||
-        teamAAtacking &&
         (
+            teamAAtacking &&
             (
-                (ubicationX < 11)
-                &&
                 (
-                    (ubicationY == 1)
-                    ||
-                    (ubicationY == 15)
+                    (ubicationX < 11)
+                    &&
+                    (
+                        (ubicationY == 1)
+                        ||
+                        (ubicationY == 15)
+                    )
                 )
-            )
-            ||
-            (
-                (ubicationX < 10)
-                &&
+                ||
                 (
-                    ((ubicationY < 4) && (ubicationY > 1))
-                    ||
-                    ((ubicationY < 15) && (ubicationY > 12))
+                    (ubicationX < 10)
+                    &&
+                    (
+                        ((ubicationY < 4) && (ubicationY > 1))
+                        ||
+                        ((ubicationY < 15) && (ubicationY > 12))
+                    )
                 )
-            )
-            ||
-            (
-                (ubicationX < 9)
-                &&
+                ||
                 (
-                    ((ubicationY < 6) && (ubicationY > 3))
-                    ||
-                    ((ubicationY < 13) && (ubicationY > 10))
+                    (ubicationX < 9)
+                    &&
+                    (
+                        ((ubicationY < 6) && (ubicationY > 3))
+                        ||
+                        ((ubicationY < 13) && (ubicationY > 10))
+                    )
                 )
-            )
-            ||
-            (
-                (ubicationX < 8)
-                &&
-                ((ubicationY < 11) && (ubicationY > 5))
+                ||
+                (
+                    (ubicationX < 8)
+                    &&
+                    ((ubicationY < 11) && (ubicationY > 5))
+                )
             )
         )
     )
 }
 
 export function playerZone(player: Player, teamAAtacking: boolean) {
-
-    //TODO check if zones are written correctly
+    
     if(isCloseToTheRim(teamAAtacking, player.ubicationX!, player.ubicationY!)) {
         return ranges.closeToTheRim.id
 

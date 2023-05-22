@@ -98,6 +98,13 @@ export class Team {
 
         return shooter
     }
+
+    getClosestDefenderToTheRim() {
+        let closestPlayer = undefined
+        this.players.forEach(player => {
+            
+        })
+    }
     
     getSelectedPlayer() {
         let selectedPlayer: Player|undefined

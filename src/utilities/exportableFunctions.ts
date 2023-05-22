@@ -1169,6 +1169,62 @@ export function isIntheOtherRim(teamAAtacking: boolean, ubicationX: number, ubic
     )
 }
 
+export function mathShotPointsCloseToTheRim(insideScoring: number, playMaking: number, atleticism: number, weightPoints: number, heightPoints: number, multiplier: number) {
+    return ((insideScoring * 5 + playMaking * 0.5 + atleticism * 3 + weightPoints * 2 + heightPoints * 2 + roll20SidesDice() * 5) * multiplier)
+}
+
+export function mathShotPointsInShortRange(insideScoring: number, perimetrerScoring: number, playMaking: number, atleticism: number, weightPoints: number, heightPoints: number, multiplier: number) {
+    return ((insideScoring * 4 + perimetrerScoring * 0.5 + playMaking * 1.5 + atleticism * 3 + weightPoints + heightPoints + roll20SidesDice() * 5) * multiplier)
+}
+
+export function mathShotPointsInMidRange(insideScoring: number, perimetrerScoring: number, playMaking: number, heightPoints: number, multiplier: number) {
+    return ((insideScoring + perimetrerScoring * 4 + playMaking * 1.5 + heightPoints + roll20SidesDice() * 5) * multiplier)
+}
+
+export function mathShotPointsCloseToThe3PointLine(perimetrerScoring: number, playMaking: number, heightPoints: number, weightPoints: number, multiplier: number) {
+    return ((perimetrerScoring * 6 + playMaking - heightPoints * 0.5 - weightPoints * 0.5 + roll20SidesDice() * 4.5) * multiplier)
+}
+
+export function mathShotPointsInLong3Range(perimetrerScoring: number, playMaking: number, heightPoints: number, weightPoints: number, multiplier: number) {
+    return ((perimetrerScoring * 5 + playMaking * 0.5 - heightPoints * 0.5 - weightPoints + roll20SidesDice() * 3.5) * multiplier)
+}
+
+export function mathShotPointsInHalfCourt(perimetrerScoring: number, heightPoints: number, weightPoints: number, multiplier: number) {
+    return ((perimetrerScoring * 4 - heightPoints * 0.5 - weightPoints + roll20SidesDice() * 2) * multiplier)
+}
+
+export function mathShotPointsBehindHalfCourt(perimetrerScoring: number, heightPoints: number, weightPoints: number, multiplier: number) {
+    return ((perimetrerScoring * 3 - heightPoints - weightPoints + roll20SidesDice()) * multiplier)
+}
+
+export function mathShotPointsCloseToTheOtherRim(perimetrerScoring: number, heightPoints: number, weightPoints: number, multiplier: number) {
+    return ((perimetrerScoring * 2 - heightPoints - weightPoints * 1.5 + roll20SidesDice() * 0.5) * multiplier)
+}
+
+export function mathDefensePointsCloseToTheRim(insideDefence: number, atleticism: number, weightPoints: number, heightPoints: number, multiplier: number) {
+    return ((insideDefence * 4 + atleticism * 2 + weightPoints + heightPoints + roll20SidesDice() * 6) * multiplier)
+}
+
+export function mathDefensePointsInShortRange (insideDefence: number, atleticism: number, weightPoints: number, heightPoints: number, perimetrerDefence:number, multiplier: number) {
+    return ((insideDefence * 3 + perimetrerDefence * 0.5 + atleticism * 2.5 + weightPoints * 0.5 + heightPoints + roll20SidesDice() * 5) * multiplier)
+}
+
+export function mathDefensePointsInMidRange (insideDefence: number, weightPoints: number, heightPoints: number, perimetrerDefence:number, multiplier: number) {
+    return ((insideDefence + perimetrerDefence * 4 - weightPoints + heightPoints + roll20SidesDice() * 5) * multiplier)
+}
+
+export function mathDefensePointsCloseToThe3PointLine (weightPoints: number, heightPoints: number, perimetrerDefence:number, multiplier: number) {
+    return ((perimetrerDefence * 5 - weightPoints + heightPoints + roll20SidesDice() * 4) * multiplier)
+}
+
+export function mathDefensePointsLong3Range (weightPoints: number, heightPoints: number, perimetrerDefence:number, multiplier: number) {
+    return ((perimetrerDefence * 5 - weightPoints * 0.5 + heightPoints + roll20SidesDice() * 4) * multiplier)
+}
+
+export function mathDefensePointsHalfCourtAndFartherAway (heightPoints: number, perimetrerDefence: number, multiplier: number) {
+    return ((perimetrerDefence * 5 + heightPoints + roll20SidesDice() * 4) * multiplier)
+}
+
 export function playerZone(player: Player, teamAAtacking: boolean) {
     
     if(isCloseToTheRim(teamAAtacking, player.ubicationX!, player.ubicationY!)) {

@@ -1,6 +1,6 @@
 import { QuarterTimeLeft } from "./myInterfaces";
 import { Team } from "./team";
-import {roll20SidesDice, numberEntire, playerZone, ranges, checkTilesThatWillInfluenceInTheCalculations} from '../utilities/exportableFunctions';
+import {roll20SidesDice, numberEntire, playerZone, ranges, checkTilesThatWillInfluenceInTheCalculations, mathShotPointsCloseToTheRim, mathShotPointsInShortRange, mathShotPointsInMidRange, mathShotPointsCloseToThe3PointLine, mathShotPointsInLong3Range, mathShotPointsInHalfCourt, mathShotPointsBehindHalfCourt, mathShotPointsCloseToTheOtherRim, mathDefensePointsCloseToTheRim, mathDefensePointsInShortRange, mathDefensePointsInMidRange, mathDefensePointsCloseToThe3PointLine, mathDefensePointsLong3Range, mathDefensePointsHalfCourtAndFartherAway} from '../utilities/exportableFunctions';
 import React from "react";
 import { Player } from "./players";
 
@@ -66,6 +66,10 @@ export class Match {
         this.teamB.isAnyPlayerSelected() && (teamBSelectedPlayer = this.teamB.getSelectedPlayer())
         
         return [teamASelectedPlayer, teamBSelectedPlayer]
+    }
+
+    getClosestDefenderToTheRim(defendingTeam: Team) {
+        return defendingTeam.getClosestDefenderToTheRim()
     }
     
     //---------------------------------------END GET INFO METHODS-------------------------------------------------------------------------------------------------------------
@@ -295,7 +299,7 @@ export class Match {
                 multiplier = 1.2
             }
 
-            //TODO Do math to calculate points on each sector
+            //Do math to calculate points on each sector
             if(shooterZoneUbication == "error") {
                 shooterPointsInShot = 0
                 
@@ -303,28 +307,28 @@ export class Match {
                 shooterPointsInShot = 0
                 
             } else if(shooterZoneUbication == ranges.closeToTheRim.id) {
-                shooterPointsInShot = (shooter.insideScoring * 5 + shooter.playMaking * 0.5 + shooter.atleticism * 3 + shooter.getWeightPoints() * 2 + shooter.getHeightPoints() * 2 + roll20SidesDice() * 5) * multiplier
+                shooterPointsInShot = mathShotPointsCloseToTheRim(shooter.insideScoring, shooter.playMaking, shooter.atleticism, shooter.getWeightPoints(), shooter.getHeightPoints(), multiplier)
                 
             } else if(shooterZoneUbication == ranges.inShortRange.id || shooterZoneUbication == ranges.behindTheBoard.id) {
-                shooterPointsInShot = (shooter.insideScoring * 4 + shooter.perimetrerScoring * 0.5 + shooter.playMaking * 1.5 + shooter.atleticism * 3 + shooter.getWeightPoints() + shooter.getHeightPoints() + roll20SidesDice() * 5) * multiplier
+                shooterPointsInShot = mathShotPointsInShortRange(shooter.insideScoring, shooter.perimetrerScoring, shooter.playMaking, shooter.atleticism, shooter.getWeightPoints(), shooter.getHeightPoints(), multiplier)
                 
             } else if(shooterZoneUbication == ranges.inMidRange.id) {
-                shooterPointsInShot = (shooter.insideScoring + shooter.perimetrerScoring * 4 + shooter.playMaking * 1.5 + shooter.getHeightPoints() + roll20SidesDice() * 5) * multiplier
+                shooterPointsInShot = mathShotPointsInMidRange(shooter.insideScoring, shooter.perimetrerScoring, shooter.playMaking, shooter.getHeightPoints(), multiplier)
                 
             } else if(shooterZoneUbication == ranges.outsideThe3PointLine.id) {
-                shooterPointsInShot = (shooter.perimetrerScoring * 6 + shooter.playMaking - shooter.getHeightPoints() * 0.5 - shooter.getWeightPoints() * 0.5 + roll20SidesDice() * 4.5) * multiplier
+                shooterPointsInShot = mathShotPointsCloseToThe3PointLine(shooter.perimetrerScoring, shooter.playMaking, shooter.getHeightPoints(),shooter.getWeightPoints(), multiplier)
                 
             } else if(shooterZoneUbication == ranges.long3Range.id) {
-                shooterPointsInShot = (shooter.perimetrerScoring * 5 + shooter.playMaking * 0.5 - shooter.getHeightPoints() * 0.5 - shooter.getWeightPoints() + roll20SidesDice() * 3.5) * multiplier
+                shooterPointsInShot = mathShotPointsInLong3Range(shooter.perimetrerScoring, shooter.playMaking, shooter.getHeightPoints(), shooter.getWeightPoints(), multiplier)
                 
             } else if(shooterZoneUbication == ranges.halfCourt.id) {
-                shooterPointsInShot = (shooter.perimetrerScoring * 4 - shooter.getHeightPoints() * 0.5 - shooter.getWeightPoints() + roll20SidesDice() * 2) * multiplier
+                shooterPointsInShot = mathShotPointsInHalfCourt(shooter.perimetrerScoring, shooter.getHeightPoints(), shooter.getWeightPoints(), multiplier)
                 
             } else if(shooterZoneUbication == ranges.behindHalfCourt.id) {
-                shooterPointsInShot = (shooter.perimetrerScoring * 3 - shooter.getHeightPoints() - shooter.getWeightPoints() + roll20SidesDice()) * multiplier
+                shooterPointsInShot = mathShotPointsBehindHalfCourt(shooter.perimetrerScoring, shooter.getHeightPoints(), shooter.getWeightPoints(), multiplier)
                 
             } else if(shooterZoneUbication == ranges.theOtherRim.id) {
-                shooterPointsInShot = (shooter.perimetrerScoring * 2 - shooter.getHeightPoints() - shooter.getWeightPoints() * 1.5 + roll20SidesDice() * 0.5) * multiplier
+                shooterPointsInShot = mathShotPointsCloseToTheOtherRim(shooter.perimetrerScoring, shooter.getHeightPoints(), shooter.getWeightPoints(), multiplier)
                 
             }
 
@@ -353,33 +357,27 @@ export class Match {
                             if(defenderInThisUbication.lastAction == "overwhelming waiting") {
                                 multiplier = 1.4
                             }
-                            //TODO Do math to calculate points on each sector
+                            //Do math to calculate points on each sector
                             if(defenderZoneUbication == "error") {
                                 defenderPoints = 0
                                 
                             } else if(defenderZoneUbication == ranges.closeToTheRim.id) {
-                                defenderPoints = (defenderInThisUbication.insideDefence * 4 + defenderInThisUbication.atleticism * 2 + defenderInThisUbication.getWeightPoints() + defenderInThisUbication.getHeightPoints() + roll20SidesDice() * 6) * multiplier
+                                defenderPoints = mathDefensePointsCloseToTheRim(defenderInThisUbication.insideDefence, defenderInThisUbication.atleticism, defenderInThisUbication.getWeightPoints(), defenderInThisUbication.getHeightPoints(), multiplier)
                                 
                             } else if(defenderZoneUbication == ranges.inShortRange.id || defenderZoneUbication == ranges.behindTheBoard.id) {
-                                defenderPoints = (defenderInThisUbication.insideDefence * 3 + defenderInThisUbication.perimetrerDefence * 0.5 + defenderInThisUbication.atleticism * 2.5 + defenderInThisUbication.getWeightPoints() * 0.5 + defenderInThisUbication.getHeightPoints() + roll20SidesDice() * 5) * multiplier
+                                defenderPoints = mathDefensePointsInShortRange(defenderInThisUbication.insideDefence, defenderInThisUbication.atleticism, defenderInThisUbication.getWeightPoints(), defenderInThisUbication.getHeightPoints(), defenderInThisUbication.perimetrerDefence, multiplier)
                                 
                             } else if(defenderZoneUbication == ranges.inMidRange.id) {
-                                defenderPoints = (defenderInThisUbication.insideDefence + defenderInThisUbication.perimetrerDefence * 4 - shooter.getWeightPoints() + defenderInThisUbication.getHeightPoints() + roll20SidesDice() * 5) * multiplier
+                                defenderPoints = mathDefensePointsInMidRange(defenderInThisUbication.insideDefence, defenderInThisUbication.getWeightPoints(), defenderInThisUbication.getHeightPoints(), defenderInThisUbication.perimetrerDefence, multiplier)
                                 
                             } else if(defenderZoneUbication == ranges.outsideThe3PointLine.id) {
-                                defenderPoints = (0) * multiplier
+                                defenderPoints = mathDefensePointsCloseToThe3PointLine(defenderInThisUbication.getWeightPoints(), defenderInThisUbication.getHeightPoints(), defenderInThisUbication.perimetrerDefence, multiplier)
                                 
                             } else if(defenderZoneUbication == ranges.long3Range.id) {
-                                defenderPoints = (0) * multiplier
+                                defenderPoints = mathDefensePointsLong3Range(defenderInThisUbication.getWeightPoints(), defenderInThisUbication.getHeightPoints(), defenderInThisUbication.perimetrerDefence, multiplier)
                                 
-                            } else if(defenderZoneUbication == ranges.halfCourt.id) {
-                                defenderPoints = (0) * multiplier
-                                
-                            } else if(defenderZoneUbication == ranges.behindHalfCourt.id) {
-                                defenderPoints = (0) * multiplier
-                                
-                            } else if(defenderZoneUbication == ranges.theOtherRim.id) {
-                                defenderPoints = (0) * multiplier
+                            } else if(defenderZoneUbication == ranges.halfCourt.id || defenderZoneUbication == ranges.behindHalfCourt.id || defenderZoneUbication == ranges.theOtherRim.id) {
+                                defenderPoints = mathDefensePointsHalfCourtAndFartherAway(defenderInThisUbication.getHeightPoints(), defenderInThisUbication.perimetrerDefence, multiplier)
                                 
                             }
                             
@@ -399,12 +397,93 @@ export class Match {
         
         function calculateIfGoesIn() {
             let isItIn = false
-            //I get the difference between the shooter points and the defenders points
-            let pointsComparation = getShooterPointsInShot() - getDefendersPointsInShot()
-            //I get a dice roll
-            let shotDiceRoll = roll20SidesDice()
             
-            //TODO Use both prev data to calculate if it goes in
+            let shooterPointsInShot = getShooterPointsInShot()
+            let maxShooterPoints: number
+
+            if(shooterZoneUbication == ranges.closeToTheRim.id) {
+                maxShooterPoints = mathShotPointsCloseToTheRim(100, 100, 100, 100, 100, 1.2)
+            } else if(shooterZoneUbication == ranges.inShortRange.id || shooterZoneUbication == ranges.behindTheBoard.id) {
+                maxShooterPoints = mathShotPointsInShortRange(100, 100, 100, 100, 100, 100, 1.2)
+            } else if(shooterZoneUbication == ranges.inMidRange.id) {
+                maxShooterPoints = mathShotPointsInMidRange(100, 100, 100, 100, 1.2)
+            } else if(shooterZoneUbication == ranges.outsideThe3PointLine.id) {
+                maxShooterPoints = mathShotPointsCloseToThe3PointLine(100, 100, 100, 100, 1.2)
+            } else if(shooterZoneUbication == ranges.long3Range.id) {
+                maxShooterPoints = mathShotPointsInLong3Range(100, 100, 100, 100, 1.2)
+            } else if(shooterZoneUbication == ranges.halfCourt.id) {
+                maxShooterPoints = mathShotPointsInHalfCourt(100, 100, 100, 1.2)
+            } else if(shooterZoneUbication == ranges.behindHalfCourt.id) {
+                maxShooterPoints = mathShotPointsBehindHalfCourt(100, 100, 100, 1.2)
+            } else if(shooterZoneUbication == ranges.theOtherRim.id) {
+                maxShooterPoints = mathShotPointsCloseToTheOtherRim(100, 100, 100, 1.2)
+            } else {
+                maxShooterPoints = 0
+            }
+            
+            
+            let allDefendersPointsInShotSumatory = getDefendersPointsInShot()
+            let maxSingleDefenderPoints: number
+
+            if((shooterZoneUbication == ranges.closeToTheRim.id)) {
+                maxSingleDefenderPoints = mathDefensePointsCloseToTheRim(100, 100, 100, 100, 1.4)
+            }
+            else if((shooterZoneUbication == ranges.inShortRange.id || shooterZoneUbication == ranges.behindTheBoard.id)) {
+                maxSingleDefenderPoints = mathDefensePointsInShortRange(100, 100, 100, 100, 100, 1.4)
+            }
+            else if((shooterZoneUbication == ranges.inMidRange.id)) {
+                maxSingleDefenderPoints = mathDefensePointsInMidRange(100, 100, 100, 100, 1.4)
+            }
+            else if((shooterZoneUbication == ranges.outsideThe3PointLine.id)) {
+                maxSingleDefenderPoints = mathDefensePointsCloseToThe3PointLine(100, 100, 100, 1.4)
+            }
+            else if((shooterZoneUbication == ranges.long3Range.id)) {
+                maxSingleDefenderPoints = mathDefensePointsLong3Range(100, 100, 100, 1.4)
+            }
+            else if((shooterZoneUbication == ranges.halfCourt.id || shooterZoneUbication == ranges.behindHalfCourt.id || shooterZoneUbication == ranges.theOtherRim.id)) {
+                maxSingleDefenderPoints = mathDefensePointsHalfCourtAndFartherAway(100, 100, 1.4)
+            }
+            else {
+                maxSingleDefenderPoints = 0
+            }
+
+            let dShooterPointsVsMaxPossiblePointsPercentage = (shooterPointsInShot * 100) / maxShooterPoints
+            let dDefendersPointsVsSinlgePlayerMaxPossiblePointsPercentage = (allDefendersPointsInShotSumatory * 100) / maxSingleDefenderPoints
+
+            let pointsDif = dShooterPointsVsMaxPossiblePointsPercentage - dDefendersPointsVsSinlgePlayerMaxPossiblePointsPercentage
+
+            
+            //Use all prev data to calculate if it goes in
+            //First get a dice roll
+            let shotDiceRoll = roll20SidesDice()
+
+            if(dDefendersPointsVsSinlgePlayerMaxPossiblePointsPercentage < 100) {
+                if(shooterZoneUbication == ranges.closeToTheRim.id) {
+                    isItIn = ((pointsDif > 60) || (pointsDif > 55 && shotDiceRoll > 1) || (pointsDif > 50 && shotDiceRoll > 2) || (pointsDif > 47 && shotDiceRoll > 3) || (pointsDif > 43 && shotDiceRoll > 4) || (pointsDif > 40 && shotDiceRoll > 5) || (pointsDif > 30 && shotDiceRoll > 6) || (pointsDif > 20 && shotDiceRoll > 7) || (pointsDif > 17.5 && shotDiceRoll > 8) || (pointsDif > 14 && shotDiceRoll > 9) || (pointsDif > 10 && shotDiceRoll > 10) || (pointsDif > 5 && shotDiceRoll >  11) || (pointsDif > 0 && shotDiceRoll >  12) || (pointsDif > -10 && shotDiceRoll > 13) || (pointsDif > -15 && shotDiceRoll > 14) || (pointsDif > -17.5 && shotDiceRoll > 15) || (pointsDif > -19 && shotDiceRoll > 16) || (pointsDif > -20 && shotDiceRoll > 17) || (pointsDif > -22 && shotDiceRoll > 18) || (pointsDif > -25 && shotDiceRoll > 19))
+                
+                } else if(shooterZoneUbication == ranges.inShortRange.id || shooterZoneUbication == ranges.behindTheBoard.id) {
+                    isItIn = ((pointsDif > 98 && shotDiceRoll > 1) || (pointsDif > 96 && shotDiceRoll > 2)|| (pointsDif > 92 && shotDiceRoll > 3) || (pointsDif > 89 && shotDiceRoll > 4) || (pointsDif > 86 && shotDiceRoll > 5) || (pointsDif > 82 && shotDiceRoll > 6) || (pointsDif > 79 && shotDiceRoll > 7) || (pointsDif > 72 && shotDiceRoll > 8) || (pointsDif > 64 && shotDiceRoll > 9) || (pointsDif > 58 && shotDiceRoll > 10) || (pointsDif > 50 && shotDiceRoll >  11) || (pointsDif > 48 && shotDiceRoll >  12) || (pointsDif > 43 && shotDiceRoll > 13) || (pointsDif > 37 && shotDiceRoll > 14) || (pointsDif > 30 && shotDiceRoll > 15) || (pointsDif > 20 && shotDiceRoll > 16) || (pointsDif > 12.5 && shotDiceRoll > 17) || (pointsDif > 0 && shotDiceRoll > 18) || (pointsDif > -3 && shotDiceRoll > 19))
+                
+                } else if(shooterZoneUbication == ranges.inMidRange.id) {
+                    isItIn = ((pointsDif > 98 && shotDiceRoll > 3) || (pointsDif > 94 && shotDiceRoll > 4) || (pointsDif > 90 && shotDiceRoll > 5) || (pointsDif > 87 && shotDiceRoll > 6) || (pointsDif > 83 && shotDiceRoll > 7) || (pointsDif > 77 && shotDiceRoll > 8) || (pointsDif > 69 && shotDiceRoll > 9) || (pointsDif > 63 && shotDiceRoll > 10) || (pointsDif > 58 && shotDiceRoll >  11) || (pointsDif > 53 && shotDiceRoll >  12) || (pointsDif > 49 && shotDiceRoll > 13) || (pointsDif > 40 && shotDiceRoll > 14) || (pointsDif > 34 && shotDiceRoll > 15) || (pointsDif > 23 && shotDiceRoll > 16) || (pointsDif > 15 && shotDiceRoll > 17) || (pointsDif > 9 && shotDiceRoll > 18) || (pointsDif > 3 && shotDiceRoll > 19))
+                
+                } else if(shooterZoneUbication == ranges.outsideThe3PointLine.id) {
+                    isItIn = ((pointsDif > 98 && shotDiceRoll > 5) || (pointsDif > 94 && shotDiceRoll > 6) || (pointsDif > 89 && shotDiceRoll > 7) || (pointsDif > 83 && shotDiceRoll > 8) || (pointsDif > 75 && shotDiceRoll > 9) || (pointsDif > 69 && shotDiceRoll > 10) || (pointsDif > 63 && shotDiceRoll >  11) || (pointsDif > 58 && shotDiceRoll >  12) || (pointsDif > 50 && shotDiceRoll > 13) || (pointsDif > 45 && shotDiceRoll > 14) || (pointsDif > 40 && shotDiceRoll > 15) || (pointsDif > 35 && shotDiceRoll > 16) || (pointsDif > 28 && shotDiceRoll > 17) || (pointsDif > 20 && shotDiceRoll > 18) || (pointsDif > 13 && shotDiceRoll > 19))
+                
+                } else if(shooterZoneUbication == ranges.long3Range.id) {
+                    isItIn = ((pointsDif > 98 && shotDiceRoll > 6) || (pointsDif > 92 && shotDiceRoll > 7) || (pointsDif > 89 && shotDiceRoll > 8) || (pointsDif > 80 && shotDiceRoll > 9) || (pointsDif > 76 && shotDiceRoll > 10) || (pointsDif > 70 && shotDiceRoll >  11) || (pointsDif > 65 && shotDiceRoll >  12) || (pointsDif > 60 && shotDiceRoll > 13) || (pointsDif > 54 && shotDiceRoll > 14) || (pointsDif > 49 && shotDiceRoll > 15) || (pointsDif > 42 && shotDiceRoll > 16) || (pointsDif > 37 && shotDiceRoll > 17) || (pointsDif > 31 && shotDiceRoll > 18) || (pointsDif > 20 && shotDiceRoll > 19))
+                
+                } else if(shooterZoneUbication == ranges.halfCourt.id) {
+                    isItIn = ((pointsDif > 98 && shotDiceRoll > 7) || (pointsDif > 92 && shotDiceRoll > 8) || (pointsDif > 89 && shotDiceRoll > 9) || (pointsDif > 80 && shotDiceRoll > 10) || (pointsDif > 76 && shotDiceRoll > 11) || (pointsDif > 70 && shotDiceRoll >  12) || (pointsDif > 65 && shotDiceRoll >  13) || (pointsDif > 60 && shotDiceRoll > 14) || (pointsDif > 54 && shotDiceRoll > 15) || (pointsDif > 49 && shotDiceRoll > 16) || (pointsDif > 42 && shotDiceRoll > 17) || (pointsDif > 37 && shotDiceRoll > 18) || (pointsDif > 31 && shotDiceRoll > 19))
+                
+                } else if(shooterZoneUbication == ranges.behindHalfCourt.id) {
+                    isItIn = ((pointsDif > 98 && shotDiceRoll > 8) || (pointsDif > 92 && shotDiceRoll > 9) || (pointsDif > 89 && shotDiceRoll > 10) || (pointsDif > 80 && shotDiceRoll > 11) || (pointsDif > 76 && shotDiceRoll > 12) || (pointsDif > 70 && shotDiceRoll >  13) || (pointsDif > 65 && shotDiceRoll >  14) || (pointsDif > 60 && shotDiceRoll > 15) || (pointsDif > 54 && shotDiceRoll > 16) || (pointsDif > 49 && shotDiceRoll > 17) || (pointsDif > 42 && shotDiceRoll > 18) || (pointsDif > 37 && shotDiceRoll > 19))
+                
+                } else if(shooterZoneUbication == ranges.theOtherRim.id) {
+                    isItIn = ((pointsDif > 98 && shotDiceRoll > 9) || (pointsDif > 92 && shotDiceRoll > 10) || (pointsDif > 89 && shotDiceRoll > 11) || (pointsDif > 80 && shotDiceRoll > 12) || (pointsDif > 76 && shotDiceRoll > 13) || (pointsDif > 70 && shotDiceRoll >  14) || (pointsDif > 65 && shotDiceRoll >  15) || (pointsDif > 60 && shotDiceRoll > 16) || (pointsDif > 54 && shotDiceRoll > 17) || (pointsDif > 49 && shotDiceRoll > 18) || (pointsDif > 42 && shotDiceRoll > 19))
+                
+                }
+            }
             
             return isItIn            
         }
@@ -425,6 +504,7 @@ export class Match {
                 pointsToAdd = 3
             }
             //After that i handle who get's the ball after the shot
+            let newPlayerWithBall = this.getClosestDefenderToTheRim(defendingTeam)
         } else {
             //If it doesn't goes in handle who get's the rebound
         }

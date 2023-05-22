@@ -304,6 +304,16 @@ export class Player {
 
     }
 
+    movePlayerToOwnRim() {
+        if(this.team == "TeamA") {
+            this.ubicationX = 2
+        } else {
+            this.ubicationX = 27
+        }
+        
+        this.ubicationY = 8
+    }
+
     restActionPoints(points: number) {
         this.actionPoints -= points
     }

@@ -281,11 +281,12 @@ export class Match {
         return [true, dribbler]
     }
     
-    calculateShotResult() {
+    handleShot() {
         //First i get the shooter
         let shooter = this.getShooter()!
 
-        //Then i get the defender team
+        //Then i get the ataker and defender team
+        let atackingTeam = shooter.team == "TeamA" ? this.teamA : this.teamB
         let defendingTeam = shooter.team == "TeamA" ? this.teamB : this.teamA
         
         //I get in what part of the field is him located to calculate with the propper math
@@ -489,8 +490,10 @@ export class Match {
         }
 
         let pointsToAdd = 0;
+        let isItIn = calculateIfGoesIn()
+        let newPlayerWithBall: Player
         
-        if(calculateIfGoesIn()) {
+        if(isItIn) {
             if(/*TODO isFreeThrow*/ false) {
                 pointsToAdd = 1
             } else if(
@@ -498,18 +501,38 @@ export class Match {
                 shooterZoneUbication == ranges.inShortRange.id ||
                 shooterZoneUbication == ranges.behindTheBoard.id ||
                 shooterZoneUbication == ranges.inMidRange.id
-            ) {
-                pointsToAdd = 2
+                ) {
+                    pointsToAdd = 2
             } else {
                 pointsToAdd = 3
             }
+
             //After that i handle who get's the ball after the shot
-            let newPlayerWithBall = this.getClosestDefenderToTheRim(defendingTeam)
+            newPlayerWithBall = this.getClosestDefenderToTheRim(defendingTeam)
+            newPlayerWithBall.movePlayerToOwnRim()
         } else {
             //If it doesn't goes in handle who get's the rebound
+            newPlayerWithBall = this.getRebounder()
+            newPlayerWithBall.statsAddRebound(atackingTeam)
+            newPlayerWithBall.setLastAction(newPlayerWithBall.team == atackingTeam.name ? "get O reb" : "get D reb")
         }
+        
+        //Then i handle the players status and stats
+        shooter.setHaveBall(false)
+        shooter.statsAddShotAttempt(pointsToAdd, isItIn, /*TODO isFreeThrow*/ false)
+        
+        newPlayerWithBall.setHaveBall(true)
+        
+        //Finally i handle the team stats
+        atackingTeam.statsAddShotAttempt(pointsToAdd, isItIn, /*TODO check if it's an assist*/ false, /*TODO check if there was a foul*/ false)
 
-        return pointsToAdd
+        if(!isItIn) {
+            if(newPlayerWithBall.team == atackingTeam.name) {
+                atackingTeam.statsAddRebound(atackingTeam)
+            } else {
+                defendingTeam.statsAddRebound(atackingTeam)
+            }
+        }
     }
 
     setShotHasBeenAttempted(value: boolean) {
@@ -522,6 +545,12 @@ export class Match {
     //-----------------------------------START MATCH HANDLER METHODS----------------------------------------------------------------------------------------------------------
     setTeamTurn(team: string) {
         this.teamTurn = team
+    }
+
+    getRebounder() {
+        //TODO make this function
+        let rebounder: Player
+        return rebounder!
     }
     
     handleSelectedPlayersStatus(playerSillHaveTurnLeft: boolean) {
@@ -620,7 +649,7 @@ export class Match {
         }
 
         if(this.shotHasBeenAttempted) {
-            this.calculateShotResult()
+            this.handleShot()
         }
 
         if(!this.gameOver) {

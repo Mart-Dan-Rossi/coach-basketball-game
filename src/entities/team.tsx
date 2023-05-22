@@ -1,3 +1,4 @@
+import { getDistanceToRim } from "../utilities/exportableFunctions";
 import { Player } from "./players";
 
 export class Team {
@@ -100,10 +101,24 @@ export class Team {
     }
 
     getClosestDefenderToTheRim() {
-        let closestPlayer = undefined
+        let closestPlayer: Player
+        let distanceToRim: number
         this.players.forEach(player => {
-            
+            if(!closestPlayer) {
+                closestPlayer = player
+                
+                distanceToRim = getDistanceToRim(player)
+            } else {
+                let playerDistanceToRim = getDistanceToRim(player)
+
+                if(distanceToRim > playerDistanceToRim) {
+                    closestPlayer = player
+                    distanceToRim = playerDistanceToRim
+                }
+            }
         })
+
+        return closestPlayer!
     }
     
     getSelectedPlayer() {
@@ -259,8 +274,8 @@ export class Team {
         }
     }
 
-    statsAddRebound() {
-        if(this.getPlayerWithBallOrUndefined()) {
+    statsAddRebound(shootingTeam: Team) {
+        if(shootingTeam.name == this.name) {
             this.stats.offensiveRebounds++
 
         } else {

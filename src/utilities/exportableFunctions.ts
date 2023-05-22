@@ -1443,3 +1443,37 @@ export function checkTilesThatWillInfluenceInTheCalculations(gameBoard: number[]
     }
     return [ballGoesOverThisPositions, ballGoesCloseToThisPositions]
 }
+
+export function getDistanceToRim(player: Player) {
+    let distanceToRim: number
+    let dXToRim: number
+    let dYToRim: number
+
+    if(player.team == "TeamA") {
+
+        if(player.ubicationX == 1) {
+            dXToRim = 1
+        } else {
+            dXToRim = player.ubicationX! - 1
+        }
+    
+    } else {
+        if(player.ubicationX == 28) {
+            dXToRim = 1
+        } else {
+            dXToRim = 27 - player.ubicationX!
+        }
+    }
+
+    if(player.ubicationY == 8) {
+        dYToRim = 0
+    } else if(player.ubicationY! < 8) {
+        dYToRim = 8 - player.ubicationY!
+    } else {
+        dYToRim = player.ubicationY! - 8
+    }
+
+    distanceToRim = Math.sqrt(Math.pow(dXToRim, 2) + Math.pow(dYToRim, 2))
+    
+    return distanceToRim
+}

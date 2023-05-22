@@ -1446,39 +1446,66 @@ export function checkTilesThatWillInfluenceInTheCalculations(gameBoard: number[]
 
 export function getDistanceToRim(player: Player) {
     let distanceToRim: number
-    let dXToRim = getShotXDistance(player)
-    let dYToRim: number
-    
-
-    if(player.ubicationY == 8) {
-        dYToRim = 0
-    } else if(player.ubicationY! < 8) {
-        dYToRim = 8 - player.ubicationY!
-    } else {
-        dYToRim = player.ubicationY! - 8
-    }
+    let dXToRim = getShotDistance(player, "X")
+    let dYToRim = getShotDistance(player, "Y")
 
     distanceToRim = Math.sqrt(Math.pow(dXToRim, 2) + Math.pow(dYToRim, 2))
     
     return distanceToRim
 }
 
-export function getShotXDistance(player: Player) {
-    let shotXDistance: number
-    
-    if(player.team == "TeamA") {
-        if(player.ubicationX == 1) {
-            shotXDistance = 1
+export function getShotDistance(player: Player, direction: string) {
+    let shotDistance = undefined
+
+    if(direction == "Y") {
+        if(player.ubicationY == 8) {
+            shotDistance = 0
+        } else if(player.ubicationY! < 8) {
+            shotDistance = 8 - player.ubicationY!
         } else {
-            shotXDistance = player.ubicationX! - 1
-        }
-    } else {
-        if(player.ubicationX == 28) {
-            shotXDistance = 1
-        } else {
-            shotXDistance = 27 - player.ubicationX!
+            shotDistance = player.ubicationY! - 8
         }
     }
+    
+    if(!shotDistance) {
+        if(player.team == "TeamA") {
+            if(direction == "X"){
+                if(player.ubicationX == 1) {
+                    shotDistance = 1
+                } else {
+                    shotDistance = player.ubicationX! - 1
+                }
+            }
+        } else {
+            if(direction == "X") {
+                if(player.ubicationX == 28) {
+                    shotDistance = 1
+                } else {
+                    shotDistance = 27 - player.ubicationX!
+                }
+            }
+        }
+    }
+    
+    return shotDistance!
+}
 
-    return shotXDistance!
+export function getReboundDistance(shotDirectionY: string, reboundDirectionY: string, shotDistanceY: number, shotDistanceX: number, teamAAtacking: boolean) {
+    let reboundLandingX: number
+    let reboundLandingY: number
+
+    let rollDiceMultiplier = roll20SidesDice() > 10 ? 1 : 0.5
+
+    if(shotDirectionY == reboundDirectionY) {
+        if(reboundDirectionY == "middle") {
+            reboundLandingY = 8
+        } else if(reboundDirectionY == "top") {
+            reboundLandingY = Math.round(8 - ((shotDistanceY + shotDistanceX) / (2 * rollDiceMultiplier)))
+        } else {
+            reboundLandingY = Math.round(((shotDistanceY + shotDistanceX) / (2 * rollDiceMultiplier)) - 8)
+
+        }
+    } else
+
+    return [reboundLandingX!, reboundLandingY!]
 }

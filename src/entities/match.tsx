@@ -1,6 +1,6 @@
 import { QuarterTimeLeft } from "./myInterfaces";
 import { Team } from "./team";
-import {roll20SidesDice, numberEntire, playerZone, ranges, checkTilesThatWillInfluenceInTheCalculations, mathShotPointsCloseToTheRim, mathShotPointsInShortRange, mathShotPointsInMidRange, mathShotPointsCloseToThe3PointLine, mathShotPointsInLong3Range, mathShotPointsInHalfCourt, mathShotPointsBehindHalfCourt, mathShotPointsCloseToTheOtherRim, mathDefensePointsCloseToTheRim, mathDefensePointsInShortRange, mathDefensePointsInMidRange, mathDefensePointsCloseToThe3PointLine, mathDefensePointsLong3Range, mathDefensePointsHalfCourtAndFartherAway, getShotXDistance} from '../utilities/exportableFunctions';
+import {roll20SidesDice, numberEntire, playerZone, ranges, checkTilesThatWillInfluenceInTheCalculations, mathShotPointsCloseToTheRim, mathShotPointsInShortRange, mathShotPointsInMidRange, mathShotPointsCloseToThe3PointLine, mathShotPointsInLong3Range, mathShotPointsInHalfCourt, mathShotPointsBehindHalfCourt, mathShotPointsCloseToTheOtherRim, mathDefensePointsCloseToTheRim, mathDefensePointsInShortRange, mathDefensePointsInMidRange, mathDefensePointsCloseToThe3PointLine, mathDefensePointsLong3Range, mathDefensePointsHalfCourtAndFartherAway, getShotDistance, getReboundDistance as getWhereItReboundsTo} from '../utilities/exportableFunctions';
 import React from "react";
 import { Player } from "./players";
 
@@ -554,9 +554,35 @@ export class Match {
         //TODO make this function
         let rebounder: Player
 
-        let shotDirectionY = shooter.ubicationY!
-        let shotDistanceX = getShotXDistance(shooter)
-        
+        let teamAAtacking = shooter.team == "TeamA"
+
+        let shotDirectionY = shooter.ubicationY! == 8 ? "middle" : shooter.ubicationY! < 8 ? "top" : "bottom"
+
+        let shotDistanceY = getShotDistance(shooter, "Y")
+        let shotDistanceX = getShotDistance(shooter, "X")
+
+        let reboundDirectionY: string
+
+        let rollDice = roll20SidesDice()
+        if(shotDirectionY == "middle") {
+            reboundDirectionY = rollDice <= 5 ? "middle" : rollDice >= 13 ? "top" : "bottom"
+        } else if(shotDirectionY == "top") {
+            if(roll20SidesDice() > 7) {
+                reboundDirectionY = "top"
+                
+            } else {
+                reboundDirectionY = "bottom"
+            }
+        } else {
+            if(roll20SidesDice() > 7) {
+                reboundDirectionY = "bottom"
+                
+            } else {
+                reboundDirectionY = "top"
+            }
+        }
+
+        let whereItReboundsTo = getWhereItReboundsTo(shotDirectionY, reboundDirectionY, shotDistanceY, shotDistanceX, teamAAtacking)
         
         return rebounder!
     }

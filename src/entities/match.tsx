@@ -1,6 +1,6 @@
 import { QuarterTimeLeft } from "./myInterfaces";
 import { Team } from "./team";
-import {roll20SidesDice, numberEntire, playerZone, ranges, checkTilesThatWillInfluenceInTheCalculations, mathShotPointsCloseToTheRim, mathShotPointsInShortRange, mathShotPointsInMidRange, mathShotPointsCloseToThe3PointLine, mathShotPointsInLong3Range, mathShotPointsInHalfCourt, mathShotPointsBehindHalfCourt, mathShotPointsCloseToTheOtherRim, mathDefensePointsCloseToTheRim, mathDefensePointsInShortRange, mathDefensePointsInMidRange, mathDefensePointsCloseToThe3PointLine, mathDefensePointsLong3Range, mathDefensePointsHalfCourtAndFartherAway} from '../utilities/exportableFunctions';
+import {roll20SidesDice, numberEntire, playerZone, ranges, checkTilesThatWillInfluenceInTheCalculations, mathShotPointsCloseToTheRim, mathShotPointsInShortRange, mathShotPointsInMidRange, mathShotPointsCloseToThe3PointLine, mathShotPointsInLong3Range, mathShotPointsInHalfCourt, mathShotPointsBehindHalfCourt, mathShotPointsCloseToTheOtherRim, mathDefensePointsCloseToTheRim, mathDefensePointsInShortRange, mathDefensePointsInMidRange, mathDefensePointsCloseToThe3PointLine, mathDefensePointsLong3Range, mathDefensePointsHalfCourtAndFartherAway, getShotXDistance} from '../utilities/exportableFunctions';
 import React from "react";
 import { Player } from "./players";
 
@@ -512,7 +512,7 @@ export class Match {
             newPlayerWithBall.movePlayerToOwnRim()
         } else {
             //If it doesn't goes in handle who get's the rebound
-            newPlayerWithBall = this.getRebounder()
+            newPlayerWithBall = this.getRebounder(shooter)
             newPlayerWithBall.statsAddRebound(atackingTeam)
             newPlayerWithBall.setLastAction(newPlayerWithBall.team == atackingTeam.name ? "get O reb" : "get D reb")
         }
@@ -520,6 +520,7 @@ export class Match {
         //Then i handle the players status and stats
         shooter.setHaveBall(false)
         shooter.statsAddShotAttempt(pointsToAdd, isItIn, /*TODO isFreeThrow*/ false)
+        shooter.setShotAttempt(false)
         
         newPlayerWithBall.setHaveBall(true)
         
@@ -533,6 +534,8 @@ export class Match {
                 defendingTeam.statsAddRebound(atackingTeam)
             }
         }
+
+        this.setShotHasBeenAttempted(false)
     }
 
     setShotHasBeenAttempted(value: boolean) {
@@ -547,9 +550,14 @@ export class Match {
         this.teamTurn = team
     }
 
-    getRebounder() {
+    getRebounder(shooter: Player) {
         //TODO make this function
         let rebounder: Player
+
+        let shotDirectionY = shooter.ubicationY!
+        let shotDistanceX = getShotXDistance(shooter)
+        
+        
         return rebounder!
     }
     

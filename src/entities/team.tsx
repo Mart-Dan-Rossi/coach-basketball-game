@@ -114,6 +114,10 @@ export class Team {
                 if(distanceToRim > playerDistanceToRim) {
                     closestPlayer = player
                     distanceToRim = playerDistanceToRim
+                } else if(distanceToRim == playerDistanceToRim) {
+                    if(closestPlayer.atleticism < player.atleticism) {
+                        closestPlayer = player
+                    }
                 }
             }
         })

@@ -1446,24 +1446,9 @@ export function checkTilesThatWillInfluenceInTheCalculations(gameBoard: number[]
 
 export function getDistanceToRim(player: Player) {
     let distanceToRim: number
-    let dXToRim: number
+    let dXToRim = getShotXDistance(player)
     let dYToRim: number
-
-    if(player.team == "TeamA") {
-
-        if(player.ubicationX == 1) {
-            dXToRim = 1
-        } else {
-            dXToRim = player.ubicationX! - 1
-        }
     
-    } else {
-        if(player.ubicationX == 28) {
-            dXToRim = 1
-        } else {
-            dXToRim = 27 - player.ubicationX!
-        }
-    }
 
     if(player.ubicationY == 8) {
         dYToRim = 0
@@ -1476,4 +1461,24 @@ export function getDistanceToRim(player: Player) {
     distanceToRim = Math.sqrt(Math.pow(dXToRim, 2) + Math.pow(dYToRim, 2))
     
     return distanceToRim
+}
+
+export function getShotXDistance(player: Player) {
+    let shotXDistance: number
+    
+    if(player.team == "TeamA") {
+        if(player.ubicationX == 1) {
+            shotXDistance = 1
+        } else {
+            shotXDistance = player.ubicationX! - 1
+        }
+    } else {
+        if(player.ubicationX == 28) {
+            shotXDistance = 1
+        } else {
+            shotXDistance = 27 - player.ubicationX!
+        }
+    }
+
+    return shotXDistance!
 }

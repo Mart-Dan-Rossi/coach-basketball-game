@@ -1494,18 +1494,49 @@ export function getReboundDistance(shotDirectionY: string, reboundDirectionY: st
     let reboundLandingX: number
     let reboundLandingY: number
 
-    let rollDiceMultiplier = roll20SidesDice() > 10 ? 1 : 0.5
+    let rollDiceY = roll20SidesDice()
+    let rollDiceX = roll20SidesDice()
+
+    let rollDiceMultiplierY = rollDiceY > 6 ? 1 : rollDiceY > 13 ? 0.5 : 0.25
+    let rollDiceMultiplierX = rollDiceX > 6 ? 1 : rollDiceX > 13 ? 0.5 : 0.25
+
+    if(reboundDirectionY == "middle") {
+        reboundLandingY = 8
+    }
 
     if(shotDirectionY == reboundDirectionY) {
-        if(reboundDirectionY == "middle") {
-            reboundLandingY = 8
-        } else if(reboundDirectionY == "top") {
-            reboundLandingY = Math.round(8 - ((shotDistanceY + shotDistanceX) / (2 * rollDiceMultiplier)))
+        if(reboundDirectionY == "top") {
+            reboundLandingY = Math.round(8 - ((shotDistanceY + shotDistanceX) / (2 * rollDiceMultiplierY)))
         } else {
-            reboundLandingY = Math.round(((shotDistanceY + shotDistanceX) / (2 * rollDiceMultiplier)) - 8)
+            reboundLandingY = Math.round(((shotDistanceY + shotDistanceX) / (2 * rollDiceMultiplierY)) - 8)
 
         }
-    } else
+    } else {
+        if(reboundDirectionY == "top") {
+            reboundLandingY = Math.round(8 - ((shotDistanceY + shotDistanceX) / rollDiceMultiplierY))
+        } else {
+            reboundLandingY = Math.round(((shotDistanceY + shotDistanceX) / rollDiceMultiplierY) - 8)
+        }
+    }
+
+    if(teamAAtacking) {
+        reboundLandingX = Math.round(27 - (shotDistanceX * rollDiceMultiplierX))
+        
+    } else {
+        reboundLandingX = Math.round(2 + (shotDistanceX * rollDiceMultiplierX))
+
+    }
 
     return [reboundLandingX!, reboundLandingY!]
+}
+
+export function getDistanceToPoint() {
+
+}
+
+export function getClosestPlayers(ubication: number[]) {
+    //TODO end this function
+    let closestPlayers = [] as Player[]
+
+    return closestPlayers
 }

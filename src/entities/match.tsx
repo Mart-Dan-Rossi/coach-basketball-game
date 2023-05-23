@@ -1,6 +1,6 @@
 import { QuarterTimeLeft } from "./myInterfaces";
 import { Team } from "./team";
-import {roll20SidesDice, numberEntire, playerZone, ranges, checkTilesThatWillInfluenceInTheCalculations, mathShotPointsCloseToTheRim, mathShotPointsInShortRange, mathShotPointsInMidRange, mathShotPointsCloseToThe3PointLine, mathShotPointsInLong3Range, mathShotPointsInHalfCourt, mathShotPointsBehindHalfCourt, mathShotPointsCloseToTheOtherRim, mathDefensePointsCloseToTheRim, mathDefensePointsInShortRange, mathDefensePointsInMidRange, mathDefensePointsCloseToThe3PointLine, mathDefensePointsLong3Range, mathDefensePointsHalfCourtAndFartherAway, getShotDistance, getReboundDistance as getWhereItReboundsTo} from '../utilities/exportableFunctions';
+import {roll20SidesDice, numberEntire, playerZone, ranges, checkTilesThatWillInfluenceInTheCalculations, mathShotPointsCloseToTheRim, mathShotPointsInShortRange, mathShotPointsInMidRange, mathShotPointsCloseToThe3PointLine, mathShotPointsInLong3Range, mathShotPointsInHalfCourt, mathShotPointsBehindHalfCourt, mathShotPointsCloseToTheOtherRim, mathDefensePointsCloseToTheRim, mathDefensePointsInShortRange, mathDefensePointsInMidRange, mathDefensePointsCloseToThe3PointLine, mathDefensePointsLong3Range, mathDefensePointsHalfCourtAndFartherAway, getShotDistance, getReboundDistance as getWhereItReboundsTo, getClosestPlayers} from '../utilities/exportableFunctions';
 import React from "react";
 import { Player } from "./players";
 
@@ -583,6 +583,8 @@ export class Match {
         }
 
         let whereItReboundsTo = getWhereItReboundsTo(shotDirectionY, reboundDirectionY, shotDistanceY, shotDistanceX, teamAAtacking)
+
+        let closestPlayersToWhereBallLands = getClosestPlayers(whereItReboundsTo)
         
         return rebounder!
     }

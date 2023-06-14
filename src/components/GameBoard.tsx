@@ -37,6 +37,8 @@ function GameBoard( { match, setMatchState } : Props) {
     ]
 
     const {
+        gameNarration,
+        setGameNarration,
         actionConfirmed,
         setActionConfirmed,
         setShowMoveButton,
@@ -416,7 +418,7 @@ function GameBoard( { match, setMatchState } : Props) {
                 }
             })
 
-            match.handlePassAction(passer, receiver!, gameBoard)
+            match.handlePassAction(passer, receiver!, gameBoard, gameNarration, setGameNarration)
 
             if(passer.team == "TeamA") {
                 setPlayerClikedTeamA([0, 0])

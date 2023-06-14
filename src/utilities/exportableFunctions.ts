@@ -406,7 +406,15 @@ export const ranges = {
 }
 
 export function getRangeText(rangeId: number) {
-    return "TODO end this"
+    let rangeText: string
+
+    Object.values(ranges).forEach(rangeObj => {
+        if(rangeObj.id == rangeId) {
+            rangeText = rangeObj.text
+        }
+    })
+
+    return rangeText!
 }
 
 export function isCloseToTheRim(teamAAtacking: boolean, ubicationX: number, ubicationY: number) {
@@ -1527,9 +1535,31 @@ export function getDistanceToPoint() {
 
 }
 
-export function getClosestPlayers(ubication: number[]) {
+export function getClosestPlayers(gameBoard: number[][], allPlayers: Player[], targetPoint: number[]): Player[] {
     //TODO end this function
-    let closestPlayers = [] as Player[]
-
-    return closestPlayers
+    
+    const closestPlayers: Player[] = [];
+    // Find the closest player to the targetPoint
+    let minDistance = Infinity;
+    let closestPlayer: Player | undefined = undefined;
+    for (const player of allPlayers) {
+          const distance = Math.abs(player.ubicationX! - targetPoint[0]) +
+        Math.abs(player.ubicationY! - targetPoint[1]);
+      if (distance < minDistance) {
+            minDistance = distance;
+        closestPlayer = player;
+  }
+}
+    if (closestPlayer) {
+          // Get all close players to the closest player to the target point
+      for (const player of allPlayers) {
+            const distance = Math.abs(player.ubicationX! - closestPlayer.ubicationX!) +
+          Math.abs(player.ubicationY! - closestPlayer.ubicationY!);
+        if (distance <= 2) {
+              closestPlayers.push(player);
+    }
+  }
+}
+    return closestPlayers;
+      
 }

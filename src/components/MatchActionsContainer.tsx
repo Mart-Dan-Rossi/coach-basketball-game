@@ -179,7 +179,7 @@ function MatchActionsContainer( { match, setMatchState } : Props) {
 
         setEndTurnButtonSelected(false)
 
-        matchCopy.handleSelectedPlayersStatus(false, gameNarration, setGameNarration)
+        matchCopy.handleSelectedPlayersStatus(false, gameNarration, setGameNarration, gameBoard)
 
       },
     }

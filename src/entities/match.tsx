@@ -78,7 +78,7 @@ export class Match {
     //-----------------------------------START PLAYER ACTIONS METHODS---------------------------------------------------------------------------------------------------------
 
 
-    jumpBall(gameNarration: string[], setGameNarration: React.Dispatch<React.SetStateAction<string[]>>) {        
+    jumpBall(gameNarration: string[], setGameNarration: React.Dispatch<React.SetStateAction<string[]>>, gameBoard: number[][]) {        
         let pointsObteinedInTheJumpBallA = 0
         let pointsObteinedInTheJumpBallB = 0
         
@@ -160,7 +160,7 @@ export class Match {
         this.teamB.giveActionPointsToTeam()
         
         //Run clock
-        this.runClock(gameNarration, setGameNarration)
+        this.runClock(gameNarration, setGameNarration, gameBoard)
     }
     
     handlePassAction(passer: Player, receiver: Player, gameBoard: number[][], gameNarration: string[], setGameNarration: React.Dispatch<React.SetStateAction<string[]>>) {
@@ -296,7 +296,7 @@ export class Match {
         return [true, playerWithBall]
     }
     
-    handleShot(gameNarration: string[], setGameNarration: React.Dispatch<React.SetStateAction<string[]>>) {
+    handleShot(gameNarration: string[], setGameNarration: React.Dispatch<React.SetStateAction<string[]>>, gameBoard: number[][]) {
         //First i get the shooter
         let shooter = this.getShooter()!
         let newGameNarration = [...gameNarration]
@@ -534,7 +534,7 @@ export class Match {
 
         } else {
             //If it doesn't goes in handle who get's the rebound
-            newPlayerWithBall = this.getRebounder(shooter)
+            newPlayerWithBall = this.getRebounder(shooter, gameBoard)
             newPlayerWithBall.statsAddRebound(atackingTeam)
             newPlayerWithBall.setLastAction(newPlayerWithBall.team == atackingTeam.name ? "get O reb" : "get D reb")
             newGameNarration.unshift(`The shot is off ${newPlayerWithBall.team == atackingTeam.name ? "but" : "and"} ${newPlayerWithBall.name} gets the rebound!`)
@@ -575,7 +575,7 @@ export class Match {
         this.teamTurn = team
     }
 
-    getRebounder(shooter: Player) {
+    getRebounder(shooter: Player, gameBoard: number[][]) {
         //TODO make this function
         let rebounder: Player
 
@@ -609,12 +609,13 @@ export class Match {
 
         let whereItReboundsTo = getWhereItReboundsTo(shotDirectionY, reboundDirectionY, shotDistanceY, shotDistanceX, teamAAtacking)
 
-        let closestPlayersToWhereBallLands = getClosestPlayers(whereItReboundsTo)
+        let closestPlayersToWhereBallLands = getClosestPlayers(gameBoard, [...this.teamA.players, ...this.teamB.players],whereItReboundsTo)
+
         
         return rebounder!
     }
     
-    handleSelectedPlayersStatus(playerSillHaveTurnLeft: boolean, gameNarration: string[], setGameNarration: React.Dispatch<React.SetStateAction<string[]>>) {
+    handleSelectedPlayersStatus(playerSillHaveTurnLeft: boolean, gameNarration: string[], setGameNarration: React.Dispatch<React.SetStateAction<string[]>>, gameBoard: number[][]) {
         
         let activePlayer = this.getActivePlayer()
 
@@ -660,7 +661,7 @@ export class Match {
             }
             
         } else {
-            this.runClock(gameNarration, setGameNarration)
+            this.runClock(gameNarration, setGameNarration, gameBoard)
 
             if(this.teamA.teamHaveTheBall()) {
                 this.setTeamTurn("TeamA")
@@ -687,7 +688,7 @@ export class Match {
         activePlayer.setShotAttempt(true)
     }
     
-    runClock(gameNarration: string[], setGameNarration: React.Dispatch<React.SetStateAction<string[]>>) {
+    runClock(gameNarration: string[], setGameNarration: React.Dispatch<React.SetStateAction<string[]>>, gameBoard: number[][]) {
         if(this.timeLeft.seconds == 0) {
             this.timeLeft.minutes--
             this.timeLeft.seconds = 59
@@ -710,7 +711,7 @@ export class Match {
         }
 
         if(this.shotHasBeenAttempted) {
-            this.handleShot(gameNarration, setGameNarration)
+            this.handleShot(gameNarration, setGameNarration, gameBoard)
         }
 
         if(!this.gameOver) {

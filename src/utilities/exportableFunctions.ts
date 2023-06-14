@@ -405,6 +405,10 @@ export const ranges = {
     }
 }
 
+export function getRangeText(rangeId: number) {
+    return "TODO end this"
+}
+
 export function isCloseToTheRim(teamAAtacking: boolean, ubicationX: number, ubicationY: number) {
     return (
         (
@@ -1255,7 +1259,7 @@ export function playerZone(player: Player, teamAAtacking: boolean) {
         return ranges.theOtherRim.id
 
     } else {
-        return "error"
+        return 9999999999999999999999
 
     }
 }
@@ -1305,11 +1309,9 @@ export function compareIniciatives(playerA: Player, playerB: Player, isTeamAAtac
         //If teah A is defending
         if (!isTeamAAtacking) {
             
-            if(playerZone(defender, !isTeamAAtacking?true:false) == "error") {
-                defenderIniciative = 0
-            }
+            
             //If the player is close to the rim
-            else if (playerZone(defender, !isTeamAAtacking) == ranges.closeToTheRim.id) {
+            if (playerZone(defender, !isTeamAAtacking) == ranges.closeToTheRim.id) {
                 calculationIfDefensorIsCloseToTheRim();
             }
             //If the player is in short range
@@ -1324,12 +1326,9 @@ export function compareIniciatives(playerA: Player, playerB: Player, isTeamAAtac
             else if (playerZone(defender, !isTeamAAtacking) as number <= ranges.outsideThe3PointLine.id) {
                 calculationIfDefenderIsOutsideThe3PointLine();
             }
-        
-            if(playerZone(atacker, !isTeamAAtacking) == "error") {
-                atackerInisiative = 0
-            }
+            
             //If the player is close to the rim
-            else if (playerZone(atacker, !isTeamAAtacking) == ranges.closeToTheRim.id) {
+            if (playerZone(atacker, !isTeamAAtacking) == ranges.closeToTheRim.id) {
                 calculationIfAtackerIsCloseToTheRim();
             }
             //If the player is in short range
@@ -1347,12 +1346,9 @@ export function compareIniciatives(playerA: Player, playerB: Player, isTeamAAtac
 
             //If teah B is defending
         } else if (isTeamAAtacking) {
-
-            if(playerZone(defender, isTeamAAtacking?true:false) == "error") {
-                defenderIniciative = 0
-            }
+            
             //If the player is close to the rim
-            else if (playerZone(defender, isTeamAAtacking?true:false) == ranges.closeToTheRim.id) {
+            if (playerZone(defender, isTeamAAtacking?true:false) == ranges.closeToTheRim.id) {
                 calculationIfDefensorIsCloseToTheRim();
             }
             //If the player is in short range
@@ -1367,12 +1363,9 @@ export function compareIniciatives(playerA: Player, playerB: Player, isTeamAAtac
             else if (playerZone(defender, isTeamAAtacking?true:false) as number <= ranges.outsideThe3PointLine.id) {
                 calculationIfDefenderIsOutsideThe3PointLine();
             }
-        
-            if(playerZone(atacker, !isTeamAAtacking) == "error") {
-                atackerInisiative = 0
-            }
+            
             //If the player is close to the rim
-            else if (playerZone(atacker, !isTeamAAtacking) == ranges.closeToTheRim.id) {
+            if (playerZone(atacker, !isTeamAAtacking) == ranges.closeToTheRim.id) {
                 calculationIfAtackerIsCloseToTheRim();
             }
             //If the player is in short range

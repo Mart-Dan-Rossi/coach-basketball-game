@@ -1,6 +1,6 @@
 import { QuarterTimeLeft } from "./myInterfaces";
 import { Team } from "./team";
-import {roll20SidesDice, numberEntire, playerZone, ranges, checkTilesThatWillInfluenceInTheCalculations, mathShotPointsCloseToTheRim, mathShotPointsInShortRange, mathShotPointsInMidRange, mathShotPointsCloseToThe3PointLine, mathShotPointsInLong3Range, mathShotPointsInHalfCourt, mathShotPointsBehindHalfCourt, mathShotPointsCloseToTheOtherRim, mathDefensePointsCloseToTheRim, mathDefensePointsInShortRange, mathDefensePointsInMidRange, mathDefensePointsCloseToThe3PointLine, mathDefensePointsLong3Range, mathDefensePointsHalfCourtAndFartherAway, getShotDistance, getReboundDistance as getWhereItReboundsTo, getClosestPlayers} from '../utilities/exportableFunctions';
+import {roll20SidesDice, numberEntire, playerZone, ranges, checkTilesThatWillInfluenceInTheCalculations, mathShotPointsCloseToTheRim, mathShotPointsInShortRange, mathShotPointsInMidRange, mathShotPointsCloseToThe3PointLine, mathShotPointsInLong3Range, mathShotPointsInHalfCourt, mathShotPointsBehindHalfCourt, mathShotPointsCloseToTheOtherRim, mathDefensePointsCloseToTheRim, mathDefensePointsInShortRange, mathDefensePointsInMidRange, mathDefensePointsCloseToThe3PointLine, mathDefensePointsLong3Range, mathDefensePointsHalfCourtAndFartherAway, getShotDistance, getReboundDistance as getWhereItReboundsTo, getClosestPlayers, getRangeText} from '../utilities/exportableFunctions';
 import React from "react";
 import { Player } from "./players";
 
@@ -160,10 +160,12 @@ export class Match {
         this.teamB.giveActionPointsToTeam()
         
         //Run clock
-        this.runClock()
+        this.runClock(gameNarration, setGameNarration)
     }
     
-    handlePassAction(passer: Player, receiver: Player, gameBoard: number[][]) {
+    handlePassAction(passer: Player, receiver: Player, gameBoard: number[][], gameNarration: string[], setGameNarration: React.Dispatch<React.SetStateAction<string[]>>) {
+        let newGameNarration = [...gameNarration]
+        
         //First i get what's the defending team
         let teamDefending = passer.team == this.teamA.name ? this.teamB.name : this.teamA.name;
         let totalDefensivePoints = 0;
@@ -173,6 +175,7 @@ export class Match {
         
         //The i get the pass points
         let passPoints = passer.playMaking * 5 + passer.height * 2 + roll20SidesDice() * 5;
+
         
         //The passer get a boost if he used the tripple threat beffore
         if(passer.lastAction == "Tripple threat") {
@@ -188,10 +191,7 @@ export class Match {
             let playerZoneUbication = playerZone(player, player.team == "TeamB")
             
             //Do math to calculate points on each sector
-            if(playerZoneUbication == "error") {
-                points = 0
-                
-            } else if(playerZoneUbication == ranges.closeToTheRim.id) {
+            if(playerZoneUbication == ranges.closeToTheRim.id) {
                 points = player.insideDefence * 3 + player.atleticism + player.height - 190 + roll20SidesDice() * 3
                 
             } else if(playerZoneUbication == ranges.inShortRange.id || playerZoneUbication == ranges.behindTheBoard.id) {
@@ -212,7 +212,7 @@ export class Match {
             if(defensorWithTheHighestDefensivePoints[1]! < points) {
                 defensorWithTheHighestDefensivePoints = [player, points]
             }
-            
+
             return points
             
         }
@@ -227,6 +227,8 @@ export class Match {
                     if(player.lastAction == "Overwhelming waiting") {
                         defensivePlayerPoints = defensivePlayerPoints * 1.2
                     }
+                    
+                    newGameNarration.unshift(`${player.name} (Defender) gets ${defensivePlayerPoints} defensive points`)
                     
                     totalDefensivePoints += defensivePlayerPoints
                     
@@ -256,6 +258,9 @@ export class Match {
             }
         }
 
+        newGameNarration.unshift(`The total defensive points are ${totalDefensivePoints}`)
+        newGameNarration.unshift(`${passer.name} (Passer) passer gets ${passPoints} pass points`)
+
         passer.setLastAction("pass")
         passer.restActionPoints(0.5)
         passer.setHaveBall(false)
@@ -264,26 +269,37 @@ export class Match {
         if(passPoints >= totalDefensivePoints) {
             //The receiver gets the ball
             receiver.setHaveBall(true)
+            newGameNarration.unshift(`${receiver.name} gets the pass and is the new ball handler`)
 
         //If the total defensive points are higher than pass points
         } else {
             //The player with the highest defensive points involved in this situation steal the ball
-            defensorWithTheHighestDefensivePoints[0]!.setHaveBall(true)            
+            defensorWithTheHighestDefensivePoints[0]!.setHaveBall(true)
+            newGameNarration.unshift(`${defensorWithTheHighestDefensivePoints[0]!.name} has stolen the ball!`)            
         }
+
+        setGameNarration(newGameNarration)
     }
     
     calculateIfDribblingIsSuccesfull(dribbler: Player, endingUbication: number[], gameBoard: [[]]) {
         let tilesThatWillInfluenceInCalculations = checkTilesThatWillInfluenceInTheCalculations(gameBoard, [dribbler.ubicationX!, dribbler.ubicationY!], endingUbication)
         //TODO end this function (and remember to return the correct player, not the dribbler)
         
+        let playerWithBall: Player
+
+        let dribblerPointsInAction = dribbler.getDribblerPoints()
+
+        playerWithBall = dribbler
+        
         
         //It returns a boolean saying if the dribbling is succesfull and the higher player defensive point to give him the ball in case the dribbling is not succesfull.
-        return [true, dribbler]
+        return [true, playerWithBall]
     }
     
-    handleShot() {
+    handleShot(gameNarration: string[], setGameNarration: React.Dispatch<React.SetStateAction<string[]>>) {
         //First i get the shooter
         let shooter = this.getShooter()!
+        let newGameNarration = [...gameNarration]
 
         //Then i get the ataker and defender team
         let atackingTeam = shooter.team == "TeamA" ? this.teamA : this.teamB
@@ -291,6 +307,8 @@ export class Match {
         
         //I get in what part of the field is him located to calculate with the propper math
         let shooterZoneUbication = playerZone(shooter, shooter.team == "TeamB")
+
+        newGameNarration.unshift(`${shooter.name} is attempting a shot from ${getRangeText(shooterZoneUbication)}!`)
         
         function getShooterPointsInShot() {
             let shooterPointsInShot = 0
@@ -301,10 +319,7 @@ export class Match {
             }
 
             //Do math to calculate points on each sector
-            if(shooterZoneUbication == "error") {
-                shooterPointsInShot = 0
-                
-            } else if(/*TODO isFreeThrow*/ false) {
+            if(/*TODO isFreeThrow*/ false) {
                 shooterPointsInShot = 0
                 
             } else if(shooterZoneUbication == ranges.closeToTheRim.id) {
@@ -359,10 +374,7 @@ export class Match {
                                 multiplier = 1.4
                             }
                             //Do math to calculate points on each sector
-                            if(defenderZoneUbication == "error") {
-                                defenderPoints = 0
-                                
-                            } else if(defenderZoneUbication == ranges.closeToTheRim.id) {
+                            if(defenderZoneUbication == ranges.closeToTheRim.id) {
                                 defenderPoints = mathDefensePointsCloseToTheRim(defenderInThisUbication.insideDefence, defenderInThisUbication.atleticism, defenderInThisUbication.getWeightPoints(), defenderInThisUbication.getHeightPoints(), multiplier)
                                 
                             } else if(defenderZoneUbication == ranges.inShortRange.id || defenderZoneUbication == ranges.behindTheBoard.id) {
@@ -449,8 +461,12 @@ export class Match {
             }
 
             let dShooterPointsVsMaxPossiblePointsPercentage = (shooterPointsInShot * 100) / maxShooterPoints
-            let dDefendersPointsVsSinlgePlayerMaxPossiblePointsPercentage = (allDefendersPointsInShotSumatory * 100) / maxSingleDefenderPoints
+            newGameNarration.unshift(`${shooter.name} (Shooter) gets ${dShooterPointsVsMaxPossiblePointsPercentage} points in the shot`)
 
+            let dDefendersPointsVsSinlgePlayerMaxPossiblePointsPercentage = allDefendersPointsInShotSumatory == 0 ? 0 : (allDefendersPointsInShotSumatory * 100) / maxSingleDefenderPoints
+            allDefendersPointsInShotSumatory == 0 ? newGameNarration.unshift(`Defenders can do nothing against the shooter`) : newGameNarration.unshift(`The defenders get ${dDefendersPointsVsSinlgePlayerMaxPossiblePointsPercentage} defensive points in total`)
+            
+            
             let pointsDif = dShooterPointsVsMaxPossiblePointsPercentage - dDefendersPointsVsSinlgePlayerMaxPossiblePointsPercentage
 
             
@@ -495,6 +511,7 @@ export class Match {
         
         if(isItIn) {
             if(/*TODO isFreeThrow*/ false) {
+                newGameNarration.unshift(`The ball goes in! The team ${atackingTeam.name} add 1 point to the scoreboard`)
                 pointsToAdd = 1
             } else if(
                 shooterZoneUbication == ranges.closeToTheRim.id ||
@@ -502,19 +519,25 @@ export class Match {
                 shooterZoneUbication == ranges.behindTheBoard.id ||
                 shooterZoneUbication == ranges.inMidRange.id
                 ) {
+                    newGameNarration.unshift(`The ball goes in! The team ${atackingTeam.name} add 2 points to the scoreboard`)
                     pointsToAdd = 2
             } else {
+                newGameNarration.unshift(`The ball goes in! The team ${atackingTeam.name} add 3 points to the scoreboard`)
                 pointsToAdd = 3
             }
 
             //After that i handle who get's the ball after the shot
             newPlayerWithBall = this.getClosestDefenderToTheRim(defendingTeam)
             newPlayerWithBall.movePlayerToOwnRim()
+            newPlayerWithBall.setHaveBall(true)
+            newGameNarration.unshift(`${newPlayerWithBall.name} get the ball to start theyr posetion`)
+
         } else {
             //If it doesn't goes in handle who get's the rebound
             newPlayerWithBall = this.getRebounder(shooter)
             newPlayerWithBall.statsAddRebound(atackingTeam)
             newPlayerWithBall.setLastAction(newPlayerWithBall.team == atackingTeam.name ? "get O reb" : "get D reb")
+            newGameNarration.unshift(`The shot is off ${newPlayerWithBall.team == atackingTeam.name ? "but" : "and"} ${newPlayerWithBall.name} gets the rebound!`)
         }
         
         //Then i handle the players status and stats
@@ -534,6 +557,8 @@ export class Match {
                 defendingTeam.statsAddRebound(atackingTeam)
             }
         }
+
+        setGameNarration(newGameNarration)
 
         this.setShotHasBeenAttempted(false)
     }
@@ -589,7 +614,7 @@ export class Match {
         return rebounder!
     }
     
-    handleSelectedPlayersStatus(playerSillHaveTurnLeft: boolean) {
+    handleSelectedPlayersStatus(playerSillHaveTurnLeft: boolean, gameNarration: string[], setGameNarration: React.Dispatch<React.SetStateAction<string[]>>) {
         
         let activePlayer = this.getActivePlayer()
 
@@ -635,7 +660,7 @@ export class Match {
             }
             
         } else {
-            this.runClock()
+            this.runClock(gameNarration, setGameNarration)
 
             if(this.teamA.teamHaveTheBall()) {
                 this.setTeamTurn("TeamA")
@@ -662,7 +687,7 @@ export class Match {
         activePlayer.setShotAttempt(true)
     }
     
-    runClock() {
+    runClock(gameNarration: string[], setGameNarration: React.Dispatch<React.SetStateAction<string[]>>) {
         if(this.timeLeft.seconds == 0) {
             this.timeLeft.minutes--
             this.timeLeft.seconds = 59
@@ -685,7 +710,7 @@ export class Match {
         }
 
         if(this.shotHasBeenAttempted) {
-            this.handleShot()
+            this.handleShot(gameNarration, setGameNarration)
         }
 
         if(!this.gameOver) {

@@ -13,6 +13,7 @@ interface Props {
 function MatchActionsContainer( { match, setMatchState } : Props) {
   const {
     gameNarration,
+    setGameNarration,
     showMoveButton,
     showStealAttemptButton,
     showInterceptPassAttemptButton,
@@ -178,7 +179,7 @@ function MatchActionsContainer( { match, setMatchState } : Props) {
 
         setEndTurnButtonSelected(false)
 
-        matchCopy.handleSelectedPlayersStatus(false)
+        matchCopy.handleSelectedPlayersStatus(false, gameNarration, setGameNarration)
 
       },
     }

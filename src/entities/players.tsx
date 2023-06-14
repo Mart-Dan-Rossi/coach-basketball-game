@@ -1,4 +1,4 @@
-import {getMaxStatPerPosition, getMinStatPerPosition, playerPositionDetection, roll20SidesDice} from '../utilities/exportableFunctions';
+import {getMaxStatPerPosition, getMinStatPerPosition, playerPositionDetection, playerZone, ranges, roll20SidesDice} from '../utilities/exportableFunctions';
 import { Team } from './team';
 export class Player {
 
@@ -54,9 +54,6 @@ export class Player {
         fouls: number,
     }
     
-
-
-
 
     constructor(name: string, team: string, position: string, height: number, weight: number, atleticism: number, perimetrerDefence: number, insideDefence: number, rebounding: number, perimetrerScoring: number, insideScoring: number, playMaking: number, ubicationX: number, ubicationY: number) {
         //Info
@@ -320,6 +317,22 @@ export class Player {
 
     resetActionPoints() {
         this.actionPoints = 0
+    }
+
+    getDribblerPoints() {
+        let dribblerPointsInAction: number
+        let teamAAtacking = this.team == "TeamA" ? true : false
+        let dribblerZone = playerZone(this, teamAAtacking)
+
+        let multiplier = this.lastAction == "triple threat" ? 1.5 : 1
+        if(dribblerZone <= 2) {
+            dribblerPointsInAction = (this.playMaking * 6 + this.atleticism * 2 + this.insideScoring * 2) * multiplier
+        } else {
+            dribblerPointsInAction = (this.playMaking * 6 + this.atleticism * 2 + this.perimetrerScoring * 2) * multiplier
+            
+        }
+
+        return dribblerPointsInAction
     }
 
     //-----------------------------------END PLAYER ACTIONS----------------------------------------------------------------------------------------------------------

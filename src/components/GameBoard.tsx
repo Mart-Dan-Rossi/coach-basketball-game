@@ -159,7 +159,6 @@ function GameBoard( { match, setMatchState } : Props) {
     }
 
     function addClassIfNeeded(teamNumber: number, col: number, row: number) {
-        //TODO add cases where choaches have to pick a tile to do an action
         
         let thisUbication = [col, row]
         
@@ -316,7 +315,6 @@ function GameBoard( { match, setMatchState } : Props) {
     }
 
     function clickTileHandler(teamNumber: number, col: number, row: number) {
-        //TODO add cases where choaches have to pick a tile to do an action
         if(actionConfirmed == "move" || actionConfirmed == "dribbling") {
             return ()=> {
                 let thisUbication = [col, row]

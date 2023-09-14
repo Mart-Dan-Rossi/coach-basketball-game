@@ -247,32 +247,18 @@ export function getMaxStatPerPosition(thisStat: string, playerPosition: string) 
 }
 
 export function getValue(key: string, player: PlayerEditableInfo) {
-    if(key == "height") {
-        return player.height
-
-    } else if(key == "weight") {
-        return player.weight
-        
-    } else if(key == "atleticism") {
-        return player.atleticism
-
-    } else if(key == "perimeterDefence") {
-        return player.perimeterDefence
-
-    } else if(key == "insideDefence") {
-        return player.insideDefence
-
-    } else if(key == "rebounding") {
-        return player.rebounding
-
-    } else if(key == "perimeterScoring") {
-        return player.perimeterScoring
-
-    } else if(key == "insideScoring") {
-        return player.insideScoring
-
-    } else if(key == "playMaking") {
-        return player.playMaking
+    if(
+        key == "height"
+        || key == "weight"
+        || key == "atleticism"
+        || key == "perimeterDefence"
+        || key == "insideDefence"
+        || key == "rebounding"
+        || key == "perimeterScoring"
+        || key == "insideScoring"
+        || key == "playMaking"
+    ) {
+        return player[key]
     }
 }
 
@@ -340,40 +326,18 @@ export function calculatePlayerOverallRating(pointsUsedOnPlayer: number) {
 
 export function setPointsUsedOnThisSkill(statType: string, previousStats: PlayerStats, setter: React.Dispatch<React.SetStateAction<PlayerStats>>, pointsUsedOnThisSkill: number) {
     let previousStatsCopy = previousStats
-    if(statType == "height") {
-        previousStatsCopy.height = pointsUsedOnThisSkill
-        setter(previousStatsCopy)
-
-    } else if(statType == "weight") {
-        previousStatsCopy.weight = pointsUsedOnThisSkill
-        setter(previousStatsCopy)
-
-    } else if(statType == "atleticism") {
-        previousStatsCopy.atleticism = pointsUsedOnThisSkill
-        setter(previousStatsCopy)
-
-    } else if(statType == "perimeterDefence") {
-        previousStatsCopy.perimeterDefence = pointsUsedOnThisSkill
-        setter(previousStatsCopy)
-
-    } else if(statType == "insideDefence") {
-        previousStatsCopy.insideDefence = pointsUsedOnThisSkill
-        setter(previousStatsCopy)
-
-    } else if(statType == "rebounding") {
-        previousStatsCopy.rebounding = pointsUsedOnThisSkill
-        setter(previousStatsCopy)
-
-    } else if(statType == "perimeterScoring") {
-        previousStatsCopy.perimeterScoring = pointsUsedOnThisSkill
-        setter(previousStatsCopy)
-
-    } else if(statType == "insideScoring") {
-        previousStatsCopy.insideScoring = pointsUsedOnThisSkill
-        setter(previousStatsCopy)
-
-    } else if(statType == "playMaking") {
-        previousStatsCopy.playMaking = pointsUsedOnThisSkill
+    if(
+        statType == "height"
+        || statType == "weight"
+        || statType == "atleticism"
+        || statType == "perimeterDefence"
+        || statType == "insideDefence"
+        || statType == "rebounding"
+        || statType == "perimeterScoring"
+        || statType == "insideScoring"
+        || statType == "playMaking"
+    ) {
+        previousStatsCopy[statType] = pointsUsedOnThisSkill
         setter(previousStatsCopy)
     }
 }
@@ -1283,6 +1247,7 @@ export function playerZone(player: Player, teamAAtacking: boolean) {
         return ranges.theOtherRim.id
 
     } else {
+        //Shouldnt get to this point
         return 9999999999999999999999
 
     }

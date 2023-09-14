@@ -1,7 +1,7 @@
 import { GameContext } from "./GameContext"
 import React from 'react'
 import {useState} from 'react';
-import {getMinStatPerPosition} from "../utilities/exportableFunctions"
+import {getInitialPlayerStatsOnCreation} from "../utilities/exportableFunctions"
 
 interface props {
     children: JSX.Element | JSX.Element[]
@@ -9,75 +9,15 @@ interface props {
 
 export const GameContextProvider = ({ children }: props) => {
 
-    const [playerA1Stats, setPlayerA1Stats] = useState({
-        name: "",
-        position: "1",
-        height: getMinStatPerPosition("height", "1"),
-        weight: getMinStatPerPosition("weight", "1"),
-        atleticism: getMinStatPerPosition("atleticism", "1"),
-        perimeterDefence: getMinStatPerPosition("perimeterDefence", "1"),
-        insideDefence: getMinStatPerPosition("insideDefence", "1"),
-        rebounding: getMinStatPerPosition("rebounding", "1"),
-        perimeterScoring: getMinStatPerPosition("perimeterScoring", "1"),
-        insideScoring: getMinStatPerPosition("insideScoring", "1"),
-        playMaking: getMinStatPerPosition("playMaking", "1")
-    })
+    const [playerA1Stats, setPlayerA1Stats] = useState(getInitialPlayerStatsOnCreation("1"))
 
-    const [playerA2Stats, setPlayerA2Stats] = useState({
-        name: "",
-        position: "2",
-        height: getMinStatPerPosition("height", "2"),
-        weight: getMinStatPerPosition("weight", "2"),
-        atleticism: getMinStatPerPosition("atleticism", "2"),
-        perimeterDefence: getMinStatPerPosition("perimeterDefence", "2"),
-        insideDefence: getMinStatPerPosition("insideDefence", "2"),
-        rebounding: getMinStatPerPosition("rebounding", "2"),
-        perimeterScoring: getMinStatPerPosition("perimeterScoring", "2"),
-        insideScoring: getMinStatPerPosition("insideScoring", "2"),
-        playMaking: getMinStatPerPosition("playMaking", "2")
-    })   
+    const [playerA2Stats, setPlayerA2Stats] = useState(getInitialPlayerStatsOnCreation("2"))   
 
-    const [playerA3Stats, setPlayerA3Stats] = useState({
-        name: "",
-        position: "3",
-        height: getMinStatPerPosition("height", "3"),
-        weight: getMinStatPerPosition("weight", "3"),
-        atleticism: getMinStatPerPosition("atleticism", "3"),
-        perimeterDefence: getMinStatPerPosition("perimeterDefence", "3"),
-        insideDefence: getMinStatPerPosition("insideDefence", "3"),
-        rebounding: getMinStatPerPosition("rebounding", "3"),
-        perimeterScoring: getMinStatPerPosition("perimeterScoring", "3"),
-        insideScoring: getMinStatPerPosition("insideScoring", "3"),
-        playMaking: getMinStatPerPosition("playMaking", "3")
-    })    
+    const [playerA3Stats, setPlayerA3Stats] = useState(getInitialPlayerStatsOnCreation("3"))    
 
-    const [playerA4Stats, setPlayerA4Stats] = useState({
-        name: "",
-        position: "4",
-        height: getMinStatPerPosition("height", "4"),
-        weight: getMinStatPerPosition("weight", "4"),
-        atleticism: getMinStatPerPosition("atleticism", "4"),
-        perimeterDefence: getMinStatPerPosition("perimeterDefence", "4"),
-        insideDefence: getMinStatPerPosition("insideDefence", "4"),
-        rebounding: getMinStatPerPosition("rebounding", "4"),
-        perimeterScoring: getMinStatPerPosition("perimeterScoring", "4"),
-        insideScoring: getMinStatPerPosition("insideScoring", "4"),
-        playMaking: getMinStatPerPosition("playMaking", "4")
-    })
+    const [playerA4Stats, setPlayerA4Stats] = useState(getInitialPlayerStatsOnCreation("4"))
 
-    const [playerA5Stats, setPlayerA5Stats] = useState({
-        name: "",
-        position: "5",
-        height: getMinStatPerPosition("height", "5"),
-        weight: getMinStatPerPosition("weight", "5"),
-        atleticism: getMinStatPerPosition("atleticism", "5"),
-        perimeterDefence: getMinStatPerPosition("perimeterDefence", "5"),
-        insideDefence: getMinStatPerPosition("insideDefence", "5"),
-        rebounding: getMinStatPerPosition("rebounding", "5"),
-        perimeterScoring: getMinStatPerPosition("perimeterScoring", "5"),
-        insideScoring: getMinStatPerPosition("insideScoring", "5"),
-        playMaking: getMinStatPerPosition("playMaking", "5")
-    }) 
+    const [playerA5Stats, setPlayerA5Stats] = useState(getInitialPlayerStatsOnCreation("5")) 
 
     const [teamAStats, setTeamAStats] = useState({
         playerA1Stats,
@@ -87,75 +27,15 @@ export const GameContextProvider = ({ children }: props) => {
         playerA5Stats
     })
 
-    const [playerB1Stats, setPlayerB1Stats] = useState({
-        name: "",
-        position: "1",
-        height: getMinStatPerPosition("height", "1"),
-        weight: getMinStatPerPosition("weight", "1"),
-        atleticism: getMinStatPerPosition("atleticism", "1"),
-        perimeterDefence: getMinStatPerPosition("perimeterDefence", "1"),
-        insideDefence: getMinStatPerPosition("insideDefence", "1"),
-        rebounding: getMinStatPerPosition("rebounding", "1"),
-        perimeterScoring: getMinStatPerPosition("perimeterScoring", "1"),
-        insideScoring: getMinStatPerPosition("insideScoring", "1"),
-        playMaking: getMinStatPerPosition("playMaking", "1")
-    })
+    const [playerB1Stats, setPlayerB1Stats] = useState(getInitialPlayerStatsOnCreation("1"))
 
-    const [playerB2Stats, setPlayerB2Stats] = useState({
-        name: "",
-        position: "2",
-        height: getMinStatPerPosition("height", "2"),
-        weight: getMinStatPerPosition("weight", "2"),
-        atleticism: getMinStatPerPosition("atleticism", "2"),
-        perimeterDefence: getMinStatPerPosition("perimeterDefence", "2"),
-        insideDefence: getMinStatPerPosition("insideDefence", "2"),
-        rebounding: getMinStatPerPosition("rebounding", "2"),
-        perimeterScoring: getMinStatPerPosition("perimeterScoring", "2"),
-        insideScoring: getMinStatPerPosition("insideScoring", "2"),
-        playMaking: getMinStatPerPosition("playMaking", "2")
-    })   
+    const [playerB2Stats, setPlayerB2Stats] = useState(getInitialPlayerStatsOnCreation("2"))   
 
-    const [playerB3Stats, setPlayerB3Stats] = useState({
-        name: "",
-        position: "3",
-        height: getMinStatPerPosition("height", "3"),
-        weight: getMinStatPerPosition("weight", "3"),
-        atleticism: getMinStatPerPosition("atleticism", "3"),
-        perimeterDefence: getMinStatPerPosition("perimeterDefence", "3"),
-        insideDefence: getMinStatPerPosition("insideDefence", "3"),
-        rebounding: getMinStatPerPosition("rebounding", "3"),
-        perimeterScoring: getMinStatPerPosition("perimeterScoring", "3"),
-        insideScoring: getMinStatPerPosition("insideScoring", "3"),
-        playMaking: getMinStatPerPosition("playMaking", "3")
-    })    
+    const [playerB3Stats, setPlayerB3Stats] = useState(getInitialPlayerStatsOnCreation("3"))    
 
-    const [playerB4Stats, setPlayerB4Stats] = useState({
-        name: "",
-        position: "4",
-        height: getMinStatPerPosition("height", "4"),
-        weight: getMinStatPerPosition("weight", "4"),
-        atleticism: getMinStatPerPosition("atleticism", "4"),
-        perimeterDefence: getMinStatPerPosition("perimeterDefence", "4"),
-        insideDefence: getMinStatPerPosition("insideDefence", "4"),
-        rebounding: getMinStatPerPosition("rebounding", "4"),
-        perimeterScoring: getMinStatPerPosition("perimeterScoring", "4"),
-        insideScoring: getMinStatPerPosition("insideScoring", "4"),
-        playMaking: getMinStatPerPosition("playMaking", "4")
-    })
+    const [playerB4Stats, setPlayerB4Stats] = useState(getInitialPlayerStatsOnCreation("4"))
 
-    const [playerB5Stats, setPlayerB5Stats] = useState({
-        name: "",
-        position: "5",
-        height: getMinStatPerPosition("height", "5"),
-        weight: getMinStatPerPosition("weight", "5"),
-        atleticism: getMinStatPerPosition("atleticism", "5"),
-        perimeterDefence: getMinStatPerPosition("perimeterDefence", "5"),
-        insideDefence: getMinStatPerPosition("insideDefence", "5"),
-        rebounding: getMinStatPerPosition("rebounding", "5"),
-        perimeterScoring: getMinStatPerPosition("perimeterScoring", "5"),
-        insideScoring: getMinStatPerPosition("insideScoring", "5"),
-        playMaking: getMinStatPerPosition("playMaking", "5")
-    }) 
+    const [playerB5Stats, setPlayerB5Stats] = useState(getInitialPlayerStatsOnCreation("5")) 
 
     const [teamBStats, setTeamBStats] = useState({
         playerB1Stats,
@@ -167,35 +47,37 @@ export const GameContextProvider = ({ children }: props) => {
 
     const [teamsCreated, setTeamsCreated] = useState(false)
 
+    const initialPointsUsedInStats = {height: 0, weight: 0, atleticism: 0, perimeterDefence: 0, insideDefence: 0, rebounding: 0, perimeterScoring: 0, insideScoring: 0, playMaking: 0}
+
     const [pointsUsedInPlayerA1, setPointsUsedInPlayerA1] = useState(0)
-    const [pointsUsedInStatsPlayerA1, setPointsUsedInStatsPlayerA1] = useState({height: 0, weight: 0, atleticism: 0, perDef: 0, insDef: 0, reb: 0, perScor: 0, insScor: 0, plmkn: 0})
+    const [pointsUsedInStatsPlayerA1, setPointsUsedInStatsPlayerA1] = useState(initialPointsUsedInStats)
 
     const [pointsUsedInPlayerA2, setPointsUsedInPlayerA2] = useState(0)
-    const [pointsUsedInStatsPlayerA2, setPointsUsedInStatsPlayerA2] = useState({height: 0, weight: 0, atleticism: 0, perDef: 0, insDef: 0, reb: 0, perScor: 0, insScor: 0, plmkn: 0})
+    const [pointsUsedInStatsPlayerA2, setPointsUsedInStatsPlayerA2] = useState(initialPointsUsedInStats)
 
     const [pointsUsedInPlayerA3, setPointsUsedInPlayerA3] = useState(0)
-    const [pointsUsedInStatsPlayerA3, setPointsUsedInStatsPlayerA3] = useState({height: 0, weight: 0, atleticism: 0, perDef: 0, insDef: 0, reb: 0, perScor: 0, insScor: 0, plmkn: 0})
+    const [pointsUsedInStatsPlayerA3, setPointsUsedInStatsPlayerA3] = useState(initialPointsUsedInStats)
 
     const [pointsUsedInPlayerA4, setPointsUsedInPlayerA4] = useState(0)
-    const [pointsUsedInStatsPlayerA4, setPointsUsedInStatsPlayerA4] = useState({height: 0, weight: 0, atleticism: 0, perDef: 0, insDef: 0, reb: 0, perScor: 0, insScor: 0, plmkn: 0})
+    const [pointsUsedInStatsPlayerA4, setPointsUsedInStatsPlayerA4] = useState(initialPointsUsedInStats)
 
     const [pointsUsedInPlayerA5, setPointsUsedInPlayerA5] = useState(0)
-    const [pointsUsedInStatsPlayerA5, setPointsUsedInStatsPlayerA5] = useState({height: 0, weight: 0, atleticism: 0, perDef: 0, insDef: 0, reb: 0, perScor: 0, insScor: 0, plmkn: 0})
+    const [pointsUsedInStatsPlayerA5, setPointsUsedInStatsPlayerA5] = useState(initialPointsUsedInStats)
 
     const [pointsUsedInPlayerB1, setPointsUsedInPlayerB1] = useState(0)
-    const [pointsUsedInStatsPlayerB1, setPointsUsedInStatsPlayerB1] = useState({height: 0, weight: 0, atleticism: 0, perDef: 0, insDef: 0, reb: 0, perScor: 0, insScor: 0, plmkn: 0})
+    const [pointsUsedInStatsPlayerB1, setPointsUsedInStatsPlayerB1] = useState(initialPointsUsedInStats)
 
     const [pointsUsedInPlayerB2, setPointsUsedInPlayerB2] = useState(0)
-    const [pointsUsedInStatsPlayerB2, setPointsUsedInStatsPlayerB2] = useState({height: 0, weight: 0, atleticism: 0, perDef: 0, insDef: 0, reb: 0, perScor: 0, insScor: 0, plmkn: 0})
+    const [pointsUsedInStatsPlayerB2, setPointsUsedInStatsPlayerB2] = useState(initialPointsUsedInStats)
 
     const [pointsUsedInPlayerB3, setPointsUsedInPlayerB3] = useState(0)
-    const [pointsUsedInStatsPlayerB3, setPointsUsedInStatsPlayerB3] = useState({height: 0, weight: 0, atleticism: 0, perDef: 0, insDef: 0, reb: 0, perScor: 0, insScor: 0, plmkn: 0})
+    const [pointsUsedInStatsPlayerB3, setPointsUsedInStatsPlayerB3] = useState(initialPointsUsedInStats)
 
     const [pointsUsedInPlayerB4, setPointsUsedInPlayerB4] = useState(0)
-    const [pointsUsedInStatsPlayerB4, setPointsUsedInStatsPlayerB4] = useState({height: 0, weight: 0, atleticism: 0, perDef: 0, insDef: 0, reb: 0, perScor: 0, insScor: 0, plmkn: 0})
+    const [pointsUsedInStatsPlayerB4, setPointsUsedInStatsPlayerB4] = useState(initialPointsUsedInStats)
 
     const [pointsUsedInPlayerB5, setPointsUsedInPlayerB5] = useState(0)
-    const [pointsUsedInStatsPlayerB5, setPointsUsedInStatsPlayerB5] = useState({height: 0, weight: 0, atleticism: 0, perDef: 0, insDef: 0, reb: 0, perScor: 0, insScor: 0, plmkn: 0})
+    const [pointsUsedInStatsPlayerB5, setPointsUsedInStatsPlayerB5] = useState(initialPointsUsedInStats)
 
     const [gameNarration, setGameNarration] = useState(["Game narration."])
 

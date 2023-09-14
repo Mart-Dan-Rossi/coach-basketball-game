@@ -116,6 +116,22 @@ export function getMinStatPerPosition(thisStat: string, playerPosition: string) 
     }
 }
 
+export function getInitialPlayerStatsOnCreation(positionNumber: string) {
+    return {
+        name: "",
+        position: positionNumber,
+        height: getMinStatPerPosition("height", positionNumber),
+        weight: getMinStatPerPosition("weight", positionNumber),
+        atleticism: getMinStatPerPosition("atleticism", positionNumber),
+        perimeterDefence: getMinStatPerPosition("perimeterDefence", positionNumber),
+        insideDefence: getMinStatPerPosition("insideDefence", positionNumber),
+        rebounding: getMinStatPerPosition("rebounding", positionNumber),
+        perimeterScoring: getMinStatPerPosition("perimeterScoring", positionNumber),
+        insideScoring: getMinStatPerPosition("insideScoring", positionNumber),
+        playMaking: getMinStatPerPosition("playMaking", positionNumber)
+    }
+}
+
 export function getMaxStatPerPosition(thisStat: string, playerPosition: string) {
     if(thisStat == "height") {
         if(playerPosition == "1") {
@@ -337,27 +353,27 @@ export function setPointsUsedOnThisSkill(statType: string, previousStats: Player
         setter(previousStatsCopy)
 
     } else if(statType == "perimeterDefence") {
-        previousStatsCopy.perDef = pointsUsedOnThisSkill
+        previousStatsCopy.perimeterDefence = pointsUsedOnThisSkill
         setter(previousStatsCopy)
 
     } else if(statType == "insideDefence") {
-        previousStatsCopy.insDef = pointsUsedOnThisSkill
+        previousStatsCopy.insideDefence = pointsUsedOnThisSkill
         setter(previousStatsCopy)
 
     } else if(statType == "rebounding") {
-        previousStatsCopy.reb = pointsUsedOnThisSkill
+        previousStatsCopy.rebounding = pointsUsedOnThisSkill
         setter(previousStatsCopy)
 
     } else if(statType == "perimeterScoring") {
-        previousStatsCopy.perScor = pointsUsedOnThisSkill
+        previousStatsCopy.perimeterScoring = pointsUsedOnThisSkill
         setter(previousStatsCopy)
 
     } else if(statType == "insideScoring") {
-        previousStatsCopy.insScor = pointsUsedOnThisSkill
+        previousStatsCopy.insideScoring = pointsUsedOnThisSkill
         setter(previousStatsCopy)
 
     } else if(statType == "playMaking") {
-        previousStatsCopy.plmkn = pointsUsedOnThisSkill
+        previousStatsCopy.playMaking = pointsUsedOnThisSkill
         setter(previousStatsCopy)
     }
 }
@@ -1563,3 +1579,21 @@ export function getClosestPlayers(gameBoard: number[][], allPlayers: Player[], t
     return closestPlayers;
       
 }
+
+export const initialGameBoard = [
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+]

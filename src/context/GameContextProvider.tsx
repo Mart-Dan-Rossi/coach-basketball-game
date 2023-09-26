@@ -2,6 +2,7 @@ import { GameContext } from "./GameContext"
 import React from 'react'
 import {useState} from 'react';
 import {getInitialPlayerStatsOnCreation} from "../utilities/exportableFunctions"
+import { initialGameBoard } from '../utilities/exportableFunctions'
 
 interface props {
     children: JSX.Element | JSX.Element[]
@@ -115,6 +116,8 @@ export const GameContextProvider = ({ children }: props) => {
     const [playerClikedTeamA, setPlayerClikedTeamA] = useState([0, 0])
     const [playerClikedTeamB, setPlayerClikedTeamB] = useState([0, 0])
 
+    const [gameBoard, setGameBoard] = useState(initialGameBoard)
+
     return (
         <GameContext.Provider 
         value={
@@ -151,6 +154,7 @@ export const GameContextProvider = ({ children }: props) => {
 
                 playerClikedTeamA, setPlayerClikedTeamA,
                 playerClikedTeamB, setPlayerClikedTeamB,
+                gameBoard, setGameBoard,
             }}>
             { children }
         </GameContext.Provider>

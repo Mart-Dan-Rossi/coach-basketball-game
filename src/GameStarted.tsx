@@ -20,7 +20,7 @@ function Main() {
         </div>
       </Link>
       {
-        !teamsCreated ?
+        teamsCreated ?
           <CustomizeGame />
         :
           <GameContainer/>

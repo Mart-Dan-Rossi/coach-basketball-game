@@ -7,7 +7,6 @@ import { GameContext } from '../context/GameContext';
 import { compareIniciatives } from '../utilities/exportableFunctions';
 import { Player } from '../entities/players';
 import { Match } from '../entities/match';
-import { initialGameBoard } from '../utilities/exportableFunctions'
 
 
 interface Props {
@@ -18,8 +17,6 @@ interface Props {
 function GameBoard( { match, setMatchState } : Props) {
     const teamA = match.teamA
     const teamB = match.teamB
-
-    let gameBoard = initialGameBoard;
 
     const {
         gameNarration,
@@ -49,18 +46,14 @@ function GameBoard( { match, setMatchState } : Props) {
         setPlayerClikedTeamA,
         playerClikedTeamB,
         setPlayerClikedTeamB,
+        gameBoard,
+        setGameBoard,
     } = useContext(GameContext)
 
     useEffect(() => {
-    }, [gameBoard, playerClikedTeamA, playerClikedTeamB, match])
+    }, [playerClikedTeamA, playerClikedTeamB, match])
 
-    teamA.players.forEach(player => {
-        gameBoard[player.ubicationY!-1][player.ubicationX!-1] = 1
-    });
-    
-    teamB.players.forEach(player => {
-        gameBoard[player.ubicationY!-1][player.ubicationX!-1] = 2
-    });    
+
 
     let teamAAnySelected = teamA.isAnyPlayerSelected()
     let teamBAnySelected = teamB.isAnyPlayerSelected()

@@ -1,5 +1,4 @@
 import React, { createContext } from "react"
-import { Callback } from "webpack-cli";
 import {PlayerEditableInfo, TeamAStats, TeamBStats, PlayerStats} from '../entities/myInterfaces';
 
 export interface GameContextProps {
@@ -122,6 +121,9 @@ export interface GameContextProps {
     setPlayerClikedTeamA: React.Dispatch<React.SetStateAction<number[]>>,
     playerClikedTeamB: number[],
     setPlayerClikedTeamB: React.Dispatch<React.SetStateAction<number[]>>,
+
+    gameBoard: number[][],
+    setGameBoard: React.Dispatch<React.SetStateAction<number[][]>>
 
 }
 

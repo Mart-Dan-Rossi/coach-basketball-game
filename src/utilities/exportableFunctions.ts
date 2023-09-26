@@ -1263,117 +1263,117 @@ export function compareIniciatives(playerA: Player, playerB: Player, isTeamAAtac
     let compareIniciatives = 0;
     
     function calculationIfDefensorIsCloseToTheRim() {
-        defenderIniciative = roll20SidesDice() * 2 + ((defender.height - 165)/0.65) + ((defender.weight - 65)/0.55) + defender.atleticism * 1.2 + defender.insideDefence * 2;
+        return roll20SidesDice() * 2 + ((defender.height - 165)/0.65) + ((defender.weight - 65)/0.55) + defender.atleticism * 1.2 + defender.insideDefence * 2;
     }
 
     function calculationIfDefenderIsInShortRange() {
-        defenderIniciative = roll20SidesDice() * 2 + ((defender.height - 165)/0.65) * 0.75 + ((defender.weight - 65)/0.55) * 0.75 + defender.atleticism * 1.2 + defender.insideDefence * 2 * 0.75 + defender.perimetrerDefence * 2 * 0.25;
+        return roll20SidesDice() * 2 + ((defender.height - 165)/0.65) * 0.75 + ((defender.weight - 65)/0.55) * 0.75 + defender.atleticism * 1.2 + defender.insideDefence * 2 * 0.75 + defender.perimetrerDefence * 2 * 0.25;
     }
 
     function calculationIfDefenderIsInMidRange() {
-        defenderIniciative = roll20SidesDice() * 2 + ((defender.height - 165)/0.65) * 0.25 + ((defender.weight - 65)/0.55) * 0.25 + defender.atleticism * 1.2 + defender.insideDefence * 2 * 0.25 + defender.perimetrerDefence * 2 * 0.75;
+        return roll20SidesDice() * 2 + ((defender.height - 165)/0.65) * 0.25 + ((defender.weight - 65)/0.55) * 0.25 + defender.atleticism * 1.2 + defender.insideDefence * 2 * 0.25 + defender.perimetrerDefence * 2 * 0.75;
     }
 
     function calculationIfDefenderIsOutsideThe3PointLine() {
-        defenderIniciative = roll20SidesDice() * 2 + defender.atleticism * 1.2 + defender.perimetrerDefence * 2 * 2;
+        return roll20SidesDice() * 2 + defender.atleticism * 1.2 + defender.perimetrerDefence * 2 * 2;
     }
 
     function calculationIfAtackerIsCloseToTheRim() {
-        atackerInisiative = roll20SidesDice() * 2 + ((atacker.height - 165)/0.65) + ((atacker.weight - 65)/0.55) + atacker.atleticism * 1.2 + atacker.insideScoring + atacker.playMaking;
+        return roll20SidesDice() * 2 + ((atacker.height - 165)/0.65) + ((atacker.weight - 65)/0.55) + atacker.atleticism * 1.2 + atacker.insideScoring + atacker.playMaking;
     }
 
     function calculationIfAtackerIsInShortRange() {
-        atackerInisiative = roll20SidesDice() * 2 + ((atacker.height - 165)/0.65) * 0.75 + ((atacker.weight - 65)/0.55) * 0.75 + atacker.atleticism * 1.2 + atacker.insideScoring * 0.75 + atacker.perimetrerScoring * 0.25 + atacker.playMaking;
+        return roll20SidesDice() * 2 + ((atacker.height - 165)/0.65) * 0.75 + ((atacker.weight - 65)/0.55) * 0.75 + atacker.atleticism * 1.2 + atacker.insideScoring * 0.75 + atacker.perimetrerScoring * 0.25 + atacker.playMaking;
     }
 
     function calculationIfAtackerIsInMidRange() {
-        atackerInisiative = roll20SidesDice() * 2 + ((atacker.height - 165)/0.65) * 0.25 + ((atacker.weight - 65)/0.55) * 0.25 + atacker.atleticism * 1.2 + atacker.insideScoring * 0.25 + atacker.perimetrerScoring * 0.75 + atacker.playMaking;
+        return roll20SidesDice() * 2 + ((atacker.height - 165)/0.65) * 0.25 + ((atacker.weight - 65)/0.55) * 0.25 + atacker.atleticism * 1.2 + atacker.insideScoring * 0.25 + atacker.perimetrerScoring * 0.75 + atacker.playMaking;
     }
 
     function calculationIfAtackerIsOutsideThe3PointLine() {
-        atackerInisiative = roll20SidesDice() * 2 + atacker.atleticism * 1.2 + atacker.perimetrerScoring * 2 * 2 + atacker.playMaking;
+        return roll20SidesDice() * 2 + atacker.atleticism * 1.2 + atacker.perimetrerScoring * 2 * 2 + atacker.playMaking;
     }
 
     while (compareIniciatives ==  0) {
-        //If teah A is defending
-        if (!isTeamAAtacking) {
-            
+        if (!isTeamAAtacking) {            
             
             //If the player is close to the rim
             if (playerZone(defender, !isTeamAAtacking) == ranges.closeToTheRim.id) {
-                calculationIfDefensorIsCloseToTheRim();
+                defenderIniciative = calculationIfDefensorIsCloseToTheRim();
             }
             //If the player is in short range
             else if (playerZone(defender, !isTeamAAtacking) == ranges.inShortRange.id || playerZone(defender, !isTeamAAtacking) == ranges.behindTheBoard.id) {
-                calculationIfDefenderIsInShortRange();
+                defenderIniciative = calculationIfDefenderIsInShortRange();
             }
             //If the player is in mid range
             else if (playerZone(defender, !isTeamAAtacking) == ranges.inMidRange.id) {
-                calculationIfDefenderIsInMidRange();
+                defenderIniciative = calculationIfDefenderIsInMidRange();
             }
             //If he is outside 3 point range or farther away
-            else if (playerZone(defender, !isTeamAAtacking) as number <= ranges.outsideThe3PointLine.id) {
-                calculationIfDefenderIsOutsideThe3PointLine();
+            else if (playerZone(defender, !isTeamAAtacking) >= ranges.outsideThe3PointLine.id) {
+                defenderIniciative = calculationIfDefenderIsOutsideThe3PointLine();
             }
             
             //If the player is close to the rim
             if (playerZone(atacker, !isTeamAAtacking) == ranges.closeToTheRim.id) {
-                calculationIfAtackerIsCloseToTheRim();
+                atackerInisiative = calculationIfAtackerIsCloseToTheRim();
             }
             //If the player is in short range
             else if (playerZone(atacker, !isTeamAAtacking) == ranges.inShortRange.id || playerZone(atacker, !isTeamAAtacking) == ranges.behindTheBoard.id) {
-                calculationIfAtackerIsInShortRange();
+                atackerInisiative = calculationIfAtackerIsInShortRange();
             }
             //If the player is in mid range
             else if (playerZone(atacker, !isTeamAAtacking) == ranges.inMidRange.id) {
-                calculationIfAtackerIsInMidRange();
+                atackerInisiative = calculationIfAtackerIsInMidRange();
             }
             //If he is outside 3 point range or farther away
-            else if (playerZone(atacker, !isTeamAAtacking) as number <= ranges.outsideThe3PointLine.id) {
-                calculationIfAtackerIsOutsideThe3PointLine();
+            else if (playerZone(atacker, !isTeamAAtacking) >= ranges.outsideThe3PointLine.id) {
+                atackerInisiative = calculationIfAtackerIsOutsideThe3PointLine();
             }
 
-            //If teah B is defending
+            //If team B is defending
         } else if (isTeamAAtacking) {
             
             //If the player is close to the rim
-            if (playerZone(defender, isTeamAAtacking?true:false) == ranges.closeToTheRim.id) {
-                calculationIfDefensorIsCloseToTheRim();
+            if (playerZone(defender, isTeamAAtacking ? true : false) == ranges.closeToTheRim.id) {
+                defenderIniciative = calculationIfDefensorIsCloseToTheRim();
             }
             //If the player is in short range
-            else if (playerZone(defender, isTeamAAtacking?true:false) == ranges.inShortRange.id || playerZone(defender, isTeamAAtacking?true:false) == ranges.behindTheBoard.id) {
-                calculationIfAtackerIsInShortRange();
+            else if (playerZone(defender, isTeamAAtacking ? true : false) == ranges.inShortRange.id || playerZone(defender, isTeamAAtacking ? true : false) == ranges.behindTheBoard.id) {
+                defenderIniciative = calculationIfAtackerIsInShortRange();
             }
             //If the player is in mid range
-            else if (playerZone(defender, isTeamAAtacking?true:false) == ranges.inMidRange.id) {
-                calculationIfAtackerIsInMidRange();
+            else if (playerZone(defender, isTeamAAtacking ? true : false) == ranges.inMidRange.id) {
+                defenderIniciative = calculationIfAtackerIsInMidRange();
             }
             //If he is outside 3 point range or farther away
-            else if (playerZone(defender, isTeamAAtacking?true:false) as number <= ranges.outsideThe3PointLine.id) {
-                calculationIfDefenderIsOutsideThe3PointLine();
+            else if (playerZone(defender, isTeamAAtacking ? true : false) >= ranges.outsideThe3PointLine.id) {
+                defenderIniciative = calculationIfDefenderIsOutsideThe3PointLine();
             }
             
             //If the player is close to the rim
             if (playerZone(atacker, !isTeamAAtacking) == ranges.closeToTheRim.id) {
-                calculationIfAtackerIsCloseToTheRim();
+                atackerInisiative = calculationIfAtackerIsCloseToTheRim();
             }
             //If the player is in short range
             else if (playerZone(atacker, !isTeamAAtacking) == ranges.inShortRange.id || playerZone(atacker, !isTeamAAtacking) == ranges.behindTheBoard.id) {
-                calculationIfAtackerIsInShortRange();
+                atackerInisiative = calculationIfAtackerIsInShortRange();
             }
             //If the player is in mid range
             else if (playerZone(atacker, !isTeamAAtacking) == ranges.inMidRange.id) {
-                calculationIfAtackerIsInMidRange();
+                atackerInisiative = calculationIfAtackerIsInMidRange();
             }
             //If he is outside 3 point range or farther away
-            else if (playerZone(atacker, !isTeamAAtacking) as number <= ranges.outsideThe3PointLine.id) {
-                calculationIfAtackerIsOutsideThe3PointLine();
+            else if (playerZone(atacker, !isTeamAAtacking) >= ranges.outsideThe3PointLine.id) {
+                atackerInisiative = calculationIfAtackerIsOutsideThe3PointLine();
             }
         }
-    
-        //Comparo las iniciativas
+
+        //Compare iniciatives
         compareIniciatives = defenderIniciative - atackerInisiative;
+        // compareIniciatives = 1;
     }
+
     if(compareIniciatives > 0) {
         return defender
     } else {
@@ -1546,19 +1546,19 @@ export function getClosestPlayers(gameBoard: number[][], allPlayers: Player[], t
 }
 
 export const initialGameBoard = [
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 ]

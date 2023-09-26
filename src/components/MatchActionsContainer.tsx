@@ -31,6 +31,7 @@ function MatchActionsContainer( { match, setMatchState } : Props) {
     confirmButtonHandler,
     setConfirmButtonHandler,
     setActionConfirmed,
+    gameBoard,
   } = useContext(GameContext)
 
   let matchCopy = match

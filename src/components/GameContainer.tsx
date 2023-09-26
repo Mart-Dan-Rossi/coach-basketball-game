@@ -15,6 +15,8 @@ export default function GameContainer() {
         teamBStats,
         gameNarration,
         setGameNarration,
+        gameBoard,
+        setGameBoard,
       } = useContext(GameContext)
 
     const teamAInitialPositions = [[13, 1], [13, 5], [13, 9], [13, 14], [14, 8]]
@@ -202,7 +204,7 @@ export default function GameContainer() {
 
     function matchHandler() {
         if(matchState.quarter == 1 && matchState.timeLeft.minutes == 6) {
-            matchState.jumpBall(gameNarration, setGameNarration)
+            matchState.jumpBall(gameNarration, setGameNarration, gameBoard)
         }        
     }
     

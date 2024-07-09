@@ -181,7 +181,7 @@ export class Team {
         return playerInThisPosition
     }
 
-    returnPlayerWithBall() {
+    getPlayerWithBall() {
         let playerWithBall: Player|undefined
 
         this.players.forEach(player => {

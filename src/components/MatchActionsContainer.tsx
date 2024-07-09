@@ -5,12 +5,7 @@ import "../styles/MatchActionsContainer.css";
 import {} from "../entities/myInterfaces";
 import { Match } from "../entities/match";
 
-interface Props {
-  match: Match;
-  setMatchState: React.Dispatch<React.SetStateAction<Match>>;
-}
-
-function MatchActionsContainer({ match, setMatchState }: Props) {
+function MatchActionsContainer() {
   const {
     gameNarration,
     setGameNarration,
@@ -32,9 +27,8 @@ function MatchActionsContainer({ match, setMatchState }: Props) {
     setConfirmButtonHandler,
     setActionConfirmed,
     gameBoard,
+    matchState,
   } = useContext(GameContext);
-
-  let matchCopy = match;
 
   const [moveButtonSelected, setMoveButtonSelected] = useState(false);
   const [stealAttemptButtonSelected, setStealAttemptButtonSelected] =
@@ -163,7 +157,7 @@ function MatchActionsContainer({ match, setMatchState }: Props) {
       actionFunction: () => {
         setActionConfirmed("shoot");
 
-        matchCopy.shotAttemptedStatus();
+        matchState.shotAttemptedStatus();
       },
     },
     END_TURN_BUTTON: {
@@ -177,7 +171,7 @@ function MatchActionsContainer({ match, setMatchState }: Props) {
 
         setEndTurnButtonSelected(false);
 
-        matchCopy.handleSelectedPlayersStatus(
+        matchState.handleSelectedPlayersStatus(
           false,
           gameNarration,
           setGameNarration,
@@ -214,8 +208,8 @@ function MatchActionsContainer({ match, setMatchState }: Props) {
           <span>{/*Decorative div, do not delete*/}</span>
           <h4>Actions</h4>
           <span>
-            {match.getActivePlayer()
-              ? `Points left: ${match.getActivePlayer()!.actionPoints}`
+            {matchState.getActivePlayer()
+              ? `Points left: ${matchState.getActivePlayer()!.actionPoints}`
               : ""}
           </span>
         </div>

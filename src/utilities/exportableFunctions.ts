@@ -1,6 +1,5 @@
 import { PlayerEditableInfo, PlayerStats } from "../entities/myInterfaces";
 import { Player } from "../entities/players";
-import { Match } from "../entities/match";
 
 export function getMinStatPerPosition(
   thisStat: string,

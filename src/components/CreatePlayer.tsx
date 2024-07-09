@@ -1,10 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import { PlayerEditableInfo, PlayerStats } from "../entities/myInterfaces";
 import {
   getMinStatPerPosition,
   getMaxStatPerPosition,
   getValue,
-  playerPositionDetection,
   firstLetterToUpper,
   separateCamelCaseBySpace,
   numberEntire,

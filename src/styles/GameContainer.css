@@ -1,83 +1,91 @@
-@import url('https://fonts.googleapis.com/css2?family=Dancing+Script&family=Fira+Sans:wght@300&family=Lora&family=Press+Start+2P&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Dancing+Script&family=Fira+Sans:wght@300&family=Lora&family=Press+Start+2P&display=swap");
 
 html {
-    --team-blue-color : rgb(82, 82, 255);
-    --team-red-color  : rgb(255, 79, 79);
-    --gameboard-width : 1120px;
+  --team-blue-color: rgb(82, 82, 255);
+  --team-red-color: rgb(255, 79, 79);
+  --gameboard-width: 1120px;
 }
 
 .game-container {
-    display: flex;
-    flex-direction: column;    
-    background: var(--team-blue-color);
-    background: linear-gradient(90deg, var(--team-blue-color) 0%, var(--team-red-color) 100%);
+  display: flex;
+  flex-direction: column;
+  background: var(--team-blue-color);
+  background: linear-gradient(
+    90deg,
+    var(--team-blue-color) 0%,
+    var(--team-red-color) 100%
+  );
 }
 
 .match-info-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    
-    width: var(--gameboard-width);
-    height: 80px;
-    background-color: black;
-    margin: 0 auto;
-    font-family: 'Press Start 2P', cursive;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  width: var(--gameboard-width);
+  height: 80px;
+  background-color: black;
+  margin: 0 auto;
+  font-family: "Press Start 2P", cursive;
 }
 
 .team-score {
-    color: rgb(131, 131, 43);
-    width: 100px;
-    text-align: center;
+  color: rgb(131, 131, 43);
+  width: 100px;
+  text-align: center;
 }
 
-.team-score, .shot-clock {
-    padding: 20px;
-    background-color: white;
+.team-score,
+.shot-clock {
+  padding: 20px;
+  background-color: white;
 }
 
-.team-score, .match-moment-container, .shot-clock {
-    border-radius: 12px;
-    margin: 5px;
-    border: 3px solid grey;
-    font-weight: 700
+.team-score,
+.match-moment-container,
+.shot-clock {
+  border-radius: 12px;
+  margin: 5px;
+  border: 3px solid grey;
+  font-weight: 700;
 }
 
 .clocks-container {
-    display: flex;
-    align-items: center;
-    color: rgb(197, 38, 38);    
+  display: flex;
+  align-items: center;
+  color: rgb(197, 38, 38);
 }
 
 .match-moment-container {
-    display: flex;
-    background-color: lightgray;
+  display: flex;
+  background-color: lightgray;
 }
 
-.game-clock-container, .quarter-counter {
-    margin: 5px;
-    border: 1px solid black;
-    padding: 20px;
-    border-radius: 12px;
-    background-color: white;
+.game-clock-container,
+.quarter-counter {
+  margin: 5px;
+  border: 1px solid black;
+  padding: 20px;
+  border-radius: 12px;
+  background-color: white;
 }
 
 .team-name {
-    width: 30%;
-    text-align: center;
-    padding: 20px;
-    border-radius: 12px;
-    margin: 5px;
-    border: 3px solid grey;
+  width: 30%;
+  text-align: center;
+  padding: 20px;
+  border-radius: 12px;
+  margin: 5px;
+  border: 3px solid grey;
 
-    color: white;
-    font-weight: 700;
+  color: white;
+  font-weight: 700;
 }
 
 .team-a-name-in-scoreboard {
-    background-color: var(--team-blue-color);
+  background-color: var(--team-blue-color);
 }
 
 .team-b-name-in-scoreboard {
-    background-color: var(--team-red-color);
+  background-color: var(--team-red-color);
 }

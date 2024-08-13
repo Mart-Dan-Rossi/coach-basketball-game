@@ -1,0 +1,25 @@
+.create-player-stat-input {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  width: 100%;
+  min-width: 200px;
+  padding: 0 5px;
+  font-weight: 500;
+}
+
+.create-player-stat-input label {
+  width: 136px;
+  font-size: medium;
+}
+
+.create-player-stat-input input {
+  width: 65%;
+  min-width: 130px;
+  cursor: pointer;
+}
+
+.create-player-stat-input .points-used-on-this-skill {
+  width: 26px;
+}

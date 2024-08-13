@@ -1,0 +1,16 @@
+.max-team-points-input-container {
+  width: 100%;
+  padding: 10px;
+  margin-top: 1rem;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: center;
+  user-select: none;
+  font-weight: 700;
+}
+
+.max-team-points-input-container input {
+  width: 80%;
+  margin: 6px;
+}

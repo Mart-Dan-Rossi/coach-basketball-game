@@ -274,6 +274,7 @@ export function playerPositionDetection(playerPosition : string) {
     } else if(playerPosition == "5") {
         return "C"
     } else {
+        console.log(playerPosition)
         return "Not detected"
     }
 }
@@ -1335,19 +1336,19 @@ export function compareIniciatives(playerA: Player, playerB: Player, isTeamAAtac
         } else if (isTeamAAtacking) {
             
             //If the player is close to the rim
-            if (playerZone(defender, isTeamAAtacking ? true : false) == ranges.closeToTheRim.id) {
+            if (playerZone(defender, isTeamAAtacking !== undefined) == ranges.closeToTheRim.id) {
                 defenderIniciative = calculationIfDefensorIsCloseToTheRim();
             }
             //If the player is in short range
-            else if (playerZone(defender, isTeamAAtacking ? true : false) == ranges.inShortRange.id || playerZone(defender, isTeamAAtacking ? true : false) == ranges.behindTheBoard.id) {
+            else if (playerZone(defender, isTeamAAtacking !== undefined) == ranges.inShortRange.id || playerZone(defender, isTeamAAtacking !== undefined) == ranges.behindTheBoard.id) {
                 defenderIniciative = calculationIfAtackerIsInShortRange();
             }
             //If the player is in mid range
-            else if (playerZone(defender, isTeamAAtacking ? true : false) == ranges.inMidRange.id) {
+            else if (playerZone(defender, isTeamAAtacking !== undefined) == ranges.inMidRange.id) {
                 defenderIniciative = calculationIfAtackerIsInMidRange();
             }
             //If he is outside 3 point range or farther away
-            else if (playerZone(defender, isTeamAAtacking ? true : false) >= ranges.outsideThe3PointLine.id) {
+            else if (playerZone(defender, isTeamAAtacking !== undefined) >= ranges.outsideThe3PointLine.id) {
                 defenderIniciative = calculationIfDefenderIsOutsideThe3PointLine();
             }
             
@@ -1437,7 +1438,7 @@ export function getDistanceToRim(player: Player) {
 }
 
 export function getShotDistance(player: Player, direction: string) {
-    let shotDistance = undefined
+    let shotDistance: number | undefined
 
     if(direction == "Y") {
         if(player.ubicationY == 8) {

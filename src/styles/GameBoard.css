@@ -1,134 +1,134 @@
 #gameboard {
-    width: max-content;
-    margin: 0 auto;
+  width: max-content;
+  margin: 0 auto;
 
-    display: grid;
-    grid-template-columns: repeat(28, 1fr);
-    grid-template-rows: repeat(15, 1fr);
+  display: grid;
+  grid-template-columns: repeat(28, 1fr);
+  grid-template-rows: repeat(15, 1fr);
 
-    background-image: url("../../public/img/myCourt.jpg");
-    background-size: contain;
+  background-image: url("../../public/img/myCourt.jpg");
+  background-size: contain;
 }
 
 .pointer {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .tile {
-    width: 40px;
-    aspect-ratio: 1;
+  width: 40px;
+  aspect-ratio: 1;
 
-    border: 1px solid black;
+  border: 1px solid black;
 }
 
 .player-img {
-    width: 40px;
-    height: 37px;
-    vertical-align: -webkit-baseline-middle;
+  width: 40px;
+  height: 37px;
+  vertical-align: -webkit-baseline-middle;
 }
 
 .highlighted-tile {
-    background-color: rgba(128, 255, 0, 0.527);
+  background-color: rgba(128, 255, 0, 0.527);
 }
 
 .selected-tile {
-    background-color: rgb(73, 146, 0);
+  background-color: rgb(73, 146, 0);
 }
 
 .shooter-tile {
-    background-color: rgba(197, 38, 38, 0.614);
+  background-color: rgba(197, 38, 38, 0.614);
 }
 
 .active-tile {
-    background-color: rgba(218, 165, 32, 0.712);
+  background-color: rgba(218, 165, 32, 0.712);
 }
 
 .player-tile-container {
-    position: relative;
-    cursor: pointer;
+  position: relative;
+  cursor: pointer;
 }
 
 .player-tile-container.expand .player-info-popup-in-board {
-    opacity: 1;
-    visibility: visible;
+  opacity: 1;
+  visibility: visible;
 }
 
 .player-info-popup-in-board.team-a {
-    right: 80%;
-    border-radius: 16px 0px 16px 16px;
-    -webkit-border-radius: 16px 0px 16px 16px;
-    -moz-border-radius: 16px 0px 16px 16px;
+  right: 80%;
+  border-radius: 16px 0px 16px 16px;
+  -webkit-border-radius: 16px 0px 16px 16px;
+  -moz-border-radius: 16px 0px 16px 16px;
 }
 
 .player-info-popup-in-board.team-b {
-    left: 80%;
-    border-radius: 0px 16px 16px 16px;
-    -webkit-border-radius: 0px 16px 16px 16px;
-    -moz-border-radius: 0px 16px 16px 16px;
+  left: 80%;
+  border-radius: 0px 16px 16px 16px;
+  -webkit-border-radius: 0px 16px 16px 16px;
+  -moz-border-radius: 0px 16px 16px 16px;
 }
 
 .player-info-popup-in-board {
-    cursor: default;
-    position: absolute;
-    top: 50%;
-    
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    width: max-content;
-    max-width: 165px;
+  cursor: default;
+  position: absolute;
+  top: 50%;
 
-    background-color: lightgray;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  width: max-content;
+  max-width: 165px;
 
-    padding: 10px;
-    z-index: 1;
+  background-color: lightgray;
 
-    border: 2px solid black;
-    visibility: hidden;
-    
-    opacity: 0;
-    transition: all 0.3s linear;
+  padding: 10px;
+  z-index: 1;
+
+  border: 2px solid black;
+  visibility: hidden;
+
+  opacity: 0;
+  transition: all 0.3s linear;
 }
 
-.player-info-popup-in-board>div {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    justify-content: space-between;
+.player-info-popup-in-board > div {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  justify-content: space-between;
 }
 
 .player-info-popup-in-board h4 {
-    padding: 5px;
-    margin: 0;
-    text-align: center;
-    width: 100%;
+  padding: 5px;
+  margin: 0;
+  text-align: center;
+  width: 100%;
 }
 
 .player-position {
-    margin: 0 auto;
+  margin: 0 auto;
 }
 
 .player-stats-icon-container {
-    flex-wrap: wrap;
-    align-content: center;
-    justify-content: center !important;
+  flex-wrap: wrap;
+  align-content: center;
+  justify-content: center !important;
 }
 
 .player-stats-icon-container img {
-    height: 32px;
-    aspect-ratio: 1;
-    padding: 2px;
-    border-radius: 100px;
+  height: 32px;
+  aspect-ratio: 1;
+  padding: 2px;
+  border-radius: 100px;
 }
 
 .player-stats-icon-container img.bronze {
-    background-color: #CD7F32;
+  background-color: #cd7f32;
 }
 
 .player-stats-icon-container img.silver {
-    background-color: silver;
+  background-color: silver;
 }
 
 .player-stats-icon-container img.gold {
-    background-color: gold;
+  background-color: gold;
 }

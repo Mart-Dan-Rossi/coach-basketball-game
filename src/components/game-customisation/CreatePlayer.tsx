@@ -5,7 +5,7 @@ import "../../styles/CreatePlayer.css";
 
 interface Props {
   team: string;
-  playerPosition: string;
+  playerPosition: "G" | "SG" | "SF" | "PF" | "C" | "Not detected";
   player: PlayerEditableInfo;
   playerSetter: React.Dispatch<React.SetStateAction<PlayerEditableInfo>>;
   totalTeamPoints: number;

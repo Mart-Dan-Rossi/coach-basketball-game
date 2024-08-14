@@ -4,7 +4,7 @@ import {
   firstLetterToUpper,
   getMaxStatPerPosition,
   getMinStatPerPosition,
-  getValue,
+  getStatValue,
   numberEntire,
   separateCamelCaseBySpace,
   setPointsUsedOnThisSkill,
@@ -126,7 +126,7 @@ const NumericInput = ({
         type="range"
         name={`${stat}`}
         id={`${stat}-input`}
-        value={getValue(stat, player)}
+        value={getStatValue(stat, player)}
         min={getMinStatPerPosition(stat, player.position)}
         max={getMaxStatPerPosition(stat, player.position)}
         onChange={inputOnChangeHandler(stat)}

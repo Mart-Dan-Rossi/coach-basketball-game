@@ -161,7 +161,3 @@ export interface GameContextProps {
 export const GameContext = createContext<GameContextProps>(
   {} as GameContextProps
 );
-
-export const GameContext = createContext<GameContextProps>(
-  {} as GameContextProps
-);

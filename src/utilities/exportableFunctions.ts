@@ -251,7 +251,7 @@ export function getMaxStatPerPosition(
   }
 }
 
-export function getValue(key: string, player: PlayerEditableInfo) {
+export function getStatValue(key: string, player: PlayerEditableInfo) {
   if (
     key == "height" ||
     key == "weight" ||
@@ -1240,7 +1240,7 @@ export function getShotDistance(player: Player, direction: string) {
             shotDistance = player.ubicationY! - 8
         }
     }
-  }
+  
 
   if (!shotDistance) {
     if (player.team == "TeamA") {

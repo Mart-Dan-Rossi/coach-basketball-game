@@ -547,10 +547,6 @@ function GameBoard({ match, setMatchState }: Props) {
       </div>
     </div>
   );
-    </div>
-  );
 }
-
-export default GameBoard;
 
 export default GameBoard;

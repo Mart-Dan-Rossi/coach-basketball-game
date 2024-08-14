@@ -6,7 +6,6 @@ import { initialGameBoard } from "../utilities/exportableFunctions";
 
 interface props {
   children: JSX.Element | JSX.Element[];
-  children: JSX.Element | JSX.Element[];
 }
 
 export const GameContextProvider = ({ children }: props) => {
@@ -29,33 +28,7 @@ export const GameContextProvider = ({ children }: props) => {
   const [playerA5Stats, setPlayerA5Stats] = useState(
     getInitialPlayerStatsOnCreation("5")
   );
-  const [playerA1Stats, setPlayerA1Stats] = useState(
-    getInitialPlayerStatsOnCreation("1")
-  );
 
-  const [playerA2Stats, setPlayerA2Stats] = useState(
-    getInitialPlayerStatsOnCreation("2")
-  );
-
-  const [playerA3Stats, setPlayerA3Stats] = useState(
-    getInitialPlayerStatsOnCreation("3")
-  );
-
-  const [playerA4Stats, setPlayerA4Stats] = useState(
-    getInitialPlayerStatsOnCreation("4")
-  );
-
-  const [playerA5Stats, setPlayerA5Stats] = useState(
-    getInitialPlayerStatsOnCreation("5")
-  );
-
-  const [teamAStats, setTeamAStats] = useState({
-    playerA1Stats,
-    playerA2Stats,
-    playerA3Stats,
-    playerA4Stats,
-    playerA5Stats,
-  });
   const [teamAStats, setTeamAStats] = useState({
     playerA1Stats,
     playerA2Stats,
@@ -67,13 +40,7 @@ export const GameContextProvider = ({ children }: props) => {
   const [playerB1Stats, setPlayerB1Stats] = useState(
     getInitialPlayerStatsOnCreation("1")
   );
-  const [playerB1Stats, setPlayerB1Stats] = useState(
-    getInitialPlayerStatsOnCreation("1")
-  );
 
-  const [playerB2Stats, setPlayerB2Stats] = useState(
-    getInitialPlayerStatsOnCreation("2")
-  );
   const [playerB2Stats, setPlayerB2Stats] = useState(
     getInitialPlayerStatsOnCreation("2")
   );
@@ -81,20 +48,11 @@ export const GameContextProvider = ({ children }: props) => {
   const [playerB3Stats, setPlayerB3Stats] = useState(
     getInitialPlayerStatsOnCreation("3")
   );
-  const [playerB3Stats, setPlayerB3Stats] = useState(
-    getInitialPlayerStatsOnCreation("3")
-  );
 
   const [playerB4Stats, setPlayerB4Stats] = useState(
     getInitialPlayerStatsOnCreation("4")
   );
-  const [playerB4Stats, setPlayerB4Stats] = useState(
-    getInitialPlayerStatsOnCreation("4")
-  );
 
-  const [playerB5Stats, setPlayerB5Stats] = useState(
-    getInitialPlayerStatsOnCreation("5")
-  );
   const [playerB5Stats, setPlayerB5Stats] = useState(
     getInitialPlayerStatsOnCreation("5")
   );
@@ -284,102 +242,7 @@ export const GameContextProvider = ({ children }: props) => {
         setPointsUsedInPlayerB3,
         setPointsUsedInPlayerB4,
         setPointsUsedInPlayerB5,
-  return (
-    <GameContext.Provider
-      value={{
-        playerA1Stats,
-        playerA2Stats,
-        playerA3Stats,
-        playerA4Stats,
-        playerA5Stats,
-        setPlayerA1Stats,
-        setPlayerA2Stats,
-        setPlayerA3Stats,
-        setPlayerA4Stats,
-        setPlayerA5Stats,
-        teamAStats,
-        setTeamAStats,
-        playerB1Stats,
-        playerB2Stats,
-        playerB3Stats,
-        playerB4Stats,
-        playerB5Stats,
-        setPlayerB1Stats,
-        setPlayerB2Stats,
-        setPlayerB3Stats,
-        setPlayerB4Stats,
-        setPlayerB5Stats,
-        teamBStats,
-        setTeamBStats,
-        teamsCreated,
-        setTeamsCreated,
-        pointsUsedInPlayerA1,
-        pointsUsedInPlayerA2,
-        pointsUsedInPlayerA3,
-        pointsUsedInPlayerA4,
-        pointsUsedInPlayerA5,
-        setPointsUsedInPlayerA1,
-        setPointsUsedInPlayerA2,
-        setPointsUsedInPlayerA3,
-        setPointsUsedInPlayerA4,
-        setPointsUsedInPlayerA5,
-        pointsUsedInStatsPlayerA1,
-        pointsUsedInStatsPlayerA2,
-        pointsUsedInStatsPlayerA3,
-        pointsUsedInStatsPlayerA4,
-        pointsUsedInStatsPlayerA5,
-        setPointsUsedInStatsPlayerA1,
-        setPointsUsedInStatsPlayerA2,
-        setPointsUsedInStatsPlayerA3,
-        setPointsUsedInStatsPlayerA4,
-        setPointsUsedInStatsPlayerA5,
-        pointsUsedInStatsPlayerB1,
-        pointsUsedInStatsPlayerB2,
-        pointsUsedInStatsPlayerB3,
-        pointsUsedInStatsPlayerB4,
-        pointsUsedInStatsPlayerB5,
-        setPointsUsedInStatsPlayerB1,
-        setPointsUsedInStatsPlayerB2,
-        setPointsUsedInStatsPlayerB3,
-        setPointsUsedInStatsPlayerB4,
-        setPointsUsedInStatsPlayerB5,
-        pointsUsedInPlayerB1,
-        pointsUsedInPlayerB2,
-        pointsUsedInPlayerB3,
-        pointsUsedInPlayerB4,
-        pointsUsedInPlayerB5,
-        setPointsUsedInPlayerB1,
-        setPointsUsedInPlayerB2,
-        setPointsUsedInPlayerB3,
-        setPointsUsedInPlayerB4,
-        setPointsUsedInPlayerB5,
 
-        gameNarration,
-        setGameNarration,
-        showMoveButton,
-        setShowMoveButton,
-        showStealAttemptButton,
-        setShowStealAttemptButton,
-        showInterceptPassAttemptButton,
-        setShowInterceptPassAttemptButton,
-        showWaitPressingButton,
-        setShowWaitPressingButton,
-        showWaitCarefullyButton,
-        setShowWaitCarefullyButton,
-        showPassButton,
-        setShowPassButton,
-        showDribblingButton,
-        setShowDribblingButton,
-        showWaitWithoutTheBallButton,
-        setShowWaitWithoutTheBallButton,
-        showTripleThreatButton,
-        setShowTripleThreatButton,
-        showShootButton,
-        setShowShootButton,
-        showEndTurnButton,
-        setShowEndTurnButton,
-        activateConfirmButton,
-        setActivateConfirmButton,
         gameNarration,
         setGameNarration,
         showMoveButton,
@@ -414,16 +277,7 @@ export const GameContextProvider = ({ children }: props) => {
 
         confirmButtonHandler,
         setConfirmButtonHandler,
-        actionConfirmed,
-        setActionConfirmed,
-        finalisingAction,
-        setFinalisingAction,
 
-        confirmButtonHandler,
-        setConfirmButtonHandler,
-
-        tileClicked,
-        setTileClicked,
         tileClicked,
         setTileClicked,
 

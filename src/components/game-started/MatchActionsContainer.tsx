@@ -1,9 +1,9 @@
 import React from "react";
 import { useContext, useState, useEffect } from "react";
-import { GameContext } from "../context/GameContext";
-import "../styles/MatchActionsContainer.css";
-import {} from "../entities/myInterfaces";
-import { Match } from "../entities/match";
+import { GameContext } from "../../context/GameContext";
+import "../../styles/MatchActionsContainer.css";
+import {} from "../../entities/myInterfaces";
+import { Match } from "../../entities/match";
 
 interface Props {
   match: Match;

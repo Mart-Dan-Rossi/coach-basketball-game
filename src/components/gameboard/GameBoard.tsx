@@ -1,12 +1,16 @@
 import React from "react";
 import { useEffect, useContext } from "react";
-import { Team } from "../entities/team";
-import "../styles/GameBoard.css";
+import { Team } from "../../entities/team";
+import "../../styles/GameBoard.css";
 import PlayerImgContainer from "./PlayerImgContainer";
-import { GameContext } from "../context/GameContext";
-import { compareIniciatives } from "../utilities/exportableFunctions";
-import { Player } from "../entities/players";
-import { Match } from "../entities/match";
+import { GameContext } from "../../context/GameContext";
+import {
+  boardXDimentions,
+  boardYDimentions,
+  compareIniciatives,
+} from "../../utilities/exportableFunctions";
+import { Player } from "../../entities/players";
+import { Match } from "../../entities/match";
 
 interface Props {
   match: Match;
@@ -163,7 +167,7 @@ function GameBoard({ match, setMatchState }: Props) {
           hideActionsButtons();
         }
 
-        if (col == 28 && row == 15) {
+        if (col == boardXDimentions && row == boardYDimentions) {
           setActionConfirmed("");
         }
       }

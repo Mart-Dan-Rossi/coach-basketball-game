@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import "../styles/MainMenu.css";
 
-function MainMenu() {
+const MainMenu = () => {
   return (
     <div className="main-menu">
       <div className="flex-index">
@@ -37,6 +37,6 @@ function MainMenu() {
       </div>
     </div>
   );
-}
+};
 
 export default MainMenu;

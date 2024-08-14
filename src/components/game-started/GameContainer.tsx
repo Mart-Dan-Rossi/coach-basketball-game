@@ -1,13 +1,13 @@
 import React from "react";
-import GameBoard from "./GameBoard";
+import GameBoard from "../gameboard/GameBoard";
 import { useContext, useEffect, useState } from "react";
-import { GameContext } from "../context/GameContext";
-import "../styles/GameContainer.css";
+import { GameContext } from "../../context/GameContext";
+import "../../styles/GameContainer.css";
 import MatchInfo from "./MatchInfo";
 import MatchActionsContainer from "./MatchActionsContainer";
-import { Match } from "../entities/match";
-import { Player } from "../entities/players";
-import { Team } from "../entities/team";
+import { Match } from "../../entities/match";
+import { Player } from "../../entities/players";
+import { Team } from "../../entities/team";
 
 export default function GameContainer() {
   const {

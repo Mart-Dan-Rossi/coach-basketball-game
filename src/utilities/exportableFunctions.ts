@@ -267,20 +267,20 @@ export function getStatValue(key: string, player: PlayerEditableInfo) {
   }
 }
 
-export function playerPositionDetection(playerPosition : string) {
-    if(playerPosition == "1") {
-        return "G"
-    } else if(playerPosition == "2") {
-        return "SG"
-    } else if(playerPosition == "3") {
-        return "SF"
-    } else if(playerPosition == "4") {
-        return "PF"
-    } else if(playerPosition == "5") {
-        return "C"
-    } else {
-        return "Not detected"
-    }
+export function playerPositionDetection(playerPosition: string) {
+  if (playerPosition == "1") {
+    return "G";
+  } else if (playerPosition == "2") {
+    return "SG";
+  } else if (playerPosition == "3") {
+    return "SF";
+  } else if (playerPosition == "4") {
+    return "PF";
+  } else if (playerPosition == "5") {
+    return "C";
+  } else {
+    return "Not detected";
+  }
 }
 
 export function firstLetterToUpper(string: string) {
@@ -304,7 +304,6 @@ export function separateCamelCaseBySpace(string: string) {
 export function numberEntire(number: number) {
   let numberInString = number.toString();
   let entireNumberInString = "";
-  let entireNumber: number;
 
   for (let character of numberInString) {
     if (character != ".") {
@@ -314,9 +313,7 @@ export function numberEntire(number: number) {
     }
   }
 
-  entireNumber = Number(entireNumberInString);
-
-  return entireNumber;
+  return Number(entireNumberInString);
 }
 
 export function calculatePlayerOverallRating(pointsUsedOnPlayer: number) {
@@ -1120,43 +1117,61 @@ export function compareIniciatives(
         atackerInisiative = calculationIfAtackerIsOutsideThe3PointLine();
       }
 
-            //If team B is defending
-        } else if (isTeamAAtacking) {
-            
-            //If the player is close to the rim
-            if (playerZone(defender, isTeamAAtacking !== undefined) == ranges.closeToTheRim.id) {
-                defenderIniciative = calculationIfDefensorIsCloseToTheRim();
-            }
-            //If the player is in short range
-            else if (playerZone(defender, isTeamAAtacking !== undefined) == ranges.inShortRange.id || playerZone(defender, isTeamAAtacking !== undefined) == ranges.behindTheBoard.id) {
-                defenderIniciative = calculationIfAtackerIsInShortRange();
-            }
-            //If the player is in mid range
-            else if (playerZone(defender, isTeamAAtacking !== undefined) == ranges.inMidRange.id) {
-                defenderIniciative = calculationIfAtackerIsInMidRange();
-            }
-            //If he is outside 3 point range or farther away
-            else if (playerZone(defender, isTeamAAtacking !== undefined) >= ranges.outsideThe3PointLine.id) {
-                defenderIniciative = calculationIfDefenderIsOutsideThe3PointLine();
-            }
-            
-            //If the player is close to the rim
-            if (playerZone(atacker, !isTeamAAtacking) == ranges.closeToTheRim.id) {
-                atackerInisiative = calculationIfAtackerIsCloseToTheRim();
-            }
-            //If the player is in short range
-            else if (playerZone(atacker, !isTeamAAtacking) == ranges.inShortRange.id || playerZone(atacker, !isTeamAAtacking) == ranges.behindTheBoard.id) {
-                atackerInisiative = calculationIfAtackerIsInShortRange();
-            }
-            //If the player is in mid range
-            else if (playerZone(atacker, !isTeamAAtacking) == ranges.inMidRange.id) {
-                atackerInisiative = calculationIfAtackerIsInMidRange();
-            }
-            //If he is outside 3 point range or farther away
-            else if (playerZone(atacker, !isTeamAAtacking) >= ranges.outsideThe3PointLine.id) {
-                atackerInisiative = calculationIfAtackerIsOutsideThe3PointLine();
-            }
-        }
+      //If team B is defending
+    } else if (isTeamAAtacking) {
+      //If the player is close to the rim
+      if (
+        playerZone(defender, isTeamAAtacking !== undefined) ==
+        ranges.closeToTheRim.id
+      ) {
+        defenderIniciative = calculationIfDefensorIsCloseToTheRim();
+      }
+      //If the player is in short range
+      else if (
+        playerZone(defender, isTeamAAtacking !== undefined) ==
+          ranges.inShortRange.id ||
+        playerZone(defender, isTeamAAtacking !== undefined) ==
+          ranges.behindTheBoard.id
+      ) {
+        defenderIniciative = calculationIfAtackerIsInShortRange();
+      }
+      //If the player is in mid range
+      else if (
+        playerZone(defender, isTeamAAtacking !== undefined) ==
+        ranges.inMidRange.id
+      ) {
+        defenderIniciative = calculationIfAtackerIsInMidRange();
+      }
+      //If he is outside 3 point range or farther away
+      else if (
+        playerZone(defender, isTeamAAtacking !== undefined) >=
+        ranges.outsideThe3PointLine.id
+      ) {
+        defenderIniciative = calculationIfDefenderIsOutsideThe3PointLine();
+      }
+
+      //If the player is close to the rim
+      if (playerZone(atacker, !isTeamAAtacking) == ranges.closeToTheRim.id) {
+        atackerInisiative = calculationIfAtackerIsCloseToTheRim();
+      }
+      //If the player is in short range
+      else if (
+        playerZone(atacker, !isTeamAAtacking) == ranges.inShortRange.id ||
+        playerZone(atacker, !isTeamAAtacking) == ranges.behindTheBoard.id
+      ) {
+        atackerInisiative = calculationIfAtackerIsInShortRange();
+      }
+      //If the player is in mid range
+      else if (playerZone(atacker, !isTeamAAtacking) == ranges.inMidRange.id) {
+        atackerInisiative = calculationIfAtackerIsInMidRange();
+      }
+      //If he is outside 3 point range or farther away
+      else if (
+        playerZone(atacker, !isTeamAAtacking) >= ranges.outsideThe3PointLine.id
+      ) {
+        atackerInisiative = calculationIfAtackerIsOutsideThe3PointLine();
+      }
+    }
 
     //Compare iniciatives
     compareIniciatives = defenderIniciative - atackerInisiative;
@@ -1229,18 +1244,17 @@ export function getDistanceToRim(player: Player) {
 }
 
 export function getShotDistance(player: Player, direction: string) {
-    let shotDistance: number | undefined
+  let shotDistance: number | undefined;
 
-    if(direction == "Y") {
-        if(player.ubicationY == 8) {
-            shotDistance = 0
-        } else if(player.ubicationY! < 8) {
-            shotDistance = 8 - player.ubicationY!
-        } else {
-            shotDistance = player.ubicationY! - 8
-        }
+  if (direction == "Y") {
+    if (player.ubicationY == 8) {
+      shotDistance = 0;
+    } else if (player.ubicationY! < 8) {
+      shotDistance = 8 - player.ubicationY!;
+    } else {
+      shotDistance = player.ubicationY! - 8;
     }
-  
+  }
 
   if (!shotDistance) {
     if (player.team == "TeamA") {
@@ -1352,65 +1366,67 @@ export function getClosestPlayers(
   return closestPlayers;
 }
 
-export const initialGameBoard = [
-  [
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0,
-  ],
-  [
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0,
-  ],
-  [
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0,
-  ],
-  [
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0,
-  ],
-  [
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0,
-  ],
-  [
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0,
-  ],
-  [
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0,
-  ],
-  [
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0,
-  ],
-  [
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0,
-  ],
-  [
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0,
-  ],
-  [
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0,
-  ],
-  [
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0,
-  ],
-  [
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0,
-  ],
-  [
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0,
-  ],
-  [
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0,
-  ],
-];
+export const boardYDimentions = 15;
+export const boardXDimentions = 28;
+
+function getInitialBoard() {
+  //TeamA initial ubications
+  const aPointGuard = [0, 12];
+  const aShotingGuard = [4, 12];
+  const aSmallFoward = [7, 13];
+  const aPowerFoward = [8, 12];
+  const aCenter = [13, 12];
+
+  //TeamB initial ubications
+  const bPointGuard = [1, 15];
+  const bShotingGuard = [5, 15];
+  const bSmallFoward = [7, 14];
+  const bPowerFoward = [9, 15];
+  const bCenter = [14, 15];
+
+  const allAPlayersUbication = [
+    aPointGuard,
+    aShotingGuard,
+    aSmallFoward,
+    aPowerFoward,
+    aCenter,
+  ];
+
+  const allBPlayersUbication = [
+    bPointGuard,
+    bShotingGuard,
+    bSmallFoward,
+    bPowerFoward,
+    bCenter,
+  ];
+
+  const initialBoard = [] as number[][];
+
+  function isPlayerOnThisUbication(
+    playersUbication: number[][],
+    y: number,
+    x: number
+  ) {
+    return playersUbication.find(
+      (playerUbication) => playerUbication[0] === y && playerUbication[1] === x
+    );
+  }
+
+  for (let i = 0; i < boardYDimentions; i++) {
+    const row = [] as number[];
+    for (let u = 0; u < boardXDimentions; u++) {
+      if (isPlayerOnThisUbication(allAPlayersUbication, i, u)) {
+        row.push(1);
+      } else if (isPlayerOnThisUbication(allBPlayersUbication, i, u)) {
+        row.push(2);
+      } else {
+        row.push(0);
+      }
+    }
+    initialBoard.push(row);
+  }
+
+  return initialBoard;
+}
+
+export const initialGameBoard = getInitialBoard();

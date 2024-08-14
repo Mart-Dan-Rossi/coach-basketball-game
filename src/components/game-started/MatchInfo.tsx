@@ -1,11 +1,11 @@
 import React, { useContext } from "react";
-import { GameContext } from "../context/GameContext";
-import { Match } from "../entities/match";
+import { GameContext } from "../../context/GameContext";
+import { Match } from "../../entities/match";
 interface Props {
   match: Match;
 }
 
-function MatchInfo({ match }: Props) {
+const MatchInfo = ({ match }: Props) => {
   function setDisplayableTeamName(teamName: string) {
     if (teamName.length <= 11) {
       return teamName;
@@ -53,6 +53,6 @@ function MatchInfo({ match }: Props) {
       <span className="team-score">{match.teamB.stats.points}</span>
     </div>
   );
-}
+};
 
 export default MatchInfo;

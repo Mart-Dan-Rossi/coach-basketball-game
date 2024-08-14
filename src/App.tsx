@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import MainMenu from "./components/MainMenu";
 import Rules from "./components/Rules";
 import { GameContextProvider } from "./context/GameContextProvider";
-import GameStarted from "./GameStarted";
+import GameStarted from "./StartGame";
 
 function App() {
   return (

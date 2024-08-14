@@ -8,31 +8,14 @@ import MatchActionsContainer from "./MatchActionsContainer";
 import { Match } from "../../entities/match";
 import { Player } from "../../entities/players";
 import { Team } from "../../entities/team";
+import {
+  teamAInitialPositions,
+  teamBInitialPositions,
+} from "../../utilities/exportableFunctions";
 
-export default function GameContainer() {
-  const {
-    teamAStats,
-    teamBStats,
-    gameNarration,
-    setGameNarration,
-    gameBoard,
-    setGameBoard,
-  } = useContext(GameContext);
-
-  const teamAInitialPositions = [
-    [13, 1],
-    [13, 5],
-    [13, 9],
-    [13, 14],
-    [14, 8],
-  ];
-  const teamBInitialPositions = [
-    [16, 2],
-    [16, 6],
-    [16, 10],
-    [16, 15],
-    [15, 8],
-  ];
+const GameContainer = () => {
+  const { teamAStats, teamBStats, gameNarration, setGameNarration, gameBoard } =
+    useContext(GameContext);
 
   const playerA1: Player = new Player(
     teamAStats.playerA1Stats.name,
@@ -242,4 +225,6 @@ export default function GameContainer() {
       <MatchActionsContainer match={matchState} setMatchState={setMatchState} />
     </div>
   );
-}
+};
+
+export default GameContainer;

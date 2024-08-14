@@ -1369,36 +1369,39 @@ export function getClosestPlayers(
 export const boardYDimentions = 15;
 export const boardXDimentions = 28;
 
+export const teamAInitialPositions = [
+  [13, 1],
+  [13, 5],
+  [13, 9],
+  [13, 14],
+  [14, 8],
+] as number[][];
+
+export const teamBInitialPositions = [
+  [16, 2],
+  [16, 6],
+  [16, 10],
+  [16, 15],
+  [15, 8],
+];
+
 function getInitialBoard() {
-  //TeamA initial ubications
-  const aPointGuard = [0, 12];
-  const aShotingGuard = [4, 12];
-  const aSmallFoward = [7, 13];
-  const aPowerFoward = [8, 12];
-  const aCenter = [13, 12];
+  function getBoardFormatInitialTeamUbication(
+    teamInitialPositions: number[][]
+  ) {
+    return teamInitialPositions.map((playerInitialPosition) => [
+      playerInitialPosition[1] - 1,
+      playerInitialPosition[0] - 1,
+    ]);
+  }
 
-  //TeamB initial ubications
-  const bPointGuard = [1, 15];
-  const bShotingGuard = [5, 15];
-  const bSmallFoward = [7, 14];
-  const bPowerFoward = [9, 15];
-  const bCenter = [14, 15];
+  const allAPlayersUbication = getBoardFormatInitialTeamUbication(
+    teamAInitialPositions
+  );
 
-  const allAPlayersUbication = [
-    aPointGuard,
-    aShotingGuard,
-    aSmallFoward,
-    aPowerFoward,
-    aCenter,
-  ];
-
-  const allBPlayersUbication = [
-    bPointGuard,
-    bShotingGuard,
-    bSmallFoward,
-    bPowerFoward,
-    bCenter,
-  ];
+  const allBPlayersUbication = getBoardFormatInitialTeamUbication(
+    teamBInitialPositions
+  );
 
   const initialBoard = [] as number[][];
 

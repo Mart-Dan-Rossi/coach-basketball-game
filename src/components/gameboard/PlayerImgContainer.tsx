@@ -36,6 +36,7 @@ function PlayerImgContainer({ team, col, row, teamLetterProps }: Props) {
           if (player.ubicationX == col && player.ubicationY == row) {
             return (
               <DrawPlayerInfoPopupInBoard
+                key={`player-info-popup-${player.team}-${player.position}`}
                 player={player}
                 teamLetterProps={teamLetterProps}
               />

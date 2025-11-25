@@ -116,7 +116,7 @@ export class Match {
               player.name === "" ? "The center of team A" : player.name
             }, get ${pointsObteinedInTheJumpBallA} points in the jump`
           );
-          setGameNarration(newGameNarration);
+          setGameNarration(() => newGameNarration);
         }
       });
 
@@ -133,7 +133,7 @@ export class Match {
               player.name === "" ? "The center of team B" : player.name
             }, get ${pointsObteinedInTheJumpBallB} points in the jump`
           );
-          setGameNarration(newGameNarration);
+          setGameNarration(() => newGameNarration);
         }
       });
 
@@ -153,7 +153,7 @@ export class Match {
                 player.name === "" ? "the PG of team A" : player.name
               } have the ball.`
             );
-            setGameNarration(newGameNarration);
+            setGameNarration(() => newGameNarration);
 
             this.setTeamTurn("TeamB");
           }
@@ -170,7 +170,7 @@ export class Match {
                 player.name === "" ? "the PG of team B" : player.name
               } have the ball.`
             );
-            setGameNarration(newGameNarration);
+            setGameNarration(() => newGameNarration);
 
             this.setTeamTurn("TeamA");
           }
@@ -180,7 +180,7 @@ export class Match {
         newGameNarration.unshift(
           `Both players touch the ball at the same time! The jump ball continues`
         );
-        setGameNarration(newGameNarration);
+        setGameNarration(() => newGameNarration);
       }
     }
 
@@ -386,7 +386,7 @@ export class Match {
       );
     }
 
-    setGameNarration(newGameNarration);
+    setGameNarration(() => newGameNarration);
   }
 
   calculateIfDribblingIsSuccesfull(
@@ -975,7 +975,7 @@ export class Match {
       }
     }
 
-    setGameNarration(newGameNarration);
+    setGameNarration(() => newGameNarration);
 
     this.setShotHasBeenAttempted(false);
   }

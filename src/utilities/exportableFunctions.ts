@@ -343,7 +343,7 @@ export function setPointsUsedOnThisSkill(
     statType == "playMaking"
   ) {
     previousStatsCopy[statType] = pointsUsedOnThisSkill;
-    setter(previousStatsCopy);
+    setter(() => previousStatsCopy);
   }
 }
 

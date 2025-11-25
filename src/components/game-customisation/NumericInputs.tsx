@@ -36,19 +36,21 @@ const NumericInputs = ({
   return (
     <>
       {arrayOfKeysOfNumericProperties.map((stat, i) => {
-        <NumericInput
-          stat={stat}
-          playerPosition={playerPosition}
-          team={team}
-          player={player}
-          totalTeamPoints={totalTeamPoints}
-          setTotalTeamPoints={setTotalTeamPoints}
-          pointsUsedInStats={pointsUsedInStats}
-          setPointsUsedInStats={setPointsUsedInStats}
-          pointsUsedInPlayer={pointsUsedInPlayer}
-          setPointsUsedInPlayer={setPointsUsedInPlayer}
-          playerSetter={playerSetter}
-        />;
+        return (
+          <NumericInput
+            stat={stat}
+            playerPosition={playerPosition}
+            team={team}
+            player={player}
+            totalTeamPoints={totalTeamPoints}
+            setTotalTeamPoints={setTotalTeamPoints}
+            pointsUsedInStats={pointsUsedInStats}
+            setPointsUsedInStats={setPointsUsedInStats}
+            pointsUsedInPlayer={pointsUsedInPlayer}
+            setPointsUsedInPlayer={setPointsUsedInPlayer}
+            playerSetter={playerSetter}
+          />
+        );
       })}
     </>
   );

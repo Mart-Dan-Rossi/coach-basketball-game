@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+//@ts-ignore
 import "../styles/Rules.css";
 
 function Rules() {
@@ -33,7 +34,7 @@ function Rules() {
             those who participate in this game) will face each other in a match
             with a single purpose: Defeat the rival{" "}
             <span className="font-weight-strong">coach</span>. In order to do
-            that eaech competitor have to create your roster, plan his gameplan
+            that eaech competitor have to create your roster, plan his game
             and make em work in the floor.
           </p>
           <p>

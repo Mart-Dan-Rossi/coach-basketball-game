@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { GameContext } from "../../context/GameContext";
 import { playerPositionDetection } from "../../utilities/exportableFunctions";
 import CreatePlayer from "./CreatePlayer";
+//@ts-ignore
 import "../../styles/CreateTeam.css";
 import { SwitchTransition, CSSTransition } from "react-transition-group";
 import PlayersSelectors from "./PlayersSelectors";

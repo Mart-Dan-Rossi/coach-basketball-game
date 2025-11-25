@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import CreateTeam from "./CreateTeam";
+//@ts-ignore
 import "../../styles/CustomizeGame.css";
 import { SwitchTransition, CSSTransition } from "react-transition-group";
 
@@ -11,7 +12,7 @@ const CustomizeGame = () => {
   const [showTeam, setShowTeam] = useState(true);
 
   function changeTeamToCustomize() {
-    setShowTeam(!showTeam);
+    setShowTeam(() => !showTeam);
   }
 
   return (

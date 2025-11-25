@@ -1,6 +1,7 @@
 import React from "react";
 import { useContext, useState, useEffect } from "react";
 import { GameContext } from "../../context/GameContext";
+//@ts-ignore
 import "../../styles/MatchActionsContainer.css";
 import {} from "../../entities/myInterfaces";
 import { Match } from "../../entities/match";
@@ -68,8 +69,8 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
       selectedState: moveButtonSelected,
       selectedSetter: setMoveButtonSelected,
       actionFunction: () => {
-        setActionConfirmed("move");
-        setFinalisingAction(true);
+        setActionConfirmed(() => "move");
+        setFinalisingAction(() => true);
       },
     },
     STEAL_ATTEMPT_BUTTON: {
@@ -79,7 +80,7 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
       selectedState: stealAttemptButtonSelected,
       selectedSetter: setStealAttemptButtonSelected,
       actionFunction: () => {
-        setActionConfirmed("steal attempt");
+        setActionConfirmed(() => "steal attempt");
       },
     },
     INTERCEPT_PASS_ATTEMPT_BUTTON: {
@@ -89,7 +90,7 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
       selectedState: interceptPassAttemptButtonSelected,
       selectedSetter: setInterceptPassAttemptButtonSelected,
       actionFunction: () => {
-        setActionConfirmed("intercept pass attempt");
+        setActionConfirmed(() => "intercept pass attempt");
       },
     },
     OVERWHELING_WAITING_BUTTON: {
@@ -99,7 +100,7 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
       selectedState: waitPressingButtonSelected,
       selectedSetter: setOverwhelmingWaitingButtonSelected,
       actionFunction: () => {
-        setActionConfirmed("overwhelming waiting");
+        setActionConfirmed(() => "overwhelming waiting");
       },
     },
     WAIT_WITH_CAUTION_BUTTON: {
@@ -109,7 +110,7 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
       selectedState: waitCarefullyButtonSelected,
       selectedSetter: setWaitWithCautionButtonSelected,
       actionFunction: () => {
-        setActionConfirmed("wait with caution");
+        setActionConfirmed(() => "wait with caution");
       },
     },
     PASS_BUTTON: {
@@ -119,8 +120,8 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
       selectedState: passButtonSelected,
       selectedSetter: setPassButtonSelected,
       actionFunction: () => {
-        setActionConfirmed("pass");
-        setFinalisingAction(true);
+        setActionConfirmed(() => "pass");
+        setFinalisingAction(() => true);
       },
     },
     DRIBBLING_BUTTON: {
@@ -130,8 +131,8 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
       selectedState: dribblingButtonSelected,
       selectedSetter: setDribblingButtonSelected,
       actionFunction: () => {
-        setActionConfirmed("dribbling");
-        setFinalisingAction(true);
+        setActionConfirmed(() => "dribbling");
+        setFinalisingAction(() => true);
       },
     },
     WAIT_WITHOUT_THE_BALL_BUTTON: {
@@ -141,7 +142,7 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
       selectedState: waitWithoutTheBallButtonSelected,
       selectedSetter: setWaitWithoutTheBallButtonSelected,
       actionFunction: () => {
-        setActionConfirmed("wait without the ball");
+        setActionConfirmed(() => "wait without the ball");
       },
     },
     TRIPLE_THREAT_BUTTON: {
@@ -151,7 +152,7 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
       selectedState: tripleThreatButtonSelected,
       selectedSetter: setTripleThreatButtonSelected,
       actionFunction: () => {
-        setActionConfirmed("triple threat");
+        setActionConfirmed(() => "triple threat");
       },
     },
     SHOOT_BUTTON: {
@@ -162,7 +163,7 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
       selectedSetter: setShootButtonSelected,
 
       actionFunction: () => {
-        setActionConfirmed("shoot");
+        setActionConfirmed(() => "shoot");
 
         matchCopy.shotAttemptedStatus();
       },
@@ -174,10 +175,10 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
       selectedState: endTurnButtonSelected,
       selectedSetter: setEndTurnButtonSelected,
       actionFunction: () => {
-        setActionConfirmed("end turn");
+        setActionConfirmed(() => "end turn");
 
-        setEndTurnButtonSelected(false);
-        setEndTurnButtonSelected(false);
+        setEndTurnButtonSelected(() => false);
+        setEndTurnButtonSelected(() => false);
 
         matchCopy.handleSelectedPlayersStatus(
           false,
@@ -196,8 +197,8 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
   ) {
     return () => {
       previousValueOfThisActionState
-        ? setActivateConfirmButton(false)
-        : setActivateConfirmButton(true);
+        ? setActivateConfirmButton(() => false)
+        : setActivateConfirmButton(() => true);
 
       let actionContent = Object.values(allActionsButtons);
 

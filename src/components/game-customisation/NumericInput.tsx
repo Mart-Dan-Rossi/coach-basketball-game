@@ -9,6 +9,7 @@ import {
   separateCamelCaseBySpace,
   setPointsUsedOnThisSkill,
 } from "../../utilities/exportableFunctions";
+//@ts-ignore
 import "../../styles/NumericInput.css";
 
 interface Props {
@@ -72,7 +73,7 @@ const NumericInput = ({
           let teamPointsCost =
             ((newPlayerStats[statType] - inputValue) * 100) / statRange;
           if (totalTeamPoints + teamPointsCost >= 0) {
-            setTotalTeamPoints(totalTeamPoints + teamPointsCost);
+            setTotalTeamPoints(() => totalTeamPoints + teamPointsCost);
             newPlayerStats[statType] = inputValue;
             let pointsUsedOnThisSkillOld = pointsUsedInStats[statType];
             let pointsUsedOnThisSkill =
@@ -92,7 +93,7 @@ const NumericInput = ({
         }
       }
 
-      playerSetter(newPlayerStats);
+      playerSetter(() => newPlayerStats);
     };
   }
 

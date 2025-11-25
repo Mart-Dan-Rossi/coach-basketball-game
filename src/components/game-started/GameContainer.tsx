@@ -2,6 +2,7 @@ import React from "react";
 import GameBoard from "../gameboard/GameBoard";
 import { useContext, useEffect, useState } from "react";
 import { GameContext } from "../../context/GameContext";
+//@ts-ignore
 import "../../styles/GameContainer.css";
 import MatchInfo from "./MatchInfo";
 import MatchActionsContainer from "./MatchActionsContainer";

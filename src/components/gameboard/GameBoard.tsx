@@ -1,6 +1,7 @@
 import React from "react";
 import { useEffect, useContext } from "react";
 import { Team } from "../../entities/team";
+//@ts-ignore
 import "../../styles/GameBoard.css";
 import PlayerImgContainer from "./PlayerImgContainer";
 import { GameContext } from "../../context/GameContext";
@@ -56,17 +57,17 @@ function GameBoard({ match, setMatchState }: Props) {
   let teamBAnySelected = teamB.isAnyPlayerSelected();
 
   function hideActionsButtons() {
-    setShowMoveButton(false);
-    setShowStealAttemptButton(false);
-    setShowInterceptPassAttemptButton(false);
-    setShowWaitPressingButton(false);
-    setShowWaitCarefullyButton(false);
-    setShowPassButton(false);
-    setShowDribblingButton(false);
-    setShowWaitWithoutTheBallButton(false);
-    setShowTripleThreatButton(false);
-    setShowShootButton(false);
-    setShowEndTurnButton(false);
+    setShowMoveButton(() => false);
+    setShowStealAttemptButton(() => false);
+    setShowInterceptPassAttemptButton(() => false);
+    setShowWaitPressingButton(() => false);
+    setShowWaitCarefullyButton(() => false);
+    setShowPassButton(() => false);
+    setShowDribblingButton(() => false);
+    setShowWaitWithoutTheBallButton(() => false);
+    setShowTripleThreatButton(() => false);
+    setShowShootButton(() => false);
+    setShowEndTurnButton(() => false);
   }
 
   function paintPlayerOnThisTileAsSelected(
@@ -92,25 +93,25 @@ function GameBoard({ match, setMatchState }: Props) {
   ) {
     if (teamActivePlayer) {
       //End turn button is allways shown
-      setShowEndTurnButton(true);
+      setShowEndTurnButton(() => true);
 
       //If the player is part of the atacking team
       if (team.getPlayerWithBallOrUndefined()) {
         //And have more than 0.5 action points
         if (teamActivePlayer.actionPoints > 0.5) {
           if (teamActivePlayer.haveBall) {
-            setShowTripleThreatButton(true);
-            setShowPassButton(true);
+            setShowTripleThreatButton(() => true);
+            setShowPassButton(() => true);
           }
         }
         //And have more than 1 action point
         if (teamActivePlayer.actionPoints > 1) {
           if (teamActivePlayer.haveBall) {
-            setShowDribblingButton(true);
-            setShowShootButton(true);
+            setShowDribblingButton(() => true);
+            setShowShootButton(() => true);
           } else {
-            setShowMoveButton(true);
-            setShowWaitWithoutTheBallButton(true);
+            setShowMoveButton(() => true);
+            setShowWaitWithoutTheBallButton(() => true);
           }
         }
 
@@ -118,13 +119,13 @@ function GameBoard({ match, setMatchState }: Props) {
       } else {
         //And have more than 0.5 action points
         if (teamActivePlayer.actionPoints > 0.5) {
-          setShowWaitCarefullyButton(true);
+          setShowWaitCarefullyButton(() => true);
         }
 
         //And have more than 1 action point
         if (teamActivePlayer.actionPoints > 1) {
-          setShowWaitPressingButton(true);
-          setShowMoveButton(true);
+          setShowWaitPressingButton(() => true);
+          setShowMoveButton(() => true);
 
           //And check if ther's an atacking player with the ball next to him
           const otherTeam = team.name == "TeamA" ? teamB : teamA;
@@ -137,7 +138,7 @@ function GameBoard({ match, setMatchState }: Props) {
             playerWithBall!.ubicationY! - teamActivePlayer.ubicationY!;
 
           if (Math.pow(xDistance, 2) == 1 && Math.pow(yDistance, 2) == 1) {
-            setShowStealAttemptButton(true);
+            setShowStealAttemptButton(() => true);
           }
         }
       }
@@ -155,10 +156,10 @@ function GameBoard({ match, setMatchState }: Props) {
         actionConfirmed == "dribbling" ||
         actionConfirmed == "pass"
       ) {
-        finalisingAction && setActivateConfirmButton(false);
+        finalisingAction && setActivateConfirmButton(() => false);
         hideActionsButtons();
       } else {
-        setActivateConfirmButton(false);
+        setActivateConfirmButton(() => false);
 
         let teamASelectedPlayer = match.teamA.getSelectedPlayer();
         let teamBSelectedPlayer = match.teamB.getSelectedPlayer();
@@ -168,7 +169,7 @@ function GameBoard({ match, setMatchState }: Props) {
         }
 
         if (col == boardXDimentions && row == boardYDimentions) {
-          setActionConfirmed("");
+          setActionConfirmed(() => "");
         }
       }
 
@@ -229,8 +230,8 @@ function GameBoard({ match, setMatchState }: Props) {
       if (actionConfirmed == "end turn") {
         hideActionsButtons();
 
-        setPlayerClikedTeamA([0, 0]);
-        setPlayerClikedTeamB([0, 0]);
+        setPlayerClikedTeamA(() => [0, 0]);
+        setPlayerClikedTeamB(() => [0, 0]);
       }
     }
 
@@ -307,7 +308,7 @@ function GameBoard({ match, setMatchState }: Props) {
   }
 
   function movePlayer(activePlayer: Player, dx: number, dy: number) {
-    return () => () => {
+    return () => {
       gameBoard[activePlayer.ubicationY! - 1][activePlayer.ubicationX! - 1] = 0;
 
       let actionPointsToDecrease =
@@ -320,11 +321,11 @@ function GameBoard({ match, setMatchState }: Props) {
 
       activePlayer.setLastAction(actionConfirmed);
 
-      setActionConfirmed("");
+      setActionConfirmed(() => "");
 
-      setMatchState(match);
+      setMatchState(() => match);
 
-      setActivateConfirmButton(false);
+      setActivateConfirmButton(() => false);
     };
   }
 
@@ -351,13 +352,15 @@ function GameBoard({ match, setMatchState }: Props) {
                   (activePlayer.actionPoints >= 1 && (dx == 0 || dy == 0))
                 ) {
                   if (teamNumber == 0) {
-                    setTileClicked(thisUbication);
-                    setFinalisingAction(false);
-
-                    setConfirmButtonHandler(movePlayer(activePlayer, dx, dy));
+                    setTileClicked(() => thisUbication);
+                    setFinalisingAction(() => false);
+                    
+                    setConfirmButtonHandler(() =>
+                      movePlayer(activePlayer, dx, dy)
+                    );
                   }
 
-                  setActivateConfirmButton(true);
+                  setActivateConfirmButton(() => true);
                 }
               }
             }
@@ -373,7 +376,7 @@ function GameBoard({ match, setMatchState }: Props) {
           let setPlayerClicked =
             teamNumber == 1 ? setPlayerClikedTeamA : setPlayerClikedTeamB;
 
-          setPlayerClicked(thisUbication);
+          setPlayerClicked(() => thisUbication);
 
           team.players.forEach((player) => {
             if (
@@ -381,11 +384,13 @@ function GameBoard({ match, setMatchState }: Props) {
               player.ubicationX == col &&
               player.ubicationY == row
             ) {
-              setFinalisingAction(false);
+              setFinalisingAction(() => false);
 
-              setConfirmButtonHandler(confirmPassToPlayer(team, thisUbication));
+              setConfirmButtonHandler(() =>
+                confirmPassToPlayer(team, thisUbication)
+              );
 
-              setActivateConfirmButton(true);
+              setActivateConfirmButton(() => true);
             }
           });
         }
@@ -397,7 +402,7 @@ function GameBoard({ match, setMatchState }: Props) {
         if (teamNumber != 0) {
           if (teamNumber == 1) {
             if (teamA.teamTurn) {
-              setPlayerClikedTeamA([col, row]);
+              setPlayerClikedTeamA(() => [col, row]);
 
               if (!teamAAnySelected) {
                 setConfirmButtonHandler(
@@ -406,11 +411,11 @@ function GameBoard({ match, setMatchState }: Props) {
                 );
               }
 
-              setActivateConfirmButton(true);
+              setActivateConfirmButton(() => true);
             }
           } else if (teamNumber == 2) {
             if (teamB.teamTurn) {
-              setPlayerClikedTeamB([col, row]);
+              setPlayerClikedTeamB(() => [col, row]);
 
               if (!teamBAnySelected) {
                 setConfirmButtonHandler(
@@ -453,16 +458,16 @@ function GameBoard({ match, setMatchState }: Props) {
       );
 
       if (passer.team == "TeamA") {
-        setPlayerClikedTeamA([0, 0]);
+        setPlayerClikedTeamA(() => [0, 0]);
       } else {
-        setPlayerClikedTeamB([0, 0]);
+        setPlayerClikedTeamB(() => [0, 0]);
       }
 
-      setActionConfirmed("");
+      setActionConfirmed(() => "");
 
-      setMatchState(match);
+      setMatchState(() => match);
 
-      setActivateConfirmButton(false);
+      setActivateConfirmButton(() => false);
     };
   }
 
@@ -505,13 +510,13 @@ function GameBoard({ match, setMatchState }: Props) {
       playerActive.setPlayerSelected(false);
 
       if (playerActive.team == "TeamA") {
-        setPlayerClikedTeamA([0, 0]);
+        setPlayerClikedTeamA(() => [0, 0]);
       } else {
-        setPlayerClikedTeamB([0, 0]);
+        setPlayerClikedTeamB(() => [0, 0]);
       }
     }
 
-    setActivateConfirmButton(false);
+    setActivateConfirmButton(() => false);
   }
 
   return (

@@ -1,6 +1,7 @@
 import React from "react";
 import { PlayerEditableInfo, PlayerStats } from "../../entities/myInterfaces";
 import NumericInputs from "./NumericInputs";
+//@ts-ignore
 import "../../styles/CreatePlayer.css";
 
 interface Props {

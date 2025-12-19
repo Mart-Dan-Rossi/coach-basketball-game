@@ -3,6 +3,7 @@ import React from "react";
 import { useState } from "react";
 import { getInitialPlayerStatsOnCreation } from "../utilities/exportableFunctions";
 import { initialGameBoard } from "../utilities/exportableFunctions";
+import { Player } from "../entities/players";
 
 interface props {
   children: JSX.Element | JSX.Element[];
@@ -173,6 +174,8 @@ export const GameContextProvider = ({ children }: props) => {
 
   const [createPlayer, setCreatePlayer] = useState(0);
 
+  const [activePlayer, setActivePlayer] = useState<Player | undefined>();
+
   return (
     <GameContext.Provider
       value={{
@@ -290,6 +293,9 @@ export const GameContextProvider = ({ children }: props) => {
 
         createPlayer,
         setCreatePlayer,
+
+        activePlayer,
+        setActivePlayer,
       }}
     >
       {children}

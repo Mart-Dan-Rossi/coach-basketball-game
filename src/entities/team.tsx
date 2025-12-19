@@ -139,13 +139,12 @@ export class Team {
   }
 
   playerOnThisTileHaveTurnLeft(ubicationScaned: number[]) {
-    return (
-      this.players.find(
-        (player) =>
-          player.ubicationX === ubicationScaned[0] &&
-          player.ubicationY === ubicationScaned[1]
-      ) !== undefined
+    const playerOnThisTile = this.players.find(
+      (player) =>
+        player.ubicationX === ubicationScaned[0] &&
+        player.ubicationY === ubicationScaned[1]
     );
+    return playerOnThisTile && playerOnThisTile.playerHaveTurn;
   }
 
   //---------------------------------------END GET INFO METHODS-------------------------------------------------------------------------------------------------------------

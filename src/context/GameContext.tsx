@@ -5,6 +5,7 @@ import {
   TeamBStats,
   PlayerStats,
 } from "../entities/myInterfaces";
+import { Player } from "../entities/players";
 
 export interface GameContextProps {
   playerA1Stats: PlayerEditableInfo;
@@ -156,6 +157,9 @@ export interface GameContextProps {
 
   createPlayer: number;
   setCreatePlayer: React.Dispatch<React.SetStateAction<number>>;
+
+  activePlayer: Player|undefined;
+  setActivePlayer: React.Dispatch<React.SetStateAction<Player|undefined>>;
 }
 
 export const GameContext = createContext<GameContextProps>(

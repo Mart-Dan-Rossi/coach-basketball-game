@@ -366,7 +366,7 @@ export class Match {
     );
 
     passer.setLastAction("pass");
-    passer.restActionPoints(0.5);
+    passer.subtractActionPoints(0.5);
     passer.setHaveBall(false);
 
     //If the pass have more points than the defensive points
@@ -1044,17 +1044,19 @@ export class Match {
     return rebounder!;
   }
 
-  handleSelectedPlayersStatus(
+  handleEndTurn(
     playerSillHaveTurnLeft: boolean,
     gameNarration: string[],
     setGameNarration: React.Dispatch<React.SetStateAction<string[]>>,
     gameBoard: number[][]
   ) {
+    console.log("handleEndTurn: ");
     let activePlayer = this.getActivePlayer();
+    // console.log("activePlayer: ", activePlayer);
 
     activePlayer!.setActivePlayer(false);
     activePlayer!.setPlayerSelected(false);
-
+    
     if (!playerSillHaveTurnLeft) {
       activePlayer!.resetActionPoints();
       activePlayer!.setPlayerHaveTurn(false);

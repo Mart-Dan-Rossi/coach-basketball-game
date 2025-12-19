@@ -1,6 +1,15 @@
 import { PlayerEditableInfo, PlayerStats } from "../entities/myInterfaces";
 import { Player } from "../entities/players";
 
+export function isPlayerWaiting(player: Player) {
+  return (
+    player.lastAction === "waitWithCaution" ||
+    player.lastAction === "overwhelmingWaiting" ||
+    player.lastAction === "waitWithoutTheBall" ||
+    player.lastAction === "trippleThreat"
+  );
+}
+
 export function getMinStatPerPosition(
   thisStat: string,
   playerPosition: string

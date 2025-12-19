@@ -5,6 +5,7 @@ import { GameContext } from "../../context/GameContext";
 import "../../styles/MatchActionsContainer.css";
 import {} from "../../entities/myInterfaces";
 import { Match } from "../../entities/match";
+import { isPlayerWaiting } from "../../utilities/exportableFunctions";
 
 interface Props {
   match: Match;
@@ -33,6 +34,8 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
     setConfirmButtonHandler,
     setActionConfirmed,
     gameBoard,
+    activePlayer,
+    setActivePlayer,
   } = useContext(GameContext);
 
   let matchCopy = match;
@@ -178,14 +181,17 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
         setActionConfirmed(() => "end turn");
 
         setEndTurnButtonSelected(() => false);
-        setEndTurnButtonSelected(() => false);
 
-        matchCopy.handleSelectedPlayersStatus(
-          false,
+        matchCopy.handleEndTurn(
+          isPlayerWaiting(activePlayer!),
           gameNarration,
           setGameNarration,
           gameBoard
         );
+
+        setActivePlayer(() => matchCopy.getActivePlayer());
+
+        setMatchState(() => matchCopy);
       },
     },
   };

@@ -313,12 +313,13 @@ export class Player {
     this.ubicationY = 8;
   }
 
-  restActionPoints(points: number) {
+  subtractActionPoints(points: number) {
     this.actionPoints -= points;
   }
 
   resetActionPoints() {
     this.actionPoints = 0;
+    // console.log("new Action P: ", this.actionPoints);
   }
 
   getDribblerPoints() {

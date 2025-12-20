@@ -128,20 +128,6 @@ export class Player {
 
   //---------------------------------START GET INFO METHODS--------------------------------------------------------------------------------------------------------
 
-  playerPositionDetection = () => {
-    if (this.position == "1") {
-      return "PG";
-    } else if (this.position == "2") {
-      return "SG";
-    } else if (this.position == "3") {
-      return "SF";
-    } else if (this.position == "4") {
-      return "PF";
-    } else if (this.position == "5") {
-      return "C";
-    }
-  };
-
   playerHaveTheBall() {
     return this.haveBall;
   }
@@ -299,8 +285,19 @@ export class Player {
   //----------------------------------START PLAYER ACTIONS---------------------------------------------------------------------------------------------------------
 
   movePlayer(dx: number, dy: number) {
+    let actionPointsToDecrease =
+      Math.pow(dx, 2) + Math.pow(dy, 2) == 2 ? 1.5 : 1;
+
+    this.actionPoints -= actionPointsToDecrease;
+
     this.ubicationX! += dx;
     this.ubicationY! += dy;
+
+    this.setLastAction("move");
+  }
+
+  handleWait(type: string) {
+    this.setLastAction(type);
   }
 
   movePlayerToOwnRim() {
@@ -319,7 +316,6 @@ export class Player {
 
   resetActionPoints() {
     this.actionPoints = 0;
-    // console.log("new Action P: ", this.actionPoints);
   }
 
   getDribblerPoints() {

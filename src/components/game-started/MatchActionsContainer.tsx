@@ -71,10 +71,7 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
       showState: showMoveButton,
       selectedState: moveButtonSelected,
       selectedSetter: setMoveButtonSelected,
-      actionFunction: () => {
-        setActionConfirmed(() => "move");
-        setFinalisingAction(() => true);
-      },
+      actionFunction: hendleMove,
     },
     STEAL_ATTEMPT_BUTTON: {
       id: 1,
@@ -82,9 +79,7 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
       showState: showStealAttemptButton,
       selectedState: stealAttemptButtonSelected,
       selectedSetter: setStealAttemptButtonSelected,
-      actionFunction: () => {
-        setActionConfirmed(() => "steal attempt");
-      },
+      actionFunction: handleStealAttempt,
     },
     INTERCEPT_PASS_ATTEMPT_BUTTON: {
       id: 2,
@@ -92,9 +87,7 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
       showState: showInterceptPassAttemptButton,
       selectedState: interceptPassAttemptButtonSelected,
       selectedSetter: setInterceptPassAttemptButtonSelected,
-      actionFunction: () => {
-        setActionConfirmed(() => "intercept pass attempt");
-      },
+      actionFunction: hanldeInterceptPassAttempt,
     },
     OVERWHELING_WAITING_BUTTON: {
       id: 3,
@@ -102,9 +95,7 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
       showState: showWaitPressingButton,
       selectedState: waitPressingButtonSelected,
       selectedSetter: setOverwhelmingWaitingButtonSelected,
-      actionFunction: () => {
-        setActionConfirmed(() => "overwhelming waiting");
-      },
+      actionFunction: () => handleWait("overwhelmingWaiting"),
     },
     WAIT_WITH_CAUTION_BUTTON: {
       id: 4,
@@ -112,9 +103,7 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
       showState: showWaitCarefullyButton,
       selectedState: waitCarefullyButtonSelected,
       selectedSetter: setWaitWithCautionButtonSelected,
-      actionFunction: () => {
-        setActionConfirmed(() => "wait with caution");
-      },
+      actionFunction: () => handleWait("withCaution"),
     },
     PASS_BUTTON: {
       id: 5,
@@ -122,10 +111,7 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
       showState: showPassButton,
       selectedState: passButtonSelected,
       selectedSetter: setPassButtonSelected,
-      actionFunction: () => {
-        setActionConfirmed(() => "pass");
-        setFinalisingAction(() => true);
-      },
+      actionFunction: handlePass,
     },
     DRIBBLING_BUTTON: {
       id: 6,
@@ -133,10 +119,7 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
       showState: showDribblingButton,
       selectedState: dribblingButtonSelected,
       selectedSetter: setDribblingButtonSelected,
-      actionFunction: () => {
-        setActionConfirmed(() => "dribbling");
-        setFinalisingAction(() => true);
-      },
+      actionFunction: handleDribbling,
     },
     WAIT_WITHOUT_THE_BALL_BUTTON: {
       id: 7,
@@ -144,9 +127,7 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
       showState: showWaitWithoutTheBallButton,
       selectedState: waitWithoutTheBallButtonSelected,
       selectedSetter: setWaitWithoutTheBallButtonSelected,
-      actionFunction: () => {
-        setActionConfirmed(() => "wait without the ball");
-      },
+      actionFunction: () => handleWait("withoutTheBall"),
     },
     TRIPLE_THREAT_BUTTON: {
       id: 8,
@@ -154,9 +135,7 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
       showState: showTripleThreatButton,
       selectedState: tripleThreatButtonSelected,
       selectedSetter: setTripleThreatButtonSelected,
-      actionFunction: () => {
-        setActionConfirmed(() => "triple threat");
-      },
+      actionFunction: () => handleWait("tripleThreat"),
     },
     SHOOT_BUTTON: {
       id: 9,
@@ -165,11 +144,7 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
       selectedState: shootButtonSelected,
       selectedSetter: setShootButtonSelected,
 
-      actionFunction: () => {
-        setActionConfirmed(() => "shoot");
-
-        matchCopy.shotAttemptedStatus();
-      },
+      actionFunction: handleShot,
     },
     END_TURN_BUTTON: {
       id: 10,
@@ -177,24 +152,72 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
       showState: showEndTurnButton,
       selectedState: endTurnButtonSelected,
       selectedSetter: setEndTurnButtonSelected,
-      actionFunction: () => {
-        setActionConfirmed(() => "end turn");
-
-        setEndTurnButtonSelected(() => false);
-
-        matchCopy.handleEndTurn(
-          isPlayerWaiting(activePlayer!),
-          gameNarration,
-          setGameNarration,
-          gameBoard
-        );
-
-        setActivePlayer(() => matchCopy.getActivePlayer());
-
-        setMatchState(() => matchCopy);
-      },
+      actionFunction: handleEndTurn,
     },
   };
+
+  function hendleMove() {
+    setActionConfirmed(() => "move");
+    setFinalisingAction(() => true);
+  }
+
+  function handleStealAttempt() {
+    setActionConfirmed(() => "stealAttempt");
+  }
+
+  function hanldeInterceptPassAttempt() {
+    setActionConfirmed(() => "interceptPassAttempt");
+  }
+
+  function handlePass() {
+    setActionConfirmed(() => "pass");
+    setFinalisingAction(() => true);
+  }
+
+  function handleDribbling() {
+    setActionConfirmed(() => "dribbling");
+    setFinalisingAction(() => true);
+  }
+
+  function handleWait(type: string) {
+    setActionConfirmed(() => type);
+
+    setWaitWithCautionButtonSelected(() => false);
+    setOverwhelmingWaitingButtonSelected(() => false);
+    setWaitWithoutTheBallButtonSelected(() => false);
+    setTripleThreatButtonSelected(() => false);
+
+    setActionConfirmed(() => type);
+
+    matchCopy.handlePlayerWait(
+      type,
+      gameNarration,
+      setGameNarration,
+      gameBoard
+    );
+
+    setActivePlayer(() => matchCopy.getActivePlayer());
+
+    setMatchState(() => matchCopy);
+  }
+
+  function handleShot() {
+    setActionConfirmed(() => "shoot");
+
+    matchCopy.shotAttemptedStatus();
+  }
+
+  function handleEndTurn() {
+    setActionConfirmed(() => "end turn");
+
+    setEndTurnButtonSelected(() => false);
+
+    matchCopy.handleEndTurn(gameNarration, setGameNarration, gameBoard);
+
+    setActivePlayer(() => matchCopy.getActivePlayer());
+
+    setMatchState(() => matchCopy);
+  }
 
   function clickActionButtonHanddler(
     previousValueOfThisActionState: boolean,

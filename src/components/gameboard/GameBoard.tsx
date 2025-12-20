@@ -12,6 +12,7 @@ import {
 } from "../../utilities/exportableFunctions";
 import { Player } from "../../entities/players";
 import { Match } from "../../entities/match";
+import { act } from "react-dom/test-utils";
 
 interface Props {
   match: Match;
@@ -53,7 +54,12 @@ function GameBoard({ match, setMatchState }: Props) {
     setActivePlayer,
   } = useContext(GameContext);
 
-  useEffect(() => {}, [playerClikedTeamA, playerClikedTeamB, match]);
+  useEffect(() => {}, [
+    playerClikedTeamA,
+    playerClikedTeamB,
+    match,
+    activePlayer,
+  ]);
 
   let teamAAnySelected = teamA.isAnyPlayerSelected();
   let teamBAnySelected = teamB.isAnyPlayerSelected();
@@ -147,7 +153,11 @@ function GameBoard({ match, setMatchState }: Props) {
     }
   }
 
-  function addClassIfNeeded(teamNumber: number, col: number, row: number) {
+  function addClassToTileIfNeeded(
+    teamNumber: number,
+    col: number,
+    row: number
+  ) {
     let thisUbication = [col, row];
 
     if (actionConfirmed != "") {
@@ -233,7 +243,13 @@ function GameBoard({ match, setMatchState }: Props) {
         }
       }
 
-      if (actionConfirmed == "end turn") {
+      if (
+        actionConfirmed == "end turn" ||
+        actionConfirmed == "overwhelmingWaiting" ||
+        actionConfirmed == "withCaution" ||
+        actionConfirmed == "withoutTheBall" ||
+        actionConfirmed == "tripleThreat"
+      ) {
         if (activePlayer) {
           hideActionsButtons();
 
@@ -262,17 +278,14 @@ function GameBoard({ match, setMatchState }: Props) {
         (playerClikedTeamA[0] == col && playerClikedTeamA[1] == row) ||
         (playerClikedTeamB[0] == col && playerClikedTeamB[1] == row)
       ) {
-        // console.log("playerCliked")
         return "selected-tile";
       }
 
       if (teamA.teamTurn && teamNumber == 1) {
-        console.log("TeamA: ", teamA);
-        // console.log("teamTurn && teamNumber A")
         if (teamAAnySelected) {
           paintPlayerOnThisTileAsSelected(teamA, thisUbication);
         } else if (teamA.playerOnThisTileHaveTurnLeft(thisUbication)) {
-          console.log("teamA.playerOnThisTileHaveTurnLeft", thisUbication);
+          // console.log("teamA.playerOnThisTileHaveTurnLeft", thisUbication);
           return "highlighted-tile";
         }
       } else if (teamB.teamTurn && teamNumber == 2) {
@@ -280,7 +293,7 @@ function GameBoard({ match, setMatchState }: Props) {
         if (teamBAnySelected) {
           paintPlayerOnThisTileAsSelected(teamB, thisUbication);
         } else if (teamB.playerOnThisTileHaveTurnLeft(thisUbication)) {
-          console.log("teamB.playerOnThisTileHaveTurnLeft", thisUbication);
+          // console.log("teamB.playerOnThisTileHaveTurnLeft", thisUbication);
           return "highlighted-tile";
         }
       }
@@ -302,7 +315,6 @@ function GameBoard({ match, setMatchState }: Props) {
         teamAActivePlayerUbication[0] == thisUbication[0] &&
         teamAActivePlayerUbication[1] == thisUbication[1]
       ) {
-        // console.log("teamActivePlayerUbication == thisUbication")
         showPosibleActionsButtons(teamAActivePlayer, teamA);
 
         return "active-tile";
@@ -311,7 +323,6 @@ function GameBoard({ match, setMatchState }: Props) {
         teamBActivePlayerUbication[0] == thisUbication[0] &&
         teamBActivePlayerUbication[1] == thisUbication[1]
       ) {
-        // console.log("teamActivePlayerUbication == thisUbication")
         showPosibleActionsButtons(teamBActivePlayer, teamB);
 
         return "active-tile";
@@ -330,17 +341,9 @@ function GameBoard({ match, setMatchState }: Props) {
           activePlayer.ubicationX! - 1
         ] = 0;
 
-        let actionPointsToDecrease =
-          Math.pow(dx, 2) + Math.pow(dy, 2) == 2 ? 1.5 : 1;
-
-        activePlayer!.subtractActionPoints(actionPointsToDecrease);
-        // console.log("activePlayer action points: ", activePlayer.actionPoints);
-
         activePlayer.movePlayer(dx, dy);
         gameBoard[activePlayer.ubicationY! - 1][activePlayer.ubicationX! - 1] =
           activePlayer.team == "TeamA" ? 1 : 2;
-
-        activePlayer.setLastAction(actionConfirmed);
 
         setActionConfirmed(() => "");
 
@@ -559,7 +562,11 @@ function GameBoard({ match, setMatchState }: Props) {
                 key={`tile-${colIndex + 1}-${rowIndex + 1}`}
                 className={`tile ROW${rowIndex + 1} COL${
                   colIndex + 1
-                } ${addClassIfNeeded(player, colIndex + 1, rowIndex + 1)}`}
+                } ${addClassToTileIfNeeded(
+                  player,
+                  colIndex + 1,
+                  rowIndex + 1
+                )}`}
                 onClick={clickTileHandler(player, colIndex + 1, rowIndex + 1)!}
               >
                 {player == 0 ? (

@@ -2,6 +2,7 @@ import React from "react";
 import { Player } from "../../entities/players";
 import DrawSkillsIconsInPlayers from "./DrawSkillsIconsInPlayers";
 import DrawStatRowOfPopup from "./DrawStatRowOfPopup";
+import { playerPositionDetection } from "../../utilities/exportableFunctions";
 
 interface Props {
   player: Player;
@@ -20,7 +21,9 @@ const DrawPlayerInfoPopupInBoard = ({ player, teamLetterProps }: Props) => {
       className={`player-info-popup-in-board team-${teamLetterProps.toLowerCase()}`}
     >
       <div className="player-basic-info">
-        <h4 className="player-position">{player.playerPositionDetection()}</h4>
+        <h4 className="player-position">
+          {playerPositionDetection(player.position)}
+        </h4>
       </div>
       <div className="player-stats-icon-container">
         <DrawSkillsIconsInPlayers

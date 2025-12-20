@@ -24,9 +24,11 @@ import {
   getReboundDistance as getWhereItReboundsTo,
   getClosestPlayers,
   getRangeText,
+  playerPositionDetection,
 } from "../utilities/exportableFunctions";
 import React from "react";
 import { Player } from "./players";
+import GameBoard from "../components/gameboard/GameBoard";
 
 export class Match {
   teamA: Team;
@@ -980,6 +982,37 @@ export class Match {
     this.setShotHasBeenAttempted(false);
   }
 
+  handlePlayerWait(
+    type: string,
+    gameNarration: string[],
+    setGameNarration: React.Dispatch<React.SetStateAction<string[]>>,
+    gameBoard: number[][]
+  ) {
+    let activePlayer = this.getActivePlayer()!;
+
+    activePlayer.handleWait(type);
+
+    const playerName = `The ${playerPositionDetection(
+      activePlayer.position
+    )} of ${activePlayer.team}`;
+
+    const narrationText =
+      type == "overwhelmingWaiting"
+        ? `${playerName} is now in an overwhelming waiting stance.`
+        : type == "withCaution"
+        ? `${playerName} is now waiting with caution.`
+        : type == "withoutTheBall"
+        ? `${playerName} is now waiting without the ball.`
+        : `${playerName} is now doing a triple threat.`;
+
+    this.handleEndTurn(
+      gameNarration,
+      setGameNarration,
+      gameBoard,
+      narrationText
+    );
+  }
+
   setShotHasBeenAttempted(value: boolean) {
     this.shotHasBeenAttempted = value;
   }
@@ -1045,56 +1078,86 @@ export class Match {
   }
 
   handleEndTurn(
-    playerSillHaveTurnLeft: boolean,
     gameNarration: string[],
     setGameNarration: React.Dispatch<React.SetStateAction<string[]>>,
-    gameBoard: number[][]
+    gameBoard: number[][],
+    currentGameNarration?: string
   ) {
-    console.log("handleEndTurn: ");
+    // console.log("handleEndTurn: ");
     let activePlayer = this.getActivePlayer();
     // console.log("activePlayer: ", activePlayer);
 
+    const newGameNarration = [...gameNarration];
+
+    if (currentGameNarration) {
+      newGameNarration.unshift(currentGameNarration);
+    }
+
     activePlayer!.setActivePlayer(false);
     activePlayer!.setPlayerSelected(false);
-    
-    if (!playerSillHaveTurnLeft) {
-      activePlayer!.resetActionPoints();
-      activePlayer!.setPlayerHaveTurn(false);
-      activePlayer!.setMovementLeft(false);
-    }
+
+    activePlayer!.resetActionPoints();
+    activePlayer!.setPlayerHaveTurn(false);
+    activePlayer!.setMovementLeft(false);
 
     let selectedPlayers = this.getSelectedPlayers();
 
+    // console.log("selectedPlayers: ", selectedPlayers);
+
     if (selectedPlayers[0] || selectedPlayers[1]) {
       if (selectedPlayers[0]) {
-        selectedPlayers[0].setPlayerSelected(false);
         selectedPlayers[0].setActivePlayer(true);
+        selectedPlayers[0].setPlayerSelected(false);
+
+        newGameNarration.unshift(
+          `The ${playerPositionDetection(selectedPlayers[0].position)} of ${
+            selectedPlayers[0].team
+          } is now the active player.`
+        );
       }
 
       if (selectedPlayers[1]) {
-        selectedPlayers[1].setPlayerSelected(false);
         selectedPlayers[1].setActivePlayer(true);
+        selectedPlayers[1].setPlayerSelected(false);
+
+        newGameNarration.unshift(
+          `The ${playerPositionDetection(selectedPlayers[1].position)} of ${
+            selectedPlayers[1].team
+          } is now the active player.`
+        );
       }
+
+      setGameNarration(() => newGameNarration);
     } else if (
       this.teamA.doesPlayersHaveMovement() ||
       this.teamB.doesPlayersHaveMovement()
     ) {
+      console.log("No players selected and a teams have movement left");
       if (this.teamA.doesPlayersHaveMovement()) {
+        console.log("Turn left on Team A");
         this.teamA.setTeamTurnLeft(true);
       }
 
       if (this.teamB.doesPlayersHaveMovement()) {
+        console.log("Turn left on Team B");
         this.teamB.setTeamTurnLeft(true);
       }
 
       if (this.teamA.teamHaveTheBall()) {
+        console.log("It's Team B turn");
         this.setTeamTurn("TeamB");
         this.teamB.setTeamTurn(true);
+        newGameNarration.unshift(`It's now ${this.teamB.name} turn.`);
       } else {
+        console.log("It's Team A turn");
         this.setTeamTurn("TeamA");
         this.teamA.setTeamTurn(true);
+        newGameNarration.unshift(`It's now ${this.teamA.name} turn.`);
       }
+
+      setGameNarration(() => newGameNarration);
     } else {
+      console.log("No players selected and noone have movement left");
       this.runClock(gameNarration, setGameNarration, gameBoard);
 
       if (this.teamA.teamHaveTheBall()) {

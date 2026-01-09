@@ -9,10 +9,10 @@ import {
   boardXDimentions,
   boardYDimentions,
   compareIniciatives,
+  isRivalNearby,
 } from "../../utilities/exportableFunctions";
 import { Player } from "../../entities/players";
 import { Match } from "../../entities/match";
-import { act } from "react-dom/test-utils";
 
 interface Props {
   match: Match;
@@ -127,12 +127,16 @@ function GameBoard({ match, setMatchState }: Props) {
       } else {
         //And have more than 0.5 action points
         if (teamActivePlayer.actionPoints > 0.5) {
-          setShowWaitCarefullyButton(() => true);
+          if (isRivalNearby(gameBoard, teamActivePlayer)) {
+            setShowWaitCarefullyButton(() => true);
+          }
         }
 
         //And have more than 1 action point
         if (teamActivePlayer.actionPoints > 1) {
-          setShowWaitPressingButton(() => true);
+          if (isRivalNearby(gameBoard, teamActivePlayer, true)) {
+            setShowWaitPressingButton(() => true);
+          }
           setShowMoveButton(() => true);
 
           //And check if ther's an atacking player with the ball next to him

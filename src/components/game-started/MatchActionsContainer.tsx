@@ -34,7 +34,6 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
     setConfirmButtonHandler,
     setActionConfirmed,
     gameBoard,
-    activePlayer,
     setActivePlayer,
   } = useContext(GameContext);
 

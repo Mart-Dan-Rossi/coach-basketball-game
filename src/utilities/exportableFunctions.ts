@@ -1441,4 +1441,39 @@ function getInitialBoard() {
   return initialBoard;
 }
 
+export function isRivalNearby(
+  gameBoard: number[][],
+  player: Player,
+  mustBeNext = false
+) {
+  const x = player.ubicationX! - 1;
+  const y = player.ubicationY! - 1;
+
+  const rivalTeamNumber = player.team === "TeamA" ? 2 : 1;
+
+  let dx = mustBeNext ? 1 : 2;
+  let dy = mustBeNext ? 1 : 2;
+
+  for (let i = dx * -1; i <= dx; i++) {
+    for (let j = dy * -1; j <= dy; j++) {
+      if (i === 0 && j === 0) {
+        continue;
+      }
+      const newX = x + j;
+      const newY = y + i;
+
+      if (
+        newX >= 0 &&
+        newX < gameBoard[0].length &&
+        newY >= 0 &&
+        newY < gameBoard.length
+      ) {
+        if (gameBoard[newY][newX] === rivalTeamNumber) {
+          return true;
+        }
+      }
+    }
+  }
+}
+
 export const initialGameBoard = getInitialBoard();

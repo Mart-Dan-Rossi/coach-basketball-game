@@ -33,6 +33,7 @@ export class Player {
   haveBall: boolean;
   movementLeft: boolean;
   lastAction: string;
+  lastPasser: boolean;
   actionPoints: number;
   playerSelected: boolean;
   playerActive: boolean;
@@ -101,6 +102,7 @@ export class Player {
     this.haveBall = false;
     this.movementLeft = true;
     this.lastAction = "Haven't do anithing yet";
+    this.lastPasser = false;
     this.actionPoints = 0;
     this.playerSelected = false;
     this.playerActive = false;
@@ -337,6 +339,32 @@ export class Player {
     }
 
     return dribblerPointsInAction;
+  }
+
+  getDribbleDefenderPoints() {
+    let defenderPointsInAction: number;
+    let teamAAtacking = this.team == "TeamA";
+    let dribblerZone = playerZone(this, teamAAtacking);
+
+    //Adjust dribblingStealConstant for defender for getting the balanced game
+    let dribblingStealConstant = 0.1;
+
+    let multiplier =
+      dribblingStealConstant +
+      (this.lastAction == "stealAttempt" ? 1 : 0) +
+      (this.lastAction.toLowerCase() === "overwhelmingWaiting" ? 0.2 : 0);
+
+    if (dribblerZone <= 2) {
+      defenderPointsInAction =
+        (this.insideDefence * 2 +
+          this.perimetrerDefence * 4 +
+          this.atleticism * 2) *
+        multiplier;
+    } else {
+      defenderPointsInAction =
+        (this.perimetrerDefence * 6 + this.atleticism * 2) * multiplier;
+    }
+    return defenderPointsInAction;
   }
 
   //-----------------------------------END PLAYER ACTIONS----------------------------------------------------------------------------------------------------------

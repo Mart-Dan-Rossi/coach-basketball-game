@@ -213,6 +213,8 @@ export class Match {
     //First i get what's the defending team
     let teamDefending =
       passer.team == this.teamA.name ? this.teamB.name : this.teamA.name;
+    let passerTeam = passer.team == this.teamA.name ? this.teamA : this.teamB;
+
     let totalDefensivePoints = 0;
 
     //I'll use this to know who is the most likley defender to steal the ball. It have the player with the highest defensive points and the number of points he got
@@ -379,6 +381,8 @@ export class Match {
         `${receiver.name} gets the pass and is the new ball handler`
       );
 
+      passerTeam.handleNewPasser(passer);
+
       //If the total defensive points are higher than pass points
     } else {
       //The player with the highest defensive points involved in this situation steal the ball
@@ -386,32 +390,86 @@ export class Match {
       newGameNarration.unshift(
         `${defensorWithTheHighestDefensivePoints[0]!.name} has stolen the ball!`
       );
+
+      passerTeam.resetLastPasserForAllPlayers();
     }
 
     setGameNarration(() => newGameNarration);
   }
 
+  //It returns a boolean saying if the dribbling is succesfull and the higher player defensive point to give him the ball in case the dribbling is not succesfull.
   calculateIfDribblingIsSuccesfull(
     dribbler: Player,
     endingUbication: number[],
     gameBoard: [[]]
   ) {
+    //I set dribbler as default player with the ball
+    let playerWithBallAfterCalculations = dribbler;
+    let dribblerTeam = dribbler.team == "TeamA" ? this.teamA : this.teamB;
+
+    dribblerTeam.resetLastPasserForAllPlayers();
+
     let tilesThatWillInfluenceInCalculations =
       checkTilesThatWillInfluenceInTheCalculations(
         gameBoard,
         [dribbler.ubicationX!, dribbler.ubicationY!],
         endingUbication
-      );
-    //TODO end this function (and remember to return the correct player, not the dribbler)
+      ).flat(); //In this case there will be no defeders in the tile of the ball
 
-    let playerWithBall: Player;
+    let defensivePlayers = [] as Player[];
+
+    function getDefensivePlayers(team: Team): Player[] {
+      //The flatMap is used to avoid returning undefined values in the array
+      return tilesThatWillInfluenceInCalculations.flatMap((tile) =>
+        team.players.filter(
+          (player) =>
+            player.ubicationX === tile[0] && player.ubicationY === tile[1]
+        )
+      );
+    }
+
+    if (dribbler.team == "TeamA") {
+      defensivePlayers = getDefensivePlayers(this.teamB);
+    } else {
+      defensivePlayers = getDefensivePlayers(this.teamA);
+    }
+
+    if (defensivePlayers.length == 0) {
+      //Dribbler is set as the player with the ball at this point
+      return [true, playerWithBallAfterCalculations];
+    }
 
     let dribblerPointsInAction = dribbler.getDribblerPoints();
 
-    playerWithBall = dribbler;
+    defensivePlayers.forEach((defender) => {
+      let defenderPointsInAction = defender.getDribbleDefenderPoints();
 
-    //It returns a boolean saying if the dribbling is succesfull and the higher player defensive point to give him the ball in case the dribbling is not succesfull.
-    return [true, playerWithBall];
+      //If there are multiple defenders involved they get a boost based on how many they are
+      switch (defensivePlayers.length) {
+        case 1:
+          defenderPointsInAction = defenderPointsInAction * 1;
+          break;
+        case 2:
+          defenderPointsInAction = defenderPointsInAction * 1.1;
+          break;
+        case 3:
+          defenderPointsInAction = defenderPointsInAction * 1.25;
+          break;
+        case 4:
+          defenderPointsInAction = defenderPointsInAction * 1.4;
+          break;
+        case 5:
+          defenderPointsInAction = defenderPointsInAction * 1.55;
+          break;
+      }
+
+      if (defenderPointsInAction > dribblerPointsInAction) {
+        return [false, defender];
+      }
+    });
+
+    //If none defender could steal the ball the action is successfull
+    return [true, dribbler];
   }
 
   handleShot(
@@ -421,6 +479,7 @@ export class Match {
   ) {
     //First i get the shooter
     let shooter = this.getShooter()!;
+    let shooterTeam = shooter.team == "TeamA" ? this.teamA : this.teamB;
     let newGameNarration = [...gameNarration];
 
     //Then i get the ataker and defender team
@@ -906,6 +965,8 @@ export class Match {
     let isItIn = calculateIfGoesIn();
     let newPlayerWithBall: Player;
 
+    let asistant = atackingTeam.players.find((player) => player.lastPasser);
+
     if (isItIn) {
       if (/*TODO isFreeThrow*/ false) {
         newGameNarration.unshift(
@@ -948,6 +1009,7 @@ export class Match {
           newPlayerWithBall.team == atackingTeam.name ? "but" : "and"
         } ${newPlayerWithBall.name} gets the rebound!`
       );
+      shooterTeam.resetLastPasserForAllPlayers();
     }
 
     //Then i handle the players status and stats
@@ -959,15 +1021,21 @@ export class Match {
     );
     shooter.setShotAttempt(false);
 
+    if (asistant) {
+      asistant.statsAddAssist();
+    }
+
     newPlayerWithBall.setHaveBall(true);
 
     //Finally i handle the team stats
     atackingTeam.statsAddShotAttempt(
       pointsToAdd,
       isItIn,
-      /*TODO check if it's an assist*/ false,
+      !!asistant,
       /*TODO check if there was a foul*/ false
     );
+
+    //TODO (But not here) passerTeam.resetLastPasserForAllPlayers(); when buzzer sound
 
     if (!isItIn) {
       if (newPlayerWithBall.team == atackingTeam.name) {

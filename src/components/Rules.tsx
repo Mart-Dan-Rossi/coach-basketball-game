@@ -34,8 +34,8 @@ function Rules() {
             those who participate in this game) will face each other in a match
             with a single purpose: Defeat the rival{" "}
             <span className="font-weight-strong">coach</span>. In order to do
-            that eaech competitor have to create your roster, plan his game
-            and make em work in the floor.
+            that eaech competitor have to create your roster, plan his game and
+            make em work in the floor.
           </p>
           <p>
             The gameboard dimentions are proportional to a real FIBA basketball
@@ -277,8 +277,7 @@ function Rules() {
                   : The player try to read the opponent's intentions and get
                   ready to steal or block the ball. It can be done only by
                   players next to an attacking player. It increase his defensive
-                  stats (Weakly if the offensive player is ubicated diagonally)
-                  for the next defensive{" "}
+                  stats for the next defensive{" "}
                   <span className="font-weight-strong">action</span>. It cost{" "}
                   <span className="font-weight-strong">
                     1(one) action point

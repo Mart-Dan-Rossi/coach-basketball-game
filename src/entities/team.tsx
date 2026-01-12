@@ -163,6 +163,22 @@ export class Team {
     this.turnInInstantLeft = value;
   }
 
+  handleNewPasser(passer: Player) {
+    this.players.forEach((player) => {
+      if (player === passer) {
+        player.lastPasser = true;
+      } else {
+        player.lastPasser = false;
+      }
+    });
+  }
+
+  resetLastPasserForAllPlayers() {
+    this.players.forEach((player) => {
+      player.lastPasser = false;
+    });
+  }
+
   //----------------------------------END SET PLAYER STATUS METHODS---------------------------------------------------------------------------------------------------------
 
   //---------------------------------------START STATS METHODS--------------------------------------------------------------------------------------------------------------

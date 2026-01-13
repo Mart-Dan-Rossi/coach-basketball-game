@@ -22,6 +22,7 @@ export interface PlayerStats {
     perimeterScoring: number;
     insideScoring: number;
     playMaking: number;
+    position?: string;
 }
 
 export interface TeamAStats {

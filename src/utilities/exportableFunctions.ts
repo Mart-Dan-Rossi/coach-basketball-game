@@ -10,6 +10,26 @@ export function isPlayerWaiting(player: Player) {
   );
 }
 
+export function getHeightPoints(playerPosition: string, playerHeight: number) {
+  let minHeight = getMinStatPerPosition("height", playerPosition);
+  let maxHeight = getMaxStatPerPosition("height", playerPosition);
+
+  let minMaxDifference = maxHeight - minHeight;
+  let playerDifferenceToMax = maxHeight - playerHeight;
+
+  return (playerDifferenceToMax * 100) / minMaxDifference;
+}
+
+export function getWeightPoints(playerPosition: string, playerWeight: number) {
+  let minWeight = getMinStatPerPosition("weight", playerPosition);
+  let maxWeight = getMaxStatPerPosition("weight", playerPosition);
+
+  let minMaxDifference = maxWeight - minWeight;
+  let playerDifferenceToMax = maxWeight - playerWeight;
+
+  return (playerDifferenceToMax * 100) / minMaxDifference;
+}
+
 export function getMinStatPerPosition(
   thisStat: string,
   playerPosition: string
@@ -712,18 +732,32 @@ export function isIntheOtherRim(
   );
 }
 
+export function mathShotPointsInFreeThrow(shooter: Player) {
+  return 0;
+}
+
 export function mathShotPointsCloseToTheRim(
-  insideScoring: number,
-  playMaking: number,
-  atleticism: number,
-  weightPoints: number,
-  heightPoints: number,
-  multiplier: number
+  multiplier: number,
+  playerAtributes?: PlayerStats,
+  shooter?: Player
 ) {
+  const insideScoring =
+    playerAtributes?.insideScoring || shooter?.insideScoring;
+  const playMaking = playerAtributes?.playMaking || shooter?.playMaking;
+  const atleticism = playerAtributes?.atleticism || shooter?.atleticism;
+  const weightPoints = getWeightPoints(
+    (playerAtributes?.position || shooter?.position)!,
+    (playerAtributes?.weight || shooter?.weight)!
+  );
+  const heightPoints = getHeightPoints(
+    (playerAtributes?.position || shooter?.position)!,
+    (playerAtributes?.height || shooter?.height)!
+  );
+
   return (
-    (insideScoring * 5 +
-      playMaking * 0.5 +
-      atleticism * 3 +
+    (insideScoring! * 5 +
+      playMaking! * 0.5 +
+      atleticism! * 3 +
       weightPoints * 2 +
       heightPoints * 2 +
       roll20SidesDice() * 5) *
@@ -732,19 +766,30 @@ export function mathShotPointsCloseToTheRim(
 }
 
 export function mathShotPointsInShortRange(
-  insideScoring: number,
-  perimetrerScoring: number,
-  playMaking: number,
-  atleticism: number,
-  weightPoints: number,
-  heightPoints: number,
-  multiplier: number
+  multiplier: number,
+  playerAtributes?: PlayerStats,
+  shooter?: Player
 ) {
+  const insideScoring =
+    playerAtributes?.insideScoring || shooter?.insideScoring;
+  const perimeterScoring =
+    playerAtributes?.perimeterScoring || shooter?.perimeterScoring;
+  const playMaking = playerAtributes?.playMaking || shooter?.playMaking;
+  const atleticism = playerAtributes?.atleticism || shooter?.atleticism;
+  const weightPoints = getWeightPoints(
+    (playerAtributes?.position || shooter?.position)!,
+    (playerAtributes?.weight || shooter?.weight)!
+  );
+  const heightPoints = getHeightPoints(
+    (playerAtributes?.position || shooter?.position)!,
+    (playerAtributes?.height || shooter?.height)!
+  );
+
   return (
-    (insideScoring * 4 +
-      perimetrerScoring * 0.5 +
-      playMaking * 1.5 +
-      atleticism * 3 +
+    (insideScoring! * 4 +
+      perimeterScoring! * 0.5 +
+      playMaking! * 1.5 +
+      atleticism! * 3 +
       weightPoints +
       heightPoints +
       roll20SidesDice() * 5) *
@@ -753,16 +798,24 @@ export function mathShotPointsInShortRange(
 }
 
 export function mathShotPointsInMidRange(
-  insideScoring: number,
-  perimetrerScoring: number,
-  playMaking: number,
-  heightPoints: number,
-  multiplier: number
+  multiplier: number,
+  playerAtributes?: PlayerStats,
+  shooter?: Player
 ) {
+  const insideScoring =
+    playerAtributes?.insideScoring || shooter?.insideScoring;
+  const perimeterScoring =
+    playerAtributes?.perimeterScoring || shooter?.perimeterScoring;
+  const playMaking = playerAtributes?.playMaking || shooter?.playMaking;
+  const heightPoints = getHeightPoints(
+    (playerAtributes?.position || shooter?.position)!,
+    (playerAtributes?.height || shooter?.height)!
+  );
+
   return (
-    (insideScoring +
-      perimetrerScoring * 4 +
-      playMaking * 1.5 +
+    (insideScoring! +
+      perimeterScoring! * 4 +
+      playMaking! * 1.5 +
       heightPoints +
       roll20SidesDice() * 5) *
     multiplier
@@ -770,15 +823,24 @@ export function mathShotPointsInMidRange(
 }
 
 export function mathShotPointsCloseToThe3PointLine(
-  perimetrerScoring: number,
-  playMaking: number,
-  heightPoints: number,
-  weightPoints: number,
-  multiplier: number
+  multiplier: number,
+  playerAtributes?: PlayerStats,
+  shooter?: Player
 ) {
+  const perimeterScoring =
+    playerAtributes?.perimeterScoring || shooter?.perimeterScoring;
+  const playMaking = playerAtributes?.playMaking || shooter?.playMaking;
+  const weightPoints = getWeightPoints(
+    (playerAtributes?.position || shooter?.position)!,
+    (playerAtributes?.weight || shooter?.weight)!
+  );
+  const heightPoints = getHeightPoints(
+    (playerAtributes?.position || shooter?.position)!,
+    (playerAtributes?.height || shooter?.height)!
+  );
   return (
-    (perimetrerScoring * 6 +
-      playMaking -
+    (perimeterScoring! * 6 +
+      playMaking! -
       heightPoints * 0.5 -
       weightPoints * 0.5 +
       roll20SidesDice() * 4.5) *
@@ -787,15 +849,28 @@ export function mathShotPointsCloseToThe3PointLine(
 }
 
 export function mathShotPointsInLong3Range(
-  perimetrerScoring: number,
-  playMaking: number,
-  heightPoints: number,
-  weightPoints: number,
-  multiplier: number
+  multiplier: number,
+  playerAtributes?: PlayerStats,
+  shooter?: Player
 ) {
+  const insideScoring =
+    playerAtributes?.insideScoring || shooter?.insideScoring;
+  const perimeterScoring =
+    playerAtributes?.perimeterScoring || shooter?.perimeterScoring;
+  const playMaking = playerAtributes?.playMaking || shooter?.playMaking;
+  const atleticism = playerAtributes?.atleticism || shooter?.atleticism;
+  const weightPoints = getWeightPoints(
+    (playerAtributes?.position || shooter?.position)!,
+    (playerAtributes?.weight || shooter?.weight)!
+  );
+  const heightPoints = getHeightPoints(
+    (playerAtributes?.position || shooter?.position)!,
+    (playerAtributes?.height || shooter?.height)!
+  );
+
   return (
-    (perimetrerScoring * 5 +
-      playMaking * 0.5 -
+    (perimeterScoring! * 5 +
+      playMaking! * 0.5 -
       heightPoints * 0.5 -
       weightPoints +
       roll20SidesDice() * 3.5) *
@@ -804,13 +879,23 @@ export function mathShotPointsInLong3Range(
 }
 
 export function mathShotPointsInHalfCourt(
-  perimetrerScoring: number,
-  heightPoints: number,
-  weightPoints: number,
-  multiplier: number
+  multiplier: number,
+  playerAtributes?: PlayerStats,
+  shooter?: Player
 ) {
+  const perimeterScoring =
+    playerAtributes?.perimeterScoring || shooter?.perimeterScoring;
+  const weightPoints = getWeightPoints(
+    (playerAtributes?.position || shooter?.position)!,
+    (playerAtributes?.weight || shooter?.weight)!
+  );
+  const heightPoints = getHeightPoints(
+    (playerAtributes?.position || shooter?.position)!,
+    (playerAtributes?.height || shooter?.height)!
+  );
+
   return (
-    (perimetrerScoring * 4 -
+    (perimeterScoring! * 4 -
       heightPoints * 0.5 -
       weightPoints +
       roll20SidesDice() * 2) *
@@ -819,25 +904,45 @@ export function mathShotPointsInHalfCourt(
 }
 
 export function mathShotPointsBehindHalfCourt(
-  perimetrerScoring: number,
-  heightPoints: number,
-  weightPoints: number,
-  multiplier: number
+  multiplier: number,
+  playerAtributes?: PlayerStats,
+  shooter?: Player
 ) {
+  const perimeterScoring =
+    playerAtributes?.perimeterScoring || shooter?.perimeterScoring;
+  const weightPoints = getWeightPoints(
+    (playerAtributes?.position || shooter?.position)!,
+    (playerAtributes?.weight || shooter?.weight)!
+  );
+  const heightPoints = getHeightPoints(
+    (playerAtributes?.position || shooter?.position)!,
+    (playerAtributes?.height || shooter?.height)!
+  );
+
   return (
-    (perimetrerScoring * 3 - heightPoints - weightPoints + roll20SidesDice()) *
+    (perimeterScoring! * 3 - heightPoints - weightPoints + roll20SidesDice()) *
     multiplier
   );
 }
 
 export function mathShotPointsCloseToTheOtherRim(
-  perimetrerScoring: number,
-  heightPoints: number,
-  weightPoints: number,
-  multiplier: number
+  multiplier: number,
+  playerAtributes?: PlayerStats,
+  shooter?: Player
 ) {
+  const perimeterScoring =
+    playerAtributes?.perimeterScoring || shooter?.perimeterScoring;
+  const weightPoints = getWeightPoints(
+    (playerAtributes?.position || shooter?.position)!,
+    (playerAtributes?.weight || shooter?.weight)!
+  );
+  const heightPoints = getHeightPoints(
+    (playerAtributes?.position || shooter?.position)!,
+    (playerAtributes?.height || shooter?.height)!
+  );
+
   return (
-    (perimetrerScoring * 2 -
+    (perimeterScoring! * 2 -
       heightPoints -
       weightPoints * 1.5 +
       roll20SidesDice() * 0.5) *
@@ -846,15 +951,25 @@ export function mathShotPointsCloseToTheOtherRim(
 }
 
 export function mathDefensePointsCloseToTheRim(
-  insideDefence: number,
-  atleticism: number,
-  weightPoints: number,
-  heightPoints: number,
-  multiplier: number
+  multiplier: number,
+  playerAtributes?: PlayerStats,
+  defender?: Player
 ) {
+  const insideDefence =
+    playerAtributes?.insideDefence || defender?.insideDefence;
+  const atleticism = playerAtributes?.atleticism || defender?.atleticism;
+  const weightPoints = getWeightPoints(
+    (playerAtributes?.position || defender?.position)!,
+    (playerAtributes?.weight || defender?.weight)!
+  );
+  const heightPoints = getHeightPoints(
+    (playerAtributes?.position || defender?.position)!,
+    (playerAtributes?.height || defender?.height)!
+  );
+
   return (
-    (insideDefence * 4 +
-      atleticism * 2 +
+    (insideDefence! * 4 +
+      atleticism! * 2 +
       weightPoints +
       heightPoints +
       roll20SidesDice() * 6) *
@@ -863,17 +978,28 @@ export function mathDefensePointsCloseToTheRim(
 }
 
 export function mathDefensePointsInShortRange(
-  insideDefence: number,
-  atleticism: number,
-  weightPoints: number,
-  heightPoints: number,
-  perimetrerDefence: number,
-  multiplier: number
+  multiplier: number,
+  playerAtributes?: PlayerStats,
+  defender?: Player
 ) {
+  const insideDefence =
+    playerAtributes?.insideDefence || defender?.insideDefence;
+  const perimeterDefence =
+    playerAtributes?.perimeterDefence || defender?.perimeterDefence;
+  const atleticism = playerAtributes?.atleticism || defender?.atleticism;
+  const weightPoints = getWeightPoints(
+    (playerAtributes?.position || defender?.position)!,
+    (playerAtributes?.weight || defender?.weight)!
+  );
+  const heightPoints = getHeightPoints(
+    (playerAtributes?.position || defender?.position)!,
+    (playerAtributes?.height || defender?.height)!
+  );
+
   return (
-    (insideDefence * 3 +
-      perimetrerDefence * 0.5 +
-      atleticism * 2.5 +
+    (insideDefence! * 3 +
+      perimeterDefence! * 0.5 +
+      atleticism! * 2.5 +
       weightPoints * 0.5 +
       heightPoints +
       roll20SidesDice() * 5) *
@@ -882,15 +1008,26 @@ export function mathDefensePointsInShortRange(
 }
 
 export function mathDefensePointsInMidRange(
-  insideDefence: number,
-  weightPoints: number,
-  heightPoints: number,
-  perimetrerDefence: number,
-  multiplier: number
+  multiplier: number,
+  playerAtributes?: PlayerStats,
+  defender?: Player
 ) {
+  const insideDefence =
+    playerAtributes?.insideDefence || defender?.insideDefence;
+  const perimeterDefence =
+    playerAtributes?.perimeterDefence || defender?.perimeterDefence;
+  const weightPoints = getWeightPoints(
+    (playerAtributes?.position || defender?.position)!,
+    (playerAtributes?.weight || defender?.weight)!
+  );
+  const heightPoints = getHeightPoints(
+    (playerAtributes?.position || defender?.position)!,
+    (playerAtributes?.height || defender?.height)!
+  );
+
   return (
-    (insideDefence +
-      perimetrerDefence * 4 -
+    (insideDefence! +
+      perimeterDefence! * 4 -
       weightPoints +
       heightPoints +
       roll20SidesDice() * 5) *
@@ -899,13 +1036,23 @@ export function mathDefensePointsInMidRange(
 }
 
 export function mathDefensePointsCloseToThe3PointLine(
-  weightPoints: number,
-  heightPoints: number,
-  perimetrerDefence: number,
-  multiplier: number
+  multiplier: number,
+  playerAtributes?: PlayerStats,
+  defender?: Player
 ) {
+  const perimeterDefence =
+    playerAtributes?.perimeterDefence || defender?.perimeterDefence;
+  const weightPoints = getWeightPoints(
+    (playerAtributes?.position || defender?.position)!,
+    (playerAtributes?.weight || defender?.weight)!
+  );
+  const heightPoints = getHeightPoints(
+    (playerAtributes?.position || defender?.position)!,
+    (playerAtributes?.height || defender?.height)!
+  );
+
   return (
-    (perimetrerDefence * 5 -
+    (perimeterDefence! * 5 -
       weightPoints +
       heightPoints +
       roll20SidesDice() * 4) *
@@ -914,13 +1061,23 @@ export function mathDefensePointsCloseToThe3PointLine(
 }
 
 export function mathDefensePointsLong3Range(
-  weightPoints: number,
-  heightPoints: number,
-  perimetrerDefence: number,
-  multiplier: number
+  multiplier: number,
+  playerAtributes?: PlayerStats,
+  defender?: Player
 ) {
+  const perimeterDefence =
+    playerAtributes?.perimeterDefence || defender?.perimeterDefence;
+  const weightPoints = getWeightPoints(
+    (playerAtributes?.position || defender?.position)!,
+    (playerAtributes?.weight || defender?.weight)!
+  );
+  const heightPoints = getHeightPoints(
+    (playerAtributes?.position || defender?.position)!,
+    (playerAtributes?.height || defender?.height)!
+  );
+
   return (
-    (perimetrerDefence * 5 -
+    (perimeterDefence! * 5 -
       weightPoints * 0.5 +
       heightPoints +
       roll20SidesDice() * 4) *
@@ -929,12 +1086,19 @@ export function mathDefensePointsLong3Range(
 }
 
 export function mathDefensePointsHalfCourtAndFartherAway(
-  heightPoints: number,
-  perimetrerDefence: number,
-  multiplier: number
+  multiplier: number,
+  playerAtributes?: PlayerStats,
+  defender?: Player
 ) {
+  const perimeterDefence =
+    playerAtributes?.perimeterDefence || defender?.perimeterDefence;
+  const heightPoints = getHeightPoints(
+    (playerAtributes?.position || defender?.position)!,
+    (playerAtributes?.height || defender?.height)!
+  );
+
   return (
-    (perimetrerDefence * 5 + heightPoints + roll20SidesDice() * 4) * multiplier
+    (perimeterDefence! * 5 + heightPoints + roll20SidesDice() * 4) * multiplier
   );
 }
 
@@ -1013,7 +1177,7 @@ export function compareIniciatives(
       ((defender.weight - 65) / 0.55) * 0.75 +
       defender.atleticism * 1.2 +
       defender.insideDefence * 2 * 0.75 +
-      defender.perimetrerDefence * 2 * 0.25
+      defender.perimeterDefence * 2 * 0.25
     );
   }
 
@@ -1024,7 +1188,7 @@ export function compareIniciatives(
       ((defender.weight - 65) / 0.55) * 0.25 +
       defender.atleticism * 1.2 +
       defender.insideDefence * 2 * 0.25 +
-      defender.perimetrerDefence * 2 * 0.75
+      defender.perimeterDefence * 2 * 0.75
     );
   }
 
@@ -1032,7 +1196,7 @@ export function compareIniciatives(
     return (
       roll20SidesDice() * 2 +
       defender.atleticism * 1.2 +
-      defender.perimetrerDefence * 2 * 2
+      defender.perimeterDefence * 2 * 2
     );
   }
 
@@ -1054,7 +1218,7 @@ export function compareIniciatives(
       ((atacker.weight - 65) / 0.55) * 0.75 +
       atacker.atleticism * 1.2 +
       atacker.insideScoring * 0.75 +
-      atacker.perimetrerScoring * 0.25 +
+      atacker.perimeterScoring * 0.25 +
       atacker.playMaking
     );
   }
@@ -1066,7 +1230,7 @@ export function compareIniciatives(
       ((atacker.weight - 65) / 0.55) * 0.25 +
       atacker.atleticism * 1.2 +
       atacker.insideScoring * 0.25 +
-      atacker.perimetrerScoring * 0.75 +
+      atacker.perimeterScoring * 0.75 +
       atacker.playMaking
     );
   }
@@ -1075,7 +1239,7 @@ export function compareIniciatives(
     return (
       roll20SidesDice() * 2 +
       atacker.atleticism * 1.2 +
-      atacker.perimetrerScoring * 2 * 2 +
+      atacker.perimeterScoring * 2 * 2 +
       atacker.playMaking
     );
   }

@@ -16,14 +16,14 @@ export class Player {
   atleticism: number;
 
   //Defensive atributes
-  perimetrerDefence: number;
+  perimeterDefence: number;
   insideDefence: number;
 
   //Mix atribute
   rebounding: number;
 
   //Ofensive atributes
-  perimetrerScoring: number;
+  perimeterScoring: number;
   insideScoring: number;
   playMaking: number;
 
@@ -65,10 +65,10 @@ export class Player {
     height: number,
     weight: number,
     atleticism: number,
-    perimetrerDefence: number,
+    perimeterDefence: number,
     insideDefence: number,
     rebounding: number,
-    perimetrerScoring: number,
+    perimeterScoring: number,
     insideScoring: number,
     playMaking: number,
     ubicationX: number,
@@ -85,14 +85,14 @@ export class Player {
     this.atleticism = atleticism;
 
     //Defensive atributes
-    this.perimetrerDefence = perimetrerDefence;
+    this.perimeterDefence = perimeterDefence;
     this.insideDefence = insideDefence;
 
     //Mix atribute
     this.rebounding = rebounding;
 
     //Ofensive atributes
-    this.perimetrerScoring = perimetrerScoring;
+    this.perimeterScoring = perimeterScoring;
     this.insideScoring = insideScoring;
     this.playMaking = playMaking;
 
@@ -132,26 +132,6 @@ export class Player {
 
   playerHaveTheBall() {
     return this.haveBall;
-  }
-
-  getHeightPoints() {
-    let minHeight = getMinStatPerPosition("height", this.position);
-    let maxHeight = getMaxStatPerPosition("height", this.position);
-
-    let minMaxDifference = maxHeight - minHeight;
-    let playerDifferenceToMax = maxHeight - this.height;
-
-    return (playerDifferenceToMax * 100) / minMaxDifference;
-  }
-
-  getWeightPoints() {
-    let minWeight = getMinStatPerPosition("weight", this.position);
-    let maxWeight = getMaxStatPerPosition("weight", this.position);
-
-    let minMaxDifference = maxWeight - minWeight;
-    let playerDifferenceToMax = maxWeight - this.weight;
-
-    return (playerDifferenceToMax * 100) / minMaxDifference;
   }
 
   //----------------------------------END GET INFO METHODS---------------------------------------------------------------------------------------------------------
@@ -334,7 +314,7 @@ export class Player {
       dribblerPointsInAction =
         (this.playMaking * 6 +
           this.atleticism * 2 +
-          this.perimetrerScoring * 2) *
+          this.perimeterScoring * 2) *
         multiplier;
     }
 
@@ -357,12 +337,12 @@ export class Player {
     if (dribblerZone <= 2) {
       defenderPointsInAction =
         (this.insideDefence * 2 +
-          this.perimetrerDefence * 4 +
+          this.perimeterDefence * 4 +
           this.atleticism * 2) *
         multiplier;
     } else {
       defenderPointsInAction =
-        (this.perimetrerDefence * 6 + this.atleticism * 2) * multiplier;
+        (this.perimeterDefence * 6 + this.atleticism * 2) * multiplier;
     }
     return defenderPointsInAction;
   }

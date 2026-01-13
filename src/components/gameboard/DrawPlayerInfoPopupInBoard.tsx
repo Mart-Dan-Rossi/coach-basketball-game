@@ -33,7 +33,7 @@ const DrawPlayerInfoPopupInBoard = ({ player, teamLetterProps }: Props) => {
         />
 
         <DrawSkillsIconsInPlayers
-          skillPoints={player.perimetrerDefence}
+          skillPoints={player.perimeterDefence}
           imgSrc={"./img/players-img/perimeterDefender.png"}
           text={"this player is a good perimeter defender"}
         />
@@ -51,7 +51,7 @@ const DrawPlayerInfoPopupInBoard = ({ player, teamLetterProps }: Props) => {
         />
 
         <DrawSkillsIconsInPlayers
-          skillPoints={player.perimetrerScoring}
+          skillPoints={player.perimeterScoring}
           imgSrc={"./img/players-img/perimeterScorer.png"}
           text={"this player is a good perimeter scorer"}
         />
@@ -79,7 +79,7 @@ const DrawPlayerInfoPopupInBoard = ({ player, teamLetterProps }: Props) => {
 
       <DrawStatRowOfPopup
         skillName={"Per def"}
-        statValue={player.perimetrerDefence}
+        statValue={player.perimeterDefence}
       />
 
       <DrawStatRowOfPopup
@@ -91,7 +91,7 @@ const DrawPlayerInfoPopupInBoard = ({ player, teamLetterProps }: Props) => {
 
       <DrawStatRowOfPopup
         skillName={"Per scor"}
-        statValue={player.perimetrerScoring}
+        statValue={player.perimeterScoring}
       />
 
       <DrawStatRowOfPopup

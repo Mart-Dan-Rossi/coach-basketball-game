@@ -25,6 +25,8 @@ import {
   getClosestPlayers,
   getRangeText,
   playerPositionDetection,
+  mathShotPointsInFreeThrow,
+  getMaxStatPerPosition,
 } from "../utilities/exportableFunctions";
 import React from "react";
 import { Player } from "./players";
@@ -37,6 +39,7 @@ export class Match {
   //Match status
   teamTurn: string;
   shotHasBeenAttempted: boolean;
+  shootingFreeThrows: boolean;
 
   //Match basic info
   quarter: number;
@@ -54,6 +57,7 @@ export class Match {
     //Match status
     this.teamTurn = "";
     this.shotHasBeenAttempted = false;
+    this.shootingFreeThrows = false;
 
     //Match basic info
     this.quarter = 1;
@@ -261,7 +265,7 @@ export class Match {
       ) {
         points =
           player.insideDefence * 1.5 +
-          player.perimetrerDefence * 1.5 +
+          player.perimeterDefence * 1.5 +
           player.atleticism +
           player.height * 0.5 -
           170 +
@@ -269,7 +273,7 @@ export class Match {
       } else if (playerZoneUbication == ranges.inMidRange.id) {
         points =
           player.insideDefence +
-          player.perimetrerDefence * 2 +
+          player.perimeterDefence * 2 +
           player.atleticism +
           100 / (player.weight - 50) +
           roll20SidesDice() * 3;
@@ -277,7 +281,7 @@ export class Match {
         (playerZoneUbication as number) >= ranges.outsideThe3PointLine.id
       ) {
         points =
-          player.perimetrerDefence * 3 +
+          player.perimeterDefence * 3 +
           player.atleticism +
           100 / player.weight +
           roll20SidesDice() * 3;
@@ -495,6 +499,8 @@ export class Match {
       )}!`
     );
 
+    let isFreeThrow = this.shootingFreeThrows;
+
     function getShooterPointsInShot() {
       let shooterPointsInShot = 0;
 
@@ -504,74 +510,35 @@ export class Match {
       }
 
       //Do math to calculate points on each sector
-      if (/*TODO isFreeThrow*/ false) {
-        shooterPointsInShot = 0;
+      if (isFreeThrow) {
+        shooterPointsInShot = mathShotPointsInFreeThrow(shooter);
       } else if (shooterZoneUbication == ranges.closeToTheRim.id) {
-        shooterPointsInShot = mathShotPointsCloseToTheRim(
-          shooter.insideScoring,
-          shooter.playMaking,
-          shooter.atleticism,
-          shooter.getWeightPoints(),
-          shooter.getHeightPoints(),
-          multiplier
-        );
+        shooterPointsInShot = mathShotPointsCloseToTheRim(multiplier, shooter);
       } else if (
         shooterZoneUbication == ranges.inShortRange.id ||
         shooterZoneUbication == ranges.behindTheBoard.id
       ) {
-        shooterPointsInShot = mathShotPointsInShortRange(
-          shooter.insideScoring,
-          shooter.perimetrerScoring,
-          shooter.playMaking,
-          shooter.atleticism,
-          shooter.getWeightPoints(),
-          shooter.getHeightPoints(),
-          multiplier
-        );
+        shooterPointsInShot = mathShotPointsInShortRange(multiplier, shooter);
       } else if (shooterZoneUbication == ranges.inMidRange.id) {
-        shooterPointsInShot = mathShotPointsInMidRange(
-          shooter.insideScoring,
-          shooter.perimetrerScoring,
-          shooter.playMaking,
-          shooter.getHeightPoints(),
-          multiplier
-        );
+        shooterPointsInShot = mathShotPointsInMidRange(multiplier, shooter);
       } else if (shooterZoneUbication == ranges.outsideThe3PointLine.id) {
         shooterPointsInShot = mathShotPointsCloseToThe3PointLine(
-          shooter.perimetrerScoring,
-          shooter.playMaking,
-          shooter.getHeightPoints(),
-          shooter.getWeightPoints(),
-          multiplier
+          multiplier,
+          shooter
         );
       } else if (shooterZoneUbication == ranges.long3Range.id) {
-        shooterPointsInShot = mathShotPointsInLong3Range(
-          shooter.perimetrerScoring,
-          shooter.playMaking,
-          shooter.getHeightPoints(),
-          shooter.getWeightPoints(),
-          multiplier
-        );
+        shooterPointsInShot = mathShotPointsInLong3Range(multiplier, shooter);
       } else if (shooterZoneUbication == ranges.halfCourt.id) {
-        shooterPointsInShot = mathShotPointsInHalfCourt(
-          shooter.perimetrerScoring,
-          shooter.getHeightPoints(),
-          shooter.getWeightPoints(),
-          multiplier
-        );
+        shooterPointsInShot = mathShotPointsInHalfCourt(multiplier, shooter);
       } else if (shooterZoneUbication == ranges.behindHalfCourt.id) {
         shooterPointsInShot = mathShotPointsBehindHalfCourt(
-          shooter.perimetrerScoring,
-          shooter.getHeightPoints(),
-          shooter.getWeightPoints(),
-          multiplier
+          multiplier,
+          shooter
         );
       } else if (shooterZoneUbication == ranges.theOtherRim.id) {
         shooterPointsInShot = mathShotPointsCloseToTheOtherRim(
-          shooter.perimetrerScoring,
-          shooter.getHeightPoints(),
-          shooter.getWeightPoints(),
-          multiplier
+          multiplier,
+          shooter
         );
       }
 
@@ -611,47 +578,33 @@ export class Match {
               //Do math to calculate points on each sector
               if (defenderZoneUbication == ranges.closeToTheRim.id) {
                 defenderPoints = mathDefensePointsCloseToTheRim(
-                  defenderInThisUbication.insideDefence,
-                  defenderInThisUbication.atleticism,
-                  defenderInThisUbication.getWeightPoints(),
-                  defenderInThisUbication.getHeightPoints(),
-                  multiplier
+                  multiplier,
+                  defenderInThisUbication
                 );
               } else if (
                 defenderZoneUbication == ranges.inShortRange.id ||
                 defenderZoneUbication == ranges.behindTheBoard.id
               ) {
                 defenderPoints = mathDefensePointsInShortRange(
-                  defenderInThisUbication.insideDefence,
-                  defenderInThisUbication.atleticism,
-                  defenderInThisUbication.getWeightPoints(),
-                  defenderInThisUbication.getHeightPoints(),
-                  defenderInThisUbication.perimetrerDefence,
-                  multiplier
+                  multiplier,
+                  defenderInThisUbication
                 );
               } else if (defenderZoneUbication == ranges.inMidRange.id) {
                 defenderPoints = mathDefensePointsInMidRange(
-                  defenderInThisUbication.insideDefence,
-                  defenderInThisUbication.getWeightPoints(),
-                  defenderInThisUbication.getHeightPoints(),
-                  defenderInThisUbication.perimetrerDefence,
-                  multiplier
+                  multiplier,
+                  defenderInThisUbication
                 );
               } else if (
                 defenderZoneUbication == ranges.outsideThe3PointLine.id
               ) {
                 defenderPoints = mathDefensePointsCloseToThe3PointLine(
-                  defenderInThisUbication.getWeightPoints(),
-                  defenderInThisUbication.getHeightPoints(),
-                  defenderInThisUbication.perimetrerDefence,
-                  multiplier
+                  multiplier,
+                  defenderInThisUbication
                 );
               } else if (defenderZoneUbication == ranges.long3Range.id) {
                 defenderPoints = mathDefensePointsLong3Range(
-                  defenderInThisUbication.getWeightPoints(),
-                  defenderInThisUbication.getHeightPoints(),
-                  defenderInThisUbication.perimetrerDefence,
-                  multiplier
+                  multiplier,
+                  defenderInThisUbication
                 );
               } else if (
                 defenderZoneUbication == ranges.halfCourt.id ||
@@ -659,9 +612,8 @@ export class Match {
                 defenderZoneUbication == ranges.theOtherRim.id
               ) {
                 defenderPoints = mathDefensePointsHalfCourtAndFartherAway(
-                  defenderInThisUbication.getHeightPoints(),
-                  defenderInThisUbication.perimetrerDefence,
-                  multiplier
+                  multiplier,
+                  defenderInThisUbication
                 );
               }
 
@@ -685,46 +637,63 @@ export class Match {
       let shooterPointsInShot = getShooterPointsInShot();
       let maxShooterPoints: number;
 
+      let maxAPlayerAtributes = {
+        height: getMaxStatPerPosition("height", shooter.position),
+        weight: getMaxStatPerPosition("weight", shooter.position),
+        atleticism: 100,
+        perimeterDefence: 100,
+        insideDefence: 100,
+        rebounding: 100,
+        perimeterScoring: 100,
+        insideScoring: 100,
+        playMaking: 100,
+        position: shooter.position,
+      };
+
+      let maxPosiblePlayerAtributes = {
+        height: getMaxStatPerPosition("height", "C"),
+        weight: getMaxStatPerPosition("weight", "C"),
+        atleticism: 100,
+        perimeterDefence: 100,
+        insideDefence: 100,
+        rebounding: 100,
+        perimeterScoring: 100,
+        insideScoring: 100,
+        playMaking: 100,
+        position: "C",
+      };
+
       if (shooterZoneUbication == ranges.closeToTheRim.id) {
         maxShooterPoints = mathShotPointsCloseToTheRim(
-          100,
-          100,
-          100,
-          100,
-          100,
-          1.2
+          1.2,
+          maxAPlayerAtributes
         );
       } else if (
         shooterZoneUbication == ranges.inShortRange.id ||
         shooterZoneUbication == ranges.behindTheBoard.id
       ) {
-        maxShooterPoints = mathShotPointsInShortRange(
-          100,
-          100,
-          100,
-          100,
-          100,
-          100,
-          1.2
-        );
+        maxShooterPoints = mathShotPointsInShortRange(1.2, maxAPlayerAtributes);
       } else if (shooterZoneUbication == ranges.inMidRange.id) {
-        maxShooterPoints = mathShotPointsInMidRange(100, 100, 100, 100, 1.2);
+        maxShooterPoints = mathShotPointsInMidRange(1.2, maxAPlayerAtributes);
       } else if (shooterZoneUbication == ranges.outsideThe3PointLine.id) {
         maxShooterPoints = mathShotPointsCloseToThe3PointLine(
-          100,
-          100,
-          100,
-          100,
-          1.2
+          1.2,
+          maxAPlayerAtributes
         );
       } else if (shooterZoneUbication == ranges.long3Range.id) {
-        maxShooterPoints = mathShotPointsInLong3Range(100, 100, 100, 100, 1.2);
+        maxShooterPoints = mathShotPointsInLong3Range(1.2, maxAPlayerAtributes);
       } else if (shooterZoneUbication == ranges.halfCourt.id) {
-        maxShooterPoints = mathShotPointsInHalfCourt(100, 100, 100, 1.2);
+        maxShooterPoints = mathShotPointsInHalfCourt(1.2, maxAPlayerAtributes);
       } else if (shooterZoneUbication == ranges.behindHalfCourt.id) {
-        maxShooterPoints = mathShotPointsBehindHalfCourt(100, 100, 100, 1.2);
+        maxShooterPoints = mathShotPointsBehindHalfCourt(
+          1.2,
+          maxAPlayerAtributes
+        );
       } else if (shooterZoneUbication == ranges.theOtherRim.id) {
-        maxShooterPoints = mathShotPointsCloseToTheOtherRim(100, 100, 100, 1.2);
+        maxShooterPoints = mathShotPointsCloseToTheOtherRim(
+          1.2,
+          maxAPlayerAtributes
+        );
       } else {
         maxShooterPoints = 0;
       }
@@ -734,45 +703,31 @@ export class Match {
 
       if (shooterZoneUbication == ranges.closeToTheRim.id) {
         maxSingleDefenderPoints = mathDefensePointsCloseToTheRim(
-          100,
-          100,
-          100,
-          100,
-          1.4
+          1.4,
+          maxPosiblePlayerAtributes
         );
       } else if (
         shooterZoneUbication == ranges.inShortRange.id ||
         shooterZoneUbication == ranges.behindTheBoard.id
       ) {
         maxSingleDefenderPoints = mathDefensePointsInShortRange(
-          100,
-          100,
-          100,
-          100,
-          100,
-          1.4
+          1.4,
+          maxPosiblePlayerAtributes
         );
       } else if (shooterZoneUbication == ranges.inMidRange.id) {
         maxSingleDefenderPoints = mathDefensePointsInMidRange(
-          100,
-          100,
-          100,
-          100,
-          1.4
+          1.4,
+          maxPosiblePlayerAtributes
         );
       } else if (shooterZoneUbication == ranges.outsideThe3PointLine.id) {
         maxSingleDefenderPoints = mathDefensePointsCloseToThe3PointLine(
-          100,
-          100,
-          100,
-          1.4
+          1.4,
+          maxPosiblePlayerAtributes
         );
       } else if (shooterZoneUbication == ranges.long3Range.id) {
         maxSingleDefenderPoints = mathDefensePointsLong3Range(
-          100,
-          100,
-          100,
-          1.4
+          1.4,
+          maxPosiblePlayerAtributes
         );
       } else if (
         shooterZoneUbication == ranges.halfCourt.id ||
@@ -780,9 +735,8 @@ export class Match {
         shooterZoneUbication == ranges.theOtherRim.id
       ) {
         maxSingleDefenderPoints = mathDefensePointsHalfCourtAndFartherAway(
-          100,
-          100,
-          1.4
+          1.4,
+          maxPosiblePlayerAtributes
         );
       } else {
         maxSingleDefenderPoints = 0;

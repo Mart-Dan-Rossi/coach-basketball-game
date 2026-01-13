@@ -44,3 +44,25 @@ export interface QuarterTimeLeft {
     minutes: number;
     seconds: number;
 }
+
+export interface TeamGameStats {
+    points: number;
+    fieldGoalsMade: number;
+    fieldGoalsattempt: number;
+    triplesMade: number;
+    triplesAttempt: number;
+    freeThrowsMade: number;
+    freeThrowsAttempt: number;
+    assists: number;
+    turnOvers: number;
+    rebounds: number;
+    offensiveRebounds: number;
+    blocks: number;
+    steals: number;
+    fouls: number;
+}
+
+export interface GameStats {
+    teamAStats: TeamGameStats;
+    teamBStats: TeamGameStats;
+}

@@ -22,6 +22,11 @@ html {
   width: 30%;
 }
 
+.header-container .stats-button {
+  display: flex;
+  justify-content: start;
+}
+
 .header-container span {
   text-align: end;
   font-weight: bold;

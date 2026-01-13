@@ -5,7 +5,7 @@ import { GameContext } from "../../context/GameContext";
 import "../../styles/MatchActionsContainer.css";
 import {} from "../../entities/myInterfaces";
 import { Match } from "../../entities/match";
-import { isPlayerWaiting } from "../../utilities/exportableFunctions";
+import GameStatsModal from "./GameStatsModal";
 
 interface Props {
   match: Match;
@@ -60,6 +60,7 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
     useState(false);
   const [shootButtonSelected, setShootButtonSelected] = useState(false);
   const [endTurnButtonSelected, setEndTurnButtonSelected] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {}, [gameNarration]);
 
@@ -240,11 +241,17 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
     };
   }
 
+  function clickStatsButtonHandler() {
+    setIsModalOpen(true);
+  }
+
   return (
     <div>
       <div className="match-actions-container">
         <div className="header-container">
-          <span>{/*Decorative div, do not delete*/}</span>
+          <div className="stats-button">
+            <button onClick={clickStatsButtonHandler}>Stats</button>
+          </div>
           <h4>Actions</h4>
           <span>
             {match.getActivePlayer()
@@ -300,6 +307,11 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
           return <p key={`narrationRow${index}`}>{string}</p>;
         })}
       </div>
+      <GameStatsModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        matchState={matchCopy}
+      />
     </div>
   );
 };

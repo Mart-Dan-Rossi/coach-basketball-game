@@ -1,5 +1,9 @@
 import React from "react";
-import { PlayerEditableInfo, PlayerStats } from "../../entities/myInterfaces";
+import {
+  PlayerEditableInfo,
+  PlayerEditableStatsKeys,
+  PlayerStats,
+} from "../../entities/myInterfaces";
 import NumericInputs from "./NumericInputs";
 //@ts-ignore
 import "../../styles/CreatePlayer.css";
@@ -39,10 +43,10 @@ const CreatePlayer = ({
     playerSetter(newPlayerStats);
   }
 
-  let arrayOfKeysOfNumericProperties = [] as string[];
+  let arrayOfKeysOfNumericProperties = [] as PlayerEditableStatsKeys[];
   for (let key in player) {
     if (key != "name" && key != "position") {
-      arrayOfKeysOfNumericProperties.push(key);
+      arrayOfKeysOfNumericProperties.push(key as PlayerEditableStatsKeys);
     }
   }
 

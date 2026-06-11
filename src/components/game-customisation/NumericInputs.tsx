@@ -1,9 +1,9 @@
 import React from "react";
-import { PlayerEditableInfo, PlayerStats } from "../../entities/myInterfaces";
+import { PlayerEditableInfo, PlayerEditableStatsKeys, PlayerStats } from "../../entities/myInterfaces";
 import NumericInput from "./NumericInput";
 
 interface Props {
-  arrayOfKeysOfNumericProperties: string[];
+  arrayOfKeysOfNumericProperties: PlayerEditableStatsKeys[];
   playerPosition: string;
   team: string;
   player: PlayerEditableInfo;
@@ -36,6 +36,7 @@ const NumericInputs = ({
   return (
     <>
       {arrayOfKeysOfNumericProperties.map((stat, i) => {
+        if (!stat) return null;
         return (
           <NumericInput
             stat={stat}

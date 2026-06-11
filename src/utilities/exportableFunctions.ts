@@ -1,4 +1,8 @@
-import { PlayerEditableInfo, PlayerStats } from "../entities/myInterfaces";
+import {
+  PlayerEditableInfo,
+  PlayerEditableStatsKeys,
+  PlayerStats,
+} from "../entities/myInterfaces";
 import { Player } from "../entities/players";
 
 export function isPlayerWaiting(player: Player) {
@@ -31,8 +35,8 @@ export function getWeightPoints(playerPosition: string, playerWeight: number) {
 }
 
 export function getMinStatPerPosition(
-  thisStat: string,
-  playerPosition: string
+  thisStat: PlayerEditableStatsKeys,
+  playerPosition: string,
 ) {
   if (thisStat == "height") {
     if (playerPosition == "1") {
@@ -164,8 +168,8 @@ export function getInitialPlayerStatsOnCreation(positionNumber: string) {
 }
 
 export function getMaxStatPerPosition(
-  thisStat: string,
-  playerPosition: string
+  thisStat: PlayerEditableStatsKeys,
+  playerPosition: string,
 ) {
   if (thisStat == "height") {
     if (playerPosition == "1") {
@@ -280,18 +284,11 @@ export function getMaxStatPerPosition(
   }
 }
 
-export function getStatValue(key: string, player: PlayerEditableInfo) {
-  if (
-    key == "height" ||
-    key == "weight" ||
-    key == "atleticism" ||
-    key == "perimeterDefence" ||
-    key == "insideDefence" ||
-    key == "rebounding" ||
-    key == "perimeterScoring" ||
-    key == "insideScoring" ||
-    key == "playMaking"
-  ) {
+export function getStatValue(
+  key: PlayerEditableStatsKeys,
+  player: PlayerEditableInfo,
+) {
+  if (key) {
     return player[key];
   }
 }
@@ -316,14 +313,16 @@ export function firstLetterToUpper(string: string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-export function separateCamelCaseBySpace(string: string) {
+export function separateCamelCaseBySpace(string: PlayerEditableStatsKeys) {
   let separatedText = "";
 
-  for (let letter of string) {
-    if (letter.toUpperCase() === letter) {
-      separatedText += ` ${letter.toLocaleLowerCase()}`;
-    } else {
-      separatedText += letter;
+  if (string !== null) {
+    for (let letter of string) {
+      if (letter.toUpperCase() === letter) {
+        separatedText += ` ${letter.toLocaleLowerCase()}`;
+      } else {
+        separatedText += letter;
+      }
     }
   }
 
@@ -354,23 +353,13 @@ export function calculatePlayerOverallRating(pointsUsedOnPlayer: number) {
 }
 
 export function setPointsUsedOnThisSkill(
-  statType: string,
+  statType: PlayerEditableStatsKeys,
   previousStats: PlayerStats,
   setter: React.Dispatch<React.SetStateAction<PlayerStats>>,
-  pointsUsedOnThisSkill: number
+  pointsUsedOnThisSkill: number,
 ) {
   let previousStatsCopy = previousStats;
-  if (
-    statType == "height" ||
-    statType == "weight" ||
-    statType == "atleticism" ||
-    statType == "perimeterDefence" ||
-    statType == "insideDefence" ||
-    statType == "rebounding" ||
-    statType == "perimeterScoring" ||
-    statType == "insideScoring" ||
-    statType == "playMaking"
-  ) {
+  if (statType) {
     previousStatsCopy[statType] = pointsUsedOnThisSkill;
     setter(() => previousStatsCopy);
   }
@@ -419,22 +408,22 @@ export const ranges = {
   },
 };
 
-export function getRangeText(rangeId: number) {
-  let rangeText: string;
+export function getRangeText(rangeId: number): string {
+  for (const key in ranges) {
+    const rangeObj = ranges[key as keyof typeof ranges];
 
-  Object.values(ranges).forEach((rangeObj) => {
-    if (rangeObj.id == rangeId) {
-      rangeText = rangeObj.text;
+    if (rangeObj.id === rangeId) {
+      return rangeObj.text;
     }
-  });
+  }
 
-  return rangeText!;
+  throw new Error(`Range ${rangeId} not found`);
 }
 
 export function isCloseToTheRim(
   teamAAtacking: boolean,
   ubicationX: number,
-  ubicationY: number
+  ubicationY: number,
 ) {
   return (
     (!teamAAtacking &&
@@ -449,7 +438,7 @@ export function isCloseToTheRim(
 export function isBehindTheBoard(
   teamAAtacking: boolean,
   ubicationX: number,
-  ubicationY: number
+  ubicationY: number,
 ) {
   return (
     (!teamAAtacking && ubicationX == 1 && ubicationY > 5 && ubicationY < 11) ||
@@ -460,7 +449,7 @@ export function isBehindTheBoard(
 export function isInShortRange(
   teamAAtacking: boolean,
   ubicationX: number,
-  ubicationY: number
+  ubicationY: number,
 ) {
   return (
     (!teamAAtacking &&
@@ -487,7 +476,7 @@ export function isInShortRange(
 export function isInMidRange(
   teamAAtacking: boolean,
   ubicationX: number,
-  ubicationY: number
+  ubicationY: number,
 ) {
   return (
     (!teamAAtacking && ubicationX == 1 && ubicationY > 1 && ubicationY < 15) ||
@@ -532,7 +521,7 @@ export function isInMidRange(
 export function isCloseToThe3PointLine(
   teamAAtacking: boolean,
   ubicationX: number,
-  ubicationY: number
+  ubicationY: number,
 ) {
   return (
     (!teamAAtacking &&
@@ -569,7 +558,7 @@ export function isCloseToThe3PointLine(
 export function isInLong3Range(
   teamAAtacking: boolean,
   ubicationX: number,
-  ubicationY: number
+  ubicationY: number,
 ) {
   return (
     (!teamAAtacking &&
@@ -614,7 +603,7 @@ export function isInLong3Range(
 export function isCloseToHalfCourt(
   teamAAtacking: boolean,
   ubicationX: number,
-  ubicationY: number
+  ubicationY: number,
 ) {
   return (
     (!teamAAtacking &&
@@ -665,7 +654,7 @@ export function isCloseToHalfCourt(
 export function isBehindTheHalfCourt(
   teamAAtacking: boolean,
   ubicationX: number,
-  ubicationY: number
+  ubicationY: number,
 ) {
   return (
     (!teamAAtacking &&
@@ -708,7 +697,7 @@ export function isBehindTheHalfCourt(
 export function isIntheOtherRim(
   teamAAtacking: boolean,
   ubicationX: number,
-  ubicationY: number
+  ubicationY: number,
 ) {
   return (
     (!teamAAtacking &&
@@ -739,7 +728,7 @@ export function mathShotPointsInFreeThrow(shooter: Player) {
 export function mathShotPointsCloseToTheRim(
   multiplier: number,
   playerAtributes?: PlayerStats,
-  shooter?: Player
+  shooter?: Player,
 ) {
   const insideScoring =
     playerAtributes?.insideScoring || shooter?.insideScoring;
@@ -747,11 +736,11 @@ export function mathShotPointsCloseToTheRim(
   const atleticism = playerAtributes?.atleticism || shooter?.atleticism;
   const weightPoints = getWeightPoints(
     (playerAtributes?.position || shooter?.position)!,
-    (playerAtributes?.weight || shooter?.weight)!
+    (playerAtributes?.weight || shooter?.weight)!,
   );
   const heightPoints = getHeightPoints(
     (playerAtributes?.position || shooter?.position)!,
-    (playerAtributes?.height || shooter?.height)!
+    (playerAtributes?.height || shooter?.height)!,
   );
 
   return (
@@ -768,7 +757,7 @@ export function mathShotPointsCloseToTheRim(
 export function mathShotPointsInShortRange(
   multiplier: number,
   playerAtributes?: PlayerStats,
-  shooter?: Player
+  shooter?: Player,
 ) {
   const insideScoring =
     playerAtributes?.insideScoring || shooter?.insideScoring;
@@ -778,11 +767,11 @@ export function mathShotPointsInShortRange(
   const atleticism = playerAtributes?.atleticism || shooter?.atleticism;
   const weightPoints = getWeightPoints(
     (playerAtributes?.position || shooter?.position)!,
-    (playerAtributes?.weight || shooter?.weight)!
+    (playerAtributes?.weight || shooter?.weight)!,
   );
   const heightPoints = getHeightPoints(
     (playerAtributes?.position || shooter?.position)!,
-    (playerAtributes?.height || shooter?.height)!
+    (playerAtributes?.height || shooter?.height)!,
   );
 
   return (
@@ -800,7 +789,7 @@ export function mathShotPointsInShortRange(
 export function mathShotPointsInMidRange(
   multiplier: number,
   playerAtributes?: PlayerStats,
-  shooter?: Player
+  shooter?: Player,
 ) {
   const insideScoring =
     playerAtributes?.insideScoring || shooter?.insideScoring;
@@ -809,7 +798,7 @@ export function mathShotPointsInMidRange(
   const playMaking = playerAtributes?.playMaking || shooter?.playMaking;
   const heightPoints = getHeightPoints(
     (playerAtributes?.position || shooter?.position)!,
-    (playerAtributes?.height || shooter?.height)!
+    (playerAtributes?.height || shooter?.height)!,
   );
 
   return (
@@ -825,18 +814,18 @@ export function mathShotPointsInMidRange(
 export function mathShotPointsCloseToThe3PointLine(
   multiplier: number,
   playerAtributes?: PlayerStats,
-  shooter?: Player
+  shooter?: Player,
 ) {
   const perimeterScoring =
     playerAtributes?.perimeterScoring || shooter?.perimeterScoring;
   const playMaking = playerAtributes?.playMaking || shooter?.playMaking;
   const weightPoints = getWeightPoints(
     (playerAtributes?.position || shooter?.position)!,
-    (playerAtributes?.weight || shooter?.weight)!
+    (playerAtributes?.weight || shooter?.weight)!,
   );
   const heightPoints = getHeightPoints(
     (playerAtributes?.position || shooter?.position)!,
-    (playerAtributes?.height || shooter?.height)!
+    (playerAtributes?.height || shooter?.height)!,
   );
   return (
     (perimeterScoring! * 6 +
@@ -851,7 +840,7 @@ export function mathShotPointsCloseToThe3PointLine(
 export function mathShotPointsInLong3Range(
   multiplier: number,
   playerAtributes?: PlayerStats,
-  shooter?: Player
+  shooter?: Player,
 ) {
   const insideScoring =
     playerAtributes?.insideScoring || shooter?.insideScoring;
@@ -861,11 +850,11 @@ export function mathShotPointsInLong3Range(
   const atleticism = playerAtributes?.atleticism || shooter?.atleticism;
   const weightPoints = getWeightPoints(
     (playerAtributes?.position || shooter?.position)!,
-    (playerAtributes?.weight || shooter?.weight)!
+    (playerAtributes?.weight || shooter?.weight)!,
   );
   const heightPoints = getHeightPoints(
     (playerAtributes?.position || shooter?.position)!,
-    (playerAtributes?.height || shooter?.height)!
+    (playerAtributes?.height || shooter?.height)!,
   );
 
   return (
@@ -881,17 +870,17 @@ export function mathShotPointsInLong3Range(
 export function mathShotPointsInHalfCourt(
   multiplier: number,
   playerAtributes?: PlayerStats,
-  shooter?: Player
+  shooter?: Player,
 ) {
   const perimeterScoring =
     playerAtributes?.perimeterScoring || shooter?.perimeterScoring;
   const weightPoints = getWeightPoints(
     (playerAtributes?.position || shooter?.position)!,
-    (playerAtributes?.weight || shooter?.weight)!
+    (playerAtributes?.weight || shooter?.weight)!,
   );
   const heightPoints = getHeightPoints(
     (playerAtributes?.position || shooter?.position)!,
-    (playerAtributes?.height || shooter?.height)!
+    (playerAtributes?.height || shooter?.height)!,
   );
 
   return (
@@ -906,17 +895,17 @@ export function mathShotPointsInHalfCourt(
 export function mathShotPointsBehindHalfCourt(
   multiplier: number,
   playerAtributes?: PlayerStats,
-  shooter?: Player
+  shooter?: Player,
 ) {
   const perimeterScoring =
     playerAtributes?.perimeterScoring || shooter?.perimeterScoring;
   const weightPoints = getWeightPoints(
     (playerAtributes?.position || shooter?.position)!,
-    (playerAtributes?.weight || shooter?.weight)!
+    (playerAtributes?.weight || shooter?.weight)!,
   );
   const heightPoints = getHeightPoints(
     (playerAtributes?.position || shooter?.position)!,
-    (playerAtributes?.height || shooter?.height)!
+    (playerAtributes?.height || shooter?.height)!,
   );
 
   return (
@@ -928,17 +917,17 @@ export function mathShotPointsBehindHalfCourt(
 export function mathShotPointsCloseToTheOtherRim(
   multiplier: number,
   playerAtributes?: PlayerStats,
-  shooter?: Player
+  shooter?: Player,
 ) {
   const perimeterScoring =
     playerAtributes?.perimeterScoring || shooter?.perimeterScoring;
   const weightPoints = getWeightPoints(
     (playerAtributes?.position || shooter?.position)!,
-    (playerAtributes?.weight || shooter?.weight)!
+    (playerAtributes?.weight || shooter?.weight)!,
   );
   const heightPoints = getHeightPoints(
     (playerAtributes?.position || shooter?.position)!,
-    (playerAtributes?.height || shooter?.height)!
+    (playerAtributes?.height || shooter?.height)!,
   );
 
   return (
@@ -953,18 +942,18 @@ export function mathShotPointsCloseToTheOtherRim(
 export function mathDefensePointsCloseToTheRim(
   multiplier: number,
   playerAtributes?: PlayerStats,
-  defender?: Player
+  defender?: Player,
 ) {
   const insideDefence =
     playerAtributes?.insideDefence || defender?.insideDefence;
   const atleticism = playerAtributes?.atleticism || defender?.atleticism;
   const weightPoints = getWeightPoints(
     (playerAtributes?.position || defender?.position)!,
-    (playerAtributes?.weight || defender?.weight)!
+    (playerAtributes?.weight || defender?.weight)!,
   );
   const heightPoints = getHeightPoints(
     (playerAtributes?.position || defender?.position)!,
-    (playerAtributes?.height || defender?.height)!
+    (playerAtributes?.height || defender?.height)!,
   );
 
   return (
@@ -980,7 +969,7 @@ export function mathDefensePointsCloseToTheRim(
 export function mathDefensePointsInShortRange(
   multiplier: number,
   playerAtributes?: PlayerStats,
-  defender?: Player
+  defender?: Player,
 ) {
   const insideDefence =
     playerAtributes?.insideDefence || defender?.insideDefence;
@@ -989,11 +978,11 @@ export function mathDefensePointsInShortRange(
   const atleticism = playerAtributes?.atleticism || defender?.atleticism;
   const weightPoints = getWeightPoints(
     (playerAtributes?.position || defender?.position)!,
-    (playerAtributes?.weight || defender?.weight)!
+    (playerAtributes?.weight || defender?.weight)!,
   );
   const heightPoints = getHeightPoints(
     (playerAtributes?.position || defender?.position)!,
-    (playerAtributes?.height || defender?.height)!
+    (playerAtributes?.height || defender?.height)!,
   );
 
   return (
@@ -1010,7 +999,7 @@ export function mathDefensePointsInShortRange(
 export function mathDefensePointsInMidRange(
   multiplier: number,
   playerAtributes?: PlayerStats,
-  defender?: Player
+  defender?: Player,
 ) {
   const insideDefence =
     playerAtributes?.insideDefence || defender?.insideDefence;
@@ -1018,11 +1007,11 @@ export function mathDefensePointsInMidRange(
     playerAtributes?.perimeterDefence || defender?.perimeterDefence;
   const weightPoints = getWeightPoints(
     (playerAtributes?.position || defender?.position)!,
-    (playerAtributes?.weight || defender?.weight)!
+    (playerAtributes?.weight || defender?.weight)!,
   );
   const heightPoints = getHeightPoints(
     (playerAtributes?.position || defender?.position)!,
-    (playerAtributes?.height || defender?.height)!
+    (playerAtributes?.height || defender?.height)!,
   );
 
   return (
@@ -1038,17 +1027,17 @@ export function mathDefensePointsInMidRange(
 export function mathDefensePointsCloseToThe3PointLine(
   multiplier: number,
   playerAtributes?: PlayerStats,
-  defender?: Player
+  defender?: Player,
 ) {
   const perimeterDefence =
     playerAtributes?.perimeterDefence || defender?.perimeterDefence;
   const weightPoints = getWeightPoints(
     (playerAtributes?.position || defender?.position)!,
-    (playerAtributes?.weight || defender?.weight)!
+    (playerAtributes?.weight || defender?.weight)!,
   );
   const heightPoints = getHeightPoints(
     (playerAtributes?.position || defender?.position)!,
-    (playerAtributes?.height || defender?.height)!
+    (playerAtributes?.height || defender?.height)!,
   );
 
   return (
@@ -1063,17 +1052,17 @@ export function mathDefensePointsCloseToThe3PointLine(
 export function mathDefensePointsLong3Range(
   multiplier: number,
   playerAtributes?: PlayerStats,
-  defender?: Player
+  defender?: Player,
 ) {
   const perimeterDefence =
     playerAtributes?.perimeterDefence || defender?.perimeterDefence;
   const weightPoints = getWeightPoints(
     (playerAtributes?.position || defender?.position)!,
-    (playerAtributes?.weight || defender?.weight)!
+    (playerAtributes?.weight || defender?.weight)!,
   );
   const heightPoints = getHeightPoints(
     (playerAtributes?.position || defender?.position)!,
-    (playerAtributes?.height || defender?.height)!
+    (playerAtributes?.height || defender?.height)!,
   );
 
   return (
@@ -1088,13 +1077,13 @@ export function mathDefensePointsLong3Range(
 export function mathDefensePointsHalfCourtAndFartherAway(
   multiplier: number,
   playerAtributes?: PlayerStats,
-  defender?: Player
+  defender?: Player,
 ) {
   const perimeterDefence =
     playerAtributes?.perimeterDefence || defender?.perimeterDefence;
   const heightPoints = getHeightPoints(
     (playerAtributes?.position || defender?.position)!,
-    (playerAtributes?.height || defender?.height)!
+    (playerAtributes?.height || defender?.height)!,
   );
 
   return (
@@ -1121,7 +1110,7 @@ export function playerZone(player: Player, teamAAtacking: boolean) {
     isCloseToThe3PointLine(
       teamAAtacking,
       player.ubicationX!,
-      player.ubicationY!
+      player.ubicationY!,
     )
   ) {
     return ranges.outsideThe3PointLine.id;
@@ -1150,7 +1139,7 @@ export function playerZone(player: Player, teamAAtacking: boolean) {
 export function compareIniciatives(
   playerA: Player,
   playerB: Player,
-  isTeamAAtacking: Player | undefined
+  isTeamAAtacking: Player | undefined,
 ) {
   let defender = isTeamAAtacking ? playerB : playerA;
   let atacker = isTeamAAtacking ? playerA : playerB;
@@ -1361,7 +1350,7 @@ export function compareIniciatives(
 export function checkTilesThatWillInfluenceInTheCalculations(
   gameBoard: number[][],
   startingUbication: number[],
-  endingUbication: number[]
+  endingUbication: number[],
 ) {
   const [width, height] = [gameBoard[0].length, gameBoard.length];
 
@@ -1457,7 +1446,7 @@ export function getReboundDistance(
   reboundDirectionY: string,
   shotDistanceY: number,
   shotDistanceX: number,
-  teamAAtacking: boolean
+  teamAAtacking: boolean,
 ) {
   let reboundLandingX: number;
   let reboundLandingY: number;
@@ -1475,21 +1464,21 @@ export function getReboundDistance(
   if (shotDirectionY == reboundDirectionY) {
     if (reboundDirectionY == "top") {
       reboundLandingY = Math.round(
-        8 - (shotDistanceY + shotDistanceX) / (2 * rollDiceMultiplierY)
+        8 - (shotDistanceY + shotDistanceX) / (2 * rollDiceMultiplierY),
       );
     } else {
       reboundLandingY = Math.round(
-        (shotDistanceY + shotDistanceX) / (2 * rollDiceMultiplierY) - 8
+        (shotDistanceY + shotDistanceX) / (2 * rollDiceMultiplierY) - 8,
       );
     }
   } else {
     if (reboundDirectionY == "top") {
       reboundLandingY = Math.round(
-        8 - (shotDistanceY + shotDistanceX) / rollDiceMultiplierY
+        8 - (shotDistanceY + shotDistanceX) / rollDiceMultiplierY,
       );
     } else {
       reboundLandingY = Math.round(
-        (shotDistanceY + shotDistanceX) / rollDiceMultiplierY - 8
+        (shotDistanceY + shotDistanceX) / rollDiceMultiplierY - 8,
       );
     }
   }
@@ -1508,7 +1497,7 @@ export function getDistanceToPoint() {}
 export function getClosestPlayers(
   gameBoard: number[][],
   allPlayers: Player[],
-  targetPoint: number[]
+  targetPoint: number[],
 ): Player[] {
   //TODO end this function
 
@@ -1560,7 +1549,7 @@ export const teamBInitialPositions = [
 
 function getInitialBoard() {
   function getBoardFormatInitialTeamUbication(
-    teamInitialPositions: number[][]
+    teamInitialPositions: number[][],
   ) {
     return teamInitialPositions.map((playerInitialPosition) => [
       playerInitialPosition[1] - 1,
@@ -1569,11 +1558,11 @@ function getInitialBoard() {
   }
 
   const allAPlayersUbication = getBoardFormatInitialTeamUbication(
-    teamAInitialPositions
+    teamAInitialPositions,
   );
 
   const allBPlayersUbication = getBoardFormatInitialTeamUbication(
-    teamBInitialPositions
+    teamBInitialPositions,
   );
 
   const initialBoard = [] as number[][];
@@ -1581,10 +1570,10 @@ function getInitialBoard() {
   function isPlayerOnThisUbication(
     playersUbication: number[][],
     y: number,
-    x: number
+    x: number,
   ) {
     return playersUbication.find(
-      (playerUbication) => playerUbication[0] === y && playerUbication[1] === x
+      (playerUbication) => playerUbication[0] === y && playerUbication[1] === x,
     );
   }
 
@@ -1608,7 +1597,7 @@ function getInitialBoard() {
 export function isRivalNearby(
   gameBoard: number[][],
   player: Player,
-  mustBeNext = false
+  mustBeNext = false,
 ) {
   const x = player.ubicationX! - 1;
   const y = player.ubicationY! - 1;

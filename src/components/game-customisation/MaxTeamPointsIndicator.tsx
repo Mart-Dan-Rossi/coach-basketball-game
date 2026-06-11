@@ -1,6 +1,7 @@
 import React from "react";
 import { numberEntire } from "../../utilities/exportableFunctions";
 
+// @ts-ignore
 import "../../styles/MaxTeamPointsIndicator.css";
 
 interface Props {

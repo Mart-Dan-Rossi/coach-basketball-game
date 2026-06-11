@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 
 const Main = () => {
   const { teamsCreated } = useContext(GameContext);
+
   return (
     <>
       <Link to={"/"}>
@@ -29,7 +30,7 @@ const Main = () => {
           <span>Back</span>
         </div>
       </Link>
-      {teamsCreated ? <CustomizeGame /> : <GameContainer />}
+      {!teamsCreated ? <CustomizeGame /> : <GameContainer />}
     </>
   );
 };

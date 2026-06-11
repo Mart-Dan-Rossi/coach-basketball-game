@@ -124,6 +124,8 @@ const CreateTeam = ({
         playerB4Stats,
         playerB5Stats,
       });
+
+      //TODO delete this line when the game is ready to be played with the custom teams
       setTeamsCreated(true);
     }
   }
@@ -268,7 +270,7 @@ const CreateTeam = ({
               <CreatePlayer
                 team={team}
                 playerPosition={playerPositionDetection(
-                  createPlayer.toString()
+                  createPlayer.toString(),
                 )}
                 player={
                   variablesToCreatePlayers.playersInfo[createPlayer - 1]

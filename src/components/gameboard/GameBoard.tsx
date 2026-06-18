@@ -80,12 +80,12 @@ function GameBoard({ match, setMatchState }: Props) {
 
   function paintPlayerOnThisTileAsSelected(
     team: Team,
-    ubicationScaned: number[]
+    ubicationScaned: number[],
   ) {
     const playerOnThisUbication = team.players.find(
       (player) =>
         player.ubicationX === ubicationScaned[0] &&
-        player.ubicationY === ubicationScaned[1]
+        player.ubicationY === ubicationScaned[1],
     );
 
     if (playerOnThisUbication === undefined) return "";
@@ -97,7 +97,7 @@ function GameBoard({ match, setMatchState }: Props) {
 
   function showPosibleActionsButtons(
     teamActivePlayer: Player | undefined,
-    team: Team
+    team: Team,
   ) {
     if (teamActivePlayer) {
       //End turn button is allways shown
@@ -160,7 +160,7 @@ function GameBoard({ match, setMatchState }: Props) {
   function addClassToTileIfNeeded(
     teamNumber: number,
     col: number,
-    row: number
+    row: number,
   ) {
     let thisUbication = [col, row];
 
@@ -341,9 +341,8 @@ function GameBoard({ match, setMatchState }: Props) {
     if (activePlayer) {
       // console.log("activePlayer: ", activePlayer);
       return () => {
-        gameBoard[activePlayer.ubicationY! - 1][
-          activePlayer.ubicationX! - 1
-        ] = 0;
+        gameBoard[activePlayer.ubicationY! - 1][activePlayer.ubicationX! - 1] =
+          0;
 
         activePlayer.movePlayer(dx, dy);
         gameBoard[activePlayer.ubicationY! - 1][activePlayer.ubicationX! - 1] =
@@ -421,7 +420,7 @@ function GameBoard({ match, setMatchState }: Props) {
               setFinalisingAction(() => false);
 
               setConfirmButtonHandler(() =>
-                confirmPassToPlayer(team, thisUbication)
+                confirmPassToPlayer(team, thisUbication),
               );
 
               setActivateConfirmButton(() => true);
@@ -441,7 +440,7 @@ function GameBoard({ match, setMatchState }: Props) {
               if (!teamAAnySelected) {
                 setConfirmButtonHandler(
                   () => () =>
-                    confirmPlayerSelection(teamA, thisUbication, teamB)
+                    confirmPlayerSelection(teamA, thisUbication, teamB),
                 );
               }
 
@@ -454,7 +453,7 @@ function GameBoard({ match, setMatchState }: Props) {
               if (!teamBAnySelected) {
                 setConfirmButtonHandler(
                   () => () =>
-                    confirmPlayerSelection(teamB, thisUbication, teamA)
+                    confirmPlayerSelection(teamB, thisUbication, teamA),
                 );
               }
 
@@ -488,7 +487,7 @@ function GameBoard({ match, setMatchState }: Props) {
         receiver!,
         gameBoard,
         gameNarration,
-        setGameNarration
+        setGameNarration,
       );
 
       if (passer.team == "TeamA") {
@@ -508,7 +507,7 @@ function GameBoard({ match, setMatchState }: Props) {
   function confirmPlayerSelection(
     team: Team,
     ubicationScaned: number[],
-    otherTeam: Team
+    otherTeam: Team,
   ) {
     console.log("Confirm player selection");
     let teamStillHaveTurnLeft = false;
@@ -538,7 +537,7 @@ function GameBoard({ match, setMatchState }: Props) {
       newActivePlayer = compareIniciatives(
         teamA.returnSelectedPlayer()!,
         teamB.returnSelectedPlayer()!,
-        teamA.getPlayerWithBallOrUndefined()
+        teamA.getPlayerWithBallOrUndefined(),
       );
       // console.log("Active player old: ", activePlayer);
       // console.log("newActivePlayer: ", newActivePlayer);
@@ -569,7 +568,7 @@ function GameBoard({ match, setMatchState }: Props) {
                 } ${addClassToTileIfNeeded(
                   player,
                   colIndex + 1,
-                  rowIndex + 1
+                  rowIndex + 1,
                 )}`}
                 onClick={clickTileHandler(player, colIndex + 1, rowIndex + 1)!}
               >

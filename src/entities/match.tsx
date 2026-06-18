@@ -100,7 +100,7 @@ export class Match {
   jumpBall(
     gameNarration: string[],
     setGameNarration: React.Dispatch<React.SetStateAction<string[]>>,
-    gameBoard: number[][]
+    gameBoard: number[][],
   ) {
     let pointsObteinedInTheJumpBallA = 0;
     let pointsObteinedInTheJumpBallB = 0;
@@ -113,14 +113,14 @@ export class Match {
       this.teamA.players.forEach((player) => {
         if (player.position === "5") {
           pointsObteinedInTheJumpBallA = numberEntire(
-            roll20SidesDice() + player.height + player.atleticism
+            roll20SidesDice() + player.height + player.atleticism,
           );
 
           //Give feedback
           newGameNarration.unshift(
             `${
               player.name === "" ? "The center of team A" : player.name
-            }, get ${pointsObteinedInTheJumpBallA} points in the jump`
+            }, get ${pointsObteinedInTheJumpBallA} points in the jump`,
           );
           setGameNarration(() => newGameNarration);
         }
@@ -130,14 +130,14 @@ export class Match {
       this.teamB.players.forEach((player) => {
         if (player.position === "5") {
           pointsObteinedInTheJumpBallB = numberEntire(
-            roll20SidesDice() + player.height + player.atleticism
+            roll20SidesDice() + player.height + player.atleticism,
           );
 
           //Give feedback
           newGameNarration.unshift(
             `${
               player.name === "" ? "The center of team B" : player.name
-            }, get ${pointsObteinedInTheJumpBallB} points in the jump`
+            }, get ${pointsObteinedInTheJumpBallB} points in the jump`,
           );
           setGameNarration(() => newGameNarration);
         }
@@ -157,7 +157,7 @@ export class Match {
             newGameNarration.unshift(
               `${this.teamA.name} won the jump. Now ${
                 player.name === "" ? "the PG of team A" : player.name
-              } have the ball.`
+              } have the ball.`,
             );
             setGameNarration(() => newGameNarration);
 
@@ -174,7 +174,7 @@ export class Match {
             newGameNarration.unshift(
               `${this.teamB.name} won the jump. Now ${
                 player.name === "" ? "the PG of team B" : player.name
-              } have the ball.`
+              } have the ball.`,
             );
             setGameNarration(() => newGameNarration);
 
@@ -184,7 +184,7 @@ export class Match {
       } else {
         //Give feedback
         newGameNarration.unshift(
-          `Both players touch the ball at the same time! The jump ball continues`
+          `Both players touch the ball at the same time! The jump ball continues`,
         );
         setGameNarration(() => newGameNarration);
       }
@@ -210,7 +210,7 @@ export class Match {
     receiver: Player,
     gameBoard: number[][],
     gameNarration: string[],
-    setGameNarration: React.Dispatch<React.SetStateAction<string[]>>
+    setGameNarration: React.Dispatch<React.SetStateAction<string[]>>,
   ) {
     let newGameNarration = [...gameNarration];
 
@@ -224,7 +224,7 @@ export class Match {
     //I'll use this to know who is the most likley defender to steal the ball. It have the player with the highest defensive points and the number of points he got
     let defensorWithTheHighestDefensivePoints = [undefined, undefined] as [
       Player | undefined,
-      number | undefined
+      number | undefined,
     ];
 
     //The i get the pass points
@@ -241,12 +241,12 @@ export class Match {
       checkTilesThatWillInfluenceInTheCalculations(
         gameBoard,
         [passer.ubicationX!, passer.ubicationY!],
-        [receiver.ubicationX!, receiver.ubicationY!]
+        [receiver.ubicationX!, receiver.ubicationY!],
       );
 
     function calculateDefensivePointsPerDefensor(
       player: Player,
-      inPassLine: boolean
+      inPassLine: boolean,
     ) {
       let points = 0;
       let playerZoneUbication = playerZone(player, player.team == "TeamB");
@@ -302,7 +302,7 @@ export class Match {
       i: number,
       team: Team,
       arrayOfUbications: any[] | [number[]],
-      inPassLine: boolean
+      inPassLine: boolean,
     ) {
       //Check every player to know his defensive points for this situation
       team.players.forEach((player) => {
@@ -312,7 +312,7 @@ export class Match {
         ) {
           let defensivePlayerPoints = calculateDefensivePointsPerDefensor(
             player,
-            inPassLine
+            inPassLine,
           );
 
           if (player.lastAction == "Overwhelming waiting") {
@@ -320,7 +320,7 @@ export class Match {
           }
 
           newGameNarration.unshift(
-            `${player.name} (Defender) gets ${defensivePlayerPoints} defensive points`
+            `${player.name} (Defender) gets ${defensivePlayerPoints} defensive points`,
           );
 
           totalDefensivePoints += defensivePlayerPoints;
@@ -335,14 +335,14 @@ export class Match {
           i,
           this.teamA,
           tilesThatWillInfluenceInCalculations[0],
-          true
+          true,
         );
       } else if (teamDefending == this.teamB.name) {
         checkDefensivePlayersPoints(
           i,
           this.teamB,
           tilesThatWillInfluenceInCalculations[0],
-          true
+          true,
         );
       }
     }
@@ -354,23 +354,23 @@ export class Match {
           i,
           this.teamA,
           tilesThatWillInfluenceInCalculations[1],
-          false
+          false,
         );
       } else if (teamDefending == this.teamB.name) {
         checkDefensivePlayersPoints(
           i,
           this.teamB,
           tilesThatWillInfluenceInCalculations[1],
-          false
+          false,
         );
       }
     }
 
     newGameNarration.unshift(
-      `The total defensive points are ${totalDefensivePoints}`
+      `The total defensive points are ${totalDefensivePoints}`,
     );
     newGameNarration.unshift(
-      `${passer.name} (Passer) passer gets ${passPoints} pass points`
+      `${passer.name} (Passer) passer gets ${passPoints} pass points`,
     );
 
     passer.setLastAction("pass");
@@ -382,7 +382,7 @@ export class Match {
       //The receiver gets the ball
       receiver.setHaveBall(true);
       newGameNarration.unshift(
-        `${receiver.name} gets the pass and is the new ball handler`
+        `${receiver.name} gets the pass and is the new ball handler`,
       );
 
       passerTeam.handleNewPasser(passer);
@@ -392,7 +392,7 @@ export class Match {
       //The player with the highest defensive points involved in this situation steal the ball
       defensorWithTheHighestDefensivePoints[0]!.setHaveBall(true);
       newGameNarration.unshift(
-        `${defensorWithTheHighestDefensivePoints[0]!.name} has stolen the ball!`
+        `${defensorWithTheHighestDefensivePoints[0]!.name} has stolen the ball!`,
       );
 
       passerTeam.resetLastPasserForAllPlayers();
@@ -405,7 +405,7 @@ export class Match {
   calculateIfDribblingIsSuccesfull(
     dribbler: Player,
     endingUbication: number[],
-    gameBoard: [[]]
+    gameBoard: [[]],
   ) {
     //I set dribbler as default player with the ball
     let playerWithBallAfterCalculations = dribbler;
@@ -417,7 +417,7 @@ export class Match {
       checkTilesThatWillInfluenceInTheCalculations(
         gameBoard,
         [dribbler.ubicationX!, dribbler.ubicationY!],
-        endingUbication
+        endingUbication,
       ).flat(); //In this case there will be no defeders in the tile of the ball
 
     let defensivePlayers = [] as Player[];
@@ -427,8 +427,8 @@ export class Match {
       return tilesThatWillInfluenceInCalculations.flatMap((tile) =>
         team.players.filter(
           (player) =>
-            player.ubicationX === tile[0] && player.ubicationY === tile[1]
-        )
+            player.ubicationX === tile[0] && player.ubicationY === tile[1],
+        ),
       );
     }
 
@@ -479,7 +479,7 @@ export class Match {
   handleShot(
     gameNarration: string[],
     setGameNarration: React.Dispatch<React.SetStateAction<string[]>>,
-    gameBoard: number[][]
+    gameBoard: number[][],
   ) {
     //First i get the shooter
     let shooter = this.getShooter()!;
@@ -495,8 +495,8 @@ export class Match {
 
     newGameNarration.unshift(
       `${shooter.name} is attempting a shot from ${getRangeText(
-        shooterZoneUbication
-      )}!`
+        shooterZoneUbication,
+      )}!`,
     );
 
     let isFreeThrow = this.shootingFreeThrows;
@@ -524,7 +524,7 @@ export class Match {
       } else if (shooterZoneUbication == ranges.outsideThe3PointLine.id) {
         shooterPointsInShot = mathShotPointsCloseToThe3PointLine(
           multiplier,
-          shooter
+          shooter,
         );
       } else if (shooterZoneUbication == ranges.long3Range.id) {
         shooterPointsInShot = mathShotPointsInLong3Range(multiplier, shooter);
@@ -533,12 +533,12 @@ export class Match {
       } else if (shooterZoneUbication == ranges.behindHalfCourt.id) {
         shooterPointsInShot = mathShotPointsBehindHalfCourt(
           multiplier,
-          shooter
+          shooter,
         );
       } else if (shooterZoneUbication == ranges.theOtherRim.id) {
         shooterPointsInShot = mathShotPointsCloseToTheOtherRim(
           multiplier,
-          shooter
+          shooter,
         );
       }
 
@@ -557,7 +557,7 @@ export class Match {
             let defenderInThisUbication =
               defendingTeam.returnPlayerInThisPosition(
                 shooter.ubicationX! + positionX,
-                shooter.ubicationY! + positionY
+                shooter.ubicationY! + positionY,
               );
             let defenderPoints = 0;
 
@@ -566,7 +566,7 @@ export class Match {
               //I get in what part of the field is him located to calculate with the propper math
               let defenderZoneUbication = playerZone(
                 defenderInThisUbication,
-                defenderInThisUbication.team == "TeamB"
+                defenderInThisUbication.team == "TeamB",
               );
 
               let multiplier = 1;
@@ -579,7 +579,7 @@ export class Match {
               if (defenderZoneUbication == ranges.closeToTheRim.id) {
                 defenderPoints = mathDefensePointsCloseToTheRim(
                   multiplier,
-                  defenderInThisUbication
+                  defenderInThisUbication,
                 );
               } else if (
                 defenderZoneUbication == ranges.inShortRange.id ||
@@ -587,24 +587,24 @@ export class Match {
               ) {
                 defenderPoints = mathDefensePointsInShortRange(
                   multiplier,
-                  defenderInThisUbication
+                  defenderInThisUbication,
                 );
               } else if (defenderZoneUbication == ranges.inMidRange.id) {
                 defenderPoints = mathDefensePointsInMidRange(
                   multiplier,
-                  defenderInThisUbication
+                  defenderInThisUbication,
                 );
               } else if (
                 defenderZoneUbication == ranges.outsideThe3PointLine.id
               ) {
                 defenderPoints = mathDefensePointsCloseToThe3PointLine(
                   multiplier,
-                  defenderInThisUbication
+                  defenderInThisUbication,
                 );
               } else if (defenderZoneUbication == ranges.long3Range.id) {
                 defenderPoints = mathDefensePointsLong3Range(
                   multiplier,
-                  defenderInThisUbication
+                  defenderInThisUbication,
                 );
               } else if (
                 defenderZoneUbication == ranges.halfCourt.id ||
@@ -613,7 +613,7 @@ export class Match {
               ) {
                 defenderPoints = mathDefensePointsHalfCourtAndFartherAway(
                   multiplier,
-                  defenderInThisUbication
+                  defenderInThisUbication,
                 );
               }
 
@@ -666,7 +666,7 @@ export class Match {
       if (shooterZoneUbication == ranges.closeToTheRim.id) {
         maxShooterPoints = mathShotPointsCloseToTheRim(
           1.2,
-          maxAPlayerAtributes
+          maxAPlayerAtributes,
         );
       } else if (
         shooterZoneUbication == ranges.inShortRange.id ||
@@ -678,7 +678,7 @@ export class Match {
       } else if (shooterZoneUbication == ranges.outsideThe3PointLine.id) {
         maxShooterPoints = mathShotPointsCloseToThe3PointLine(
           1.2,
-          maxAPlayerAtributes
+          maxAPlayerAtributes,
         );
       } else if (shooterZoneUbication == ranges.long3Range.id) {
         maxShooterPoints = mathShotPointsInLong3Range(1.2, maxAPlayerAtributes);
@@ -687,12 +687,12 @@ export class Match {
       } else if (shooterZoneUbication == ranges.behindHalfCourt.id) {
         maxShooterPoints = mathShotPointsBehindHalfCourt(
           1.2,
-          maxAPlayerAtributes
+          maxAPlayerAtributes,
         );
       } else if (shooterZoneUbication == ranges.theOtherRim.id) {
         maxShooterPoints = mathShotPointsCloseToTheOtherRim(
           1.2,
-          maxAPlayerAtributes
+          maxAPlayerAtributes,
         );
       } else {
         maxShooterPoints = 0;
@@ -704,7 +704,7 @@ export class Match {
       if (shooterZoneUbication == ranges.closeToTheRim.id) {
         maxSingleDefenderPoints = mathDefensePointsCloseToTheRim(
           1.4,
-          maxPosiblePlayerAtributes
+          maxPosiblePlayerAtributes,
         );
       } else if (
         shooterZoneUbication == ranges.inShortRange.id ||
@@ -712,22 +712,22 @@ export class Match {
       ) {
         maxSingleDefenderPoints = mathDefensePointsInShortRange(
           1.4,
-          maxPosiblePlayerAtributes
+          maxPosiblePlayerAtributes,
         );
       } else if (shooterZoneUbication == ranges.inMidRange.id) {
         maxSingleDefenderPoints = mathDefensePointsInMidRange(
           1.4,
-          maxPosiblePlayerAtributes
+          maxPosiblePlayerAtributes,
         );
       } else if (shooterZoneUbication == ranges.outsideThe3PointLine.id) {
         maxSingleDefenderPoints = mathDefensePointsCloseToThe3PointLine(
           1.4,
-          maxPosiblePlayerAtributes
+          maxPosiblePlayerAtributes,
         );
       } else if (shooterZoneUbication == ranges.long3Range.id) {
         maxSingleDefenderPoints = mathDefensePointsLong3Range(
           1.4,
-          maxPosiblePlayerAtributes
+          maxPosiblePlayerAtributes,
         );
       } else if (
         shooterZoneUbication == ranges.halfCourt.id ||
@@ -736,7 +736,7 @@ export class Match {
       ) {
         maxSingleDefenderPoints = mathDefensePointsHalfCourtAndFartherAway(
           1.4,
-          maxPosiblePlayerAtributes
+          maxPosiblePlayerAtributes,
         );
       } else {
         maxSingleDefenderPoints = 0;
@@ -745,7 +745,7 @@ export class Match {
       let dShooterPointsVsMaxPossiblePointsPercentage =
         (shooterPointsInShot * 100) / maxShooterPoints;
       newGameNarration.unshift(
-        `${shooter.name} (Shooter) gets ${dShooterPointsVsMaxPossiblePointsPercentage} points in the shot`
+        `${shooter.name} (Shooter) gets ${dShooterPointsVsMaxPossiblePointsPercentage} points in the shot`,
       );
 
       let dDefendersPointsVsSinlgePlayerMaxPossiblePointsPercentage =
@@ -754,10 +754,10 @@ export class Match {
           : (allDefendersPointsInShotSumatory * 100) / maxSingleDefenderPoints;
       allDefendersPointsInShotSumatory == 0
         ? newGameNarration.unshift(
-            `Defenders can do nothing against the shooter`
+            `Defenders can do nothing against the shooter`,
           )
         : newGameNarration.unshift(
-            `The defenders get ${dDefendersPointsVsSinlgePlayerMaxPossiblePointsPercentage} defensive points in total`
+            `The defenders get ${dDefendersPointsVsSinlgePlayerMaxPossiblePointsPercentage} defensive points in total`,
           );
 
       let pointsDif =
@@ -924,7 +924,7 @@ export class Match {
     if (isItIn) {
       if (/*TODO isFreeThrow*/ false) {
         newGameNarration.unshift(
-          `The ball goes in! The team ${atackingTeam.name} add 1 point to the scoreboard`
+          `The ball goes in! The team ${atackingTeam.name} add 1 point to the scoreboard`,
         );
         pointsToAdd = 1;
       } else if (
@@ -934,12 +934,12 @@ export class Match {
         shooterZoneUbication == ranges.inMidRange.id
       ) {
         newGameNarration.unshift(
-          `The ball goes in! The team ${atackingTeam.name} add 2 points to the scoreboard`
+          `The ball goes in! The team ${atackingTeam.name} add 2 points to the scoreboard`,
         );
         pointsToAdd = 2;
       } else {
         newGameNarration.unshift(
-          `The ball goes in! The team ${atackingTeam.name} add 3 points to the scoreboard`
+          `The ball goes in! The team ${atackingTeam.name} add 3 points to the scoreboard`,
         );
         pointsToAdd = 3;
       }
@@ -949,19 +949,19 @@ export class Match {
       newPlayerWithBall.movePlayerToOwnRim();
       newPlayerWithBall.setHaveBall(true);
       newGameNarration.unshift(
-        `${newPlayerWithBall.name} get the ball to start theyr posetion`
+        `${newPlayerWithBall.name} get the ball to start theyr posetion`,
       );
     } else {
       //If it doesn't goes in handle who get's the rebound
       newPlayerWithBall = this.getRebounder(shooter, gameBoard);
       newPlayerWithBall.statsAddRebound(atackingTeam);
       newPlayerWithBall.setLastAction(
-        newPlayerWithBall.team == atackingTeam.name ? "get O reb" : "get D reb"
+        newPlayerWithBall.team == atackingTeam.name ? "get O reb" : "get D reb",
       );
       newGameNarration.unshift(
         `The shot is off ${
           newPlayerWithBall.team == atackingTeam.name ? "but" : "and"
-        } ${newPlayerWithBall.name} gets the rebound!`
+        } ${newPlayerWithBall.name} gets the rebound!`,
       );
       shooterTeam.resetLastPasserForAllPlayers();
     }
@@ -971,7 +971,7 @@ export class Match {
     shooter.statsAddShotAttempt(
       pointsToAdd,
       isItIn,
-      /*TODO isFreeThrow*/ false
+      /*TODO isFreeThrow*/ false,
     );
     shooter.setShotAttempt(false);
 
@@ -986,7 +986,7 @@ export class Match {
       pointsToAdd,
       isItIn,
       !!asistant,
-      /*TODO check if there was a foul*/ false
+      /*TODO check if there was a foul*/ false,
     );
 
     //TODO (But not here) passerTeam.resetLastPasserForAllPlayers(); when buzzer sound
@@ -1008,30 +1008,30 @@ export class Match {
     type: string,
     gameNarration: string[],
     setGameNarration: React.Dispatch<React.SetStateAction<string[]>>,
-    gameBoard: number[][]
+    gameBoard: number[][],
   ) {
     let activePlayer = this.getActivePlayer()!;
 
     activePlayer.handleWait(type);
 
     const playerName = `The ${playerPositionDetection(
-      activePlayer.position
+      activePlayer.position,
     )} of ${activePlayer.team}`;
 
     const narrationText =
       type == "overwhelmingWaiting"
         ? `${playerName} is now in an overwhelming waiting stance.`
         : type == "withCaution"
-        ? `${playerName} is now waiting with caution.`
-        : type == "withoutTheBall"
-        ? `${playerName} is now waiting without the ball.`
-        : `${playerName} is now doing a triple threat.`;
+          ? `${playerName} is now waiting with caution.`
+          : type == "withoutTheBall"
+            ? `${playerName} is now waiting without the ball.`
+            : `${playerName} is now doing a triple threat.`;
 
     this.handleEndTurn(
       gameNarration,
       setGameNarration,
       gameBoard,
-      narrationText
+      narrationText,
     );
   }
 
@@ -1056,8 +1056,8 @@ export class Match {
       shooter.ubicationY! == 8
         ? "middle"
         : shooter.ubicationY! < 8
-        ? "top"
-        : "bottom";
+          ? "top"
+          : "bottom";
 
     let shotDistanceY = getShotDistance(shooter, "Y");
     let shotDistanceX = getShotDistance(shooter, "X");
@@ -1087,13 +1087,13 @@ export class Match {
       reboundDirectionY,
       shotDistanceY,
       shotDistanceX,
-      teamAAtacking
+      teamAAtacking,
     );
 
     let closestPlayersToWhereBallLands = getClosestPlayers(
       gameBoard,
       [...this.teamA.players, ...this.teamB.players],
-      whereItReboundsTo
+      whereItReboundsTo,
     );
 
     return rebounder!;
@@ -1103,7 +1103,7 @@ export class Match {
     gameNarration: string[],
     setGameNarration: React.Dispatch<React.SetStateAction<string[]>>,
     gameBoard: number[][],
-    currentGameNarration?: string
+    currentGameNarration?: string,
   ) {
     // console.log("handleEndTurn: ");
     let activePlayer = this.getActivePlayer();
@@ -1134,7 +1134,7 @@ export class Match {
         newGameNarration.unshift(
           `The ${playerPositionDetection(selectedPlayers[0].position)} of ${
             selectedPlayers[0].team
-          } is now the active player.`
+          } is now the active player.`,
         );
       }
 
@@ -1145,7 +1145,7 @@ export class Match {
         newGameNarration.unshift(
           `The ${playerPositionDetection(selectedPlayers[1].position)} of ${
             selectedPlayers[1].team
-          } is now the active player.`
+          } is now the active player.`,
         );
       }
 
@@ -1185,9 +1185,11 @@ export class Match {
       if (this.teamA.teamHaveTheBall()) {
         this.setTeamTurn("TeamA");
         this.teamA.setTeamTurn(true);
+        this.teamB.setTeamTurn(false);
       } else {
         this.setTeamTurn("TeamB");
         this.teamB.setTeamTurn(true);
+        this.teamA.setTeamTurn(false);
       }
     }
   }
@@ -1208,7 +1210,7 @@ export class Match {
   runClock(
     gameNarration: string[],
     setGameNarration: React.Dispatch<React.SetStateAction<string[]>>,
-    gameBoard: number[][]
+    gameBoard: number[][],
   ) {
     if (this.timeLeft.seconds == 0) {
       this.timeLeft.minutes--;
@@ -1238,10 +1240,12 @@ export class Match {
       this.teamA.giveActionPointsToTeam();
       this.teamA.giveMovementLeftToAllPlayers();
       this.teamA.givePlayerHaveTurnToAllPlayers();
-
+      this.teamA.setTeamTurnLeft(true);
+      
       this.teamB.giveActionPointsToTeam();
       this.teamB.giveMovementLeftToAllPlayers();
       this.teamB.givePlayerHaveTurnToAllPlayers();
+      this.teamB.setTeamTurnLeft(true);
     }
   }
 

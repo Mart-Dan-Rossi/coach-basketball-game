@@ -215,7 +215,7 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
     matchCopy.handleEndTurn(gameNarration, setGameNarration, gameBoard);
 
     setActivePlayer(() => matchCopy.getActivePlayer());
-
+    
     setMatchState(() => matchCopy);
   }
 

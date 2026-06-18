@@ -30,7 +30,8 @@ const Main = () => {
           <span>Back</span>
         </div>
       </Link>
-      {!teamsCreated ? <CustomizeGame /> : <GameContainer />}
+      {/* TODO: delete false when the game is ready to be played with the custom teams */}
+      {!teamsCreated && false ? <CustomizeGame /> : <GameContainer />}
     </>
   );
 };

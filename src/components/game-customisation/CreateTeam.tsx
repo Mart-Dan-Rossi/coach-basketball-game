@@ -124,9 +124,6 @@ const CreateTeam = ({
         playerB4Stats,
         playerB5Stats,
       });
-
-      //TODO delete this line when the game is ready to be played with the custom teams
-      setTeamsCreated(true);
     }
   }
 

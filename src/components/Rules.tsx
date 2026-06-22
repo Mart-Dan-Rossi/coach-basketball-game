@@ -397,7 +397,7 @@ function Rules() {
               <li>
                 <p>
                   <span className="action-type-title">Shoot</span>: The player
-                  attempt a midium range or long range shot. If the player war
+                  attempt a midium range or long range shot. If the player was
                   dribbling the ball he'll have less effectiveness. It cost{" "}
                   <span className="font-weight-strong">
                     1(one) action points

@@ -104,6 +104,7 @@ function GameBoard({ match, setMatchState }: Props) {
       setShowEndTurnButton(() => true);
 
       //If the player is part of the atacking team
+      //TODO make waiting options work propperly
       if (team.getPlayerWithBallOrUndefined()) {
         //And have 0.5 or more  action points
         if (teamActivePlayer.actionPoints >= 0.5) {
@@ -125,6 +126,7 @@ function GameBoard({ match, setMatchState }: Props) {
 
         //Else if the player is part of the defending team
       } else {
+        //TODO make waiting options work propperly
         //And have 0.5 or more action points
         if (teamActivePlayer.actionPoints >= 0.5) {
           if (isRivalNearby(gameBoard, teamActivePlayer)) {

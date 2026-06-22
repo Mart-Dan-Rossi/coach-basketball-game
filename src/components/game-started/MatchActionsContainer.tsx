@@ -159,6 +159,7 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
   function hendleMove() {
     setActionConfirmed(() => "move");
     setFinalisingAction(() => true);
+    setMoveButtonSelected(() => false);
   }
 
   function handleStealAttempt() {
@@ -177,6 +178,7 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
   function handleDribbling() {
     setActionConfirmed(() => "dribbling");
     setFinalisingAction(() => true);
+    setDribblingButtonSelected(() => false);
   }
 
   function handleWait(type: string) {

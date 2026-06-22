@@ -367,10 +367,10 @@ export class Match {
     }
 
     newGameNarration.unshift(
-      `The total defensive points are ${totalDefensivePoints}`,
+      `The total defensive points are ${Number(totalDefensivePoints).toFixed(2)}`,
     );
     newGameNarration.unshift(
-      `${passer.name} (Passer) passer gets ${passPoints} pass points`,
+      `${passer.name || playerPositionDetection(passer.position) + " of team " + passer.team} gets ${Number(passer.actionPoints).toFixed(2)} pass points`,
     );
 
     passer.setLastAction("pass");
@@ -382,7 +382,7 @@ export class Match {
       //The receiver gets the ball
       receiver.setHaveBall(true);
       newGameNarration.unshift(
-        `${receiver.name} gets the pass and is the new ball handler`,
+        `${receiver.name || playerPositionDetection(receiver.position) + " of team " + receiver.team} gets the pass and is the new ball handler`,
       );
 
       passerTeam.handleNewPasser(passer);
@@ -1241,7 +1241,7 @@ export class Match {
       this.teamA.giveMovementLeftToAllPlayers();
       this.teamA.givePlayerHaveTurnToAllPlayers();
       this.teamA.setTeamTurnLeft(true);
-      
+
       this.teamB.giveActionPointsToTeam();
       this.teamB.giveMovementLeftToAllPlayers();
       this.teamB.givePlayerHaveTurnToAllPlayers();

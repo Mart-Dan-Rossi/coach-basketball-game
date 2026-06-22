@@ -105,15 +105,15 @@ function GameBoard({ match, setMatchState }: Props) {
 
       //If the player is part of the atacking team
       if (team.getPlayerWithBallOrUndefined()) {
-        //And have more than 0.5 action points
-        if (teamActivePlayer.actionPoints > 0.5) {
+        //And have 0.5 or more  action points
+        if (teamActivePlayer.actionPoints >= 0.5) {
           if (teamActivePlayer.haveBall) {
             setShowTripleThreatButton(() => true);
             setShowPassButton(() => true);
           }
         }
-        //And have more than 1 action point
-        if (teamActivePlayer.actionPoints > 1) {
+        //And have 1 or more action point
+        if (teamActivePlayer.actionPoints >= 1) {
           if (teamActivePlayer.haveBall) {
             setShowDribblingButton(() => true);
             setShowShootButton(() => true);
@@ -125,15 +125,15 @@ function GameBoard({ match, setMatchState }: Props) {
 
         //Else if the player is part of the defending team
       } else {
-        //And have more than 0.5 action points
-        if (teamActivePlayer.actionPoints > 0.5) {
+        //And have 0.5 or more action points
+        if (teamActivePlayer.actionPoints >= 0.5) {
           if (isRivalNearby(gameBoard, teamActivePlayer)) {
             setShowWaitCarefullyButton(() => true);
           }
         }
 
-        //And have more than 1 action point
-        if (teamActivePlayer.actionPoints > 1) {
+        //And have 1 or more action point
+        if (teamActivePlayer.actionPoints >= 1) {
           if (isRivalNearby(gameBoard, teamActivePlayer, true)) {
             setShowWaitPressingButton(() => true);
           }

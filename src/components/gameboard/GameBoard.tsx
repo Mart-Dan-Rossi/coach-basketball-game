@@ -336,31 +336,6 @@ function GameBoard({ match, setMatchState }: Props) {
     }
   }
 
-  function movePlayer(dx: number, dy: number) {
-    console.log("Move player");
-    if (activePlayer) {
-      // console.log("activePlayer: ", activePlayer);
-      return () => {
-        gameBoard[activePlayer.ubicationY! - 1][activePlayer.ubicationX! - 1] =
-          0;
-
-        activePlayer.movePlayer(dx, dy);
-        gameBoard[activePlayer.ubicationY! - 1][activePlayer.ubicationX! - 1] =
-          activePlayer.team == "TeamA" ? 1 : 2;
-
-        setActionConfirmed(() => "");
-
-        setMatchState(() => match);
-
-        setActivateConfirmButton(() => false);
-      };
-    } else {
-      return () => {
-        console.error("Active player not found while moving player");
-      };
-    }
-  }
-
   function clickTileHandler(teamNumber: number, col: number, row: number) {
     if (actionConfirmed == "move" || actionConfirmed == "dribbling") {
       return () => {
@@ -419,9 +394,10 @@ function GameBoard({ match, setMatchState }: Props) {
             ) {
               setFinalisingAction(() => false);
 
-              setConfirmButtonHandler(() =>
-                confirmPassToPlayer(team, thisUbication),
-              );
+              setConfirmButtonHandler(() => {
+                // console.log("Confirm pass handler setted");
+                return makePass(team, thisUbication);
+              });
 
               setActivateConfirmButton(() => true);
             }
@@ -465,8 +441,34 @@ function GameBoard({ match, setMatchState }: Props) {
     }
   }
 
-  function confirmPassToPlayer(team: Team, ubicationScaned: number[]) {
-    return () => () => {
+  function movePlayer(dx: number, dy: number) {
+    console.log("Move player");
+    if (activePlayer) {
+      // console.log("activePlayer: ", activePlayer);
+      return () => {
+        gameBoard[activePlayer.ubicationY! - 1][activePlayer.ubicationX! - 1] =
+          0;
+
+        activePlayer.movePlayer(dx, dy);
+        gameBoard[activePlayer.ubicationY! - 1][activePlayer.ubicationX! - 1] =
+          activePlayer.team == "TeamA" ? 1 : 2;
+
+        setActionConfirmed(() => "");
+
+        setMatchState(() => match);
+
+        setActivateConfirmButton(() => false);
+      };
+    } else {
+      return () => {
+        console.error("Active player not found while moving player");
+      };
+    }
+  }
+
+  function makePass(team: Team, ubicationScaned: number[]) {
+    return () => {
+      console.log("Make pass");
       let receiver: Player;
       let passer = match.getActivePlayer()!;
 

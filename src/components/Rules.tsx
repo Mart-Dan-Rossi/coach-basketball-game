@@ -298,11 +298,7 @@ function Rules() {
                   can be done only by players close to attacking players. After
                   the closest attacking player do any{" "}
                   <span className="font-weight-strong">action</span> this player
-                  use another turn. After the effects of this{" "}
-                  <span className="font-weight-strong">action</span> is
-                  activated the{" "}
-                  <span className="font-weight-strong">iniciative</span> is
-                  calculated again. It cost{" "}
+                  use another turn. It cost{" "}
                   <span className="font-weight-strong">
                     0.5(half) action points
                   </span>

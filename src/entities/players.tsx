@@ -72,7 +72,7 @@ export class Player {
     insideScoring: number,
     playMaking: number,
     ubicationX: number,
-    ubicationY: number
+    ubicationY: number,
   ) {
     //Info
     this.name = name;
@@ -141,7 +141,7 @@ export class Player {
   statsAddShotAttempt(
     pointsIfMade: number,
     isItMade: boolean,
-    wasThereAFoul: boolean
+    wasThereAFoul: boolean,
   ) {
     if (pointsIfMade == 1) {
       this.stats.freeThrowsAttempt++;
@@ -279,6 +279,7 @@ export class Player {
   }
 
   handleWait(type: string) {
+    console.log("type: ", type);
     this.setLastAction(type);
   }
 

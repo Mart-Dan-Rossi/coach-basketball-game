@@ -27,6 +27,22 @@
   vertical-align: -webkit-baseline-middle;
 }
 
+.player-status-img-right {
+  position: absolute;
+  width: 20px;
+  height: 18px;
+  right: 0;
+  bottom: 0;
+}
+
+.player-status-img-left {
+  position: absolute;
+  width: 20px;
+  height: 18px;
+  left: 0;
+  bottom: 0;
+}
+
 .highlighted-tile {
   background-color: rgba(128, 255, 0, 0.527);
 }

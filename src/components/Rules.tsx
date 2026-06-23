@@ -257,7 +257,7 @@ function Rules() {
                 <p>
                   <span className="action-type-title">Steal attempt</span>: The
                   player try to steal the ball. It can be done only by players
-                  next to the player with the ball or recivers of a pass. It
+                  next to the player with the ball. It
                   cost{" "}
                   <span className="font-weight-strong">
                     1(one) action point

@@ -257,8 +257,7 @@ function Rules() {
                 <p>
                   <span className="action-type-title">Steal attempt</span>: The
                   player try to steal the ball. It can be done only by players
-                  next to the player with the ball. It
-                  cost{" "}
+                  next to the player with the ball. It cost{" "}
                   <span className="font-weight-strong">
                     1(one) action point
                   </span>
@@ -380,8 +379,10 @@ function Rules() {
                 <p>
                   <span className="action-type-title">Tripple threat</span>: The
                   player gets ready to act increasing his stats for his next
-                  move after the next opponent do any{" "}
-                  <span className="font-weight-strong">action</span>. It cost{" "}
+                  move after the closest opponent do any{" "}
+                  <span className="font-weight-strong">action</span>. If 2(two)
+                  or more players are at the same distance this will apply to
+                  the first one to do something. It cost{" "}
                   <span className="font-weight-strong">
                     0.5(half) action points
                   </span>

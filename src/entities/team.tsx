@@ -124,7 +124,7 @@ export class Team {
 
   returnPlayerInThisPosition(positionX: number, positionY: number) {
     //IMPORTANT First i check if that ubication is inside the board
-    if (positionX > 0 && positionX < 29 && positionY > 0 && positionY < 16) {
+    if (positionX < 0 && positionX > 29 && positionY < 0 && positionY > 16) {
       return;
     }
 

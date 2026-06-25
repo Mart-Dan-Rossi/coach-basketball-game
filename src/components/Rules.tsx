@@ -291,8 +291,8 @@ function Rules() {
               <li>
                 <p>
                   <span className="action-type-title">Wait with caution</span>:
-                  The player gets ready to act as soon as the closer offensive
-                  player do something. If 2(two) or more players are at the same
+                  The player gets ready to act as soon as any offensive
+                  player do something close to him. If 2(two) or more players are at the same
                   distance this will apply to the first one to do something. It
                   can be done only by players close to attacking players. After
                   the closest attacking player do any{" "}
@@ -379,10 +379,10 @@ function Rules() {
                 <p>
                   <span className="action-type-title">Tripple threat</span>: The
                   player gets ready to act increasing his stats for his next
-                  move after the closest opponent do any{" "}
-                  <span className="font-weight-strong">action</span>. If 2(two)
-                  or more players are at the same distance this will apply to
-                  the first one to do something. It cost{" "}
+                  move after any opponent do any{" "}
+                  <span className="font-weight-strong">action</span> close to
+                  him. If 2(two) or more players are at the same distance this
+                  will apply to the first one to do something. It cost{" "}
                   <span className="font-weight-strong">
                     0.5(half) action points
                   </span>

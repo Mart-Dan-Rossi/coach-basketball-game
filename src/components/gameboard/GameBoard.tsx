@@ -455,6 +455,8 @@ function GameBoard({ match, setMatchState }: Props) {
         gameBoard[activePlayer.ubicationY! - 1][activePlayer.ubicationX! - 1] =
           activePlayer.team == "TeamA" ? 1 : 2;
 
+        match.addWaitingPlayersClose(true);
+
         setActionConfirmed(() => "");
 
         setMatchState(() => match);
@@ -543,8 +545,6 @@ function GameBoard({ match, setMatchState }: Props) {
         teamB.returnSelectedPlayer()!,
         teamA.getPlayerWithBallOrUndefined(),
       );
-      // console.log("Active player old: ", activePlayer);
-      // console.log("newActivePlayer: ", newActivePlayer);
       setActivePlayer(() => newActivePlayer);
       newActivePlayer.setActivePlayer(true);
       newActivePlayer.setPlayerSelected(false);

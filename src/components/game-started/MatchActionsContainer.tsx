@@ -189,8 +189,6 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
     setWaitWithoutTheBallButtonSelected(() => false);
     setTripleThreatButtonSelected(() => false);
 
-    setActionConfirmed(() => type);
-
     matchCopy.handlePlayerWait(
       type,
       gameNarration,

@@ -279,7 +279,21 @@ export class Player {
   }
 
   handleWait(type: string) {
-    console.log("type: ", type);
+    switch (type) {
+      case "tripleThreat":
+        this.actionPoints -= 0.5;
+        break;
+      case "withCaution":
+        this.actionPoints -= 0.5;
+        break;
+      case "withoutTheBall":
+        this.actionPoints -= 1;
+        break;
+      case "overwhelmingWaiting":
+        this.actionPoints -= 1;
+        break;  
+    }
+
     this.setLastAction(type);
   }
 

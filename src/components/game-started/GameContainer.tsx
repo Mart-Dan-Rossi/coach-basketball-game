@@ -15,8 +15,14 @@ import {
 } from "../../utilities/exportableFunctions";
 
 const GameContainer = () => {
-  const { teamAStats, teamBStats, gameNarration, setGameNarration, gameBoard } =
-    useContext(GameContext);
+  const {
+    teamAStats,
+    teamBStats,
+    gameNarration,
+    setGameNarration,
+    gameBoard,
+    setGameBoard,
+  } = useContext(GameContext);
 
   const playerA1: Player = new Player(
     teamAStats.playerA1Stats.name,
@@ -32,7 +38,7 @@ const GameContainer = () => {
     teamAStats.playerA1Stats.insideScoring,
     teamAStats.playerA1Stats.playMaking,
     teamAInitialPositions[0][0],
-    teamAInitialPositions[0][1]
+    teamAInitialPositions[0][1],
   );
 
   const playerA2: Player = new Player(
@@ -49,7 +55,7 @@ const GameContainer = () => {
     teamAStats.playerA2Stats.insideScoring,
     teamAStats.playerA2Stats.playMaking,
     teamAInitialPositions[1][0],
-    teamAInitialPositions[1][1]
+    teamAInitialPositions[1][1],
   );
 
   const playerA3: Player = new Player(
@@ -66,7 +72,7 @@ const GameContainer = () => {
     teamAStats.playerA3Stats.insideScoring,
     teamAStats.playerA3Stats.playMaking,
     teamAInitialPositions[2][0],
-    teamAInitialPositions[2][1]
+    teamAInitialPositions[2][1],
   );
 
   const playerA4: Player = new Player(
@@ -83,7 +89,7 @@ const GameContainer = () => {
     teamAStats.playerA4Stats.insideScoring,
     teamAStats.playerA4Stats.playMaking,
     teamAInitialPositions[3][0],
-    teamAInitialPositions[3][1]
+    teamAInitialPositions[3][1],
   );
 
   const playerA5: Player = new Player(
@@ -100,7 +106,7 @@ const GameContainer = () => {
     teamAStats.playerA5Stats.insideScoring,
     teamAStats.playerA5Stats.playMaking,
     teamAInitialPositions[4][0],
-    teamAInitialPositions[4][1]
+    teamAInitialPositions[4][1],
   );
 
   const playerB1: Player = new Player(
@@ -117,7 +123,7 @@ const GameContainer = () => {
     teamBStats.playerB1Stats.insideScoring,
     teamBStats.playerB1Stats.playMaking,
     teamBInitialPositions[0][0],
-    teamBInitialPositions[0][1]
+    teamBInitialPositions[0][1],
   );
 
   const playerB2: Player = new Player(
@@ -134,7 +140,7 @@ const GameContainer = () => {
     teamBStats.playerB2Stats.insideScoring,
     teamBStats.playerB2Stats.playMaking,
     teamBInitialPositions[1][0],
-    teamBInitialPositions[1][1]
+    teamBInitialPositions[1][1],
   );
 
   const playerB3: Player = new Player(
@@ -151,7 +157,7 @@ const GameContainer = () => {
     teamBStats.playerB3Stats.insideScoring,
     teamBStats.playerB3Stats.playMaking,
     teamBInitialPositions[2][0],
-    teamBInitialPositions[2][1]
+    teamBInitialPositions[2][1],
   );
 
   const playerB4: Player = new Player(
@@ -168,7 +174,7 @@ const GameContainer = () => {
     teamBStats.playerB4Stats.insideScoring,
     teamBStats.playerB4Stats.playMaking,
     teamBInitialPositions[3][0],
-    teamBInitialPositions[3][1]
+    teamBInitialPositions[3][1],
   );
 
   const playerB5: Player = new Player(
@@ -185,7 +191,7 @@ const GameContainer = () => {
     teamBStats.playerB5Stats.insideScoring,
     teamBStats.playerB5Stats.playMaking,
     teamBInitialPositions[4][0],
-    teamBInitialPositions[4][1]
+    teamBInitialPositions[4][1],
   );
 
   const playersTeamA: Player[] = [
@@ -211,7 +217,12 @@ const GameContainer = () => {
 
   function matchHandler() {
     if (matchState.quarter == 1 && matchState.timeLeft.minutes == 6) {
-      matchState.jumpBall(gameNarration, setGameNarration, gameBoard);
+      matchState.jumpBall(
+        gameNarration,
+        setGameNarration,
+        gameBoard,
+        setGameBoard,
+      );
     }
   }
 

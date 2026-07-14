@@ -25,7 +25,8 @@ export class Team {
     offensiveRebounds: number;
     blocks: number;
     steals: number;
-    fouls: number;
+    totalFouls: number;
+    foulsInQuarter: number;
   };
 
   constructor(name: "TeamA" | "TeamB", players: Player[]) {
@@ -55,7 +56,8 @@ export class Team {
       offensiveRebounds: 0,
       blocks: 0,
       steals: 0,
-      fouls: 0,
+      totalFouls: 0,
+      foulsInQuarter: 0,
     };
   }
 
@@ -239,7 +241,7 @@ export class Team {
   }
 
   statsAddFoul() {
-    this.stats.fouls++;
+    this.stats.totalFouls++;
   }
 
   statsAddTurnOver() {

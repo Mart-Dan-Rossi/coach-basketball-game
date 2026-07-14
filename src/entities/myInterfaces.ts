@@ -71,6 +71,24 @@ export interface TeamGameStats {
   offensiveRebounds: number;
   blocks: number;
   steals: number;
+  totalFouls: number;
+  foulsInQuarter: number;
+}
+
+export interface PlayerGameStats {
+  points: number;
+  fieldGoalsMade: number;
+  fieldGoalsattempt: number;
+  triplesMade: number;
+  triplesAttempt: number;
+  freeThrowsMade: number;
+  freeThrowsAttempt: number;
+  assists: number;
+  turnOvers: number;
+  rebounds: number;
+  offensiveRebounds: number;
+  blocks: number;
+  steals: number;
   fouls: number;
 }
 

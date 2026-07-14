@@ -34,6 +34,7 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
     setConfirmButtonHandler,
     setActionConfirmed,
     gameBoard,
+    setGameBoard,
     setActivePlayer,
   } = useContext(GameContext);
 
@@ -193,7 +194,8 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
       type,
       gameNarration,
       setGameNarration,
-      gameBoard
+      gameBoard,
+      setGameBoard,
     );
 
     setActivePlayer(() => matchCopy.getActivePlayer());
@@ -204,25 +206,40 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
   function handleShot() {
     setActionConfirmed(() => "shoot");
 
+    setShootButtonSelected(() => false);
+
     matchCopy.shotAttemptedStatus();
+
+    console.log("Shot attempted status setted.");
+
+    handleEndTurn();
   }
 
   function handleEndTurn() {
     setActionConfirmed(() => "end turn");
-
-    setEndTurnButtonSelected(() => false);
-
-    matchCopy.handleEndTurn(gameNarration, setGameNarration, gameBoard);
-
-    setActivePlayer(() => matchCopy.getActivePlayer());
     
+    setEndTurnButtonSelected(() => false);
+    
+    matchCopy.handleEndTurn(
+      gameNarration,
+      setGameNarration,
+      gameBoard,
+      setGameBoard,
+    );
+
+    console.log("Ending turn.");
+    
+    setActivePlayer(() => matchCopy.getActivePlayer());
+
     setMatchState(() => matchCopy);
+
+    console.log("Turn ended.");
   }
 
   function clickActionButtonHanddler(
     previousValueOfThisActionState: boolean,
     setter: React.Dispatch<React.SetStateAction<boolean>>,
-    actionFunction: (match: Match) => void
+    actionFunction: (match: Match) => void,
   ) {
     return () => {
       previousValueOfThisActionState
@@ -272,7 +289,7 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
                     onClick={clickActionButtonHanddler(
                       action.selectedState,
                       action.selectedSetter,
-                      action.actionFunction
+                      action.actionFunction,
                     )}
                     className={action.selectedState ? "selected" : ""}
                   >

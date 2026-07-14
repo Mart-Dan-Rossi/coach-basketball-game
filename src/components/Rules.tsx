@@ -50,6 +50,12 @@ function Rules() {
             official rules.
           </p>
         </div>
+        <div className="rules-modifications-container">
+          <h4>Rules modifications:</h4>
+          <ul>
+            <li>If a player accumulates 5 fouls in the game he won't be ejected. He will send players to the FT line after the 4th personal foul.</li>
+          </ul>
+        </div>
         <div className="player-creation">
           <h3>Players creation</h3>
           <p>

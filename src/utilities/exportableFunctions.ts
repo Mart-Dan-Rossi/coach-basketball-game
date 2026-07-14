@@ -721,32 +721,46 @@ export function isIntheOtherRim(
   );
 }
 
-export function mathShotPointsInFreeThrow(shooter: Player) {
-  return 0;
+export function mathShotPointsInFreeThrow(shooter: PlayerStats) {
+  return (shooter.insideScoring + shooter.perimeterScoring) / 2;
+}
+
+export function mathChancesMakingShotInFreeThrow(
+  maxShooterPoints: number,
+  shotDiceRoll: number,
+) {
+  return (
+    (maxShooterPoints >= 100 && shotDiceRoll > 1) ||
+    (maxShooterPoints >= 97 && shotDiceRoll > 2) ||
+    (maxShooterPoints >= 94 && shotDiceRoll > 3) ||
+    (maxShooterPoints >= 91 && shotDiceRoll > 4) ||
+    (maxShooterPoints >= 88 && shotDiceRoll > 5) ||
+    (maxShooterPoints >= 85 && shotDiceRoll > 6) ||
+    (maxShooterPoints >= 82 && shotDiceRoll > 7) ||
+    (maxShooterPoints >= 79 && shotDiceRoll > 8) ||
+    (maxShooterPoints >= 76 && shotDiceRoll > 9) ||
+    (maxShooterPoints >= 73 && shotDiceRoll > 10) ||
+    (maxShooterPoints >= 70 && shotDiceRoll > 11) ||
+    (maxShooterPoints >= 67 && shotDiceRoll > 12) ||
+    (maxShooterPoints >= 65 && shotDiceRoll > 13) ||
+    (maxShooterPoints >= 63 && shotDiceRoll > 14) ||
+    (maxShooterPoints >= 60 && shotDiceRoll > 15)
+  );
 }
 
 export function mathShotPointsCloseToTheRim(
   multiplier: number,
-  playerAtributes?: PlayerStats,
-  shooter?: Player,
+  shooter: PlayerStats,
 ) {
-  const insideScoring =
-    playerAtributes?.insideScoring || shooter?.insideScoring;
-  const playMaking = playerAtributes?.playMaking || shooter?.playMaking;
-  const atleticism = playerAtributes?.atleticism || shooter?.atleticism;
-  const weightPoints = getWeightPoints(
-    (playerAtributes?.position || shooter?.position)!,
-    (playerAtributes?.weight || shooter?.weight)!,
-  );
-  const heightPoints = getHeightPoints(
-    (playerAtributes?.position || shooter?.position)!,
-    (playerAtributes?.height || shooter?.height)!,
-  );
+  const insideScoring = shooter.insideScoring;
+
+  const weightPoints = getWeightPoints(shooter.position!, shooter.weight!);
+  const heightPoints = getHeightPoints(shooter.position!, shooter.height!);
 
   return (
     (insideScoring! * 5 +
-      playMaking! * 0.5 +
-      atleticism! * 3 +
+      shooter.playMaking! * 0.5 +
+      shooter.atleticism! * 3 +
       weightPoints * 2 +
       heightPoints * 2 +
       roll20SidesDice() * 5) *
@@ -754,31 +768,46 @@ export function mathShotPointsCloseToTheRim(
   );
 }
 
+export function mathChancesMakingShotInCloseToTheRim(
+  pointsDif: number,
+  shotDiceRoll: number,
+) {
+  return (
+    pointsDif > 60 ||
+    (pointsDif > 55 && shotDiceRoll > 1) ||
+    (pointsDif > 50 && shotDiceRoll > 2) ||
+    (pointsDif > 47 && shotDiceRoll > 3) ||
+    (pointsDif > 43 && shotDiceRoll > 4) ||
+    (pointsDif > 40 && shotDiceRoll > 5) ||
+    (pointsDif > 30 && shotDiceRoll > 6) ||
+    (pointsDif > 20 && shotDiceRoll > 7) ||
+    (pointsDif > 17.5 && shotDiceRoll > 8) ||
+    (pointsDif > 14 && shotDiceRoll > 9) ||
+    (pointsDif > 10 && shotDiceRoll > 10) ||
+    (pointsDif > 5 && shotDiceRoll > 11) ||
+    (pointsDif > 0 && shotDiceRoll > 12) ||
+    (pointsDif > -10 && shotDiceRoll > 13) ||
+    (pointsDif > -15 && shotDiceRoll > 14) ||
+    (pointsDif > -17.5 && shotDiceRoll > 15) ||
+    (pointsDif > -19 && shotDiceRoll > 16) ||
+    (pointsDif > -20 && shotDiceRoll > 17) ||
+    (pointsDif > -22 && shotDiceRoll > 18) ||
+    (pointsDif > -25 && shotDiceRoll > 19)
+  );
+}
+
 export function mathShotPointsInShortRange(
   multiplier: number,
-  playerAtributes?: PlayerStats,
-  shooter?: Player,
+  shooter: PlayerStats,
 ) {
-  const insideScoring =
-    playerAtributes?.insideScoring || shooter?.insideScoring;
-  const perimeterScoring =
-    playerAtributes?.perimeterScoring || shooter?.perimeterScoring;
-  const playMaking = playerAtributes?.playMaking || shooter?.playMaking;
-  const atleticism = playerAtributes?.atleticism || shooter?.atleticism;
-  const weightPoints = getWeightPoints(
-    (playerAtributes?.position || shooter?.position)!,
-    (playerAtributes?.weight || shooter?.weight)!,
-  );
-  const heightPoints = getHeightPoints(
-    (playerAtributes?.position || shooter?.position)!,
-    (playerAtributes?.height || shooter?.height)!,
-  );
+  const weightPoints = getWeightPoints(shooter.position!, shooter.weight!);
+  const heightPoints = getHeightPoints(shooter.position!, shooter.height!);
 
   return (
-    (insideScoring! * 4 +
-      perimeterScoring! * 0.5 +
-      playMaking! * 1.5 +
-      atleticism! * 3 +
+    (shooter.insideScoring * 4 +
+      shooter.perimeterScoring * 0.5 +
+      shooter.playMaking * 1.5 +
+      shooter.atleticism * 3 +
       weightPoints +
       heightPoints +
       roll20SidesDice() * 5) *
@@ -786,50 +815,83 @@ export function mathShotPointsInShortRange(
   );
 }
 
+export function mathChancesMakingShotInShortRange(
+  pointsDif: number,
+  shotDiceRoll: number,
+) {
+  return (
+    (pointsDif > 98 && shotDiceRoll > 1) ||
+    (pointsDif > 96 && shotDiceRoll > 2) ||
+    (pointsDif > 92 && shotDiceRoll > 3) ||
+    (pointsDif > 89 && shotDiceRoll > 4) ||
+    (pointsDif > 86 && shotDiceRoll > 5) ||
+    (pointsDif > 82 && shotDiceRoll > 6) ||
+    (pointsDif > 79 && shotDiceRoll > 7) ||
+    (pointsDif > 72 && shotDiceRoll > 8) ||
+    (pointsDif > 64 && shotDiceRoll > 9) ||
+    (pointsDif > 58 && shotDiceRoll > 10) ||
+    (pointsDif > 50 && shotDiceRoll > 11) ||
+    (pointsDif > 48 && shotDiceRoll > 12) ||
+    (pointsDif > 43 && shotDiceRoll > 13) ||
+    (pointsDif > 37 && shotDiceRoll > 14) ||
+    (pointsDif > 30 && shotDiceRoll > 15) ||
+    (pointsDif > 20 && shotDiceRoll > 16) ||
+    (pointsDif > 12.5 && shotDiceRoll > 17) ||
+    (pointsDif > 0 && shotDiceRoll > 18) ||
+    (pointsDif > -3 && shotDiceRoll > 19)
+  );
+}
+
 export function mathShotPointsInMidRange(
   multiplier: number,
-  playerAtributes?: PlayerStats,
-  shooter?: Player,
+  shooter: PlayerStats,
 ) {
-  const insideScoring =
-    playerAtributes?.insideScoring || shooter?.insideScoring;
-  const perimeterScoring =
-    playerAtributes?.perimeterScoring || shooter?.perimeterScoring;
-  const playMaking = playerAtributes?.playMaking || shooter?.playMaking;
-  const heightPoints = getHeightPoints(
-    (playerAtributes?.position || shooter?.position)!,
-    (playerAtributes?.height || shooter?.height)!,
-  );
+  const heightPoints = getHeightPoints(shooter.position!, shooter.height!);
 
   return (
-    (insideScoring! +
-      perimeterScoring! * 4 +
-      playMaking! * 1.5 +
+    (shooter.insideScoring +
+      shooter.perimeterScoring * 4 +
+      shooter.playMaking * 1.5 +
       heightPoints +
       roll20SidesDice() * 5) *
     multiplier
   );
 }
 
+export function mathChancesMakingShotInMidRange(
+  pointsDif: number,
+  shotDiceRoll: number,
+) {
+  return (
+    (pointsDif > 98 && shotDiceRoll > 3) ||
+    (pointsDif > 94 && shotDiceRoll > 4) ||
+    (pointsDif > 90 && shotDiceRoll > 5) ||
+    (pointsDif > 87 && shotDiceRoll > 6) ||
+    (pointsDif > 83 && shotDiceRoll > 7) ||
+    (pointsDif > 77 && shotDiceRoll > 8) ||
+    (pointsDif > 69 && shotDiceRoll > 9) ||
+    (pointsDif > 63 && shotDiceRoll > 10) ||
+    (pointsDif > 58 && shotDiceRoll > 11) ||
+    (pointsDif > 53 && shotDiceRoll > 12) ||
+    (pointsDif > 49 && shotDiceRoll > 13) ||
+    (pointsDif > 40 && shotDiceRoll > 14) ||
+    (pointsDif > 34 && shotDiceRoll > 15) ||
+    (pointsDif > 23 && shotDiceRoll > 16) ||
+    (pointsDif > 15 && shotDiceRoll > 17) ||
+    (pointsDif > 9 && shotDiceRoll > 18) ||
+    (pointsDif > 3 && shotDiceRoll > 19)
+  );
+}
+
 export function mathShotPointsCloseToThe3PointLine(
   multiplier: number,
-  playerAtributes?: PlayerStats,
-  shooter?: Player,
+  shooter: PlayerStats,
 ) {
-  const perimeterScoring =
-    playerAtributes?.perimeterScoring || shooter?.perimeterScoring;
-  const playMaking = playerAtributes?.playMaking || shooter?.playMaking;
-  const weightPoints = getWeightPoints(
-    (playerAtributes?.position || shooter?.position)!,
-    (playerAtributes?.weight || shooter?.weight)!,
-  );
-  const heightPoints = getHeightPoints(
-    (playerAtributes?.position || shooter?.position)!,
-    (playerAtributes?.height || shooter?.height)!,
-  );
+  const weightPoints = getWeightPoints(shooter.position!, shooter.weight!);
+  const heightPoints = getHeightPoints(shooter.position!, shooter.height!);
   return (
-    (perimeterScoring! * 6 +
-      playMaking! -
+    (shooter.perimeterScoring * 6 +
+      shooter.playMaking -
       heightPoints * 0.5 -
       weightPoints * 0.5 +
       roll20SidesDice() * 4.5) *
@@ -837,29 +899,39 @@ export function mathShotPointsCloseToThe3PointLine(
   );
 }
 
+export function mathChancesMakingShotInCloseToThe3PointLine(
+  pointsDif: number,
+  shotDiceRoll: number,
+) {
+  return (
+    (pointsDif > 98 && shotDiceRoll > 5) ||
+    (pointsDif > 94 && shotDiceRoll > 6) ||
+    (pointsDif > 89 && shotDiceRoll > 7) ||
+    (pointsDif > 83 && shotDiceRoll > 8) ||
+    (pointsDif > 75 && shotDiceRoll > 9) ||
+    (pointsDif > 69 && shotDiceRoll > 10) ||
+    (pointsDif > 63 && shotDiceRoll > 11) ||
+    (pointsDif > 58 && shotDiceRoll > 12) ||
+    (pointsDif > 50 && shotDiceRoll > 13) ||
+    (pointsDif > 45 && shotDiceRoll > 14) ||
+    (pointsDif > 40 && shotDiceRoll > 15) ||
+    (pointsDif > 35 && shotDiceRoll > 16) ||
+    (pointsDif > 28 && shotDiceRoll > 17) ||
+    (pointsDif > 20 && shotDiceRoll > 18) ||
+    (pointsDif > 13 && shotDiceRoll > 19)
+  );
+}
+
 export function mathShotPointsInLong3Range(
   multiplier: number,
-  playerAtributes?: PlayerStats,
-  shooter?: Player,
+  shooter: PlayerStats,
 ) {
-  const insideScoring =
-    playerAtributes?.insideScoring || shooter?.insideScoring;
-  const perimeterScoring =
-    playerAtributes?.perimeterScoring || shooter?.perimeterScoring;
-  const playMaking = playerAtributes?.playMaking || shooter?.playMaking;
-  const atleticism = playerAtributes?.atleticism || shooter?.atleticism;
-  const weightPoints = getWeightPoints(
-    (playerAtributes?.position || shooter?.position)!,
-    (playerAtributes?.weight || shooter?.weight)!,
-  );
-  const heightPoints = getHeightPoints(
-    (playerAtributes?.position || shooter?.position)!,
-    (playerAtributes?.height || shooter?.height)!,
-  );
+  const weightPoints = getWeightPoints(shooter.position!, shooter.weight!);
+  const heightPoints = getHeightPoints(shooter.position!, shooter.height!);
 
   return (
-    (perimeterScoring! * 5 +
-      playMaking! * 0.5 -
+    (shooter.perimeterScoring * 5 +
+      shooter.playMaking * 0.5 -
       heightPoints * 0.5 -
       weightPoints +
       roll20SidesDice() * 3.5) *
@@ -867,24 +939,37 @@ export function mathShotPointsInLong3Range(
   );
 }
 
+export function mathChancesMakingShotInLong3Range(
+  pointsDif: number,
+  shotDiceRoll: number,
+) {
+  return (
+    (pointsDif > 98 && shotDiceRoll > 6) ||
+    (pointsDif > 92 && shotDiceRoll > 7) ||
+    (pointsDif > 89 && shotDiceRoll > 8) ||
+    (pointsDif > 80 && shotDiceRoll > 9) ||
+    (pointsDif > 76 && shotDiceRoll > 10) ||
+    (pointsDif > 70 && shotDiceRoll > 11) ||
+    (pointsDif > 65 && shotDiceRoll > 12) ||
+    (pointsDif > 60 && shotDiceRoll > 13) ||
+    (pointsDif > 54 && shotDiceRoll > 14) ||
+    (pointsDif > 49 && shotDiceRoll > 15) ||
+    (pointsDif > 42 && shotDiceRoll > 16) ||
+    (pointsDif > 37 && shotDiceRoll > 17) ||
+    (pointsDif > 31 && shotDiceRoll > 18) ||
+    (pointsDif > 20 && shotDiceRoll > 19)
+  );
+}
+
 export function mathShotPointsInHalfCourt(
   multiplier: number,
-  playerAtributes?: PlayerStats,
-  shooter?: Player,
+  shooter: PlayerStats,
 ) {
-  const perimeterScoring =
-    playerAtributes?.perimeterScoring || shooter?.perimeterScoring;
-  const weightPoints = getWeightPoints(
-    (playerAtributes?.position || shooter?.position)!,
-    (playerAtributes?.weight || shooter?.weight)!,
-  );
-  const heightPoints = getHeightPoints(
-    (playerAtributes?.position || shooter?.position)!,
-    (playerAtributes?.height || shooter?.height)!,
-  );
+  const weightPoints = getWeightPoints(shooter.position!, shooter.weight!);
+  const heightPoints = getHeightPoints(shooter.position!, shooter.height!);
 
   return (
-    (perimeterScoring! * 4 -
+    (shooter.perimeterScoring * 4 -
       heightPoints * 0.5 -
       weightPoints +
       roll20SidesDice() * 2) *
@@ -892,46 +977,72 @@ export function mathShotPointsInHalfCourt(
   );
 }
 
+export function mathChancesMakingShotInHalfCourt(
+  pointsDif: number,
+  shotDiceRoll: number,
+) {
+  return (
+    (pointsDif > 98 && shotDiceRoll > 7) ||
+    (pointsDif > 92 && shotDiceRoll > 8) ||
+    (pointsDif > 89 && shotDiceRoll > 9) ||
+    (pointsDif > 80 && shotDiceRoll > 10) ||
+    (pointsDif > 76 && shotDiceRoll > 11) ||
+    (pointsDif > 70 && shotDiceRoll > 12) ||
+    (pointsDif > 65 && shotDiceRoll > 13) ||
+    (pointsDif > 60 && shotDiceRoll > 14) ||
+    (pointsDif > 54 && shotDiceRoll > 15) ||
+    (pointsDif > 49 && shotDiceRoll > 16) ||
+    (pointsDif > 42 && shotDiceRoll > 17) ||
+    (pointsDif > 37 && shotDiceRoll > 18) ||
+    (pointsDif > 31 && shotDiceRoll > 19)
+  );
+}
+
 export function mathShotPointsBehindHalfCourt(
   multiplier: number,
-  playerAtributes?: PlayerStats,
-  shooter?: Player,
+  shooter: PlayerStats,
 ) {
-  const perimeterScoring =
-    playerAtributes?.perimeterScoring || shooter?.perimeterScoring;
-  const weightPoints = getWeightPoints(
-    (playerAtributes?.position || shooter?.position)!,
-    (playerAtributes?.weight || shooter?.weight)!,
-  );
-  const heightPoints = getHeightPoints(
-    (playerAtributes?.position || shooter?.position)!,
-    (playerAtributes?.height || shooter?.height)!,
-  );
+  const weightPoints = getWeightPoints(shooter.position!, shooter.weight!);
+  const heightPoints = getHeightPoints(shooter.position!, shooter.height!);
 
   return (
-    (perimeterScoring! * 3 - heightPoints - weightPoints + roll20SidesDice()) *
+    (shooter.perimeterScoring * 3 -
+      heightPoints -
+      weightPoints +
+      roll20SidesDice()) *
     multiplier
+  );
+}
+
+export function mathChancesMakingShotInBehindHalfCourt(
+  pointsDif: number,
+  shotDiceRoll: number,
+) {
+  return (
+    (pointsDif > 98 && shotDiceRoll > 8) ||
+    (pointsDif > 92 && shotDiceRoll > 9) ||
+    (pointsDif > 89 && shotDiceRoll > 10) ||
+    (pointsDif > 80 && shotDiceRoll > 11) ||
+    (pointsDif > 76 && shotDiceRoll > 12) ||
+    (pointsDif > 70 && shotDiceRoll > 13) ||
+    (pointsDif > 65 && shotDiceRoll > 14) ||
+    (pointsDif > 60 && shotDiceRoll > 15) ||
+    (pointsDif > 54 && shotDiceRoll > 16) ||
+    (pointsDif > 49 && shotDiceRoll > 17) ||
+    (pointsDif > 42 && shotDiceRoll > 18) ||
+    (pointsDif > 37 && shotDiceRoll > 19)
   );
 }
 
 export function mathShotPointsCloseToTheOtherRim(
   multiplier: number,
-  playerAtributes?: PlayerStats,
-  shooter?: Player,
+  shooter: PlayerStats,
 ) {
-  const perimeterScoring =
-    playerAtributes?.perimeterScoring || shooter?.perimeterScoring;
-  const weightPoints = getWeightPoints(
-    (playerAtributes?.position || shooter?.position)!,
-    (playerAtributes?.weight || shooter?.weight)!,
-  );
-  const heightPoints = getHeightPoints(
-    (playerAtributes?.position || shooter?.position)!,
-    (playerAtributes?.height || shooter?.height)!,
-  );
+  const weightPoints = getWeightPoints(shooter.position!, shooter.weight!);
+  const heightPoints = getHeightPoints(shooter.position!, shooter.height!);
 
   return (
-    (perimeterScoring! * 2 -
+    (shooter.perimeterScoring * 2 -
       heightPoints -
       weightPoints * 1.5 +
       roll20SidesDice() * 0.5) *
@@ -939,22 +1050,33 @@ export function mathShotPointsCloseToTheOtherRim(
   );
 }
 
+export function mathChancesMakingShotInCloseToTheOtherRim(
+  pointsDif: number,
+  shotDiceRoll: number,
+) {
+  return (
+    (pointsDif > 98 && shotDiceRoll > 9) ||
+    (pointsDif > 92 && shotDiceRoll > 10) ||
+    (pointsDif > 89 && shotDiceRoll > 11) ||
+    (pointsDif > 80 && shotDiceRoll > 12) ||
+    (pointsDif > 76 && shotDiceRoll > 13) ||
+    (pointsDif > 70 && shotDiceRoll > 14) ||
+    (pointsDif > 65 && shotDiceRoll > 15) ||
+    (pointsDif > 60 && shotDiceRoll > 16) ||
+    (pointsDif > 54 && shotDiceRoll > 17) ||
+    (pointsDif > 49 && shotDiceRoll > 18) ||
+    (pointsDif > 42 && shotDiceRoll > 19)
+  );
+}
+
 export function mathDefensePointsCloseToTheRim(
   multiplier: number,
-  playerAtributes?: PlayerStats,
-  defender?: Player,
+  defender: PlayerStats,
 ) {
-  const insideDefence =
-    playerAtributes?.insideDefence || defender?.insideDefence;
-  const atleticism = playerAtributes?.atleticism || defender?.atleticism;
-  const weightPoints = getWeightPoints(
-    (playerAtributes?.position || defender?.position)!,
-    (playerAtributes?.weight || defender?.weight)!,
-  );
-  const heightPoints = getHeightPoints(
-    (playerAtributes?.position || defender?.position)!,
-    (playerAtributes?.height || defender?.height)!,
-  );
+  const insideDefence = defender.insideDefence;
+  const atleticism = defender.atleticism;
+  const weightPoints = getWeightPoints(defender.position!, defender.weight!);
+  const heightPoints = getHeightPoints(defender.position!, defender.height!);
 
   return (
     (insideDefence! * 4 +
@@ -968,27 +1090,15 @@ export function mathDefensePointsCloseToTheRim(
 
 export function mathDefensePointsInShortRange(
   multiplier: number,
-  playerAtributes?: PlayerStats,
-  defender?: Player,
+  defender: PlayerStats,
 ) {
-  const insideDefence =
-    playerAtributes?.insideDefence || defender?.insideDefence;
-  const perimeterDefence =
-    playerAtributes?.perimeterDefence || defender?.perimeterDefence;
-  const atleticism = playerAtributes?.atleticism || defender?.atleticism;
-  const weightPoints = getWeightPoints(
-    (playerAtributes?.position || defender?.position)!,
-    (playerAtributes?.weight || defender?.weight)!,
-  );
-  const heightPoints = getHeightPoints(
-    (playerAtributes?.position || defender?.position)!,
-    (playerAtributes?.height || defender?.height)!,
-  );
+  const weightPoints = getWeightPoints(defender.position!, defender.weight!);
+  const heightPoints = getHeightPoints(defender.position!, defender.height!);
 
   return (
-    (insideDefence! * 3 +
-      perimeterDefence! * 0.5 +
-      atleticism! * 2.5 +
+    (defender.insideDefence * 3 +
+      defender.perimeterDefence * 0.5 +
+      defender.atleticism * 2.5 +
       weightPoints * 0.5 +
       heightPoints +
       roll20SidesDice() * 5) *
@@ -998,25 +1108,14 @@ export function mathDefensePointsInShortRange(
 
 export function mathDefensePointsInMidRange(
   multiplier: number,
-  playerAtributes?: PlayerStats,
-  defender?: Player,
+  defender: PlayerStats,
 ) {
-  const insideDefence =
-    playerAtributes?.insideDefence || defender?.insideDefence;
-  const perimeterDefence =
-    playerAtributes?.perimeterDefence || defender?.perimeterDefence;
-  const weightPoints = getWeightPoints(
-    (playerAtributes?.position || defender?.position)!,
-    (playerAtributes?.weight || defender?.weight)!,
-  );
-  const heightPoints = getHeightPoints(
-    (playerAtributes?.position || defender?.position)!,
-    (playerAtributes?.height || defender?.height)!,
-  );
+  const weightPoints = getWeightPoints(defender.position!, defender.weight!);
+  const heightPoints = getHeightPoints(defender.position!, defender.height!);
 
   return (
-    (insideDefence! +
-      perimeterDefence! * 4 -
+    (defender.insideDefence +
+      defender.perimeterDefence * 4 -
       weightPoints +
       heightPoints +
       roll20SidesDice() * 5) *
@@ -1026,22 +1125,13 @@ export function mathDefensePointsInMidRange(
 
 export function mathDefensePointsCloseToThe3PointLine(
   multiplier: number,
-  playerAtributes?: PlayerStats,
-  defender?: Player,
+  defender: PlayerStats,
 ) {
-  const perimeterDefence =
-    playerAtributes?.perimeterDefence || defender?.perimeterDefence;
-  const weightPoints = getWeightPoints(
-    (playerAtributes?.position || defender?.position)!,
-    (playerAtributes?.weight || defender?.weight)!,
-  );
-  const heightPoints = getHeightPoints(
-    (playerAtributes?.position || defender?.position)!,
-    (playerAtributes?.height || defender?.height)!,
-  );
+  const weightPoints = getWeightPoints(defender.position!, defender.weight!);
+  const heightPoints = getHeightPoints(defender.position!, defender.height!);
 
   return (
-    (perimeterDefence! * 5 -
+    (defender.perimeterDefence * 5 -
       weightPoints +
       heightPoints +
       roll20SidesDice() * 4) *
@@ -1051,22 +1141,13 @@ export function mathDefensePointsCloseToThe3PointLine(
 
 export function mathDefensePointsLong3Range(
   multiplier: number,
-  playerAtributes?: PlayerStats,
-  defender?: Player,
+  defender: PlayerStats,
 ) {
-  const perimeterDefence =
-    playerAtributes?.perimeterDefence || defender?.perimeterDefence;
-  const weightPoints = getWeightPoints(
-    (playerAtributes?.position || defender?.position)!,
-    (playerAtributes?.weight || defender?.weight)!,
-  );
-  const heightPoints = getHeightPoints(
-    (playerAtributes?.position || defender?.position)!,
-    (playerAtributes?.height || defender?.height)!,
-  );
+  const weightPoints = getWeightPoints(defender.position!, defender.weight!);
+  const heightPoints = getHeightPoints(defender.position!, defender.height!);
 
   return (
-    (perimeterDefence! * 5 -
+    (defender.perimeterDefence * 5 -
       weightPoints * 0.5 +
       heightPoints +
       roll20SidesDice() * 4) *
@@ -1076,18 +1157,13 @@ export function mathDefensePointsLong3Range(
 
 export function mathDefensePointsHalfCourtAndFartherAway(
   multiplier: number,
-  playerAtributes?: PlayerStats,
-  defender?: Player,
+  defender: PlayerStats,
 ) {
-  const perimeterDefence =
-    playerAtributes?.perimeterDefence || defender?.perimeterDefence;
-  const heightPoints = getHeightPoints(
-    (playerAtributes?.position || defender?.position)!,
-    (playerAtributes?.height || defender?.height)!,
-  );
+  const heightPoints = getHeightPoints(defender.position!, defender.height!);
 
   return (
-    (perimeterDefence! * 5 + heightPoints + roll20SidesDice() * 4) * multiplier
+    (defender.perimeterDefence * 5 + heightPoints + roll20SidesDice() * 4) *
+    multiplier
   );
 }
 
@@ -1531,13 +1607,45 @@ export function getClosestPlayers(
 export const boardYDimentions = 15;
 export const boardXDimentions = 28;
 
+export const teamADefensiveFTPositions = [
+  [9, 4],
+  [9, 12],
+  [5, 5],
+  [3, 5],
+  [3, 11],
+];
+
+export const teamBOffensiveFTPositions = [
+  [7, 8],
+  [9, 5],
+  [9, 11],
+  [4, 5],
+  [4, 11],
+];
+
+export const teamAOffensiveFTPositions = [
+  [22, 8],
+  [20, 5],
+  [20, 11],
+  [25, 5],
+  [25, 11],
+];
+
+export const teamBDefensiveFTPositions = [
+  [20, 4],
+  [20, 12],
+  [24, 5],
+  [26, 5],
+  [26, 11],
+];
+
 export const teamAInitialPositions = [
   [13, 1],
   [13, 5],
   [13, 9],
   [13, 14],
   [14, 8],
-] as number[][];
+];
 
 export const teamBInitialPositions = [
   [16, 2],
@@ -1547,7 +1655,7 @@ export const teamBInitialPositions = [
   [15, 8],
 ];
 
-function getInitialBoard() {
+export function getInitialBoard(teamShootingFT?: string) {
   function getBoardFormatInitialTeamUbication(
     teamInitialPositions: number[][],
   ) {
@@ -1558,11 +1666,19 @@ function getInitialBoard() {
   }
 
   const allAPlayersUbication = getBoardFormatInitialTeamUbication(
-    teamAInitialPositions,
+    teamShootingFT == "A"
+      ? teamAOffensiveFTPositions
+      : teamShootingFT == "B"
+        ? teamADefensiveFTPositions
+        : teamAInitialPositions,
   );
 
   const allBPlayersUbication = getBoardFormatInitialTeamUbication(
-    teamBInitialPositions,
+    teamShootingFT == "B"
+      ? teamBOffensiveFTPositions
+      : teamShootingFT == "A"
+        ? teamBDefensiveFTPositions
+        : teamBInitialPositions,
   );
 
   const initialBoard = [] as number[][];

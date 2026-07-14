@@ -1,18 +1,37 @@
 import React, { useState } from "react";
 import Modal from "../Modal";
 import { Match } from "../../entities/match";
-import { TeamGameStats } from "../../entities/myInterfaces";
+import { PlayerGameStats, TeamGameStats } from "../../entities/myInterfaces";
 //@ts-ignore
 import "../../styles/GameStatsModal.css";
 import { playerPositionDetection } from "../../utilities/exportableFunctions";
 
-type DisplayStat =
+type DisplayTeamStat =
   | { type: "fg"; label: string }
   | { type: "tp"; label: string }
   | { type: "ft"; label: string }
   | { type: "raw"; key: keyof TeamGameStats; label: string };
 
-const displayStats: DisplayStat[] = [
+type DisplayPlayerStat =
+  | { type: "fg"; label: string }
+  | { type: "tp"; label: string }
+  | { type: "ft"; label: string }
+  | { type: "raw"; key: keyof PlayerGameStats; label: string };
+
+const displayTeamStats: DisplayTeamStat[] = [
+  { type: "fg", label: "FG" },
+  { type: "tp", label: "3PT" },
+  { type: "ft", label: "FT" },
+  { type: "raw", key: "assists", label: "AST" },
+  { type: "raw", key: "rebounds", label: "REB" },
+  { type: "raw", key: "offensiveRebounds", label: "OREB" },
+  { type: "raw", key: "steals", label: "STL" },
+  { type: "raw", key: "blocks", label: "BLK" },
+  { type: "raw", key: "turnOvers", label: "TO" },
+  { type: "raw", key: "foulsInQuarter", label: "T.FOULS" },
+];
+
+const displayPlayerStats: DisplayPlayerStat[] = [
   { type: "fg", label: "FG" },
   { type: "tp", label: "3PT" },
   { type: "ft", label: "FT" },
@@ -25,7 +44,7 @@ const displayStats: DisplayStat[] = [
   { type: "raw", key: "fouls", label: "FOULS" },
 ];
 
-function formatFG(stats: TeamGameStats): string {
+function formatFG(stats: TeamGameStats | PlayerGameStats): string {
   const made = stats.fieldGoalsMade;
   const att = stats.fieldGoalsattempt;
 
@@ -36,7 +55,7 @@ function formatFG(stats: TeamGameStats): string {
   return `${percentage}% (${made}/${att})`;
 }
 
-const formatTP = (stats: TeamGameStats): string => {
+const formatTP = (stats: TeamGameStats | PlayerGameStats): string => {
   const made = stats.triplesMade;
   const att = stats.triplesAttempt;
 
@@ -46,7 +65,7 @@ const formatTP = (stats: TeamGameStats): string => {
   return `${percentage}% (${made}/${att})`;
 };
 
-const formatFT = (stats: TeamGameStats): string => {
+const formatFT = (stats: TeamGameStats | PlayerGameStats): string => {
   const made = stats.freeThrowsMade;
   const att = stats.freeThrowsAttempt;
 
@@ -101,7 +120,7 @@ const GameStatsModal = ({
 
         {view === "team" && (
           <div className="team-stats">
-            {displayStats.map((stat) => (
+            {displayTeamStats.map((stat) => (
               <div key={stat.label} className="team-stat-row">
                 <span className="team-stat-value left">
                   {stat.type === "fg" && formatFG(teamAStats)}
@@ -146,7 +165,7 @@ const GameStatsModal = ({
                 <thead>
                   <tr>
                     <th>Jugador</th>
-                    {displayStats.map((stat) => (
+                    {displayPlayerStats.map((stat) => (
                       <th key={stat.label}>{stat.label}</th>
                     ))}
                   </tr>
@@ -160,7 +179,7 @@ const GameStatsModal = ({
                           playerPositionDetection(player.position)}
                       </td>
 
-                      {displayStats.map((stat) => (
+                      {displayPlayerStats.map((stat) => (
                         <td key={stat.label} className="stat-value-cell">
                           {stat.type === "fg" && formatFG(player.stats)}
                           {stat.type === "tp" && formatTP(player.stats)}

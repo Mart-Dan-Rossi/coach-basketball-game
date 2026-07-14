@@ -27,10 +27,22 @@ import {
   playerPositionDetection,
   mathShotPointsInFreeThrow,
   getMaxStatPerPosition,
+  mathChancesMakingShotInFreeThrow,
+  mathChancesMakingShotInCloseToTheRim,
+  mathChancesMakingShotInShortRange,
+  mathChancesMakingShotInMidRange,
+  mathChancesMakingShotInCloseToThe3PointLine,
+  mathChancesMakingShotInLong3Range,
+  mathChancesMakingShotInHalfCourt,
+  mathChancesMakingShotInBehindHalfCourt,
+  mathChancesMakingShotInCloseToTheOtherRim,
+  teamADefensiveFTPositions,
+  getInitialBoard,
+  teamBDefensiveFTPositions,
+  teamAOffensiveFTPositions,
 } from "../utilities/exportableFunctions";
 import React from "react";
 import { Player } from "./players";
-import GameBoard from "../components/gameboard/GameBoard";
 
 export class Match {
   teamA: Team;
@@ -39,7 +51,7 @@ export class Match {
   //Match status
   teamTurn: string;
   shotHasBeenAttempted: boolean;
-  shootingFreeThrows: boolean;
+  shootingFreeThrows: number;
   waitingPlayers: Player[] = [];
 
   //Match basic info
@@ -58,7 +70,7 @@ export class Match {
     //Match status
     this.teamTurn = "";
     this.shotHasBeenAttempted = false;
-    this.shootingFreeThrows = false;
+    this.shootingFreeThrows = 0;
 
     //Match basic info
     this.quarter = 1;
@@ -102,6 +114,7 @@ export class Match {
     gameNarration: string[],
     setGameNarration: React.Dispatch<React.SetStateAction<string[]>>,
     gameBoard: number[][],
+    setGameBoard: React.Dispatch<React.SetStateAction<number[][]>>,
   ) {
     let pointsObteinedInTheJumpBallA = 0;
     let pointsObteinedInTheJumpBallB = 0;
@@ -203,7 +216,7 @@ export class Match {
     this.teamB.giveActionPointsToTeam();
 
     //Run clock
-    this.runClock(gameNarration, setGameNarration, gameBoard);
+    this.runClock(gameNarration, setGameNarration, gameBoard, setGameBoard);
   }
 
   handlePassAction(
@@ -378,6 +391,7 @@ export class Match {
     passer.subtractActionPoints(0.5);
     passer.setHaveBall(false);
 
+    //TODO check why this is working wonky. Even when defenders get more points the pass is succesfull.
     //If the pass have more points than the defensive points
     if (passPoints >= totalDefensivePoints) {
       //The receiver gets the ball
@@ -477,10 +491,137 @@ export class Match {
     return [true, dribbler];
   }
 
+  movePlayersToReboundOnFTPositions(
+    defendingTeam: Team,
+    atackingTeam: Team,
+    setGameBoard: React.Dispatch<React.SetStateAction<number[][]>>,
+  ) {
+    const moveDefendersToReboundPositions = () => {
+      defendingTeam.players.forEach((player) => {
+        if (player.team == "TeamA") {
+          player.ubicationX =
+            teamADefensiveFTPositions[Number(player.position)][0] - 1;
+          player.ubicationY =
+            teamADefensiveFTPositions[Number(player.position)][1] - 1;
+        } else {
+          player.ubicationX =
+            teamBDefensiveFTPositions[Number(player.position)][0] - 1;
+          player.ubicationY =
+            teamBDefensiveFTPositions[Number(player.position)][1] - 1;
+        }
+      });
+    };
+
+    const moveAtackersToReboundPositions = () => {
+      let positionIndex = 1;
+
+      let teamUbications =
+        atackingTeam.name == "TeamA"
+          ? teamAOffensiveFTPositions
+          : teamBDefensiveFTPositions;
+
+      atackingTeam.players.forEach((player) => {
+        let calculatedUbication = [0, 0];
+
+        // If its the shooter he goes to the free throw line
+        if (player.lastAction === "shotAttempt") {
+          player.ubicationX = teamUbications[0][0];
+          player.ubicationY = teamUbications[0][1];
+          // If not he goes to the next available rebounding position
+        } else {
+          player.ubicationX = teamUbications[positionIndex][0];
+          player.ubicationY = teamUbications[positionIndex][1];
+        }
+
+        positionIndex++;
+      });
+    };
+
+    //Modify the gameboard
+    if (defendingTeam.name == "TeamA") {
+      setGameBoard(() => getInitialBoard("B"));
+    } else {
+      setGameBoard(() => getInitialBoard("A"));
+    }
+
+    //Modify the classes of the players
+    moveDefendersToReboundPositions();
+
+    moveAtackersToReboundPositions();
+  }
+
+  handleFoul(
+    defender: Player,
+    atacker: Player,
+    gameNarration: string[],
+    setGameNarration: React.Dispatch<React.SetStateAction<string[]>>,
+    isDuringShot?: number,
+  ) {
+    //TODO think how to handle the situation when a defender fouls a player without the ball while the ball player is shooting
+    //This is important because currently the function serch for the last action been shotAttempt to get who shot the FT
+    //  and it can happen that 2 players have shotAttempt if the defender is in penalisation
+
+    //Add faul to the defender
+    defender.statsAddFoul();
+    //Add faul to the team
+    let defenderTeam = defender.team == "TeamA" ? this.teamA : this.teamB;
+    defenderTeam.statsAddFoul();
+
+    //Hanlde narration
+    let newGameNarration = [...gameNarration];
+    let newNarrationText = `${defender.name ?? defender.position} of team ${defender.team} (Defender) has fouled ${atacker.name ?? atacker.position} of team ${atacker.team} (Atacker)`;
+
+    if (isDuringShot) {
+      newNarrationText += ` during the shot attempt. ${atacker.name ?? atacker.position} of team ${atacker.team} will have ${isDuringShot} free throws`;
+    }
+    newNarrationText += ".";
+
+    newGameNarration.unshift(newNarrationText);
+
+    //If it was not in shoting action and the defender is in penalty (more than 4 fouls)
+    if (!isDuringShot && defender.stats.fouls > 4) {
+      //Must change the last action so the shooting function finds the player
+      atacker.lastAction = "shotAttempt";
+
+      newNarrationText = `${defender.name ?? defender.position} of team ${defender.team} have more fouls than allowed. ${atacker.name ?? atacker.position} of team ${atacker.team} will have 2 free throws.`;
+    } else {
+      newNarrationText = `It was the foul N° ${defender.stats.fouls} of ${defender.name ?? defender.position} of team ${defender.team}.`;
+    }
+
+    newGameNarration.unshift(newNarrationText);
+
+    //If it was not in shoting action and the defender is not in penalisation then ask for team penalisation
+    if (
+      !isDuringShot &&
+      defender.stats.fouls <= 4 &&
+      defenderTeam.stats.foulsInQuarter > 4
+    ) {
+      //Must change the last action so the shooting function finds the player
+      atacker.lastAction = "shotAttempt";
+
+      newNarrationText = `${defender.team} is in penalisation. ${atacker.name ?? atacker.position} of team ${atacker.team} will have 2 free throws.`;
+    } else {
+      newNarrationText = `It was the team foul N° ${defenderTeam.stats.foulsInQuarter} of team ${defender.team}.`;
+    }
+
+    newGameNarration.unshift(newNarrationText);
+
+    //Handle free throws if necesary
+    if (
+      isDuringShot ||
+      defender.stats.fouls > 4 ||
+      defenderTeam.stats.foulsInQuarter > 4
+    ) {
+      this.shootingFreeThrows = isDuringShot ?? 2;
+    }
+    setGameNarration(() => newGameNarration);
+  }
+
   handleShot(
     gameNarration: string[],
     setGameNarration: React.Dispatch<React.SetStateAction<string[]>>,
     gameBoard: number[][],
+    setGameBoard: React.Dispatch<React.SetStateAction<number[][]>>,
   ) {
     //First i get the shooter
     let shooter = this.getShooter()!;
@@ -494,13 +635,15 @@ export class Match {
     //I get in what part of the field is him located to calculate with the propper math
     let shooterZoneUbication = playerZone(shooter, shooter.team == "TeamB");
 
-    newGameNarration.unshift(
-      `${shooter.name} is attempting a shot from ${getRangeText(
-        shooterZoneUbication,
-      )}!`,
-    );
+    let isFreeThrow = this.shootingFreeThrows > 0;
 
-    let isFreeThrow = this.shootingFreeThrows;
+    if (!isFreeThrow) {
+      newGameNarration.unshift(
+        `${shooter.name} is attempting a shot from ${getRangeText(
+          shooterZoneUbication,
+        )}!`,
+      );
+    }
 
     function getShooterPointsInShot() {
       let shooterPointsInShot = 0;
@@ -546,11 +689,14 @@ export class Match {
       return shooterPointsInShot;
     }
 
-    function getDefendersPointsInShot() {
+    const getDefendersPointsInShot = () => {
       let totalDefendersPoints = 0;
+      if (isFreeThrow) {
+        return totalDefendersPoints;
+      }
 
       //If it is a free throw ther's no defenders so totalDefendersPoints is going to be 0
-      if (!false /*TODO isFreeThrow*/) {
+      if (isFreeThrow) {
         //If it was a field shot attempt it cheks the tiles around the shooter. To do so we use one loop for the X direction and one for the Y direction
         for (let positionX = -2; positionX < 3; positionX++) {
           for (let positionY = -2; positionY < 3; positionY++) {
@@ -621,6 +767,17 @@ export class Match {
               //If the defender is right next to the shooter he gets a bonus for his defensive points
               if (Math.pow(positionX, 2) == 1 && Math.pow(positionY, 2) == 1) {
                 defenderPoints = defenderPoints * 1.5;
+                //TODO check if this points are good enough
+                //TODO remember to uncomment this line
+                // if (defenderPoints < 10) {
+                if (true) {
+                  this.handleFoul(
+                    defenderInThisUbication,
+                    shooter,
+                    newGameNarration,
+                    setGameNarration,
+                  );
+                }
               }
             }
 
@@ -630,7 +787,7 @@ export class Match {
       }
 
       return totalDefendersPoints;
-    }
+    };
 
     function calculateIfGoesIn() {
       let isItIn = false;
@@ -700,47 +857,47 @@ export class Match {
       }
 
       let allDefendersPointsInShotSumatory = getDefendersPointsInShot();
-      let maxSingleDefenderPoints: number;
+      let maxSingleDefenderPoints = 0;
 
-      if (shooterZoneUbication == ranges.closeToTheRim.id) {
-        maxSingleDefenderPoints = mathDefensePointsCloseToTheRim(
-          1.4,
-          maxPosiblePlayerAtributes,
-        );
-      } else if (
-        shooterZoneUbication == ranges.inShortRange.id ||
-        shooterZoneUbication == ranges.behindTheBoard.id
-      ) {
-        maxSingleDefenderPoints = mathDefensePointsInShortRange(
-          1.4,
-          maxPosiblePlayerAtributes,
-        );
-      } else if (shooterZoneUbication == ranges.inMidRange.id) {
-        maxSingleDefenderPoints = mathDefensePointsInMidRange(
-          1.4,
-          maxPosiblePlayerAtributes,
-        );
-      } else if (shooterZoneUbication == ranges.outsideThe3PointLine.id) {
-        maxSingleDefenderPoints = mathDefensePointsCloseToThe3PointLine(
-          1.4,
-          maxPosiblePlayerAtributes,
-        );
-      } else if (shooterZoneUbication == ranges.long3Range.id) {
-        maxSingleDefenderPoints = mathDefensePointsLong3Range(
-          1.4,
-          maxPosiblePlayerAtributes,
-        );
-      } else if (
-        shooterZoneUbication == ranges.halfCourt.id ||
-        shooterZoneUbication == ranges.behindHalfCourt.id ||
-        shooterZoneUbication == ranges.theOtherRim.id
-      ) {
-        maxSingleDefenderPoints = mathDefensePointsHalfCourtAndFartherAway(
-          1.4,
-          maxPosiblePlayerAtributes,
-        );
-      } else {
-        maxSingleDefenderPoints = 0;
+      if (!isFreeThrow) {
+        if (shooterZoneUbication == ranges.closeToTheRim.id) {
+          maxSingleDefenderPoints = mathDefensePointsCloseToTheRim(
+            1.4,
+            maxPosiblePlayerAtributes,
+          );
+        } else if (
+          shooterZoneUbication == ranges.inShortRange.id ||
+          shooterZoneUbication == ranges.behindTheBoard.id
+        ) {
+          maxSingleDefenderPoints = mathDefensePointsInShortRange(
+            1.4,
+            maxPosiblePlayerAtributes,
+          );
+        } else if (shooterZoneUbication == ranges.inMidRange.id) {
+          maxSingleDefenderPoints = mathDefensePointsInMidRange(
+            1.4,
+            maxPosiblePlayerAtributes,
+          );
+        } else if (shooterZoneUbication == ranges.outsideThe3PointLine.id) {
+          maxSingleDefenderPoints = mathDefensePointsCloseToThe3PointLine(
+            1.4,
+            maxPosiblePlayerAtributes,
+          );
+        } else if (shooterZoneUbication == ranges.long3Range.id) {
+          maxSingleDefenderPoints = mathDefensePointsLong3Range(
+            1.4,
+            maxPosiblePlayerAtributes,
+          );
+        } else if (
+          shooterZoneUbication == ranges.halfCourt.id ||
+          shooterZoneUbication == ranges.behindHalfCourt.id ||
+          shooterZoneUbication == ranges.theOtherRim.id
+        ) {
+          maxSingleDefenderPoints = mathDefensePointsHalfCourtAndFartherAway(
+            1.4,
+            maxPosiblePlayerAtributes,
+          );
+        }
       }
 
       let dShooterPointsVsMaxPossiblePointsPercentage =
@@ -749,167 +906,80 @@ export class Match {
         `${shooter.name} (Shooter) gets ${dShooterPointsVsMaxPossiblePointsPercentage} points in the shot`,
       );
 
-      let dDefendersPointsVsSinlgePlayerMaxPossiblePointsPercentage =
-        allDefendersPointsInShotSumatory == 0
-          ? 0
-          : (allDefendersPointsInShotSumatory * 100) / maxSingleDefenderPoints;
-      allDefendersPointsInShotSumatory == 0
-        ? newGameNarration.unshift(
-            `Defenders can do nothing against the shooter`,
-          )
-        : newGameNarration.unshift(
-            `The defenders get ${dDefendersPointsVsSinlgePlayerMaxPossiblePointsPercentage} defensive points in total`,
-          );
+      let dDefendersPointsVsSinlgePlayerMaxPossiblePointsPercentage:
+        | number
+        | undefined;
 
-      let pointsDif =
-        dShooterPointsVsMaxPossiblePointsPercentage -
-        dDefendersPointsVsSinlgePlayerMaxPossiblePointsPercentage;
+      let pointsDif: number | undefined;
+
+      if (!isFreeThrow) {
+        dDefendersPointsVsSinlgePlayerMaxPossiblePointsPercentage =
+          allDefendersPointsInShotSumatory == 0
+            ? 0
+            : (allDefendersPointsInShotSumatory * 100) /
+              maxSingleDefenderPoints;
+        allDefendersPointsInShotSumatory == 0
+          ? newGameNarration.unshift(
+              `Defenders can do nothing against the shooter`,
+            )
+          : newGameNarration.unshift(
+              `The defenders get ${dDefendersPointsVsSinlgePlayerMaxPossiblePointsPercentage} defensive points in total`,
+            );
+
+        pointsDif =
+          dShooterPointsVsMaxPossiblePointsPercentage -
+          dDefendersPointsVsSinlgePlayerMaxPossiblePointsPercentage;
+      }
 
       //Use all prev data to calculate if it goes in
       //First get a dice roll
       let shotDiceRoll = roll20SidesDice();
 
-      if (dDefendersPointsVsSinlgePlayerMaxPossiblePointsPercentage < 100) {
-        if (shooterZoneUbication == ranges.closeToTheRim.id) {
-          isItIn =
-            pointsDif > 60 ||
-            (pointsDif > 55 && shotDiceRoll > 1) ||
-            (pointsDif > 50 && shotDiceRoll > 2) ||
-            (pointsDif > 47 && shotDiceRoll > 3) ||
-            (pointsDif > 43 && shotDiceRoll > 4) ||
-            (pointsDif > 40 && shotDiceRoll > 5) ||
-            (pointsDif > 30 && shotDiceRoll > 6) ||
-            (pointsDif > 20 && shotDiceRoll > 7) ||
-            (pointsDif > 17.5 && shotDiceRoll > 8) ||
-            (pointsDif > 14 && shotDiceRoll > 9) ||
-            (pointsDif > 10 && shotDiceRoll > 10) ||
-            (pointsDif > 5 && shotDiceRoll > 11) ||
-            (pointsDif > 0 && shotDiceRoll > 12) ||
-            (pointsDif > -10 && shotDiceRoll > 13) ||
-            (pointsDif > -15 && shotDiceRoll > 14) ||
-            (pointsDif > -17.5 && shotDiceRoll > 15) ||
-            (pointsDif > -19 && shotDiceRoll > 16) ||
-            (pointsDif > -20 && shotDiceRoll > 17) ||
-            (pointsDif > -22 && shotDiceRoll > 18) ||
-            (pointsDif > -25 && shotDiceRoll > 19);
-        } else if (
-          shooterZoneUbication == ranges.inShortRange.id ||
-          shooterZoneUbication == ranges.behindTheBoard.id
-        ) {
-          isItIn =
-            (pointsDif > 98 && shotDiceRoll > 1) ||
-            (pointsDif > 96 && shotDiceRoll > 2) ||
-            (pointsDif > 92 && shotDiceRoll > 3) ||
-            (pointsDif > 89 && shotDiceRoll > 4) ||
-            (pointsDif > 86 && shotDiceRoll > 5) ||
-            (pointsDif > 82 && shotDiceRoll > 6) ||
-            (pointsDif > 79 && shotDiceRoll > 7) ||
-            (pointsDif > 72 && shotDiceRoll > 8) ||
-            (pointsDif > 64 && shotDiceRoll > 9) ||
-            (pointsDif > 58 && shotDiceRoll > 10) ||
-            (pointsDif > 50 && shotDiceRoll > 11) ||
-            (pointsDif > 48 && shotDiceRoll > 12) ||
-            (pointsDif > 43 && shotDiceRoll > 13) ||
-            (pointsDif > 37 && shotDiceRoll > 14) ||
-            (pointsDif > 30 && shotDiceRoll > 15) ||
-            (pointsDif > 20 && shotDiceRoll > 16) ||
-            (pointsDif > 12.5 && shotDiceRoll > 17) ||
-            (pointsDif > 0 && shotDiceRoll > 18) ||
-            (pointsDif > -3 && shotDiceRoll > 19);
-        } else if (shooterZoneUbication == ranges.inMidRange.id) {
-          isItIn =
-            (pointsDif > 98 && shotDiceRoll > 3) ||
-            (pointsDif > 94 && shotDiceRoll > 4) ||
-            (pointsDif > 90 && shotDiceRoll > 5) ||
-            (pointsDif > 87 && shotDiceRoll > 6) ||
-            (pointsDif > 83 && shotDiceRoll > 7) ||
-            (pointsDif > 77 && shotDiceRoll > 8) ||
-            (pointsDif > 69 && shotDiceRoll > 9) ||
-            (pointsDif > 63 && shotDiceRoll > 10) ||
-            (pointsDif > 58 && shotDiceRoll > 11) ||
-            (pointsDif > 53 && shotDiceRoll > 12) ||
-            (pointsDif > 49 && shotDiceRoll > 13) ||
-            (pointsDif > 40 && shotDiceRoll > 14) ||
-            (pointsDif > 34 && shotDiceRoll > 15) ||
-            (pointsDif > 23 && shotDiceRoll > 16) ||
-            (pointsDif > 15 && shotDiceRoll > 17) ||
-            (pointsDif > 9 && shotDiceRoll > 18) ||
-            (pointsDif > 3 && shotDiceRoll > 19);
-        } else if (shooterZoneUbication == ranges.outsideThe3PointLine.id) {
-          isItIn =
-            (pointsDif > 98 && shotDiceRoll > 5) ||
-            (pointsDif > 94 && shotDiceRoll > 6) ||
-            (pointsDif > 89 && shotDiceRoll > 7) ||
-            (pointsDif > 83 && shotDiceRoll > 8) ||
-            (pointsDif > 75 && shotDiceRoll > 9) ||
-            (pointsDif > 69 && shotDiceRoll > 10) ||
-            (pointsDif > 63 && shotDiceRoll > 11) ||
-            (pointsDif > 58 && shotDiceRoll > 12) ||
-            (pointsDif > 50 && shotDiceRoll > 13) ||
-            (pointsDif > 45 && shotDiceRoll > 14) ||
-            (pointsDif > 40 && shotDiceRoll > 15) ||
-            (pointsDif > 35 && shotDiceRoll > 16) ||
-            (pointsDif > 28 && shotDiceRoll > 17) ||
-            (pointsDif > 20 && shotDiceRoll > 18) ||
-            (pointsDif > 13 && shotDiceRoll > 19);
-        } else if (shooterZoneUbication == ranges.long3Range.id) {
-          isItIn =
-            (pointsDif > 98 && shotDiceRoll > 6) ||
-            (pointsDif > 92 && shotDiceRoll > 7) ||
-            (pointsDif > 89 && shotDiceRoll > 8) ||
-            (pointsDif > 80 && shotDiceRoll > 9) ||
-            (pointsDif > 76 && shotDiceRoll > 10) ||
-            (pointsDif > 70 && shotDiceRoll > 11) ||
-            (pointsDif > 65 && shotDiceRoll > 12) ||
-            (pointsDif > 60 && shotDiceRoll > 13) ||
-            (pointsDif > 54 && shotDiceRoll > 14) ||
-            (pointsDif > 49 && shotDiceRoll > 15) ||
-            (pointsDif > 42 && shotDiceRoll > 16) ||
-            (pointsDif > 37 && shotDiceRoll > 17) ||
-            (pointsDif > 31 && shotDiceRoll > 18) ||
-            (pointsDif > 20 && shotDiceRoll > 19);
-        } else if (shooterZoneUbication == ranges.halfCourt.id) {
-          isItIn =
-            (pointsDif > 98 && shotDiceRoll > 7) ||
-            (pointsDif > 92 && shotDiceRoll > 8) ||
-            (pointsDif > 89 && shotDiceRoll > 9) ||
-            (pointsDif > 80 && shotDiceRoll > 10) ||
-            (pointsDif > 76 && shotDiceRoll > 11) ||
-            (pointsDif > 70 && shotDiceRoll > 12) ||
-            (pointsDif > 65 && shotDiceRoll > 13) ||
-            (pointsDif > 60 && shotDiceRoll > 14) ||
-            (pointsDif > 54 && shotDiceRoll > 15) ||
-            (pointsDif > 49 && shotDiceRoll > 16) ||
-            (pointsDif > 42 && shotDiceRoll > 17) ||
-            (pointsDif > 37 && shotDiceRoll > 18) ||
-            (pointsDif > 31 && shotDiceRoll > 19);
-        } else if (shooterZoneUbication == ranges.behindHalfCourt.id) {
-          isItIn =
-            (pointsDif > 98 && shotDiceRoll > 8) ||
-            (pointsDif > 92 && shotDiceRoll > 9) ||
-            (pointsDif > 89 && shotDiceRoll > 10) ||
-            (pointsDif > 80 && shotDiceRoll > 11) ||
-            (pointsDif > 76 && shotDiceRoll > 12) ||
-            (pointsDif > 70 && shotDiceRoll > 13) ||
-            (pointsDif > 65 && shotDiceRoll > 14) ||
-            (pointsDif > 60 && shotDiceRoll > 15) ||
-            (pointsDif > 54 && shotDiceRoll > 16) ||
-            (pointsDif > 49 && shotDiceRoll > 17) ||
-            (pointsDif > 42 && shotDiceRoll > 18) ||
-            (pointsDif > 37 && shotDiceRoll > 19);
-        } else if (shooterZoneUbication == ranges.theOtherRim.id) {
-          isItIn =
-            (pointsDif > 98 && shotDiceRoll > 9) ||
-            (pointsDif > 92 && shotDiceRoll > 10) ||
-            (pointsDif > 89 && shotDiceRoll > 11) ||
-            (pointsDif > 80 && shotDiceRoll > 12) ||
-            (pointsDif > 76 && shotDiceRoll > 13) ||
-            (pointsDif > 70 && shotDiceRoll > 14) ||
-            (pointsDif > 65 && shotDiceRoll > 15) ||
-            (pointsDif > 60 && shotDiceRoll > 16) ||
-            (pointsDif > 54 && shotDiceRoll > 17) ||
-            (pointsDif > 49 && shotDiceRoll > 18) ||
-            (pointsDif > 42 && shotDiceRoll > 19);
+      if (isFreeThrow) {
+        isItIn = mathChancesMakingShotInFreeThrow(
+          maxShooterPoints,
+          shotDiceRoll,
+        );
+      } else {
+        if (dDefendersPointsVsSinlgePlayerMaxPossiblePointsPercentage! < 100) {
+          if (shooterZoneUbication == ranges.closeToTheRim.id) {
+            isItIn = mathChancesMakingShotInCloseToTheRim(
+              pointsDif!,
+              shotDiceRoll,
+            );
+          } else if (
+            shooterZoneUbication == ranges.inShortRange.id ||
+            shooterZoneUbication == ranges.behindTheBoard.id
+          ) {
+            isItIn = mathChancesMakingShotInShortRange(
+              pointsDif!,
+              shotDiceRoll,
+            );
+          } else if (shooterZoneUbication == ranges.inMidRange.id) {
+            isItIn = mathChancesMakingShotInMidRange(pointsDif!, shotDiceRoll);
+          } else if (shooterZoneUbication == ranges.outsideThe3PointLine.id) {
+            isItIn = mathChancesMakingShotInCloseToThe3PointLine(
+              pointsDif!,
+              shotDiceRoll,
+            );
+          } else if (shooterZoneUbication == ranges.long3Range.id) {
+            isItIn = mathChancesMakingShotInLong3Range(
+              pointsDif!,
+              shotDiceRoll,
+            );
+          } else if (shooterZoneUbication == ranges.halfCourt.id) {
+            isItIn = mathChancesMakingShotInHalfCourt(pointsDif!, shotDiceRoll);
+          } else if (shooterZoneUbication == ranges.behindHalfCourt.id) {
+            isItIn = mathChancesMakingShotInBehindHalfCourt(
+              pointsDif!,
+              shotDiceRoll,
+            );
+          } else if (shooterZoneUbication == ranges.theOtherRim.id) {
+            isItIn = mathChancesMakingShotInCloseToTheOtherRim(
+              pointsDif!,
+              shotDiceRoll,
+            );
+          }
         }
       }
 
@@ -923,7 +993,7 @@ export class Match {
     let asistant = atackingTeam.players.find((player) => player.lastPasser);
 
     if (isItIn) {
-      if (/*TODO isFreeThrow*/ false) {
+      if (isFreeThrow) {
         newGameNarration.unshift(
           `The ball goes in! The team ${atackingTeam.name} add 1 point to the scoreboard`,
         );
@@ -945,64 +1015,89 @@ export class Match {
         pointsToAdd = 3;
       }
 
-      //After that i handle who get's the ball after the shot
-      newPlayerWithBall = this.getClosestDefenderToTheRim(defendingTeam);
-      newPlayerWithBall.movePlayerToOwnRim();
-      newPlayerWithBall.setHaveBall(true);
-      newGameNarration.unshift(
-        `${newPlayerWithBall.name} get the ball to start theyr posetion`,
-      );
+      if ((this.shootingFreeThrows = 0)) {
+        //After that i handle who get's the ball after the shot
+        newPlayerWithBall = defendingTeam.players.find(
+          (player) => player.position == "C",
+        )!;
+
+        newPlayerWithBall.movePlayerToOwnRim();
+        newPlayerWithBall.setHaveBall(true);
+        newGameNarration.unshift(
+          `${newPlayerWithBall.name} get the ball to start theyr posetion`,
+        );
+      }
     } else {
-      //If it doesn't goes in handle who get's the rebound
-      newPlayerWithBall = this.getRebounder(shooter, gameBoard);
-      newPlayerWithBall.statsAddRebound(atackingTeam);
-      newPlayerWithBall.setLastAction(
-        newPlayerWithBall.team == atackingTeam.name ? "get O reb" : "get D reb",
-      );
-      newGameNarration.unshift(
-        `The shot is off ${
-          newPlayerWithBall.team == atackingTeam.name ? "but" : "and"
-        } ${newPlayerWithBall.name} gets the rebound!`,
-      );
-      shooterTeam.resetLastPasserForAllPlayers();
+      if ((this.shootingFreeThrows = 0)) {
+        //TODO habndle rebound after FT
+        this.movePlayersToReboundOnFTPositions(
+          defendingTeam,
+          atackingTeam,
+          setGameBoard,
+        );
+
+        //If it doesn't goes in handle who get's the rebound
+        newPlayerWithBall = this.getRebounder(shooter, gameBoard);
+        newPlayerWithBall.statsAddRebound(atackingTeam);
+        newPlayerWithBall.setLastAction(
+          newPlayerWithBall.team == atackingTeam.name
+            ? "get O reb"
+            : "get D reb",
+        );
+        newGameNarration.unshift(
+          `The shot is off ${
+            newPlayerWithBall.team == atackingTeam.name ? "but" : "and"
+          } ${newPlayerWithBall.name} gets the rebound!`,
+        );
+        shooterTeam.resetLastPasserForAllPlayers();
+      }
     }
 
     //Then i handle the players status and stats
     shooter.setHaveBall(false);
-    shooter.statsAddShotAttempt(
-      pointsToAdd,
-      isItIn,
-      /*TODO isFreeThrow*/ false,
-    );
+    shooter.statsAddShotAttempt(pointsToAdd, isItIn, isFreeThrow);
     shooter.setShotAttempt(false);
 
     if (asistant) {
       asistant.statsAddAssist();
     }
 
-    newPlayerWithBall.setHaveBall(true);
-
     //Finally i handle the team stats
     atackingTeam.statsAddShotAttempt(
       pointsToAdd,
       isItIn,
       !!asistant,
-      /*TODO check if there was a foul*/ false,
+      isFreeThrow,
     );
+    if (this.shootingFreeThrows > 0) {
+      for (let index = 0; index < this.shootingFreeThrows; index++) {
+        this.shootingFreeThrows--;
 
-    //TODO (But not here) passerTeam.resetLastPasserForAllPlayers(); when buzzer sound
-
-    if (!isItIn) {
-      if (newPlayerWithBall.team == atackingTeam.name) {
-        atackingTeam.statsAddRebound(atackingTeam);
-      } else {
-        defendingTeam.statsAddRebound(atackingTeam);
+        this.handleShot(
+          newGameNarration,
+          setGameNarration,
+          gameBoard,
+          setGameBoard,
+        );
       }
+    } else {
+      newPlayerWithBall!.setHaveBall(true);
+
+      this.teamA.resetLastPasserForAllPlayers();
+      this.teamB.resetLastPasserForAllPlayers();
+
+      if (!isItIn) {
+        if (newPlayerWithBall!.team == atackingTeam.name) {
+          atackingTeam.statsAddRebound(atackingTeam);
+        } else {
+          defendingTeam.statsAddRebound(atackingTeam);
+        }
+      }
+
+      setGameNarration(() => newGameNarration);
+
+      this.setShotHasBeenAttempted(false);
     }
-
-    setGameNarration(() => newGameNarration);
-
-    this.setShotHasBeenAttempted(false);
   }
 
   handlePlayerWait(
@@ -1010,6 +1105,7 @@ export class Match {
     gameNarration: string[],
     setGameNarration: React.Dispatch<React.SetStateAction<string[]>>,
     gameBoard: number[][],
+    setGameBoard: React.Dispatch<React.SetStateAction<number[][]>>,
   ) {
     let activePlayer = this.getActivePlayer()!;
 
@@ -1032,6 +1128,7 @@ export class Match {
       gameNarration,
       setGameNarration,
       gameBoard,
+      setGameBoard,
       narrationText,
       // If it's withCaution or tripleTheat return true, otherwise return false
       !!(type == "withCaution" || type == "tripleThreat"),
@@ -1106,6 +1203,7 @@ export class Match {
     gameNarration: string[],
     setGameNarration: React.Dispatch<React.SetStateAction<string[]>>,
     gameBoard: number[][],
+    setGameBoard: React.Dispatch<React.SetStateAction<number[][]>>,
     currentGameNarration?: string | undefined,
     isWaitingAction?: boolean,
   ) {
@@ -1212,7 +1310,7 @@ export class Match {
         setGameNarration(() => newGameNarration);
       } else {
         console.log("No players selected and noone have movement left");
-        this.runClock(gameNarration, setGameNarration, gameBoard);
+        this.runClock(gameNarration, setGameNarration, gameBoard, setGameBoard);
 
         if (this.teamA.teamHaveTheBall()) {
           this.setTeamTurn("TeamA");
@@ -1258,7 +1356,7 @@ export class Match {
           (playerInThisUbication.lastAction == "withCaution" ||
             playerInThisUbication.lastAction == "tripleThreat")
         ) {
-          console.log("ª")
+          console.log("ª");
           //If the player is not in the waiting players list and is in a waiting stance then i add him to the waiting players list
           if (
             !previousWaitingPlayers.find(
@@ -1299,12 +1397,6 @@ export class Match {
   shotAttemptedStatus() {
     let activePlayer = this.getActivePlayer()!;
 
-    activePlayer!.setActivePlayer(false);
-    activePlayer!.setPlayerSelected(false);
-    activePlayer!.resetActionPoints();
-    activePlayer!.setPlayerHaveTurn(false);
-    activePlayer!.setMovementLeft(false);
-
     this.setShotHasBeenAttempted(true);
     activePlayer.setShotAttempt(true);
   }
@@ -1313,6 +1405,7 @@ export class Match {
     gameNarration: string[],
     setGameNarration: React.Dispatch<React.SetStateAction<string[]>>,
     gameBoard: number[][],
+    setGameBoard: React.Dispatch<React.SetStateAction<number[][]>>,
   ) {
     if (this.timeLeft.seconds == 0) {
       this.timeLeft.minutes--;
@@ -1334,7 +1427,7 @@ export class Match {
     }
 
     if (this.shotHasBeenAttempted) {
-      this.handleShot(gameNarration, setGameNarration, gameBoard);
+      this.handleShot(gameNarration, setGameNarration, gameBoard, setGameBoard);
     }
 
     if (!this.gameOver) {

@@ -795,8 +795,8 @@ export class Match {
               //If defenders get too few points he foul the shooter.
               //Used this.isFreeThrowSerie to avoid loop
 
-              //TODO check if this points are good enough
-              //TODO remember to uncomment next line
+              //TODO Check if this points are fare to make a foul
+              //TODO Remember to uncomment next line when testing is done
 
               // if (defenderPoints < 10 && !this.isFreeThrowSerie) {
               if (true && !this.isFreeThrowSerie) {
@@ -1036,6 +1036,15 @@ export class Match {
 
     let asistant = atackingTeam.players.find((player) => player.lastPasser);
 
+    // TODO move players to FT rebounding positions in FT serie
+    if (this.isFreeThrowSerie) {
+      this.movePlayersToReboundOnFTPositions(
+        defendingTeam,
+        atackingTeam,
+        setGameBoard,
+      );
+    }
+
     if (isItIn) {
       if (this.freeThrowsLeft > 0) {
         newGameNarration.unshift(
@@ -1063,48 +1072,36 @@ export class Match {
         shooter.setShotAttempt(false);
       }
 
-      if (this.freeThrowsLeft == 0) {
-        //TODO make the closest player to the rim get the ball
-        //After that i handle who get's the ball after the shot
-        newPlayerWithBall = defendingTeam.players.find(
-          (player) => player.position == "C",
-        )!;
+      //TODO make the closest player to the rim get the ball when is a field goal
+      //After that i handle who get's the ball after the shot
+      newPlayerWithBall = defendingTeam.players.find(
+        (player) => player.position == "C",
+      )!;
 
-        newPlayerWithBall.movePlayerToOwnRim();
-        newPlayerWithBall.setHaveBall(true);
-        newGameNarration.unshift(
-          `${isNaN(Number(newPlayerWithBall.name)) ? newPlayerWithBall.name : newPlayerWithBall.position} get the ball to start theyr posetion`,
-        );
-      }
+      newPlayerWithBall.movePlayerToOwnRim();
+      newPlayerWithBall.setHaveBall(true);
+      newGameNarration.unshift(
+        `${isNaN(Number(newPlayerWithBall.name)) ? newPlayerWithBall.name : newPlayerWithBall.position} get the ball to start theyr posetion`,
+      );
     } else {
       //If the shot is off
-      //TODO check if it should be this.isFreeThrowSerie instead of this
-      //TODO fix rebounds after FT
-      if (this.freeThrowsLeft == 0) {
-        //TODO habndle rebound after FT
-        this.movePlayersToReboundOnFTPositions(
-          defendingTeam,
-          atackingTeam,
-          setGameBoard,
-        );
+      //TODO calculate rebound result
 
-        //If it doesn't goes in handle who get's the rebound
-        newPlayerWithBall = this.getRebounder(shooter, gameBoard);
-        newPlayerWithBall.statsAddRebound(atackingTeam);
-        newPlayerWithBall.setLastAction(
-          newPlayerWithBall.team == atackingTeam.name
-            ? "get O reb"
-            : "get D reb",
-        );
-        newGameNarration.unshift(
-          `The shot is off ${
-            newPlayerWithBall.team == atackingTeam.name ? "but" : "and"
-          } ${isNaN(Number(newPlayerWithBall.name)) ? newPlayerWithBall.name : newPlayerWithBall.position} gets the rebound!`,
-        );
-        shooterTeam.resetLastPasserForAllPlayers();
+      //If it doesn't goes in handle who get's the rebound
+      newPlayerWithBall = this.getRebounder(shooter, gameBoard);
+      newPlayerWithBall.statsAddRebound(atackingTeam);
+      newPlayerWithBall.setLastAction(
+        newPlayerWithBall.team == atackingTeam.name ? "getOReb" : "getDReb",
+      );
 
-        shooter.setShotAttempt(false);
-      }
+      newGameNarration.unshift(
+        `The shot is off ${
+          newPlayerWithBall.team == atackingTeam.name ? "but" : "and"
+        } ${isNaN(Number(newPlayerWithBall.name)) ? newPlayerWithBall.name : newPlayerWithBall.position} gets the rebound!`,
+      );
+      shooterTeam.resetLastPasserForAllPlayers();
+
+      shooter.setShotAttempt(false);
     }
 
     //Then i handle the players status and stats
@@ -1207,7 +1204,6 @@ export class Match {
   }
 
   getRebounder(shooter: Player, gameBoard: number[][]) {
-    //TODO make this function
     let rebounder: Player;
 
     let teamAAtacking = shooter.team == "TeamA";
@@ -1251,7 +1247,6 @@ export class Match {
     );
 
     let closestPlayersToWhereBallLands = getClosestPlayers(
-      gameBoard,
       [...this.teamA.players, ...this.teamB.players],
       whereItReboundsTo,
     );

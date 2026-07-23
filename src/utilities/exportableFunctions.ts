@@ -1571,12 +1571,9 @@ export function getReboundDistance(
 export function getDistanceToPoint() {}
 
 export function getClosestPlayers(
-  gameBoard: number[][],
   allPlayers: Player[],
   targetPoint: number[],
 ): Player[] {
-  //TODO end this function
-
   const closestPlayers: Player[] = [];
   // Find the closest player to the targetPoint
   let minDistance = Infinity;

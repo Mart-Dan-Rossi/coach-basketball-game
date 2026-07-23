@@ -51,7 +51,8 @@ export class Match {
   //Match status
   teamTurn: string;
   shotHasBeenAttempted: boolean;
-  shootingFreeThrows: number;
+  freeThrowsLeft: number;
+  isFreeThrowSerie: boolean;
   waitingPlayers: Player[] = [];
 
   //Match basic info
@@ -70,7 +71,8 @@ export class Match {
     //Match status
     this.teamTurn = "";
     this.shotHasBeenAttempted = false;
-    this.shootingFreeThrows = 0;
+    this.freeThrowsLeft = 0;
+    this.isFreeThrowSerie = false;
 
     //Match basic info
     this.quarter = 1;
@@ -133,7 +135,9 @@ export class Match {
           //Give feedback
           newGameNarration.unshift(
             `${
-              player.name === "" ? "The center of team A" : player.name
+              player.name && player.name.length === 0
+                ? `The ${playerPositionDetection(player.position)} of team A`
+                : player.name
             }, get ${pointsObteinedInTheJumpBallA} points in the jump`,
           );
           setGameNarration(() => newGameNarration);
@@ -150,7 +154,9 @@ export class Match {
           //Give feedback
           newGameNarration.unshift(
             `${
-              player.name === "" ? "The center of team B" : player.name
+              player.name && player.name.length === 0
+                ? `The ${playerPositionDetection(player.position)} of team B`
+                : player.name
             }, get ${pointsObteinedInTheJumpBallB} points in the jump`,
           );
           setGameNarration(() => newGameNarration);
@@ -170,7 +176,9 @@ export class Match {
             //Give feedback
             newGameNarration.unshift(
               `${this.teamA.name} won the jump. Now ${
-                player.name === "" ? "the PG of team A" : player.name
+                player.name && player.name.length === 0
+                  ? `the ${playerPositionDetection(player.position)} of team A`
+                  : player.name
               } have the ball.`,
             );
             setGameNarration(() => newGameNarration);
@@ -187,7 +195,9 @@ export class Match {
             //Give feedback
             newGameNarration.unshift(
               `${this.teamB.name} won the jump. Now ${
-                player.name === "" ? "the PG of team B" : player.name
+                player.name && player.name.length === 0
+                  ? `the ${playerPositionDetection(player.position)} of team B`
+                  : player.name
               } have the ball.`,
             );
             setGameNarration(() => newGameNarration);
@@ -334,7 +344,7 @@ export class Match {
           }
 
           newGameNarration.unshift(
-            `${player.name} (Defender) gets ${defensivePlayerPoints} defensive points`,
+            `${player.name && player.name.length === 0 ? playerPositionDetection(player.position) : player.name} (Defender) gets ${defensivePlayerPoints} defensive points`,
           );
 
           totalDefensivePoints += defensivePlayerPoints;
@@ -384,7 +394,7 @@ export class Match {
       `The total defensive points are ${Number(totalDefensivePoints).toFixed(2)}`,
     );
     newGameNarration.unshift(
-      `${passer.name || playerPositionDetection(passer.position) + " of team " + passer.team} gets ${Number(passer.actionPoints).toFixed(2)} pass points`,
+      `${passer.name && passer.name.length === 0 ? playerPositionDetection(passer.position) : passer.name} of team ${passer.team} gets ${Number(passer.actionPoints).toFixed(2)} pass points`,
     );
 
     passer.setLastAction("pass");
@@ -397,7 +407,7 @@ export class Match {
       //The receiver gets the ball
       receiver.setHaveBall(true);
       newGameNarration.unshift(
-        `${receiver.name || playerPositionDetection(receiver.position) + " of team " + receiver.team} gets the pass and is the new ball handler`,
+        `${receiver.name && receiver.name.length === 0 ? playerPositionDetection(receiver.position) : receiver.name} of team ${receiver.team} gets the pass and is the new ball handler`,
       );
 
       passerTeam.handleNewPasser(passer);
@@ -407,7 +417,7 @@ export class Match {
       //The player with the highest defensive points involved in this situation steal the ball
       defensorWithTheHighestDefensivePoints[0]!.setHaveBall(true);
       newGameNarration.unshift(
-        `${defensorWithTheHighestDefensivePoints[0]!.name} has stolen the ball!`,
+        `${defensorWithTheHighestDefensivePoints[0]!.name && defensorWithTheHighestDefensivePoints[0]!.name.length === 0 ? playerPositionDetection(defensorWithTheHighestDefensivePoints[0]!.position) : defensorWithTheHighestDefensivePoints[0]!.name} has stolen the ball!`,
       );
 
       passerTeam.resetLastPasserForAllPlayers();
@@ -569,51 +579,55 @@ export class Match {
 
     //Hanlde narration
     let newGameNarration = [...gameNarration];
-    let newNarrationText = `${defender.name ?? defender.position} of team ${defender.team} (Defender) has fouled ${atacker.name ?? atacker.position} of team ${atacker.team} (Atacker)`;
+    let newNarrationText = `${isNaN(Number(defender.name)) ? defender.name : defender.position} of team ${defender.team} (Defender) has fouled ${isNaN(Number(atacker.name)) ? atacker.name : atacker.position} of team ${atacker.team} (Atacker)`;
 
     if (isDuringShot) {
-      newNarrationText += ` during the shot attempt. ${atacker.name ?? atacker.position} of team ${atacker.team} will have ${isDuringShot} free throws`;
+      newNarrationText += ` during the shot attempt. ${isNaN(Number(atacker.name)) ? atacker.name : atacker.position} of team ${atacker.team} will have ${isDuringShot} free throws`;
     }
     newNarrationText += ".";
 
     newGameNarration.unshift(newNarrationText);
 
     //If it was not in shoting action and the defender is in penalty (more than 4 fouls)
-    if (!isDuringShot && defender.stats.fouls > 4) {
+    if (isDuringShot == undefined && defender.stats.fouls > 4) {
       //Must change the last action so the shooting function finds the player
       atacker.lastAction = "shotAttempt";
 
-      newNarrationText = `${defender.name ?? defender.position} of team ${defender.team} have more fouls than allowed. ${atacker.name ?? atacker.position} of team ${atacker.team} will have 2 free throws.`;
+      newNarrationText = `${isNaN(Number(defender.name)) ? defender.name : defender.position} of team ${defender.team} have more fouls than allowed. ${isNaN(Number(atacker.name)) ? atacker.name : atacker.position} of team ${atacker.team} will have 2 free throws.`;
     } else {
-      newNarrationText = `It was the foul N° ${defender.stats.fouls} of ${defender.name ?? defender.position} of team ${defender.team}.`;
+      newNarrationText = `It was the foul N° ${defender.stats.fouls} of ${isNaN(Number(defender.name)) ? defender.name : defender.position} of team ${defender.team}.`;
     }
 
     newGameNarration.unshift(newNarrationText);
 
     //If it was not in shoting action and the defender is not in penalisation then ask for team penalisation
     if (
-      !isDuringShot &&
+      isDuringShot == undefined &&
       defender.stats.fouls <= 4 &&
       defenderTeam.stats.foulsInQuarter > 4
     ) {
       //Must change the last action so the shooting function finds the player
       atacker.lastAction = "shotAttempt";
 
-      newNarrationText = `${defender.team} is in penalisation. ${atacker.name ?? atacker.position} of team ${atacker.team} will have 2 free throws.`;
+      newNarrationText = `${defender.team} is in penalisation. ${isNaN(Number(atacker.name)) ? atacker.name : atacker.position} of team ${atacker.team} will have 2 free throws.`;
     } else {
       newNarrationText = `It was the team foul N° ${defenderTeam.stats.foulsInQuarter} of team ${defender.team}.`;
     }
 
     newGameNarration.unshift(newNarrationText);
 
-    //Handle free throws if necesary
+    //Set how many FT must be taken if is necesary
     if (
-      isDuringShot ||
+      isDuringShot != undefined ||
       defender.stats.fouls > 4 ||
       defenderTeam.stats.foulsInQuarter > 4
     ) {
-      this.shootingFreeThrows = isDuringShot ?? 2;
+      //Set amount of free throwns
+      this.freeThrowsLeft = isDuringShot ?? 2;
+      //Set flag to indicate it is a free throw serie
+      this.isFreeThrowSerie = true;
     }
+
     setGameNarration(() => newGameNarration);
   }
 
@@ -623,6 +637,7 @@ export class Match {
     gameBoard: number[][],
     setGameBoard: React.Dispatch<React.SetStateAction<number[][]>>,
   ) {
+    // console.log("in handle shot method");
     //First i get the shooter
     let shooter = this.getShooter()!;
     let shooterTeam = shooter.team == "TeamA" ? this.teamA : this.teamB;
@@ -635,17 +650,19 @@ export class Match {
     //I get in what part of the field is him located to calculate with the propper math
     let shooterZoneUbication = playerZone(shooter, shooter.team == "TeamB");
 
-    let isFreeThrow = this.shootingFreeThrows > 0;
-
-    if (!isFreeThrow) {
+    if (!(this.freeThrowsLeft > 0)) {
       newGameNarration.unshift(
-        `${shooter.name} is attempting a shot from ${getRangeText(
+        `${isNaN(Number(shooter.name)) ? shooter.name : shooter.position} is attempting a shot from ${getRangeText(
           shooterZoneUbication,
         )}!`,
       );
+    } else {
+      newGameNarration.unshift(
+        `${isNaN(Number(shooter.name)) ? shooter.name : shooter.position} is attempting a shot from the free throw line`,
+      );
     }
 
-    function getShooterPointsInShot() {
+    const getShooterPointsInShot = () => {
       let shooterPointsInShot = 0;
 
       let multiplier = 1;
@@ -654,7 +671,7 @@ export class Match {
       }
 
       //Do math to calculate points on each sector
-      if (isFreeThrow) {
+      if (this.freeThrowsLeft > 0) {
         shooterPointsInShot = mathShotPointsInFreeThrow(shooter);
       } else if (shooterZoneUbication == ranges.closeToTheRim.id) {
         shooterPointsInShot = mathShotPointsCloseToTheRim(multiplier, shooter);
@@ -687,16 +704,18 @@ export class Match {
       }
 
       return shooterPointsInShot;
-    }
+    };
 
     const getDefendersPointsInShot = () => {
+      // console.log("in getDefendersPointsInShot");
       let totalDefendersPoints = 0;
-      if (isFreeThrow) {
+      if (this.freeThrowsLeft > 0) {
+        //If it is a free throw ther's no defenders so totalDefendersPoints is going to be 0
         return totalDefendersPoints;
-      }
-
-      //If it is a free throw ther's no defenders so totalDefendersPoints is going to be 0
-      if (isFreeThrow) {
+      } else {
+        // console.log(
+        //   "Calculating defenders points in shot attempt for shooter: ",
+        // );
         //If it was a field shot attempt it cheks the tiles around the shooter. To do so we use one loop for the X direction and one for the Y direction
         for (let positionX = -2; positionX < 3; positionX++) {
           for (let positionY = -2; positionY < 3; positionY++) {
@@ -765,19 +784,41 @@ export class Match {
               }
 
               //If the defender is right next to the shooter he gets a bonus for his defensive points
-              if (Math.pow(positionX, 2) == 1 && Math.pow(positionY, 2) == 1) {
+              if (
+                Math.abs(positionX) <= 1 &&
+                Math.abs(positionY) <= 1 &&
+                (positionX !== 0 || positionY !== 0)
+              ) {
                 defenderPoints = defenderPoints * 1.5;
-                //TODO check if this points are good enough
-                //TODO remember to uncomment this line
-                // if (defenderPoints < 10) {
-                if (true) {
-                  this.handleFoul(
-                    defenderInThisUbication,
-                    shooter,
-                    newGameNarration,
-                    setGameNarration,
-                  );
+              }
+
+              //If defenders get too few points he foul the shooter.
+              //Used this.isFreeThrowSerie to avoid loop
+
+              //TODO check if this points are good enough
+              //TODO remember to uncomment next line
+
+              // if (defenderPoints < 10 && !this.isFreeThrowSerie) {
+              if (true && !this.isFreeThrowSerie) {
+                let amountOfFreeThrows;
+                if (
+                  shooterZoneUbication == ranges.closeToTheRim.id ||
+                  shooterZoneUbication == ranges.inShortRange.id ||
+                  shooterZoneUbication == ranges.behindTheBoard.id ||
+                  shooterZoneUbication == ranges.inMidRange.id
+                ) {
+                  amountOfFreeThrows = 2;
+                } else {
+                  amountOfFreeThrows = 3;
                 }
+
+                this.handleFoul(
+                  defenderInThisUbication,
+                  shooter,
+                  newGameNarration,
+                  setGameNarration,
+                  amountOfFreeThrows,
+                );
               }
             }
 
@@ -789,7 +830,8 @@ export class Match {
       return totalDefendersPoints;
     };
 
-    function calculateIfGoesIn() {
+    const calculateIfGoesIn = () => {
+      // console.log("In calculateIfGoesIn");
       let isItIn = false;
 
       let shooterPointsInShot = getShooterPointsInShot();
@@ -852,6 +894,8 @@ export class Match {
           1.2,
           maxAPlayerAtributes,
         );
+      } else if (this.freeThrowsLeft > 0) {
+        maxShooterPoints = mathShotPointsInFreeThrow(maxAPlayerAtributes);
       } else {
         maxShooterPoints = 0;
       }
@@ -859,7 +903,7 @@ export class Match {
       let allDefendersPointsInShotSumatory = getDefendersPointsInShot();
       let maxSingleDefenderPoints = 0;
 
-      if (!isFreeThrow) {
+      if (!(this.freeThrowsLeft > 0)) {
         if (shooterZoneUbication == ranges.closeToTheRim.id) {
           maxSingleDefenderPoints = mathDefensePointsCloseToTheRim(
             1.4,
@@ -903,7 +947,7 @@ export class Match {
       let dShooterPointsVsMaxPossiblePointsPercentage =
         (shooterPointsInShot * 100) / maxShooterPoints;
       newGameNarration.unshift(
-        `${shooter.name} (Shooter) gets ${dShooterPointsVsMaxPossiblePointsPercentage} points in the shot`,
+        `${isNaN(Number(shooter.name)) ? shooter.name : shooter.position} (Shooter) gets ${dShooterPointsVsMaxPossiblePointsPercentage} points in the shot`,
       );
 
       let dDefendersPointsVsSinlgePlayerMaxPossiblePointsPercentage:
@@ -912,7 +956,7 @@ export class Match {
 
       let pointsDif: number | undefined;
 
-      if (!isFreeThrow) {
+      if (!(this.freeThrowsLeft > 0)) {
         dDefendersPointsVsSinlgePlayerMaxPossiblePointsPercentage =
           allDefendersPointsInShotSumatory == 0
             ? 0
@@ -935,7 +979,7 @@ export class Match {
       //First get a dice roll
       let shotDiceRoll = roll20SidesDice();
 
-      if (isFreeThrow) {
+      if (this.freeThrowsLeft > 0) {
         isItIn = mathChancesMakingShotInFreeThrow(
           maxShooterPoints,
           shotDiceRoll,
@@ -984,7 +1028,7 @@ export class Match {
       }
 
       return isItIn;
-    }
+    };
 
     let pointsToAdd = 0;
     let isItIn = calculateIfGoesIn();
@@ -993,29 +1037,34 @@ export class Match {
     let asistant = atackingTeam.players.find((player) => player.lastPasser);
 
     if (isItIn) {
-      if (isFreeThrow) {
+      if (this.freeThrowsLeft > 0) {
         newGameNarration.unshift(
-          `The ball goes in! The team ${atackingTeam.name} add 1 point to the scoreboard`,
+          `The ball goes in! The team ${isNaN(Number(atackingTeam.name)) ? atackingTeam.name : "the attacking team"} add 1 point to the scoreboard`,
         );
         pointsToAdd = 1;
-      } else if (
-        shooterZoneUbication == ranges.closeToTheRim.id ||
-        shooterZoneUbication == ranges.inShortRange.id ||
-        shooterZoneUbication == ranges.behindTheBoard.id ||
-        shooterZoneUbication == ranges.inMidRange.id
-      ) {
-        newGameNarration.unshift(
-          `The ball goes in! The team ${atackingTeam.name} add 2 points to the scoreboard`,
-        );
-        pointsToAdd = 2;
       } else {
-        newGameNarration.unshift(
-          `The ball goes in! The team ${atackingTeam.name} add 3 points to the scoreboard`,
-        );
-        pointsToAdd = 3;
+        if (
+          shooterZoneUbication == ranges.closeToTheRim.id ||
+          shooterZoneUbication == ranges.inShortRange.id ||
+          shooterZoneUbication == ranges.behindTheBoard.id ||
+          shooterZoneUbication == ranges.inMidRange.id
+        ) {
+          newGameNarration.unshift(
+            `The ball goes in! The team ${isNaN(Number(atackingTeam.name)) ? atackingTeam.name : "the attacking team"} add 2 points to the scoreboard`,
+          );
+          pointsToAdd = 2;
+        } else {
+          newGameNarration.unshift(
+            `The ball goes in! The team ${isNaN(Number(atackingTeam.name)) ? atackingTeam.name : "the attacking team"} add 3 points to the scoreboard`,
+          );
+          pointsToAdd = 3;
+        }
+
+        shooter.setShotAttempt(false);
       }
 
-      if ((this.shootingFreeThrows = 0)) {
+      if (this.freeThrowsLeft == 0) {
+        //TODO make the closest player to the rim get the ball
         //After that i handle who get's the ball after the shot
         newPlayerWithBall = defendingTeam.players.find(
           (player) => player.position == "C",
@@ -1024,11 +1073,14 @@ export class Match {
         newPlayerWithBall.movePlayerToOwnRim();
         newPlayerWithBall.setHaveBall(true);
         newGameNarration.unshift(
-          `${newPlayerWithBall.name} get the ball to start theyr posetion`,
+          `${isNaN(Number(newPlayerWithBall.name)) ? newPlayerWithBall.name : newPlayerWithBall.position} get the ball to start theyr posetion`,
         );
       }
     } else {
-      if ((this.shootingFreeThrows = 0)) {
+      //If the shot is off
+      //TODO check if it should be this.isFreeThrowSerie instead of this
+      //TODO fix rebounds after FT
+      if (this.freeThrowsLeft == 0) {
         //TODO habndle rebound after FT
         this.movePlayersToReboundOnFTPositions(
           defendingTeam,
@@ -1047,16 +1099,17 @@ export class Match {
         newGameNarration.unshift(
           `The shot is off ${
             newPlayerWithBall.team == atackingTeam.name ? "but" : "and"
-          } ${newPlayerWithBall.name} gets the rebound!`,
+          } ${isNaN(Number(newPlayerWithBall.name)) ? newPlayerWithBall.name : newPlayerWithBall.position} gets the rebound!`,
         );
         shooterTeam.resetLastPasserForAllPlayers();
+
+        shooter.setShotAttempt(false);
       }
     }
 
     //Then i handle the players status and stats
     shooter.setHaveBall(false);
-    shooter.statsAddShotAttempt(pointsToAdd, isItIn, isFreeThrow);
-    shooter.setShotAttempt(false);
+    shooter.statsAddShotAttempt(pointsToAdd, isItIn, this.freeThrowsLeft > 0);
 
     if (asistant) {
       asistant.statsAddAssist();
@@ -1067,37 +1120,44 @@ export class Match {
       pointsToAdd,
       isItIn,
       !!asistant,
-      isFreeThrow,
+      this.freeThrowsLeft > 0,
     );
-    if (this.shootingFreeThrows > 0) {
-      for (let index = 0; index < this.shootingFreeThrows; index++) {
-        this.shootingFreeThrows--;
 
-        this.handleShot(
-          newGameNarration,
-          setGameNarration,
-          gameBoard,
-          setGameBoard,
-        );
-      }
-    } else {
-      newPlayerWithBall!.setHaveBall(true);
+    if (this.freeThrowsLeft > 0) {
+      console.log("Shooting free throw");
 
-      this.teamA.resetLastPasserForAllPlayers();
-      this.teamB.resetLastPasserForAllPlayers();
+      this.freeThrowsLeft--;
 
-      if (!isItIn) {
-        if (newPlayerWithBall!.team == atackingTeam.name) {
-          atackingTeam.statsAddRebound(atackingTeam);
-        } else {
-          defendingTeam.statsAddRebound(atackingTeam);
-        }
-      }
+      this.handleShot(
+        newGameNarration,
+        setGameNarration,
+        gameBoard,
+        setGameBoard,
+      );
 
-      setGameNarration(() => newGameNarration);
-
-      this.setShotHasBeenAttempted(false);
+      return;
     }
+
+    console.log("End FT sequence");
+
+    newPlayerWithBall!.setHaveBall(true);
+
+    this.teamA.resetLastPasserForAllPlayers();
+    this.teamB.resetLastPasserForAllPlayers();
+
+    if (!isItIn) {
+      if (newPlayerWithBall!.team == atackingTeam.name) {
+        atackingTeam.statsAddRebound(atackingTeam);
+      } else {
+        defendingTeam.statsAddRebound(atackingTeam);
+      }
+    }
+
+    setGameNarration(() => newGameNarration);
+
+    this.setShotHasBeenAttempted(false);
+    //End free throw series
+    this.isFreeThrowSerie = false;
   }
 
   handlePlayerWait(
@@ -1209,7 +1269,6 @@ export class Match {
   ) {
     // console.log("handleEndTurn: ");
     let activePlayer = this.getActivePlayer();
-    // console.log("activePlayer: ", activePlayer);
 
     const newGameNarration = [...gameNarration];
 
@@ -1220,7 +1279,6 @@ export class Match {
     //NOTE: Player is marked as not selected before entering addWaitingPlayersClose().
     activePlayer!.setPlayerSelected(false);
 
-    // console.log("Waiting players 1: ", [...this.waitingPlayers]);
     this.addWaitingPlayersClose();
 
     activePlayer!.setActivePlayer(false);
@@ -1238,8 +1296,6 @@ export class Match {
     activePlayer!.setMovementLeft(false);
     activePlayer!.setPlayerHaveTurn(false);
 
-    // console.log("Waiting players 2: ", [...this.waitingPlayers]);
-
     if (this.waitingPlayers.length > 0) {
       this.waitingPlayers[0].setActivePlayer(true);
       this.waitingPlayers[0].setPlayerSelected(true);
@@ -1253,8 +1309,6 @@ export class Match {
       this.waitingPlayers.shift();
     } else {
       let selectedPlayers = this.getSelectedPlayers();
-
-      // console.log("selectedPlayers: ", selectedPlayers);
 
       if (selectedPlayers[0] || selectedPlayers[1]) {
         if (selectedPlayers[0]) {
@@ -1356,7 +1410,6 @@ export class Match {
           (playerInThisUbication.lastAction == "withCaution" ||
             playerInThisUbication.lastAction == "tripleThreat")
         ) {
-          console.log("ª");
           //If the player is not in the waiting players list and is in a waiting stance then i add him to the waiting players list
           if (
             !previousWaitingPlayers.find(
@@ -1399,6 +1452,7 @@ export class Match {
 
     this.setShotHasBeenAttempted(true);
     activePlayer.setShotAttempt(true);
+    activePlayer.lastAction = "shotAttempt";
   }
 
   runClock(

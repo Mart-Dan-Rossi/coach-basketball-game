@@ -80,7 +80,10 @@ export class Team {
   }
 
   getShooter() {
-    return this.players.find((player) => player.shotAttempt);
+    return this.players.find(
+      (player) => player.shotAttempt,
+      // || player.lastAction == "shotAttempt",
+    );
   }
 
   getClosestDefenderToTheRim() {
@@ -132,7 +135,7 @@ export class Team {
 
     return this.players.find(
       (player) =>
-        player.ubicationX === positionX && player.ubicationY === positionY
+        player.ubicationX === positionX && player.ubicationY === positionY,
     );
   }
 
@@ -144,7 +147,7 @@ export class Team {
     const playerOnThisTile = this.players.find(
       (player) =>
         player.ubicationX === ubicationScaned[0] &&
-        player.ubicationY === ubicationScaned[1]
+        player.ubicationY === ubicationScaned[1],
     );
     return playerOnThisTile && playerOnThisTile.playerHaveTurn;
   }
@@ -189,7 +192,7 @@ export class Team {
     pointsIfMade: number,
     isItMade: boolean,
     isItAnAssist: boolean,
-    wasThereAFoul: boolean
+    wasThereAFoul: boolean,
   ) {
     if (pointsIfMade == 1) {
       this.stats.freeThrowsAttempt++;
@@ -242,6 +245,7 @@ export class Team {
 
   statsAddFoul() {
     this.stats.totalFouls++;
+    this.stats.foulsInQuarter++;
   }
 
   statsAddTurnOver() {

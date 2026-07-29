@@ -87,7 +87,7 @@ export class Team {
   }
 
   getClosestDefenderToTheRim() {
-    let closestPlayer: Player;
+    let closestPlayer: Player | undefined;
     let distanceToRim: number;
     this.players.forEach((player) => {
       if (!closestPlayer) {
@@ -108,7 +108,7 @@ export class Team {
       }
     });
 
-    return closestPlayer!;
+    return closestPlayer;
   }
 
   getSelectedPlayer() {

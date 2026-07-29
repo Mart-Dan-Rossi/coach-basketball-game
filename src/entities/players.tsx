@@ -28,8 +28,8 @@ export class Player {
   playMaking: number;
 
   //Player status
-  ubicationX: number | undefined;
-  ubicationY: number | undefined;
+  ubicationX: number;
+  ubicationY: number;
   haveBall: boolean;
   movementLeft: boolean;
   lastAction: string;
@@ -272,8 +272,8 @@ export class Player {
 
     this.actionPoints -= actionPointsToDecrease;
 
-    this.ubicationX! += dx;
-    this.ubicationY! += dy;
+    this.ubicationX += dx;
+    this.ubicationY += dy;
 
     this.setLastAction("move");
   }

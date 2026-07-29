@@ -14,7 +14,7 @@ function PlayerImgContainer({ team, col, row, teamLetterProps }: Props) {
   function PlayerImgContainerClickHandler() {
     return (e: React.MouseEvent) => {
       e.preventDefault();
-      e.currentTarget!.classList.toggle("expand");
+      e.currentTarget.classList.toggle("expand");
     };
   }
 

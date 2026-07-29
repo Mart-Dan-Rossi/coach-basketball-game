@@ -40,6 +40,7 @@ import {
   getInitialBoard,
   teamBDefensiveFTPositions,
   teamAOffensiveFTPositions,
+  teamBOffensiveFTPositions,
 } from "../utilities/exportableFunctions";
 import React from "react";
 import { Player } from "./players";
@@ -53,6 +54,7 @@ export class Match {
   shotHasBeenAttempted: boolean;
   freeThrowsLeft: number;
   isFreeThrowSerie: boolean;
+  isFirstFreeThrowInTheSerie: boolean;
   waitingPlayers: Player[] = [];
 
   //Match basic info
@@ -73,6 +75,7 @@ export class Match {
     this.shotHasBeenAttempted = false;
     this.freeThrowsLeft = 0;
     this.isFreeThrowSerie = false;
+    this.isFirstFreeThrowInTheSerie = false;
 
     //Match basic info
     this.quarter = 1;
@@ -264,8 +267,8 @@ export class Match {
     let tilesThatWillInfluenceInCalculations =
       checkTilesThatWillInfluenceInTheCalculations(
         gameBoard,
-        [passer.ubicationX!, passer.ubicationY!],
-        [receiver.ubicationX!, receiver.ubicationY!],
+        [passer.ubicationX, passer.ubicationY],
+        [receiver.ubicationX, receiver.ubicationY],
       );
 
     function calculateDefensivePointsPerDefensor(
@@ -315,8 +318,14 @@ export class Match {
         points = points * 0.2;
       }
 
-      if (defensorWithTheHighestDefensivePoints[1]! < points) {
-        defensorWithTheHighestDefensivePoints = [player, points];
+      if (defensorWithTheHighestDefensivePoints[1]) {
+        if (defensorWithTheHighestDefensivePoints[1] < points) {
+          defensorWithTheHighestDefensivePoints = [player, points];
+        }
+      } else {
+        console.error(
+          "defensorWithTheHighestDefensivePoints[1] undefined in calculateDefensivePointsPerDefensor",
+        );
       }
 
       return points;
@@ -413,14 +422,18 @@ export class Match {
       passerTeam.handleNewPasser(passer);
 
       //If the total defensive points are higher than pass points
-    } else {
+    } else if (defensorWithTheHighestDefensivePoints[0]) {
       //The player with the highest defensive points involved in this situation steal the ball
-      defensorWithTheHighestDefensivePoints[0]!.setHaveBall(true);
+      defensorWithTheHighestDefensivePoints[0].setHaveBall(true);
       newGameNarration.unshift(
-        `${defensorWithTheHighestDefensivePoints[0]!.name && defensorWithTheHighestDefensivePoints[0]!.name.length === 0 ? playerPositionDetection(defensorWithTheHighestDefensivePoints[0]!.position) : defensorWithTheHighestDefensivePoints[0]!.name} has stolen the ball!`,
+        `${defensorWithTheHighestDefensivePoints[0].name && defensorWithTheHighestDefensivePoints[0].name.length === 0 ? playerPositionDetection(defensorWithTheHighestDefensivePoints[0].position) : defensorWithTheHighestDefensivePoints[0].name} has stolen the ball!`,
       );
 
       passerTeam.resetLastPasserForAllPlayers();
+    } else {
+      console.error(
+        "defensorWithTheHighestDefensivePoints[0] undefined in handlePassAction",
+      );
     }
 
     setGameNarration(() => newGameNarration);
@@ -441,7 +454,7 @@ export class Match {
     let tilesThatWillInfluenceInCalculations =
       checkTilesThatWillInfluenceInTheCalculations(
         gameBoard,
-        [dribbler.ubicationX!, dribbler.ubicationY!],
+        [dribbler.ubicationX, dribbler.ubicationY],
         endingUbication,
       ).flat(); //In this case there will be no defeders in the tile of the ball
 
@@ -506,33 +519,32 @@ export class Match {
     atackingTeam: Team,
     setGameBoard: React.Dispatch<React.SetStateAction<number[][]>>,
   ) {
+    // console.log("In movePlayersToReboundOnFTPositions");
     const moveDefendersToReboundPositions = () => {
+      // console.log("In moveDefendersToReboundPositions");
       defendingTeam.players.forEach((player) => {
-        if (player.team == "TeamA") {
-          player.ubicationX =
-            teamADefensiveFTPositions[Number(player.position)][0] - 1;
-          player.ubicationY =
-            teamADefensiveFTPositions[Number(player.position)][1] - 1;
-        } else {
-          player.ubicationX =
-            teamBDefensiveFTPositions[Number(player.position)][0] - 1;
-          player.ubicationY =
-            teamBDefensiveFTPositions[Number(player.position)][1] - 1;
-        }
+        let appropriateDefensivePosition =
+          player.team == "TeamA"
+            ? teamADefensiveFTPositions
+            : teamBDefensiveFTPositions;
+
+        player.ubicationX =
+          appropriateDefensivePosition[Number(player.position) - 1][0];
+        player.ubicationY =
+          appropriateDefensivePosition[Number(player.position) - 1][1];
       });
     };
 
     const moveAtackersToReboundPositions = () => {
+      // console.log("In moveAtackersToReboundPositions");
       let positionIndex = 1;
 
       let teamUbications =
         atackingTeam.name == "TeamA"
           ? teamAOffensiveFTPositions
-          : teamBDefensiveFTPositions;
+          : teamBOffensiveFTPositions;
 
       atackingTeam.players.forEach((player) => {
-        let calculatedUbication = [0, 0];
-
         // If its the shooter he goes to the free throw line
         if (player.lastAction === "shotAttempt") {
           player.ubicationX = teamUbications[0][0];
@@ -541,23 +553,29 @@ export class Match {
         } else {
           player.ubicationX = teamUbications[positionIndex][0];
           player.ubicationY = teamUbications[positionIndex][1];
-        }
 
-        positionIndex++;
+          positionIndex++;
+        }
       });
     };
 
     //Modify the gameboard
     if (defendingTeam.name == "TeamA") {
-      setGameBoard(() => getInitialBoard("B"));
+      const newBoard = getInitialBoard("B");
+
+      setGameBoard(newBoard);
     } else {
-      setGameBoard(() => getInitialBoard("A"));
+      const newBoard = getInitialBoard("A");
+
+      setGameBoard(newBoard);
     }
 
     //Modify the classes of the players
     moveDefendersToReboundPositions();
+    // console.log("defendingTeam 2: ", defendingTeam);
 
     moveAtackersToReboundPositions();
+    // console.log("atackingTeam 2: ", atackingTeam);
   }
 
   handleFoul(
@@ -565,8 +583,9 @@ export class Match {
     atacker: Player,
     gameNarration: string[],
     setGameNarration: React.Dispatch<React.SetStateAction<string[]>>,
-    isDuringShot?: number,
+    amountOfFreeThrows?: number,
   ) {
+    // console.log("In handleFoul", defender, atacker);
     //TODO think how to handle the situation when a defender fouls a player without the ball while the ball player is shooting
     //This is important because currently the function serch for the last action been shotAttempt to get who shot the FT
     //  and it can happen that 2 players have shotAttempt if the defender is in penalisation
@@ -581,15 +600,15 @@ export class Match {
     let newGameNarration = [...gameNarration];
     let newNarrationText = `${isNaN(Number(defender.name)) ? defender.name : defender.position} of team ${defender.team} (Defender) has fouled ${isNaN(Number(atacker.name)) ? atacker.name : atacker.position} of team ${atacker.team} (Atacker)`;
 
-    if (isDuringShot) {
-      newNarrationText += ` during the shot attempt. ${isNaN(Number(atacker.name)) ? atacker.name : atacker.position} of team ${atacker.team} will have ${isDuringShot} free throws`;
+    if (amountOfFreeThrows) {
+      newNarrationText += ` during the shot attempt. ${isNaN(Number(atacker.name)) ? atacker.name : atacker.position} of team ${atacker.team} will have ${amountOfFreeThrows} free throws`;
     }
     newNarrationText += ".";
 
     newGameNarration.unshift(newNarrationText);
 
     //If it was not in shoting action and the defender is in penalty (more than 4 fouls)
-    if (isDuringShot == undefined && defender.stats.fouls > 4) {
+    if (amountOfFreeThrows == undefined && defender.stats.fouls > 4) {
       //Must change the last action so the shooting function finds the player
       atacker.lastAction = "shotAttempt";
 
@@ -602,7 +621,7 @@ export class Match {
 
     //If it was not in shoting action and the defender is not in penalisation then ask for team penalisation
     if (
-      isDuringShot == undefined &&
+      amountOfFreeThrows == undefined &&
       defender.stats.fouls <= 4 &&
       defenderTeam.stats.foulsInQuarter > 4
     ) {
@@ -618,14 +637,15 @@ export class Match {
 
     //Set how many FT must be taken if is necesary
     if (
-      isDuringShot != undefined ||
+      amountOfFreeThrows != undefined ||
       defender.stats.fouls > 4 ||
       defenderTeam.stats.foulsInQuarter > 4
     ) {
       //Set amount of free throwns
-      this.freeThrowsLeft = isDuringShot ?? 2;
-      //Set flag to indicate it is a free throw serie
+      this.freeThrowsLeft = amountOfFreeThrows ?? 2;
+      //Set flags to indicate it is a free throw serie and that it is the first one
       this.isFreeThrowSerie = true;
+      this.isFirstFreeThrowInTheSerie = true;
     }
 
     setGameNarration(() => newGameNarration);
@@ -639,7 +659,11 @@ export class Match {
   ) {
     // console.log("in handle shot method");
     //First i get the shooter
-    let shooter = this.getShooter()!;
+    let shooter = this.getShooter();
+    if (!shooter) {
+      console.error("shooter not found in handleShot");
+      return;
+    }
     let shooterTeam = shooter.team == "TeamA" ? this.teamA : this.teamB;
     let newGameNarration = [...gameNarration];
 
@@ -663,6 +687,10 @@ export class Match {
     }
 
     const getShooterPointsInShot = () => {
+      if (!shooter) {
+        console.error("shooter not found in getShooterPointsInShot");
+        return 0;
+      }
       let shooterPointsInShot = 0;
 
       let multiplier = 1;
@@ -708,6 +736,10 @@ export class Match {
 
     const getDefendersPointsInShot = () => {
       // console.log("in getDefendersPointsInShot");
+      if (!shooter) {
+        console.error("shooter not found in getDefendersPointsInShot");
+        return 0;
+      }
       let totalDefendersPoints = 0;
       if (this.freeThrowsLeft > 0) {
         //If it is a free throw ther's no defenders so totalDefendersPoints is going to be 0
@@ -722,8 +754,8 @@ export class Match {
             //Then i ckeck if ther's a defender in the scanned ubication using the shooter ubication as center
             let defenderInThisUbication =
               defendingTeam.returnPlayerInThisPosition(
-                shooter.ubicationX! + positionX,
-                shooter.ubicationY! + positionY,
+                shooter.ubicationX + positionX,
+                shooter.ubicationY + positionY,
               );
             let defenderPoints = 0;
 
@@ -819,6 +851,7 @@ export class Match {
                   setGameNarration,
                   amountOfFreeThrows,
                 );
+                // console.log("After handleFoul");
               }
             }
 
@@ -832,6 +865,10 @@ export class Match {
 
     const calculateIfGoesIn = () => {
       // console.log("In calculateIfGoesIn");
+      if (!shooter) {
+        console.error("shooter not found in calculateIfGoesIn");
+        return false;
+      }
       let isItIn = false;
 
       let shooterPointsInShot = getShooterPointsInShot();
@@ -950,14 +987,14 @@ export class Match {
         `${isNaN(Number(shooter.name)) ? shooter.name : shooter.position} (Shooter) gets ${dShooterPointsVsMaxPossiblePointsPercentage} points in the shot`,
       );
 
-      let dDefendersPointsVsSinlgePlayerMaxPossiblePointsPercentage:
+      let defendersPointsVsSinlgePlayerMaxPossiblePointsPercentage:
         | number
         | undefined;
 
       let pointsDif: number | undefined;
 
       if (!(this.freeThrowsLeft > 0)) {
-        dDefendersPointsVsSinlgePlayerMaxPossiblePointsPercentage =
+        defendersPointsVsSinlgePlayerMaxPossiblePointsPercentage =
           allDefendersPointsInShotSumatory == 0
             ? 0
             : (allDefendersPointsInShotSumatory * 100) /
@@ -967,12 +1004,12 @@ export class Match {
               `Defenders can do nothing against the shooter`,
             )
           : newGameNarration.unshift(
-              `The defenders get ${dDefendersPointsVsSinlgePlayerMaxPossiblePointsPercentage} defensive points in total`,
+              `The defenders get ${defendersPointsVsSinlgePlayerMaxPossiblePointsPercentage} defensive points in total`,
             );
 
         pointsDif =
           dShooterPointsVsMaxPossiblePointsPercentage -
-          dDefendersPointsVsSinlgePlayerMaxPossiblePointsPercentage;
+          defendersPointsVsSinlgePlayerMaxPossiblePointsPercentage;
       }
 
       //Use all prev data to calculate if it goes in
@@ -985,45 +1022,65 @@ export class Match {
           shotDiceRoll,
         );
       } else {
-        if (dDefendersPointsVsSinlgePlayerMaxPossiblePointsPercentage! < 100) {
-          if (shooterZoneUbication == ranges.closeToTheRim.id) {
-            isItIn = mathChancesMakingShotInCloseToTheRim(
-              pointsDif!,
-              shotDiceRoll,
-            );
-          } else if (
-            shooterZoneUbication == ranges.inShortRange.id ||
-            shooterZoneUbication == ranges.behindTheBoard.id
-          ) {
-            isItIn = mathChancesMakingShotInShortRange(
-              pointsDif!,
-              shotDiceRoll,
-            );
-          } else if (shooterZoneUbication == ranges.inMidRange.id) {
-            isItIn = mathChancesMakingShotInMidRange(pointsDif!, shotDiceRoll);
-          } else if (shooterZoneUbication == ranges.outsideThe3PointLine.id) {
-            isItIn = mathChancesMakingShotInCloseToThe3PointLine(
-              pointsDif!,
-              shotDiceRoll,
-            );
-          } else if (shooterZoneUbication == ranges.long3Range.id) {
-            isItIn = mathChancesMakingShotInLong3Range(
-              pointsDif!,
-              shotDiceRoll,
-            );
-          } else if (shooterZoneUbication == ranges.halfCourt.id) {
-            isItIn = mathChancesMakingShotInHalfCourt(pointsDif!, shotDiceRoll);
-          } else if (shooterZoneUbication == ranges.behindHalfCourt.id) {
-            isItIn = mathChancesMakingShotInBehindHalfCourt(
-              pointsDif!,
-              shotDiceRoll,
-            );
-          } else if (shooterZoneUbication == ranges.theOtherRim.id) {
-            isItIn = mathChancesMakingShotInCloseToTheOtherRim(
-              pointsDif!,
-              shotDiceRoll,
-            );
+        if (defendersPointsVsSinlgePlayerMaxPossiblePointsPercentage) {
+          if (pointsDif) {
+            if (
+              defendersPointsVsSinlgePlayerMaxPossiblePointsPercentage < 100
+            ) {
+              if (shooterZoneUbication == ranges.closeToTheRim.id) {
+                isItIn = mathChancesMakingShotInCloseToTheRim(
+                  pointsDif,
+                  shotDiceRoll,
+                );
+              } else if (
+                shooterZoneUbication == ranges.inShortRange.id ||
+                shooterZoneUbication == ranges.behindTheBoard.id
+              ) {
+                isItIn = mathChancesMakingShotInShortRange(
+                  pointsDif,
+                  shotDiceRoll,
+                );
+              } else if (shooterZoneUbication == ranges.inMidRange.id) {
+                isItIn = mathChancesMakingShotInMidRange(
+                  pointsDif,
+                  shotDiceRoll,
+                );
+              } else if (
+                shooterZoneUbication == ranges.outsideThe3PointLine.id
+              ) {
+                isItIn = mathChancesMakingShotInCloseToThe3PointLine(
+                  pointsDif,
+                  shotDiceRoll,
+                );
+              } else if (shooterZoneUbication == ranges.long3Range.id) {
+                isItIn = mathChancesMakingShotInLong3Range(
+                  pointsDif,
+                  shotDiceRoll,
+                );
+              } else if (shooterZoneUbication == ranges.halfCourt.id) {
+                isItIn = mathChancesMakingShotInHalfCourt(
+                  pointsDif,
+                  shotDiceRoll,
+                );
+              } else if (shooterZoneUbication == ranges.behindHalfCourt.id) {
+                isItIn = mathChancesMakingShotInBehindHalfCourt(
+                  pointsDif,
+                  shotDiceRoll,
+                );
+              } else if (shooterZoneUbication == ranges.theOtherRim.id) {
+                isItIn = mathChancesMakingShotInCloseToTheOtherRim(
+                  pointsDif,
+                  shotDiceRoll,
+                );
+              }
+            }
+          } else {
+            console.error("pointsDif is undefined in calculateIfItGoesIn");
           }
+        } else {
+          console.error(
+            "defendersPointsVsSinlgePlayerMaxPossiblePointsPercentage not found in calculateIfItGoesIn",
+          );
         }
       }
 
@@ -1032,17 +1089,19 @@ export class Match {
 
     let pointsToAdd = 0;
     let isItIn = calculateIfGoesIn();
-    let newPlayerWithBall: Player;
+    let newPlayerWithBall: Player | undefined;
 
     let asistant = atackingTeam.players.find((player) => player.lastPasser);
 
-    // TODO move players to FT rebounding positions in FT serie
-    if (this.isFreeThrowSerie) {
+    // WIP move players to FT rebounding positions in FT serie
+    if (this.isFreeThrowSerie && this.isFirstFreeThrowInTheSerie) {
       this.movePlayersToReboundOnFTPositions(
         defendingTeam,
         atackingTeam,
         setGameBoard,
       );
+
+      this.isFirstFreeThrowInTheSerie = false;
     }
 
     if (isItIn) {
@@ -1070,38 +1129,50 @@ export class Match {
         }
 
         shooter.setShotAttempt(false);
+
+        //TODO make the closest player to the rim get the ball when is a field goal
+        //After that i handle who get's the ball after the shot
+        newPlayerWithBall = defendingTeam.players.find(
+          (player) => player.position == "C",
+        );
+
+        if (newPlayerWithBall) {
+          newPlayerWithBall.movePlayerToOwnRim();
+          newPlayerWithBall.setHaveBall(true);
+          newGameNarration.unshift(
+            `${isNaN(Number(newPlayerWithBall.name)) ? newPlayerWithBall.name : newPlayerWithBall.position} get the ball to start theyr posetion`,
+          );
+        } else {
+          console.error("newPlayerWithBall not found in calculateIfGoesIn");
+        }
       }
-
-      //TODO make the closest player to the rim get the ball when is a field goal
-      //After that i handle who get's the ball after the shot
-      newPlayerWithBall = defendingTeam.players.find(
-        (player) => player.position == "C",
-      )!;
-
-      newPlayerWithBall.movePlayerToOwnRim();
-      newPlayerWithBall.setHaveBall(true);
-      newGameNarration.unshift(
-        `${isNaN(Number(newPlayerWithBall.name)) ? newPlayerWithBall.name : newPlayerWithBall.position} get the ball to start theyr posetion`,
-      );
     } else {
       //If the shot is off
-      //TODO calculate rebound result
+      if (this.freeThrowsLeft == 0) {
+        //TODO calculate rebound result
 
-      //If it doesn't goes in handle who get's the rebound
-      newPlayerWithBall = this.getRebounder(shooter, gameBoard);
-      newPlayerWithBall.statsAddRebound(atackingTeam);
-      newPlayerWithBall.setLastAction(
-        newPlayerWithBall.team == atackingTeam.name ? "getOReb" : "getDReb",
-      );
+        //If it doesn't goes in handle who get's the rebound
+        newPlayerWithBall = this.getRebounder(shooter, gameBoard);
+        if (newPlayerWithBall) {
+          newPlayerWithBall.statsAddRebound(atackingTeam);
+          newPlayerWithBall.setLastAction(
+            newPlayerWithBall.team == atackingTeam.name ? "getOReb" : "getDReb",
+          );
 
-      newGameNarration.unshift(
-        `The shot is off ${
-          newPlayerWithBall.team == atackingTeam.name ? "but" : "and"
-        } ${isNaN(Number(newPlayerWithBall.name)) ? newPlayerWithBall.name : newPlayerWithBall.position} gets the rebound!`,
-      );
-      shooterTeam.resetLastPasserForAllPlayers();
+          newGameNarration.unshift(
+            `The shot is off ${
+              newPlayerWithBall.team == atackingTeam.name ? "but" : "and"
+            } ${isNaN(Number(newPlayerWithBall.name)) ? newPlayerWithBall.name : newPlayerWithBall.position} gets the rebound!`,
+          );
+          shooterTeam.resetLastPasserForAllPlayers();
 
-      shooter.setShotAttempt(false);
+          shooter.setShotAttempt(false);
+        } else {
+          console.error(
+            "newPlayerWithBall not found in calculateIfGoesIn, the rebound section",
+          );
+        }
+      }
     }
 
     //Then i handle the players status and stats
@@ -1121,7 +1192,7 @@ export class Match {
     );
 
     if (this.freeThrowsLeft > 0) {
-      console.log("Shooting free throw");
+      // console.log("Shooting free throw");
 
       this.freeThrowsLeft--;
 
@@ -1135,20 +1206,21 @@ export class Match {
       return;
     }
 
-    console.log("End FT sequence");
-
-    newPlayerWithBall!.setHaveBall(true);
+    // console.log("End FT sequence");
+    // TODO uncomment this line
+    // newPlayerWithBall.setHaveBall(true);
 
     this.teamA.resetLastPasserForAllPlayers();
     this.teamB.resetLastPasserForAllPlayers();
 
-    if (!isItIn) {
-      if (newPlayerWithBall!.team == atackingTeam.name) {
-        atackingTeam.statsAddRebound(atackingTeam);
-      } else {
-        defendingTeam.statsAddRebound(atackingTeam);
-      }
-    }
+    // TODO uncomment this line
+    // if (!isItIn) {
+    //   if (newPlayerWithBall.team == atackingTeam.name) {
+    //     atackingTeam.statsAddRebound(atackingTeam);
+    //   } else {
+    //     defendingTeam.statsAddRebound(atackingTeam);
+    //   }
+    // }
 
     setGameNarration(() => newGameNarration);
 
@@ -1164,32 +1236,36 @@ export class Match {
     gameBoard: number[][],
     setGameBoard: React.Dispatch<React.SetStateAction<number[][]>>,
   ) {
-    let activePlayer = this.getActivePlayer()!;
+    let activePlayer = this.getActivePlayer();
 
-    activePlayer.handleWait(type);
+    if (activePlayer) {
+      activePlayer.handleWait(type);
 
-    const playerName = `The ${playerPositionDetection(
-      activePlayer.position,
-    )} of ${activePlayer.team}`;
+      const playerName = `The ${playerPositionDetection(
+        activePlayer.position,
+      )} of ${activePlayer.team}`;
 
-    const narrationText =
-      type == "overwhelmingWaiting"
-        ? `${playerName} is now in an overwhelming waiting stance.`
-        : type == "withCaution"
-          ? `${playerName} is now waiting with caution.`
-          : type == "withoutTheBall"
-            ? `${playerName} is now waiting without the ball.`
-            : `${playerName} is now doing a triple threat.`;
+      const narrationText =
+        type == "overwhelmingWaiting"
+          ? `${playerName} is now in an overwhelming waiting stance.`
+          : type == "withCaution"
+            ? `${playerName} is now waiting with caution.`
+            : type == "withoutTheBall"
+              ? `${playerName} is now waiting without the ball.`
+              : `${playerName} is now doing a triple threat.`;
 
-    this.handleEndTurn(
-      gameNarration,
-      setGameNarration,
-      gameBoard,
-      setGameBoard,
-      narrationText,
-      // If it's withCaution or tripleTheat return true, otherwise return false
-      !!(type == "withCaution" || type == "tripleThreat"),
-    );
+      this.handleEndTurn(
+        gameNarration,
+        setGameNarration,
+        gameBoard,
+        setGameBoard,
+        narrationText,
+        // If it's withCaution or tripleTheat return true, otherwise return false
+        !!(type == "withCaution" || type == "tripleThreat"),
+      );
+    } else {
+      console.error("activePlayer not found in handlePlayerWait");
+    }
   }
 
   setShotHasBeenAttempted(value: boolean) {
@@ -1209,49 +1285,58 @@ export class Match {
     let teamAAtacking = shooter.team == "TeamA";
 
     let shotDirectionY =
-      shooter.ubicationY! == 8
+      shooter.ubicationY == 8
         ? "middle"
-        : shooter.ubicationY! < 8
+        : shooter.ubicationY < 8
           ? "top"
           : "bottom";
 
     let shotDistanceY = getShotDistance(shooter, "Y");
     let shotDistanceX = getShotDistance(shooter, "X");
 
-    let reboundDirectionY: string;
+    if (shotDistanceY && shotDistanceX) {
+      let reboundDirectionY: string;
 
-    let rollDice = roll20SidesDice();
-    if (shotDirectionY == "middle") {
-      reboundDirectionY =
-        rollDice <= 5 ? "middle" : rollDice >= 13 ? "top" : "bottom";
-    } else if (shotDirectionY == "top") {
-      if (roll20SidesDice() > 7) {
-        reboundDirectionY = "top";
+      let rollDice = roll20SidesDice();
+      if (shotDirectionY == "middle") {
+        reboundDirectionY =
+          rollDice <= 5 ? "middle" : rollDice >= 13 ? "top" : "bottom";
+      } else if (shotDirectionY == "top") {
+        if (roll20SidesDice() > 7) {
+          reboundDirectionY = "top";
+        } else {
+          reboundDirectionY = "bottom";
+        }
       } else {
-        reboundDirectionY = "bottom";
+        if (roll20SidesDice() > 7) {
+          reboundDirectionY = "bottom";
+        } else {
+          reboundDirectionY = "top";
+        }
       }
+
+      let whereItReboundsTo = getWhereItReboundsTo(
+        shotDirectionY,
+        reboundDirectionY,
+        shotDistanceY,
+        shotDistanceX,
+        teamAAtacking,
+      );
+
+      let closestPlayersToWhereBallLands = getClosestPlayers(
+        [...this.teamA.players, ...this.teamB.players],
+        whereItReboundsTo,
+      );
+
+      //TODO fix rebounding function
+      return closestPlayersToWhereBallLands[0];
+      // return rebounder;
     } else {
-      if (roll20SidesDice() > 7) {
-        reboundDirectionY = "bottom";
-      } else {
-        reboundDirectionY = "top";
-      }
+      console.error(
+        "shotDistanceY or shotDistanceX were not found in getRebounder",
+      );
+      return shooter;
     }
-
-    let whereItReboundsTo = getWhereItReboundsTo(
-      shotDirectionY,
-      reboundDirectionY,
-      shotDistanceY,
-      shotDistanceX,
-      teamAAtacking,
-    );
-
-    let closestPlayersToWhereBallLands = getClosestPlayers(
-      [...this.teamA.players, ...this.teamB.players],
-      whereItReboundsTo,
-    );
-
-    return rebounder!;
   }
 
   handleEndTurn(
@@ -1270,184 +1355,204 @@ export class Match {
     if (currentGameNarration) {
       newGameNarration.unshift(currentGameNarration);
     }
+    if (activePlayer) {
+      //NOTE: Player is marked as not selected before entering addWaitingPlayersClose().
+      activePlayer.setPlayerSelected(false);
 
-    //NOTE: Player is marked as not selected before entering addWaitingPlayersClose().
-    activePlayer!.setPlayerSelected(false);
+      this.addWaitingPlayersClose();
 
-    this.addWaitingPlayersClose();
+      activePlayer.setActivePlayer(false);
 
-    activePlayer!.setActivePlayer(false);
-
-    if (!isWaitingAction) {
-      activePlayer!.resetActionPoints();
-      if (
-        activePlayer!.lastAction == "tripleThreat" ||
-        activePlayer!.lastAction == "withCaution"
-      ) {
-        activePlayer!.setLastAction("");
+      if (!isWaitingAction) {
+        activePlayer.resetActionPoints();
+        if (
+          activePlayer.lastAction == "tripleThreat" ||
+          activePlayer.lastAction == "withCaution"
+        ) {
+          activePlayer.setLastAction("");
+        }
       }
-    }
 
-    activePlayer!.setMovementLeft(false);
-    activePlayer!.setPlayerHaveTurn(false);
+      activePlayer.setMovementLeft(false);
+      activePlayer.setPlayerHaveTurn(false);
 
-    if (this.waitingPlayers.length > 0) {
-      this.waitingPlayers[0].setActivePlayer(true);
-      this.waitingPlayers[0].setPlayerSelected(true);
+      if (this.waitingPlayers.length > 0) {
+        this.waitingPlayers[0].setActivePlayer(true);
+        this.waitingPlayers[0].setPlayerSelected(true);
 
-      newGameNarration.unshift(
-        `The ${playerPositionDetection(this.waitingPlayers[0].position)} of ${
-          this.waitingPlayers[0].team
-        } is now the active player.`,
-      );
+        newGameNarration.unshift(
+          `The ${playerPositionDetection(this.waitingPlayers[0].position)} of ${
+            this.waitingPlayers[0].team
+          } is now the active player.`,
+        );
 
-      this.waitingPlayers.shift();
-    } else {
-      let selectedPlayers = this.getSelectedPlayers();
-
-      if (selectedPlayers[0] || selectedPlayers[1]) {
-        if (selectedPlayers[0]) {
-          selectedPlayers[0].setActivePlayer(true);
-          selectedPlayers[0].setPlayerSelected(false);
-
-          newGameNarration.unshift(
-            `The ${playerPositionDetection(selectedPlayers[0].position)} of ${
-              selectedPlayers[0].team
-            } is now the active player.`,
-          );
-        }
-
-        if (selectedPlayers[1]) {
-          selectedPlayers[1].setActivePlayer(true);
-          selectedPlayers[1].setPlayerSelected(false);
-
-          newGameNarration.unshift(
-            `The ${playerPositionDetection(selectedPlayers[1].position)} of ${
-              selectedPlayers[1].team
-            } is now the active player.`,
-          );
-        }
-
-        setGameNarration(() => newGameNarration);
-      } else if (
-        this.teamA.doesPlayersHaveMovement() ||
-        this.teamB.doesPlayersHaveMovement()
-      ) {
-        console.log("No players selected and a teams have movement left");
-        if (this.teamA.doesPlayersHaveMovement()) {
-          console.log("Turn left on Team A");
-          this.teamA.setTeamTurnLeft(true);
-        }
-
-        if (this.teamB.doesPlayersHaveMovement()) {
-          console.log("Turn left on Team B");
-          this.teamB.setTeamTurnLeft(true);
-        }
-
-        if (this.teamA.teamHaveTheBall()) {
-          console.log("It's Team B turn");
-          this.setTeamTurn("TeamB");
-          this.teamB.setTeamTurn(true);
-          newGameNarration.unshift(`It's now ${this.teamB.name} turn.`);
-        } else {
-          console.log("It's Team A turn");
-          this.setTeamTurn("TeamA");
-          this.teamA.setTeamTurn(true);
-          newGameNarration.unshift(`It's now ${this.teamA.name} turn.`);
-        }
-
-        setGameNarration(() => newGameNarration);
+        this.waitingPlayers.shift();
       } else {
-        console.log("No players selected and noone have movement left");
-        this.runClock(gameNarration, setGameNarration, gameBoard, setGameBoard);
+        let selectedPlayers = this.getSelectedPlayers();
 
-        if (this.teamA.teamHaveTheBall()) {
-          this.setTeamTurn("TeamA");
-          this.teamA.setTeamTurn(true);
-          this.teamB.setTeamTurn(false);
+        if (selectedPlayers[0] || selectedPlayers[1]) {
+          if (selectedPlayers[0]) {
+            selectedPlayers[0].setActivePlayer(true);
+            selectedPlayers[0].setPlayerSelected(false);
+
+            newGameNarration.unshift(
+              `The ${playerPositionDetection(selectedPlayers[0].position)} of ${
+                selectedPlayers[0].team
+              } is now the active player.`,
+            );
+          }
+
+          if (selectedPlayers[1]) {
+            selectedPlayers[1].setActivePlayer(true);
+            selectedPlayers[1].setPlayerSelected(false);
+
+            newGameNarration.unshift(
+              `The ${playerPositionDetection(selectedPlayers[1].position)} of ${
+                selectedPlayers[1].team
+              } is now the active player.`,
+            );
+          }
+
+          setGameNarration(() => newGameNarration);
+        } else if (
+          this.teamA.doesPlayersHaveMovement() ||
+          this.teamB.doesPlayersHaveMovement()
+        ) {
+          console.log("No players selected and a teams have movement left");
+          if (this.teamA.doesPlayersHaveMovement()) {
+            console.log("Turn left on Team A");
+            this.teamA.setTeamTurnLeft(true);
+          }
+
+          if (this.teamB.doesPlayersHaveMovement()) {
+            console.log("Turn left on Team B");
+            this.teamB.setTeamTurnLeft(true);
+          }
+
+          if (this.teamA.teamHaveTheBall()) {
+            console.log("It's Team B turn");
+            this.setTeamTurn("TeamB");
+            this.teamB.setTeamTurn(true);
+            newGameNarration.unshift(`It's now ${this.teamB.name} turn.`);
+          } else {
+            console.log("It's Team A turn");
+            this.setTeamTurn("TeamA");
+            this.teamA.setTeamTurn(true);
+            newGameNarration.unshift(`It's now ${this.teamA.name} turn.`);
+          }
+
+          setGameNarration(() => newGameNarration);
         } else {
-          this.setTeamTurn("TeamB");
-          this.teamB.setTeamTurn(true);
-          this.teamA.setTeamTurn(false);
+          console.log("No players selected and noone have movement left");
+          this.runClock(
+            gameNarration,
+            setGameNarration,
+            gameBoard,
+            setGameBoard,
+          );
+
+          if (this.teamA.teamHaveTheBall()) {
+            this.setTeamTurn("TeamA");
+            this.teamA.setTeamTurn(true);
+            this.teamB.setTeamTurn(false);
+          } else {
+            this.setTeamTurn("TeamB");
+            this.teamB.setTeamTurn(true);
+            this.teamA.setTeamTurn(false);
+          }
         }
       }
+    } else {
+      console.error("activePlayer not found in handleEndTurn");
     }
   }
 
   addWaitingPlayersClose(isOnMove?: boolean) {
-    let activePlayer = this.getActivePlayer()!;
+    let activePlayer = this.getActivePlayer();
     let newWaitingPlayers = [] as Player[];
 
-    if (activePlayer.team == "TeamA") {
-      this.searchForWaitingPlayersClose(this.teamB, !isOnMove);
-    } else if (activePlayer.team == "TeamB") {
-      this.searchForWaitingPlayersClose(this.teamA, !isOnMove);
-    }
+    if (activePlayer) {
+      if (activePlayer.team == "TeamA") {
+        this.searchForWaitingPlayersClose(this.teamB, !isOnMove);
+      } else if (activePlayer.team == "TeamB") {
+        this.searchForWaitingPlayersClose(this.teamA, !isOnMove);
+      }
 
-    this.waitingPlayers.push(...newWaitingPlayers);
+      this.waitingPlayers.push(...newWaitingPlayers);
+    } else {
+      console.error("activePlayer not found in addWaitingPlayersClose");
+    }
   }
 
   searchForWaitingPlayersClose(opositeTeam: Team, shouldSetTeamTurn?: boolean) {
-    let activePlayer = this.getActivePlayer()!;
+    let activePlayer = this.getActivePlayer();
     let selectedPlayers = this.getSelectedPlayers();
     let previousWaitingPlayers = [...this.waitingPlayers];
     let newWaitingPlayers = [] as Player[];
 
-    for (let i = -2; i < 3; i++) {
-      for (let j = -2; j < 3; j++) {
-        let playerInThisUbication = opositeTeam.returnPlayerInThisPosition(
-          activePlayer.ubicationX! + i,
-          activePlayer.ubicationY! + j,
-        );
+    if (activePlayer) {
+      for (let i = -2; i < 3; i++) {
+        for (let j = -2; j < 3; j++) {
+          let playerInThisUbication = opositeTeam.returnPlayerInThisPosition(
+            activePlayer.ubicationX + i,
+            activePlayer.ubicationY + j,
+          );
 
-        if (
-          playerInThisUbication &&
-          (playerInThisUbication.lastAction == "withCaution" ||
-            playerInThisUbication.lastAction == "tripleThreat")
-        ) {
-          //If the player is not in the waiting players list and is in a waiting stance then i add him to the waiting players list
           if (
-            !previousWaitingPlayers.find(
+            playerInThisUbication &&
+            (playerInThisUbication.lastAction == "withCaution" ||
+              playerInThisUbication.lastAction == "tripleThreat")
+          ) {
+            //If the player is not in the waiting players list and is in a waiting stance then i add him to the waiting players list
+            let playersInWaitingList = previousWaitingPlayers.find(
               (player) =>
                 player.team == playerInThisUbication!.team &&
                 player.position == playerInThisUbication!.position,
-            )
-          ) {
-            newWaitingPlayers.push(playerInThisUbication);
-          }
+            );
 
-          let opositeTeamSelectedPlayer = selectedPlayers.find(
-            (player) => player && player.team != activePlayer.team,
-          );
+            if (!playersInWaitingList) {
+              newWaitingPlayers.push(playerInThisUbication!);
+            }
 
-          //If exists, the selected player of the oposite team is added to the waiting players list so he can be the next active player after the waiting players do they actions
-          if (opositeTeamSelectedPlayer) {
-            newWaitingPlayers.push(opositeTeamSelectedPlayer);
-          }
+            let opositeTeamSelectedPlayer = selectedPlayers.find(
+              (player) => player && player.team != activePlayer!.team,
+            );
 
-          if (newWaitingPlayers.length > 0) {
-            this.waitingPlayers = [
-              ...this.waitingPlayers,
-              ...newWaitingPlayers,
-            ];
-          }
+            //If exists, the selected player of the oposite team is added to the waiting players list so he can be the next active player after the waiting players do they actions
+            if (opositeTeamSelectedPlayer) {
+              newWaitingPlayers.push(opositeTeamSelectedPlayer);
+            }
 
-          if (opositeTeamSelectedPlayer || newWaitingPlayers.length > 0) {
-            if (shouldSetTeamTurn) {
-              opositeTeam.setTeamTurn(true);
+            if (newWaitingPlayers.length > 0) {
+              this.waitingPlayers = [
+                ...this.waitingPlayers,
+                ...newWaitingPlayers,
+              ];
+            }
+
+            if (opositeTeamSelectedPlayer || newWaitingPlayers.length > 0) {
+              if (shouldSetTeamTurn) {
+                opositeTeam.setTeamTurn(true);
+              }
             }
           }
         }
       }
+    } else {
+      console.error("activePlayer not found in searchForWaitingPlayersClose");
     }
   }
 
   shotAttemptedStatus() {
-    let activePlayer = this.getActivePlayer()!;
+    let activePlayer = this.getActivePlayer();
 
-    this.setShotHasBeenAttempted(true);
-    activePlayer.setShotAttempt(true);
-    activePlayer.lastAction = "shotAttempt";
+    if (activePlayer) {
+      this.setShotHasBeenAttempted(true);
+      activePlayer.setShotAttempt(true);
+      activePlayer.lastAction = "shotAttempt";
+    } else {
+      console.error("activePlayer not found in shotAttemptedStatus");
+    }
   }
 
   runClock(

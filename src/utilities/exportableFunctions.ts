@@ -754,18 +754,23 @@ export function mathShotPointsCloseToTheRim(
 ) {
   const insideScoring = shooter.insideScoring;
 
-  const weightPoints = getWeightPoints(shooter.position!, shooter.weight!);
-  const heightPoints = getHeightPoints(shooter.position!, shooter.height!);
+  if (shooter.position) {
+    const weightPoints = getWeightPoints(shooter.position, shooter.weight);
+    const heightPoints = getHeightPoints(shooter.position, shooter.height);
 
-  return (
-    (insideScoring! * 5 +
-      shooter.playMaking! * 0.5 +
-      shooter.atleticism! * 3 +
-      weightPoints * 2 +
-      heightPoints * 2 +
-      roll20SidesDice() * 5) *
-    multiplier
-  );
+    return (
+      (insideScoring * 5 +
+        shooter.playMaking * 0.5 +
+        shooter.atleticism * 3 +
+        weightPoints * 2 +
+        heightPoints * 2 +
+        roll20SidesDice() * 5) *
+      multiplier
+    );
+  } else {
+    console.error("shooter.position not found in mathShotPointsCloseToTheRim");
+    return 0;
+  }
 }
 
 export function mathChancesMakingShotInCloseToTheRim(
@@ -800,19 +805,24 @@ export function mathShotPointsInShortRange(
   multiplier: number,
   shooter: PlayerStats,
 ) {
-  const weightPoints = getWeightPoints(shooter.position!, shooter.weight!);
-  const heightPoints = getHeightPoints(shooter.position!, shooter.height!);
+  if (shooter.position) {
+    const weightPoints = getWeightPoints(shooter.position, shooter.weight);
+    const heightPoints = getHeightPoints(shooter.position, shooter.height);
 
-  return (
-    (shooter.insideScoring * 4 +
-      shooter.perimeterScoring * 0.5 +
-      shooter.playMaking * 1.5 +
-      shooter.atleticism * 3 +
-      weightPoints +
-      heightPoints +
-      roll20SidesDice() * 5) *
-    multiplier
-  );
+    return (
+      (shooter.insideScoring * 4 +
+        shooter.perimeterScoring * 0.5 +
+        shooter.playMaking * 1.5 +
+        shooter.atleticism * 3 +
+        weightPoints +
+        heightPoints +
+        roll20SidesDice() * 5) *
+      multiplier
+    );
+  } else {
+    console.error("shooter.position not found in mathShotPointsInShortRange");
+    return 0;
+  }
 }
 
 export function mathChancesMakingShotInShortRange(
@@ -846,16 +856,21 @@ export function mathShotPointsInMidRange(
   multiplier: number,
   shooter: PlayerStats,
 ) {
-  const heightPoints = getHeightPoints(shooter.position!, shooter.height!);
+  if (shooter.position) {
+    const heightPoints = getHeightPoints(shooter.position, shooter.height);
 
-  return (
-    (shooter.insideScoring +
-      shooter.perimeterScoring * 4 +
-      shooter.playMaking * 1.5 +
-      heightPoints +
-      roll20SidesDice() * 5) *
-    multiplier
-  );
+    return (
+      (shooter.insideScoring +
+        shooter.perimeterScoring * 4 +
+        shooter.playMaking * 1.5 +
+        heightPoints +
+        roll20SidesDice() * 5) *
+      multiplier
+    );
+  } else {
+    console.error("shooter.position not found in mathShotPointsInMidRange");
+    return 0;
+  }
 }
 
 export function mathChancesMakingShotInMidRange(
@@ -887,16 +902,23 @@ export function mathShotPointsCloseToThe3PointLine(
   multiplier: number,
   shooter: PlayerStats,
 ) {
-  const weightPoints = getWeightPoints(shooter.position!, shooter.weight!);
-  const heightPoints = getHeightPoints(shooter.position!, shooter.height!);
-  return (
-    (shooter.perimeterScoring * 6 +
-      shooter.playMaking -
-      heightPoints * 0.5 -
-      weightPoints * 0.5 +
-      roll20SidesDice() * 4.5) *
-    multiplier
-  );
+  if (shooter.position) {
+    const weightPoints = getWeightPoints(shooter.position, shooter.weight);
+    const heightPoints = getHeightPoints(shooter.position, shooter.height);
+    return (
+      (shooter.perimeterScoring * 6 +
+        shooter.playMaking -
+        heightPoints * 0.5 -
+        weightPoints * 0.5 +
+        roll20SidesDice() * 4.5) *
+      multiplier
+    );
+  } else {
+    console.error(
+      "shooter.position not found in mathShotPointsCloseToThe3PointLine",
+    );
+    return 0;
+  }
 }
 
 export function mathChancesMakingShotInCloseToThe3PointLine(
@@ -926,17 +948,22 @@ export function mathShotPointsInLong3Range(
   multiplier: number,
   shooter: PlayerStats,
 ) {
-  const weightPoints = getWeightPoints(shooter.position!, shooter.weight!);
-  const heightPoints = getHeightPoints(shooter.position!, shooter.height!);
+  if (shooter.position) {
+    const weightPoints = getWeightPoints(shooter.position, shooter.weight);
+    const heightPoints = getHeightPoints(shooter.position, shooter.height);
 
-  return (
-    (shooter.perimeterScoring * 5 +
-      shooter.playMaking * 0.5 -
-      heightPoints * 0.5 -
-      weightPoints +
-      roll20SidesDice() * 3.5) *
-    multiplier
-  );
+    return (
+      (shooter.perimeterScoring * 5 +
+        shooter.playMaking * 0.5 -
+        heightPoints * 0.5 -
+        weightPoints +
+        roll20SidesDice() * 3.5) *
+      multiplier
+    );
+  } else {
+    console.error("shooter.position not found in mathShotPointsInLong3Range");
+    return 0;
+  }
 }
 
 export function mathChancesMakingShotInLong3Range(
@@ -965,16 +992,21 @@ export function mathShotPointsInHalfCourt(
   multiplier: number,
   shooter: PlayerStats,
 ) {
-  const weightPoints = getWeightPoints(shooter.position!, shooter.weight!);
-  const heightPoints = getHeightPoints(shooter.position!, shooter.height!);
+  if (shooter.position) {
+    const weightPoints = getWeightPoints(shooter.position, shooter.weight);
+    const heightPoints = getHeightPoints(shooter.position, shooter.height);
 
-  return (
-    (shooter.perimeterScoring * 4 -
-      heightPoints * 0.5 -
-      weightPoints +
-      roll20SidesDice() * 2) *
-    multiplier
-  );
+    return (
+      (shooter.perimeterScoring * 4 -
+        heightPoints * 0.5 -
+        weightPoints +
+        roll20SidesDice() * 2) *
+      multiplier
+    );
+  } else {
+    console.error("shooter.position not found in mathShotPointsInHalfCourt");
+    return 0;
+  }
 }
 
 export function mathChancesMakingShotInHalfCourt(
@@ -1002,16 +1034,23 @@ export function mathShotPointsBehindHalfCourt(
   multiplier: number,
   shooter: PlayerStats,
 ) {
-  const weightPoints = getWeightPoints(shooter.position!, shooter.weight!);
-  const heightPoints = getHeightPoints(shooter.position!, shooter.height!);
+  if (shooter.position) {
+    const weightPoints = getWeightPoints(shooter.position, shooter.weight);
+    const heightPoints = getHeightPoints(shooter.position, shooter.height);
 
-  return (
-    (shooter.perimeterScoring * 3 -
-      heightPoints -
-      weightPoints +
-      roll20SidesDice()) *
-    multiplier
-  );
+    return (
+      (shooter.perimeterScoring * 3 -
+        heightPoints -
+        weightPoints +
+        roll20SidesDice()) *
+      multiplier
+    );
+  } else {
+    console.error(
+      "shooter.position not found in mathShotPointsBehindHalfCourt",
+    );
+    return 0;
+  }
 }
 
 export function mathChancesMakingShotInBehindHalfCourt(
@@ -1038,16 +1077,23 @@ export function mathShotPointsCloseToTheOtherRim(
   multiplier: number,
   shooter: PlayerStats,
 ) {
-  const weightPoints = getWeightPoints(shooter.position!, shooter.weight!);
-  const heightPoints = getHeightPoints(shooter.position!, shooter.height!);
+  if (shooter.position) {
+    const weightPoints = getWeightPoints(shooter.position, shooter.weight);
+    const heightPoints = getHeightPoints(shooter.position, shooter.height);
 
-  return (
-    (shooter.perimeterScoring * 2 -
-      heightPoints -
-      weightPoints * 1.5 +
-      roll20SidesDice() * 0.5) *
-    multiplier
-  );
+    return (
+      (shooter.perimeterScoring * 2 -
+        heightPoints -
+        weightPoints * 1.5 +
+        roll20SidesDice() * 0.5) *
+      multiplier
+    );
+  } else {
+    console.error(
+      "shooter.position not found in mathShotPointsCloseToTheOtherRim",
+    );
+    return 0;
+  }
 }
 
 export function mathChancesMakingShotInCloseToTheOtherRim(
@@ -1073,137 +1119,171 @@ export function mathDefensePointsCloseToTheRim(
   multiplier: number,
   defender: PlayerStats,
 ) {
-  const insideDefence = defender.insideDefence;
-  const atleticism = defender.atleticism;
-  const weightPoints = getWeightPoints(defender.position!, defender.weight!);
-  const heightPoints = getHeightPoints(defender.position!, defender.height!);
+  if (defender.position) {
+    const insideDefence = defender.insideDefence;
+    const atleticism = defender.atleticism;
+    const weightPoints = getWeightPoints(defender.position, defender.weight);
+    const heightPoints = getHeightPoints(defender.position, defender.height);
 
-  return (
-    (insideDefence! * 4 +
-      atleticism! * 2 +
-      weightPoints +
-      heightPoints +
-      roll20SidesDice() * 6) *
-    multiplier
-  );
+    return (
+      (insideDefence * 4 +
+        atleticism * 2 +
+        weightPoints +
+        heightPoints +
+        roll20SidesDice() * 6) *
+      multiplier
+    );
+  } else {
+    console.error(
+      "defender.position not found in mathDefensePointsCloseToTheRim",
+    );
+    return 0;
+  }
 }
 
 export function mathDefensePointsInShortRange(
   multiplier: number,
   defender: PlayerStats,
 ) {
-  const weightPoints = getWeightPoints(defender.position!, defender.weight!);
-  const heightPoints = getHeightPoints(defender.position!, defender.height!);
+  if (defender.position) {
+    const weightPoints = getWeightPoints(defender.position, defender.weight);
+    const heightPoints = getHeightPoints(defender.position, defender.height);
 
-  return (
-    (defender.insideDefence * 3 +
-      defender.perimeterDefence * 0.5 +
-      defender.atleticism * 2.5 +
-      weightPoints * 0.5 +
-      heightPoints +
-      roll20SidesDice() * 5) *
-    multiplier
-  );
+    return (
+      (defender.insideDefence * 3 +
+        defender.perimeterDefence * 0.5 +
+        defender.atleticism * 2.5 +
+        weightPoints * 0.5 +
+        heightPoints +
+        roll20SidesDice() * 5) *
+      multiplier
+    );
+  } else {
+    console.error(
+      "defender.position not found in mathDefensePointsInShortRange",
+    );
+    return 0;
+  }
 }
 
 export function mathDefensePointsInMidRange(
   multiplier: number,
   defender: PlayerStats,
 ) {
-  const weightPoints = getWeightPoints(defender.position!, defender.weight!);
-  const heightPoints = getHeightPoints(defender.position!, defender.height!);
+  if (defender.position) {
+    const weightPoints = getWeightPoints(defender.position, defender.weight);
+    const heightPoints = getHeightPoints(defender.position, defender.height);
 
-  return (
-    (defender.insideDefence +
-      defender.perimeterDefence * 4 -
-      weightPoints +
-      heightPoints +
-      roll20SidesDice() * 5) *
-    multiplier
-  );
+    return (
+      (defender.insideDefence +
+        defender.perimeterDefence * 4 -
+        weightPoints +
+        heightPoints +
+        roll20SidesDice() * 5) *
+      multiplier
+    );
+  } else {
+    console.error("defender.position not found in mathDefensePointsInMidRange");
+    return 0;
+  }
 }
 
 export function mathDefensePointsCloseToThe3PointLine(
   multiplier: number,
   defender: PlayerStats,
 ) {
-  const weightPoints = getWeightPoints(defender.position!, defender.weight!);
-  const heightPoints = getHeightPoints(defender.position!, defender.height!);
+  if (defender.position) {
+    const weightPoints = getWeightPoints(defender.position, defender.weight);
+    const heightPoints = getHeightPoints(defender.position, defender.height);
 
-  return (
-    (defender.perimeterDefence * 5 -
-      weightPoints +
-      heightPoints +
-      roll20SidesDice() * 4) *
-    multiplier
-  );
+    return (
+      (defender.perimeterDefence * 5 -
+        weightPoints +
+        heightPoints +
+        roll20SidesDice() * 4) *
+      multiplier
+    );
+  } else {
+    console.error(
+      "defender.position not found in mathDefensePointsCloseToThe3PointLine",
+    );
+    return 0;
+  }
 }
 
 export function mathDefensePointsLong3Range(
   multiplier: number,
   defender: PlayerStats,
 ) {
-  const weightPoints = getWeightPoints(defender.position!, defender.weight!);
-  const heightPoints = getHeightPoints(defender.position!, defender.height!);
+  if (defender.position) {
+    const weightPoints = getWeightPoints(defender.position, defender.weight);
+    const heightPoints = getHeightPoints(defender.position, defender.height);
 
-  return (
-    (defender.perimeterDefence * 5 -
-      weightPoints * 0.5 +
-      heightPoints +
-      roll20SidesDice() * 4) *
-    multiplier
-  );
+    return (
+      (defender.perimeterDefence * 5 -
+        weightPoints * 0.5 +
+        heightPoints +
+        roll20SidesDice() * 4) *
+      multiplier
+    );
+  } else {
+    console.error("defender.position not found in mathDefensePointsLong3Range");
+    return 0;
+  }
 }
 
 export function mathDefensePointsHalfCourtAndFartherAway(
   multiplier: number,
   defender: PlayerStats,
 ) {
-  const heightPoints = getHeightPoints(defender.position!, defender.height!);
+  if (defender.position) {
+    const heightPoints = getHeightPoints(defender.position, defender.height);
 
-  return (
-    (defender.perimeterDefence * 5 + heightPoints + roll20SidesDice() * 4) *
-    multiplier
-  );
+    return (
+      (defender.perimeterDefence * 5 + heightPoints + roll20SidesDice() * 4) *
+      multiplier
+    );
+  } else {
+    console.error(
+      "defender.position not found in mathDefensePointsHalfCourtAndFartherAway",
+    );
+    return 0;
+  }
 }
 
 export function playerZone(player: Player, teamAAtacking: boolean) {
-  if (isCloseToTheRim(teamAAtacking, player.ubicationX!, player.ubicationY!)) {
+  if (isCloseToTheRim(teamAAtacking, player.ubicationX, player.ubicationY)) {
     return ranges.closeToTheRim.id;
   } else if (
-    isBehindTheBoard(teamAAtacking, player.ubicationX!, player.ubicationY!)
+    isBehindTheBoard(teamAAtacking, player.ubicationX, player.ubicationY)
   ) {
     return ranges.behindTheBoard.id;
   } else if (
-    isInShortRange(teamAAtacking, player.ubicationX!, player.ubicationY!)
+    isInShortRange(teamAAtacking, player.ubicationX, player.ubicationY)
   ) {
     return ranges.inShortRange.id;
   } else if (
-    isInMidRange(teamAAtacking, player.ubicationX!, player.ubicationY!)
+    isInMidRange(teamAAtacking, player.ubicationX, player.ubicationY)
   ) {
     return ranges.inMidRange.id;
   } else if (
-    isCloseToThe3PointLine(
-      teamAAtacking,
-      player.ubicationX!,
-      player.ubicationY!,
-    )
+    isCloseToThe3PointLine(teamAAtacking, player.ubicationX, player.ubicationY)
   ) {
     return ranges.outsideThe3PointLine.id;
   } else if (
-    isInLong3Range(teamAAtacking, player.ubicationX!, player.ubicationY!)
+    isInLong3Range(teamAAtacking, player.ubicationX, player.ubicationY)
   ) {
     return ranges.long3Range.id;
   } else if (
-    isCloseToHalfCourt(teamAAtacking, player.ubicationX!, player.ubicationY!)
+    isCloseToHalfCourt(teamAAtacking, player.ubicationX, player.ubicationY)
   ) {
     return ranges.halfCourt.id;
   } else if (
-    isBehindTheHalfCourt(teamAAtacking, player.ubicationX!, player.ubicationY!)
+    isBehindTheHalfCourt(teamAAtacking, player.ubicationX, player.ubicationY)
   ) {
     return ranges.behindHalfCourt.id;
   } else if (
-    isIntheOtherRim(teamAAtacking, player.ubicationX!, player.ubicationY!)
+    isIntheOtherRim(teamAAtacking, player.ubicationX, player.ubicationY)
   ) {
     return ranges.theOtherRim.id;
   } else {
@@ -1436,8 +1516,8 @@ export function checkTilesThatWillInfluenceInTheCalculations(
   const x2 = endingUbication[0];
   const y2 = endingUbication[1];
 
-  let dx = x2! - x1!;
-  let dy = y2! - y1!;
+  let dx = x2 - x1;
+  let dy = y2 - y1;
 
   let steps = Math.max(Math.abs(dx), Math.abs(dy));
 
@@ -1448,8 +1528,8 @@ export function checkTilesThatWillInfluenceInTheCalculations(
   let ballGoesCloseToThisPositions = [] as any[] | [number[]];
 
   for (let i = 0; i <= steps; i++) {
-    let x = Math.round(x1! + i * xIncrement);
-    let y = Math.round(y1! + i * yIncrement);
+    let x = Math.round(x1 + i * xIncrement);
+    let y = Math.round(y1 + i * yIncrement);
 
     if (x >= 0 && x < width && y >= 0 && y < height) {
       ballGoesOverThisPositions.push([x, y]);
@@ -1468,7 +1548,11 @@ export function checkTilesThatWillInfluenceInTheCalculations(
       }
     }
   }
-  return [ballGoesOverThisPositions, ballGoesCloseToThisPositions];
+  return [
+    ballGoesOverThisPositions,
+    //Delete repeated values
+    [...new Set(ballGoesCloseToThisPositions)],
+  ];
 }
 
 export function getDistanceToRim(player: Player) {
@@ -1476,9 +1560,14 @@ export function getDistanceToRim(player: Player) {
   let dXToRim = getShotDistance(player, "X");
   let dYToRim = getShotDistance(player, "Y");
 
-  distanceToRim = Math.sqrt(Math.pow(dXToRim, 2) + Math.pow(dYToRim, 2));
+  if (dXToRim && dYToRim) {
+    distanceToRim = Math.sqrt(Math.pow(dXToRim, 2) + Math.pow(dYToRim, 2));
 
-  return distanceToRim;
+    return distanceToRim;
+  } else {
+    console.error("dXToRim or dYToRim not found in getDistanceToRim");
+    return 0;
+  }
 }
 
 export function getShotDistance(player: Player, direction: string) {
@@ -1487,10 +1576,10 @@ export function getShotDistance(player: Player, direction: string) {
   if (direction == "Y") {
     if (player.ubicationY == 8) {
       shotDistance = 0;
-    } else if (player.ubicationY! < 8) {
-      shotDistance = 8 - player.ubicationY!;
+    } else if (player.ubicationY < 8) {
+      shotDistance = 8 - player.ubicationY;
     } else {
-      shotDistance = player.ubicationY! - 8;
+      shotDistance = player.ubicationY - 8;
     }
   }
 
@@ -1500,7 +1589,7 @@ export function getShotDistance(player: Player, direction: string) {
         if (player.ubicationX == 1) {
           shotDistance = 1;
         } else {
-          shotDistance = player.ubicationX! - 1;
+          shotDistance = player.ubicationX - 1;
         }
       }
     } else {
@@ -1508,13 +1597,13 @@ export function getShotDistance(player: Player, direction: string) {
         if (player.ubicationX == 28) {
           shotDistance = 1;
         } else {
-          shotDistance = 27 - player.ubicationX!;
+          shotDistance = 27 - player.ubicationX;
         }
       }
     }
   }
 
-  return shotDistance!;
+  return shotDistance;
 }
 
 export function getReboundDistance(
@@ -1565,7 +1654,7 @@ export function getReboundDistance(
     reboundLandingX = Math.round(2 + shotDistanceX * rollDiceMultiplierX);
   }
 
-  return [reboundLandingX!, reboundLandingY!];
+  return [reboundLandingX, reboundLandingY];
 }
 
 export function getDistanceToPoint() {}
@@ -1580,8 +1669,8 @@ export function getClosestPlayers(
   let closestPlayer: Player | undefined = undefined;
   for (const player of allPlayers) {
     const distance =
-      Math.abs(player.ubicationX! - targetPoint[0]) +
-      Math.abs(player.ubicationY! - targetPoint[1]);
+      Math.abs(player.ubicationX - targetPoint[0]) +
+      Math.abs(player.ubicationY - targetPoint[1]);
     if (distance < minDistance) {
       minDistance = distance;
       closestPlayer = player;
@@ -1591,8 +1680,8 @@ export function getClosestPlayers(
     // Get all close players to the closest player to the target point
     for (const player of allPlayers) {
       const distance =
-        Math.abs(player.ubicationX! - closestPlayer.ubicationX!) +
-        Math.abs(player.ubicationY! - closestPlayer.ubicationY!);
+        Math.abs(player.ubicationX - closestPlayer.ubicationX) +
+        Math.abs(player.ubicationY - closestPlayer.ubicationY);
       if (distance <= 2) {
         closestPlayers.push(player);
       }
@@ -1603,6 +1692,14 @@ export function getClosestPlayers(
 
 export const boardYDimentions = 15;
 export const boardXDimentions = 28;
+
+export const teamAOffensiveFTPositions = [
+  [22, 8],
+  [20, 5],
+  [20, 11],
+  [25, 5],
+  [25, 11],
+];
 
 export const teamADefensiveFTPositions = [
   [9, 4],
@@ -1618,14 +1715,6 @@ export const teamBOffensiveFTPositions = [
   [9, 11],
   [4, 5],
   [4, 11],
-];
-
-export const teamAOffensiveFTPositions = [
-  [22, 8],
-  [20, 5],
-  [20, 11],
-  [25, 5],
-  [25, 11],
 ];
 
 export const teamBDefensiveFTPositions = [
@@ -1662,20 +1751,26 @@ export function getInitialBoard(teamShootingFT?: string) {
     ]);
   }
 
-  const allAPlayersUbication = getBoardFormatInitialTeamUbication(
+  const properTeamAInitialPositions =
     teamShootingFT == "A"
       ? teamAOffensiveFTPositions
       : teamShootingFT == "B"
         ? teamADefensiveFTPositions
-        : teamAInitialPositions,
-  );
+        : teamAInitialPositions;
 
-  const allBPlayersUbication = getBoardFormatInitialTeamUbication(
+  const properTeamBInitialPositions =
     teamShootingFT == "B"
       ? teamBOffensiveFTPositions
       : teamShootingFT == "A"
         ? teamBDefensiveFTPositions
-        : teamBInitialPositions,
+        : teamBInitialPositions;
+
+  const allAPlayersUbication = getBoardFormatInitialTeamUbication(
+    properTeamAInitialPositions,
+  );
+
+  const allBPlayersUbication = getBoardFormatInitialTeamUbication(
+    properTeamBInitialPositions,
   );
 
   const initialBoard = [] as number[][];
@@ -1712,8 +1807,8 @@ export function isRivalNearby(
   player: Player,
   mustBeNext = false,
 ) {
-  const x = player.ubicationX! - 1;
-  const y = player.ubicationY! - 1;
+  const x = player.ubicationX - 1;
+  const y = player.ubicationY - 1;
 
   const rivalTeamNumber = player.team === "TeamA" ? 2 : 1;
 

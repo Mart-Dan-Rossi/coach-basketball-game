@@ -90,9 +90,9 @@ function GameBoard({ match, setMatchState }: Props) {
 
     if (playerOnThisUbication === undefined) return "";
 
-    return playerOnThisUbication!.playerSelected
+    return playerOnThisUbication?.playerSelected
       ? "selected-tile"
-      : playerOnThisUbication!.playerHaveTurn && "highlighted-tile";
+      : playerOnThisUbication?.playerHaveTurn && "highlighted-tile";
   }
 
   function showPosibleActionsButtons(
@@ -146,13 +146,19 @@ function GameBoard({ match, setMatchState }: Props) {
 
           const playerWithBall = otherTeam.returnPlayerWithBall();
 
-          const xDistance =
-            playerWithBall!.ubicationX! - teamActivePlayer.ubicationX!;
-          const yDistance =
-            playerWithBall!.ubicationY! - teamActivePlayer.ubicationY!;
+          if (playerWithBall) {
+            const xDistance =
+              playerWithBall?.ubicationX - teamActivePlayer.ubicationX;
+            const yDistance =
+              playerWithBall?.ubicationY - teamActivePlayer.ubicationY;
 
-          if (Math.pow(xDistance, 2) == 1 && Math.pow(yDistance, 2) == 1) {
-            setShowStealAttemptButton(() => true);
+            if (Math.pow(xDistance, 2) == 1 && Math.pow(yDistance, 2) == 1) {
+              setShowStealAttemptButton(() => true);
+            }
+          } else {
+            console.error(
+              "playerWithBall not found in showPosibleActionsButtons",
+            );
           }
         }
       }
@@ -198,8 +204,10 @@ function GameBoard({ match, setMatchState }: Props) {
               if (activePlayer && !(dx == 0 && dy == 0)) {
                 //If the scanned ubication is around the active player
                 if (
-                  activePlayer.ubicationX! + dx == thisUbication[0] &&
-                  activePlayer.ubicationY! + dy == thisUbication[1]
+                  activePlayer.ubicationX &&
+                  activePlayer.ubicationX + dx == thisUbication[0] &&
+                  activePlayer.ubicationY &&
+                  activePlayer.ubicationY + dy == thisUbication[1]
                 ) {
                   //The player have more than 1.5 action points and the tile is in the diagonal or less than 1.5 points and the sile is next to the player
                   if (
@@ -351,8 +359,10 @@ function GameBoard({ match, setMatchState }: Props) {
               if (!(dx == 0 && dy == 0)) {
                 //If the scanned ubication is around the active player
                 if (
-                  activePlayer.ubicationX! + dx == thisUbication[0] &&
-                  activePlayer.ubicationY! + dy == thisUbication[1]
+                  activePlayer.ubicationX &&
+                  activePlayer.ubicationX + dx == thisUbication[0] &&
+                  activePlayer.ubicationY &&
+                  activePlayer.ubicationY + dy == thisUbication[1]
                 ) {
                   //The player have more than 1.5 action points and the tile is in the diagonal or less than 1.5 points and the sile is next to the player
                   if (
@@ -448,20 +458,24 @@ function GameBoard({ match, setMatchState }: Props) {
     if (activePlayer) {
       // console.log("activePlayer: ", activePlayer);
       return () => {
-        gameBoard[activePlayer.ubicationY! - 1][activePlayer.ubicationX! - 1] =
-          0;
+        if (activePlayer.ubicationY && activePlayer.ubicationX) {
+          gameBoard[activePlayer.ubicationY - 1][activePlayer.ubicationX - 1] =
+            0;
 
-        activePlayer.movePlayer(dx, dy);
-        gameBoard[activePlayer.ubicationY! - 1][activePlayer.ubicationX! - 1] =
-          activePlayer.team == "TeamA" ? 1 : 2;
+          activePlayer.movePlayer(dx, dy);
+          gameBoard[activePlayer.ubicationY - 1][activePlayer.ubicationX - 1] =
+            activePlayer.team == "TeamA" ? 1 : 2;
 
-        match.addWaitingPlayersClose(true);
+          match.addWaitingPlayersClose(true);
 
-        setActionConfirmed(() => "");
+          setActionConfirmed(() => "");
 
-        setMatchState(() => match);
+          setMatchState(() => match);
 
-        setActivateConfirmButton(() => false);
+          setActivateConfirmButton(() => false);
+        } else {
+          console.error("player ubication is undefined while moving player");
+        }
       };
     } else {
       return () => {
@@ -473,40 +487,39 @@ function GameBoard({ match, setMatchState }: Props) {
   function makePass(team: Team, ubicationScaned: number[]) {
     return () => {
       console.log("Make pass");
-      let receiver: Player;
-      let passer = match.getActivePlayer()!;
-
-      team.players.forEach((player) => {
-        let playerUbication = [player.ubicationX, player.ubicationY];
-
-        if (
-          playerUbication[0] == ubicationScaned[0] &&
-          playerUbication[1] == ubicationScaned[1]
-        ) {
-          player.setHaveBall(false);
-          receiver = player;
-        }
+      let receiver = team.players.find((player) => {
+        return (
+          player.ubicationX == ubicationScaned[0] &&
+          player.ubicationY == ubicationScaned[1]
+        );
       });
+      let passer = match.getActivePlayer();
 
-      match.handlePassAction(
-        passer,
-        receiver!,
-        gameBoard,
-        gameNarration,
-        setGameNarration,
-      );
+      if (passer && receiver) {
+        receiver.setHaveBall(false);
 
-      if (passer.team == "TeamA") {
-        setPlayerClikedTeamA(() => [0, 0]);
+        match.handlePassAction(
+          passer,
+          receiver,
+          gameBoard,
+          gameNarration,
+          setGameNarration,
+        );
+
+        if (passer.team == "TeamA") {
+          setPlayerClikedTeamA(() => [0, 0]);
+        } else {
+          setPlayerClikedTeamB(() => [0, 0]);
+        }
+
+        setActionConfirmed(() => "");
+
+        setMatchState(() => match);
+
+        setActivateConfirmButton(() => false);
       } else {
-        setPlayerClikedTeamB(() => [0, 0]);
+        console.error("Passer or receiver was not found while making pass");
       }
-
-      setActionConfirmed(() => "");
-
-      setMatchState(() => match);
-
-      setActivateConfirmButton(() => false);
     };
   }
 
@@ -540,19 +553,28 @@ function GameBoard({ match, setMatchState }: Props) {
     if (otherTeam.teamTurnLeft) {
       otherTeam.setTeamTurn(true);
     } else {
-      newActivePlayer = compareIniciatives(
-        teamA.returnSelectedPlayer()!,
-        teamB.returnSelectedPlayer()!,
-        teamA.getPlayerWithBallOrUndefined(),
-      );
-      setActivePlayer(() => newActivePlayer);
-      newActivePlayer.setActivePlayer(true);
-      newActivePlayer.setPlayerSelected(false);
+      let teamASelectedPlayer = teamA.returnSelectedPlayer();
+      let teamBSelectedPlayer = teamB.returnSelectedPlayer();
 
-      if (newActivePlayer.team == "TeamA") {
-        setPlayerClikedTeamA(() => [0, 0]);
+      if (teamASelectedPlayer && teamBSelectedPlayer) {
+        newActivePlayer = compareIniciatives(
+          teamASelectedPlayer,
+          teamBSelectedPlayer,
+          teamA.getPlayerWithBallOrUndefined(),
+        );
+        setActivePlayer(() => newActivePlayer);
+        newActivePlayer.setActivePlayer(true);
+        newActivePlayer.setPlayerSelected(false);
+
+        if (newActivePlayer.team == "TeamA") {
+          setPlayerClikedTeamA(() => [0, 0]);
+        } else {
+          setPlayerClikedTeamB(() => [0, 0]);
+        }
       } else {
-        setPlayerClikedTeamB(() => [0, 0]);
+        console.error(
+          "At least 1 selected player was not found while confirming player selection",
+        );
       }
     }
 
@@ -562,7 +584,7 @@ function GameBoard({ match, setMatchState }: Props) {
   return (
     <div id="gameboard-container">
       <div id="gameboard">
-        {gameBoard!.map((rowContent, rowIndex) => {
+        {gameBoard.map((rowContent, rowIndex) => {
           return rowContent.map((player, colIndex) => {
             return (
               <div
@@ -574,7 +596,7 @@ function GameBoard({ match, setMatchState }: Props) {
                   colIndex + 1,
                   rowIndex + 1,
                 )}`}
-                onClick={clickTileHandler(player, colIndex + 1, rowIndex + 1)!}
+                onClick={clickTileHandler(player, colIndex + 1, rowIndex + 1)}
               >
                 {player == 0 ? (
                   <></>

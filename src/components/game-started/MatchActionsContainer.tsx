@@ -213,13 +213,15 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
     console.log("Shot attempted status setted.");
 
     handleEndTurn();
+
+    // console.log("GameBoard 3: ", gameBoard);
   }
 
   function handleEndTurn() {
     setActionConfirmed(() => "end turn");
-    
+
     setEndTurnButtonSelected(() => false);
-    
+
     matchCopy.handleEndTurn(
       gameNarration,
       setGameNarration,
@@ -227,13 +229,13 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
       setGameBoard,
     );
 
-    console.log("Ending turn.");
-    
+    // console.log("Ending turn.");
+
     setActivePlayer(() => matchCopy.getActivePlayer());
 
     setMatchState(() => matchCopy);
 
-    console.log("Turn ended.");
+    // console.log("Turn ended.");
   }
 
   function clickActionButtonHanddler(
@@ -272,7 +274,7 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
           <h4>Actions</h4>
           <span>
             {match.getActivePlayer()
-              ? `Points left: ${match.getActivePlayer()!.actionPoints}`
+              ? `Points left: ${match.getActivePlayer()?.actionPoints}`
               : ""}
           </span>
         </div>

@@ -1,12 +1,23 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useContext } from "react";
 import { GameContext } from "./context/GameContext";
 import CustomizeGame from "./components/game-customisation/CustomizeGame";
 import GameContainer from "./components/game-started/GameContainer";
 import { Link } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const Main = () => {
   const { teamsCreated } = useContext(GameContext);
+  useEffect(() => {
+    return () => {
+      toast("Enjoy your match!", {
+        icon: "👏",
+
+        //Prevent duplicated toast
+        id: "start-game-welcome",
+      });
+    };
+  }, []);
 
   return (
     <>

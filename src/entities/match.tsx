@@ -318,14 +318,17 @@ export class Match {
         points = points * 0.2;
       }
 
-      if (defensorWithTheHighestDefensivePoints[1]) {
-        if (defensorWithTheHighestDefensivePoints[1] < points) {
-          defensorWithTheHighestDefensivePoints = [player, points];
-        }
-      } else {
+      if (defensorWithTheHighestDefensivePoints[1] === undefined) {
         console.error(
           "defensorWithTheHighestDefensivePoints[1] undefined in calculateDefensivePointsPerDefensor",
         );
+        throw new Error(
+          "Error: defensorWithTheHighestDefensivePoints[1] undefined in calculateDefensivePointsPerDefensor",
+        );
+      }
+
+      if (defensorWithTheHighestDefensivePoints[1] < points) {
+        defensorWithTheHighestDefensivePoints = [player, points];
       }
 
       return points;
@@ -422,7 +425,16 @@ export class Match {
       passerTeam.handleNewPasser(passer);
 
       //If the total defensive points are higher than pass points
-    } else if (defensorWithTheHighestDefensivePoints[0]) {
+    } else {
+      if (defensorWithTheHighestDefensivePoints[0] === undefined) {
+        console.error(
+          "defensorWithTheHighestDefensivePoints[0] undefined in handlePassAction",
+        );
+        throw new Error(
+          "Error: defensorWithTheHighestDefensivePoints[0] undefined in handlePassAction",
+        );
+      }
+
       //The player with the highest defensive points involved in this situation steal the ball
       defensorWithTheHighestDefensivePoints[0].setHaveBall(true);
       newGameNarration.unshift(
@@ -430,10 +442,6 @@ export class Match {
       );
 
       passerTeam.resetLastPasserForAllPlayers();
-    } else {
-      console.error(
-        "defensorWithTheHighestDefensivePoints[0] undefined in handlePassAction",
-      );
     }
 
     setGameNarration(() => newGameNarration);
@@ -662,7 +670,9 @@ export class Match {
     let shooter = this.getShooter();
     if (!shooter) {
       console.error("shooter not found in handleShot");
-      return;
+      throw new Error(
+        "Error: shooter not found in handleShot while handling shot",
+      );
     }
     let shooterTeam = shooter.team == "TeamA" ? this.teamA : this.teamB;
     let newGameNarration = [...gameNarration];
@@ -689,7 +699,9 @@ export class Match {
     const getShooterPointsInShot = () => {
       if (!shooter) {
         console.error("shooter not found in getShooterPointsInShot");
-        return 0;
+        throw new Error(
+          "Error: shooter not found in getShooterPointsInShot while handling shot",
+        );
       }
       let shooterPointsInShot = 0;
 
@@ -699,6 +711,7 @@ export class Match {
       }
 
       //Do math to calculate points on each sector
+
       if (this.freeThrowsLeft > 0) {
         shooterPointsInShot = mathShotPointsInFreeThrow(shooter);
       } else if (shooterZoneUbication == ranges.closeToTheRim.id) {
@@ -738,7 +751,9 @@ export class Match {
       // console.log("in getDefendersPointsInShot");
       if (!shooter) {
         console.error("shooter not found in getDefendersPointsInShot");
-        return 0;
+        throw new Error(
+          "Error: shooter not found in getDefendersPointsInShot while handling shot",
+        );
       }
       let totalDefendersPoints = 0;
       if (this.freeThrowsLeft > 0) {
@@ -828,10 +843,10 @@ export class Match {
               //Used this.isFreeThrowSerie to avoid loop
 
               //TODO Check if this points are fare to make a foul
-              //TODO Remember to uncomment next line when testing is done
 
-              // if (defenderPoints < 10 && !this.isFreeThrowSerie) {
-              if (true && !this.isFreeThrowSerie) {
+              if (defenderPoints < 10 && !this.isFreeThrowSerie) {
+                // Uncomment to test free throws
+                // if (true && !this.isFreeThrowSerie) {
                 let amountOfFreeThrows;
                 if (
                   shooterZoneUbication == ranges.closeToTheRim.id ||
@@ -867,7 +882,9 @@ export class Match {
       // console.log("In calculateIfGoesIn");
       if (!shooter) {
         console.error("shooter not found in calculateIfGoesIn");
-        return false;
+        throw new Error(
+          "Error: shooter not found in calculateIfGoesIn while handling shot",
+        );
       }
       let isItIn = false;
 
@@ -1022,65 +1039,57 @@ export class Match {
           shotDiceRoll,
         );
       } else {
-        if (defendersPointsVsSinlgePlayerMaxPossiblePointsPercentage) {
-          if (pointsDif) {
-            if (
-              defendersPointsVsSinlgePlayerMaxPossiblePointsPercentage < 100
-            ) {
-              if (shooterZoneUbication == ranges.closeToTheRim.id) {
-                isItIn = mathChancesMakingShotInCloseToTheRim(
-                  pointsDif,
-                  shotDiceRoll,
-                );
-              } else if (
-                shooterZoneUbication == ranges.inShortRange.id ||
-                shooterZoneUbication == ranges.behindTheBoard.id
-              ) {
-                isItIn = mathChancesMakingShotInShortRange(
-                  pointsDif,
-                  shotDiceRoll,
-                );
-              } else if (shooterZoneUbication == ranges.inMidRange.id) {
-                isItIn = mathChancesMakingShotInMidRange(
-                  pointsDif,
-                  shotDiceRoll,
-                );
-              } else if (
-                shooterZoneUbication == ranges.outsideThe3PointLine.id
-              ) {
-                isItIn = mathChancesMakingShotInCloseToThe3PointLine(
-                  pointsDif,
-                  shotDiceRoll,
-                );
-              } else if (shooterZoneUbication == ranges.long3Range.id) {
-                isItIn = mathChancesMakingShotInLong3Range(
-                  pointsDif,
-                  shotDiceRoll,
-                );
-              } else if (shooterZoneUbication == ranges.halfCourt.id) {
-                isItIn = mathChancesMakingShotInHalfCourt(
-                  pointsDif,
-                  shotDiceRoll,
-                );
-              } else if (shooterZoneUbication == ranges.behindHalfCourt.id) {
-                isItIn = mathChancesMakingShotInBehindHalfCourt(
-                  pointsDif,
-                  shotDiceRoll,
-                );
-              } else if (shooterZoneUbication == ranges.theOtherRim.id) {
-                isItIn = mathChancesMakingShotInCloseToTheOtherRim(
-                  pointsDif,
-                  shotDiceRoll,
-                );
-              }
-            }
-          } else {
-            console.error("pointsDif is undefined in calculateIfItGoesIn");
-          }
-        } else {
+        if (
+          defendersPointsVsSinlgePlayerMaxPossiblePointsPercentage === undefined
+        ) {
           console.error(
             "defendersPointsVsSinlgePlayerMaxPossiblePointsPercentage not found in calculateIfItGoesIn",
           );
+          throw new Error(
+            "Error: defendersPointsVsSinlgePlayerMaxPossiblePointsPercentage not found in calculateIfItGoesIn while handling shot",
+          );
+        }
+
+        if (pointsDif === undefined) {
+          console.error("pointsDif is undefined in calculateIfItGoesIn");
+          throw new Error(
+            "Error: pointsDif is undefined in calculateIfItGoesIn while handling shot",
+          );
+        }
+
+        if (defendersPointsVsSinlgePlayerMaxPossiblePointsPercentage < 100) {
+          if (shooterZoneUbication == ranges.closeToTheRim.id) {
+            isItIn = mathChancesMakingShotInCloseToTheRim(
+              pointsDif,
+              shotDiceRoll,
+            );
+          } else if (
+            shooterZoneUbication == ranges.inShortRange.id ||
+            shooterZoneUbication == ranges.behindTheBoard.id
+          ) {
+            isItIn = mathChancesMakingShotInShortRange(pointsDif, shotDiceRoll);
+          } else if (shooterZoneUbication == ranges.inMidRange.id) {
+            isItIn = mathChancesMakingShotInMidRange(pointsDif, shotDiceRoll);
+          } else if (shooterZoneUbication == ranges.outsideThe3PointLine.id) {
+            isItIn = mathChancesMakingShotInCloseToThe3PointLine(
+              pointsDif,
+              shotDiceRoll,
+            );
+          } else if (shooterZoneUbication == ranges.long3Range.id) {
+            isItIn = mathChancesMakingShotInLong3Range(pointsDif, shotDiceRoll);
+          } else if (shooterZoneUbication == ranges.halfCourt.id) {
+            isItIn = mathChancesMakingShotInHalfCourt(pointsDif, shotDiceRoll);
+          } else if (shooterZoneUbication == ranges.behindHalfCourt.id) {
+            isItIn = mathChancesMakingShotInBehindHalfCourt(
+              pointsDif,
+              shotDiceRoll,
+            );
+          } else if (shooterZoneUbication == ranges.theOtherRim.id) {
+            isItIn = mathChancesMakingShotInCloseToTheOtherRim(
+              pointsDif,
+              shotDiceRoll,
+            );
+          }
         }
       }
 
@@ -1144,6 +1153,9 @@ export class Match {
           );
         } else {
           console.error("newPlayerWithBall not found in calculateIfGoesIn");
+          throw new Error(
+            "Error: newPlayerWithBall not found in calculateIfGoesIn while handling shot",
+          );
         }
       }
     } else {
@@ -1170,6 +1182,9 @@ export class Match {
         } else {
           console.error(
             "newPlayerWithBall not found in calculateIfGoesIn, the rebound section",
+          );
+          throw new Error(
+            "Error: newPlayerWithBall not found in calculateIfGoesIn, the rebound section while handling shot",
           );
         }
       }
@@ -1265,6 +1280,7 @@ export class Match {
       );
     } else {
       console.error("activePlayer not found in handlePlayerWait");
+      throw new Error("Error: activePlayer not found in handlePlayerWait");
     }
   }
 
@@ -1294,49 +1310,52 @@ export class Match {
     let shotDistanceY = getShotDistance(shooter, "Y");
     let shotDistanceX = getShotDistance(shooter, "X");
 
-    if (shotDistanceY && shotDistanceX) {
-      let reboundDirectionY: string;
-
-      let rollDice = roll20SidesDice();
-      if (shotDirectionY == "middle") {
-        reboundDirectionY =
-          rollDice <= 5 ? "middle" : rollDice >= 13 ? "top" : "bottom";
-      } else if (shotDirectionY == "top") {
-        if (roll20SidesDice() > 7) {
-          reboundDirectionY = "top";
-        } else {
-          reboundDirectionY = "bottom";
-        }
-      } else {
-        if (roll20SidesDice() > 7) {
-          reboundDirectionY = "bottom";
-        } else {
-          reboundDirectionY = "top";
-        }
-      }
-
-      let whereItReboundsTo = getWhereItReboundsTo(
-        shotDirectionY,
-        reboundDirectionY,
-        shotDistanceY,
-        shotDistanceX,
-        teamAAtacking,
-      );
-
-      let closestPlayersToWhereBallLands = getClosestPlayers(
-        [...this.teamA.players, ...this.teamB.players],
-        whereItReboundsTo,
-      );
-
-      //TODO fix rebounding function
-      return closestPlayersToWhereBallLands[0];
-      // return rebounder;
-    } else {
+    if (shotDistanceY === undefined || shotDistanceX === undefined) {
       console.error(
         "shotDistanceY or shotDistanceX were not found in getRebounder",
       );
-      return shooter;
+      throw new Error(
+        "Error: shotDistanceY or shotDistanceX were not found in getRebounder",
+      );
     }
+
+    let reboundDirectionY: string;
+
+    let rollDice = roll20SidesDice();
+    if (shotDirectionY == "middle") {
+      reboundDirectionY =
+        rollDice <= 5 ? "middle" : rollDice >= 13 ? "top" : "bottom";
+    } else if (shotDirectionY == "top") {
+      if (roll20SidesDice() > 7) {
+        reboundDirectionY = "top";
+      } else {
+        reboundDirectionY = "bottom";
+      }
+    } else {
+      if (roll20SidesDice() > 7) {
+        reboundDirectionY = "bottom";
+      } else {
+        reboundDirectionY = "top";
+      }
+    }
+
+    let whereItReboundsTo = getWhereItReboundsTo(
+      shotDirectionY,
+      reboundDirectionY,
+      shotDistanceY,
+      shotDistanceX,
+      teamAAtacking,
+    );
+
+    let closestPlayersToWhereBallLands = getClosestPlayers(
+      [...this.teamA.players, ...this.teamB.players],
+      whereItReboundsTo,
+    );
+
+    //TODO fix rebounding function
+    throw new Error("Rebound function not ended");
+    return closestPlayersToWhereBallLands[0];
+    // return rebounder;
   }
 
   handleEndTurn(
@@ -1464,6 +1483,7 @@ export class Match {
       }
     } else {
       console.error("activePlayer not found in handleEndTurn");
+      throw new Error("Error: activePlayer not found in handleEndTurn");
     }
   }
 
@@ -1481,6 +1501,9 @@ export class Match {
       this.waitingPlayers.push(...newWaitingPlayers);
     } else {
       console.error("activePlayer not found in addWaitingPlayersClose");
+      throw new Error(
+        "Error: activePlayer not found in addWaitingPlayersClose",
+      );
     }
   }
 
@@ -1540,6 +1563,9 @@ export class Match {
       }
     } else {
       console.error("activePlayer not found in searchForWaitingPlayersClose");
+      throw new Error(
+        "Error: activePlayer not found in searchForWaitingPlayersClose",
+      );
     }
   }
 
@@ -1552,6 +1578,7 @@ export class Match {
       activePlayer.lastAction = "shotAttempt";
     } else {
       console.error("activePlayer not found in shotAttemptedStatus");
+      throw new Error("Error: activePlayer not found in shotAttemptedStatus");
     }
   }
 

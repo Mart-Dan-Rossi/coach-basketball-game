@@ -6,6 +6,7 @@ import "../../styles/MatchActionsContainer.css";
 import {} from "../../entities/myInterfaces";
 import { Match } from "../../entities/match";
 import GameStatsModal from "./GameStatsModal";
+import toast from "react-hot-toast";
 
 interface Props {
   match: Match;
@@ -190,13 +191,21 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
     setWaitWithoutTheBallButtonSelected(() => false);
     setTripleThreatButtonSelected(() => false);
 
-    matchCopy.handlePlayerWait(
-      type,
-      gameNarration,
-      setGameNarration,
-      gameBoard,
-      setGameBoard,
-    );
+    try {
+      matchCopy.handlePlayerWait(
+        type,
+        gameNarration,
+        setGameNarration,
+        gameBoard,
+        setGameBoard,
+      );
+    } catch (err) {
+      toast.error(
+        `${
+          err instanceof Error ? err.message : "Unexpected error"
+        } while handling wait ${type}`,
+      );
+    }
 
     setActivePlayer(() => matchCopy.getActivePlayer());
 
@@ -208,9 +217,17 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
 
     setShootButtonSelected(() => false);
 
-    matchCopy.shotAttemptedStatus();
+    try {
+      matchCopy.shotAttemptedStatus();
+    } catch (err) {
+      toast.error(
+        `${
+          err instanceof Error ? err.message : "Unexpected error"
+        } while handling shot status`,
+      );
+    }
 
-    console.log("Shot attempted status setted.");
+    // console.log("Shot attempted status setted.");
 
     handleEndTurn();
 
@@ -222,12 +239,20 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
 
     setEndTurnButtonSelected(() => false);
 
-    matchCopy.handleEndTurn(
-      gameNarration,
-      setGameNarration,
-      gameBoard,
-      setGameBoard,
-    );
+    try {
+      matchCopy.handleEndTurn(
+        gameNarration,
+        setGameNarration,
+        gameBoard,
+        setGameBoard,
+      );
+    } catch (err) {
+      toast.error(
+        `${
+          err instanceof Error ? err.message : "Unexpected error"
+        } while ending turn`,
+      );
+    }
 
     // console.log("Ending turn.");
 

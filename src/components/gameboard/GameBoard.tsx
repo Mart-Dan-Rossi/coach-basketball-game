@@ -13,6 +13,7 @@ import {
 } from "../../utilities/exportableFunctions";
 import { Player } from "../../entities/players";
 import { Match } from "../../entities/match";
+import toast from "react-hot-toast";
 
 interface Props {
   match: Match;
@@ -159,6 +160,9 @@ function GameBoard({ match, setMatchState }: Props) {
             console.error(
               "playerWithBall not found in showPosibleActionsButtons",
             );
+            toast.error(
+              "Error: PlayerWithBall not found in showPosibleActionsButtons",
+            );
           }
         }
       }
@@ -232,6 +236,9 @@ function GameBoard({ match, setMatchState }: Props) {
           }
         } else {
           console.error("Active player not found while attempt to move player");
+          toast.error(
+            "Error: Active player not found while attempt to move player",
+          );
         }
       }
 
@@ -254,6 +261,7 @@ function GameBoard({ match, setMatchState }: Props) {
           }
         } else {
           console.error("Active player not found while attempt pass");
+          toast.error("Error: Active player not found while attempt pass");
         }
       }
 
@@ -270,9 +278,6 @@ function GameBoard({ match, setMatchState }: Props) {
           setPlayerClikedTeamA(() => [0, 0]);
           setPlayerClikedTeamB(() => [0, 0]);
         }
-        //  else {
-        //   console.error("Active player not found while ending turn");
-        // }
       }
     }
 
@@ -385,6 +390,7 @@ function GameBoard({ match, setMatchState }: Props) {
           }
         } else {
           console.error("Active player not found while clicking tile");
+          toast.error("Error: Active player not found while clicking tile");
         }
       };
     } else if (actionConfirmed == "pass") {
@@ -466,7 +472,15 @@ function GameBoard({ match, setMatchState }: Props) {
           gameBoard[activePlayer.ubicationY - 1][activePlayer.ubicationX - 1] =
             activePlayer.team == "TeamA" ? 1 : 2;
 
-          match.addWaitingPlayersClose(true);
+          try {
+            match.addWaitingPlayersClose(true);
+          } catch (err) {
+            toast.error(
+              `${
+                err instanceof Error ? err.message : "Unexpected error"
+              } while moving player`,
+            );
+          }
 
           setActionConfirmed(() => "");
 
@@ -475,11 +489,15 @@ function GameBoard({ match, setMatchState }: Props) {
           setActivateConfirmButton(() => false);
         } else {
           console.error("player ubication is undefined while moving player");
+          toast.error(
+            "Error: player ubication is undefined while moving player",
+          );
         }
       };
     } else {
       return () => {
         console.error("Active player not found while moving player");
+        toast.error("Error: Active player not found while moving player");
       };
     }
   }
@@ -498,13 +516,21 @@ function GameBoard({ match, setMatchState }: Props) {
       if (passer && receiver) {
         receiver.setHaveBall(false);
 
-        match.handlePassAction(
-          passer,
-          receiver,
-          gameBoard,
-          gameNarration,
-          setGameNarration,
-        );
+        try {
+          match.handlePassAction(
+            passer,
+            receiver,
+            gameBoard,
+            gameNarration,
+            setGameNarration,
+          );
+        } catch (err) {
+          toast.error(
+            `${
+              err instanceof Error ? err.message : "Unexpected error"
+            } while handling pass`,
+          );
+        }
 
         if (passer.team == "TeamA") {
           setPlayerClikedTeamA(() => [0, 0]);
@@ -519,6 +545,9 @@ function GameBoard({ match, setMatchState }: Props) {
         setActivateConfirmButton(() => false);
       } else {
         console.error("Passer or receiver was not found while making pass");
+        toast.error(
+          "Error: Passer or receiver was not found while making pass",
+        );
       }
     };
   }
@@ -574,6 +603,9 @@ function GameBoard({ match, setMatchState }: Props) {
       } else {
         console.error(
           "At least 1 selected player was not found while confirming player selection",
+        );
+        toast.error(
+          "Error: At least 1 selected player was not found while confirming player selection",
         );
       }
     }

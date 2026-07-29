@@ -4,6 +4,7 @@ import MainMenu from "./components/MainMenu";
 import Rules from "./components/Rules";
 import { GameContextProvider } from "./context/GameContextProvider";
 import GameStarted from "./StartGame";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
             <Route path="/rules" element={<Rules />} />
           </Routes>
         </BrowserRouter>
+        <Toaster position="bottom-right" />
       </GameContextProvider>
     </>
   );

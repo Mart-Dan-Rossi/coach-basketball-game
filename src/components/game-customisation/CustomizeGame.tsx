@@ -3,12 +3,15 @@ import CreateTeam from "./CreateTeam";
 //@ts-ignore
 import "../../styles/CustomizeGame.css";
 import { SwitchTransition, CSSTransition } from "react-transition-group";
+import { maxTeamPointsInTeamCreation } from "../../utilities/exportableFunctions";
 
 const CustomizeGame = () => {
-  let maxTeamPoints = 70 * 5 * 9;
-
-  const [totalTeamAPoints, setTotalTeamAPoints] = useState(maxTeamPoints);
-  const [totalTeamBPoints, setTotalTeamBPoints] = useState(maxTeamPoints);
+  const [totalTeamAPoints, setTotalTeamAPoints] = useState(
+    maxTeamPointsInTeamCreation,
+  );
+  const [totalTeamBPoints, setTotalTeamBPoints] = useState(
+    maxTeamPointsInTeamCreation,
+  );
   const [showTeam, setShowTeam] = useState(true);
 
   function changeTeamToCustomize() {
@@ -93,7 +96,7 @@ const CustomizeGame = () => {
               setTotalTeamAPoints={setTotalTeamAPoints}
               totalTeamBPoints={totalTeamBPoints}
               setTotalTeamBPoints={setTotalTeamBPoints}
-              maxTeamPoints={maxTeamPoints}
+              maxTeamPoints={maxTeamPointsInTeamCreation}
               team={"A"}
             />
           </CSSTransition>
@@ -112,7 +115,7 @@ const CustomizeGame = () => {
               setTotalTeamAPoints={setTotalTeamAPoints}
               totalTeamBPoints={totalTeamBPoints}
               setTotalTeamBPoints={setTotalTeamBPoints}
-              maxTeamPoints={maxTeamPoints}
+              maxTeamPoints={maxTeamPointsInTeamCreation}
               team={"B"}
             />
           </CSSTransition>

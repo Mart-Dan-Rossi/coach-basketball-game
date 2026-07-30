@@ -5,6 +5,8 @@ import {
 } from "../entities/myInterfaces";
 import { Player } from "../entities/players";
 
+export const maxTeamPointsInTeamCreation = 70 * 5 * 9;
+
 export function isPlayerWaiting(player: Player) {
   return (
     player.lastAction === "waitWithCaution" ||
@@ -1324,8 +1326,9 @@ export function compareIniciatives(
   playerB: Player,
   isTeamAAtacking: Player | undefined,
 ) {
-  let defender = isTeamAAtacking ? playerB : playerA;
-  let atacker = isTeamAAtacking ? playerA : playerB;
+
+  let defender = !!isTeamAAtacking ? playerB : playerA;
+  let atacker = !!isTeamAAtacking ? playerA : playerB;
 
   let defenderIniciative = 0;
   let atackerInisiative = 0;
@@ -1598,6 +1601,7 @@ export function getDistanceToRim(player: Player) {
 }
 
 export function getShotDistance(player: Player, direction: string) {
+  //This function get the distance to the rim in given axis (direction)
   let shotDistance: number | undefined;
 
   if (direction == "Y") {

@@ -35,7 +35,7 @@ const NumericInputs = ({
 }: Props) => {
   return (
     <>
-      {arrayOfKeysOfNumericProperties.map((stat, i) => {
+      {arrayOfKeysOfNumericProperties.map((stat) => {
         if (!stat) return null;
         return (
           <NumericInput

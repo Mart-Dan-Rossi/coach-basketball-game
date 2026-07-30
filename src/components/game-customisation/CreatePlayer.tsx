@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   PlayerEditableInfo,
   PlayerEditableStatsKeys,
@@ -7,6 +7,7 @@ import {
 import NumericInputs from "./NumericInputs";
 //@ts-ignore
 import "../../styles/CreatePlayer.css";
+import toast from "react-hot-toast";
 
 interface Props {
   team: string;
@@ -33,6 +34,17 @@ const CreatePlayer = ({
   pointsUsedInStats,
   setPointsUsedInStats,
 }: Props) => {
+  useEffect(() => {
+    if (playerPosition === "Not detected") {
+      toast.error(
+        "Error: playerPosition was not detected while triying to create player",
+      );
+      console.error(
+        "playerPosition was not detected while triying to create player",
+      );
+    }
+  }, []);
+
   function nameOnkeydownHandler(e: React.ChangeEvent<HTMLInputElement>) {
     let inputModified = e.target as HTMLInputElement;
     let inputValue = inputModified.value as string;

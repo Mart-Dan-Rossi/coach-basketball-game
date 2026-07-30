@@ -21,20 +21,16 @@ const PlayerSelector = ({
   const { createPlayer, setCreatePlayer } = useContext(GameContext);
 
   function selectPlayer(player: number) {
-    return () => {
-      if (player != createPlayer) {
-        setCreatePlayer(player);
-      } else {
-        setCreatePlayer(0);
-      }
-    };
+    if (player != createPlayer) {
+      setCreatePlayer(player);
+    } else {
+      setCreatePlayer(0);
+    }
   }
   return (
     <div
       key={`player-selector-${i}-${team}`}
-      className={
-        playerSelected ? "player-selector selected" : "player-selector"
-      }
+      className={`player-selector ${playerSelected ? "selected" : ""}`}
       onClick={() => selectPlayer(i)}
     >
       <h3>{playerPositionDetection(i.toString())}</h3>

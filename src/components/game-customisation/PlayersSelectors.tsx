@@ -17,7 +17,7 @@ const PlayersSelectors = ({ team, pointsUsedOnPlayersArray }: Props) => {
           <PlayerSelector
             i={index + 1}
             team={team}
-            playerSelected={createPlayer === index}
+            playerSelected={createPlayer === index + 1}
             pointsUsedOnThisPlayer={pointsUsedOnPlayers}
           />
         );

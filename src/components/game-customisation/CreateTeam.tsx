@@ -2,11 +2,11 @@ import React, { useContext } from "react";
 import { GameContext } from "../../context/GameContext";
 import { playerPositionDetection } from "../../utilities/exportableFunctions";
 import CreatePlayer from "./CreatePlayer";
+import { CSSTransition, SwitchTransition } from "react-transition-group";
 //@ts-ignore
 import "../../styles/CreateTeam.css";
-import { SwitchTransition, CSSTransition } from "react-transition-group";
-import PlayersSelectors from "./PlayersSelectors";
 import MaxTeamPointsIndicator from "./MaxTeamPointsIndicator";
+import PlayersSelectors from "./PlayersSelectors";
 
 interface Props {
   totalTeamAPoints: number;
@@ -48,7 +48,6 @@ const CreateTeam = ({
     setPlayerB4Stats,
     setPlayerB5Stats,
     setTeamBStats,
-    setTeamsCreated,
     pointsUsedInPlayerA1,
     pointsUsedInPlayerA2,
     pointsUsedInPlayerA3,

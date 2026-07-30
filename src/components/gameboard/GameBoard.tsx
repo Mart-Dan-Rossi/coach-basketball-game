@@ -62,6 +62,40 @@ function GameBoard({ match, setMatchState }: Props) {
     activePlayer,
   ]);
 
+  useEffect(() => {
+    function validateTeamUbication(teamIndicator: "A" | "B") {
+      let team = teamIndicator === "A" ? teamA : teamB;
+      let teamNumber = teamIndicator === "A" ? 1 : 2;
+      let playersUbications = team.players.map((player) => {
+        //The gameboard is rotated
+        return [player.ubicationY - 1, player.ubicationX - 1];
+      });
+
+      const mismatchFound = playersUbications.some((ubicationScanned) => {
+        const numberInGameboard =
+          gameBoard[ubicationScanned[0]][ubicationScanned[1]];
+
+        return numberInGameboard !== teamNumber;
+      });
+
+      if (mismatchFound) {
+        toast.error(
+          "Error: match data and gameboard data mismatch. Check console for more data.",
+        );
+
+        console.error(
+          "Gameboard:",
+          gameBoard,
+          "Team positions:",
+          playersUbications,
+        );
+      }
+    }
+
+    validateTeamUbication("A");
+    validateTeamUbication("B");
+  }, [gameBoard]);
+
   let teamAAnySelected = teamA.isAnyPlayerSelected();
   let teamBAnySelected = teamB.isAnyPlayerSelected();
 

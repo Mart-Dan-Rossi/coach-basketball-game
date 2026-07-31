@@ -1,5 +1,6 @@
 import React from "react";
 import { Team } from "../../entities/team";
+import { Coordinate } from "../../entities/myInterfaces";
 
 interface Props {
   team: Team;
@@ -22,7 +23,7 @@ const DrawPlayer = ({ team, col, row, teamLetterProps }: Props) => {
             playerStatusImg = "";
             statusDescription = "";
 
-            let playerUbication = [player.ubicationX, player.ubicationY];
+            let playerUbication = [player.ubicationX, player.ubicationY] as Coordinate;
             let thisUbication = [col, row];
 
             if (

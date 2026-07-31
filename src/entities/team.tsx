@@ -1,4 +1,5 @@
 import { getDistanceToRim } from "../utilities/exportableFunctions";
+import { Coordinate } from "./myInterfaces";
 import { Player } from "./players";
 
 export class Team {
@@ -127,15 +128,21 @@ export class Team {
     return this.players.find((player) => player.playerSelected);
   }
 
-  returnPlayerInThisPosition(positionX: number, positionY: number) {
+  returnPlayerInThisPosition(coordinate: Coordinate) {
     //IMPORTANT First i check if that ubication is inside the board
-    if (positionX < 0 && positionX > 29 && positionY < 0 && positionY > 16) {
+    if (
+      coordinate[0] < 0 &&
+      coordinate[0] > 29 &&
+      coordinate[1] < 0 &&
+      coordinate[1] > 16
+    ) {
       return;
     }
 
     return this.players.find(
       (player) =>
-        player.ubicationX === positionX && player.ubicationY === positionY,
+        player.ubicationX === coordinate[0] &&
+        player.ubicationY === coordinate[1],
     );
   }
 

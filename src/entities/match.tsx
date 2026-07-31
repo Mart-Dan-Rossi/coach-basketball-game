@@ -768,10 +768,10 @@ export class Match {
           for (let positionY = -2; positionY < 3; positionY++) {
             //Then i ckeck if ther's a defender in the scanned ubication using the shooter ubication as center
             let defenderInThisUbication =
-              defendingTeam.returnPlayerInThisPosition(
+              defendingTeam.returnPlayerInThisPosition([
                 shooter.ubicationX + positionX,
                 shooter.ubicationY + positionY,
-              );
+              ]);
             let defenderPoints = 0;
 
             //If there's a player located in this position
@@ -1164,7 +1164,7 @@ export class Match {
         //TODO calculate rebound result
 
         //If it doesn't goes in handle who get's the rebound
-        newPlayerWithBall = this.getRebounder(shooter, gameBoard);
+        newPlayerWithBall = this.getRebounder(shooter);
         if (newPlayerWithBall) {
           newPlayerWithBall.statsAddRebound(atackingTeam);
           newPlayerWithBall.setLastAction(
@@ -1295,7 +1295,7 @@ export class Match {
     this.teamTurn = team;
   }
 
-  getRebounder(shooter: Player, gameBoard: number[][]) {
+  getRebounder(shooter: Player) {
     let rebounder: Player;
 
     let teamAAtacking = shooter.team == "TeamA";
@@ -1516,10 +1516,10 @@ export class Match {
     if (activePlayer) {
       for (let i = -2; i < 3; i++) {
         for (let j = -2; j < 3; j++) {
-          let playerInThisUbication = opositeTeam.returnPlayerInThisPosition(
+          let playerInThisUbication = opositeTeam.returnPlayerInThisPosition([
             activePlayer.ubicationX + i,
             activePlayer.ubicationY + j,
-          );
+          ]);
 
           if (
             playerInThisUbication &&

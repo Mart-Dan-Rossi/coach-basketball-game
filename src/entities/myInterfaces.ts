@@ -96,3 +96,5 @@ export interface GameStats {
   teamAStats: TeamGameStats;
   teamBStats: TeamGameStats;
 }
+
+export type Coordinate = [number, number];

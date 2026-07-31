@@ -21,8 +21,8 @@ import {
   mathDefensePointsLong3Range,
   mathDefensePointsHalfCourtAndFartherAway,
   getShotDistance,
-  getReboundDistance as getWhereItReboundsTo,
-  getClosestPlayers,
+  getWhereItReboundsTo,
+  calculateRebounder,
   getRangeText,
   playerPositionDetection,
   mathShotPointsInFreeThrow,
@@ -41,6 +41,9 @@ import {
   teamBDefensiveFTPositions,
   teamAOffensiveFTPositions,
   teamBOffensiveFTPositions,
+  teamARimUbication,
+  teamBRimUbication,
+  getClosestPlayerOfATeanFromAPoint as findNearestPlayerToPoint,
 } from "../utilities/exportableFunctions";
 import React from "react";
 import { Player } from "./players";
@@ -1139,54 +1142,48 @@ export class Match {
 
         shooter.setShotAttempt(false);
 
-        //TODO make the closest player to the rim get the ball when is a field goal
         //After that i handle who get's the ball after the shot
-        newPlayerWithBall = defendingTeam.players.find(
-          (player) => player.position == "C",
+        newPlayerWithBall = findNearestPlayerToPoint(
+          defendingTeam.players,
+          defendingTeam.name === "TeamA"
+            ? teamARimUbication
+            : teamBRimUbication,
         );
 
-        if (newPlayerWithBall) {
-          newPlayerWithBall.movePlayerToOwnRim();
-          newPlayerWithBall.setHaveBall(true);
-          newGameNarration.unshift(
-            `${isNaN(Number(newPlayerWithBall.name)) ? newPlayerWithBall.name : newPlayerWithBall.position} get the ball to start theyr posetion`,
-          );
-        } else {
+        if (!newPlayerWithBall) {
           console.error("newPlayerWithBall not found in calculateIfGoesIn");
           throw new Error(
             "Error: newPlayerWithBall not found in calculateIfGoesIn while handling shot",
           );
         }
+
+        newPlayerWithBall.movePlayerToOwnRim();
+        newPlayerWithBall.setHaveBall(true);
+        newGameNarration.unshift(
+          `${isNaN(Number(newPlayerWithBall.name)) ? newPlayerWithBall.name : newPlayerWithBall.position} get the ball to start theyr posetion`,
+        );
       }
     } else {
       //If the shot is off
       if (this.freeThrowsLeft == 0) {
-        //TODO calculate rebound result
-
         //If it doesn't goes in handle who get's the rebound
         newPlayerWithBall = this.getRebounder(shooter);
-        if (newPlayerWithBall) {
-          newPlayerWithBall.statsAddRebound(atackingTeam);
-          newPlayerWithBall.setLastAction(
-            newPlayerWithBall.team == atackingTeam.name ? "getOReb" : "getDReb",
-          );
 
-          newGameNarration.unshift(
-            `The shot is off ${
-              newPlayerWithBall.team == atackingTeam.name ? "but" : "and"
-            } ${isNaN(Number(newPlayerWithBall.name)) ? newPlayerWithBall.name : newPlayerWithBall.position} gets the rebound!`,
-          );
-          shooterTeam.resetLastPasserForAllPlayers();
+        newPlayerWithBall.statsAddRebound(atackingTeam);
+        newPlayerWithBall.setLastAction(
+          newPlayerWithBall.team == atackingTeam.name ? "getOReb" : "getDReb",
+        );
 
-          shooter.setShotAttempt(false);
-        } else {
-          console.error(
-            "newPlayerWithBall not found in calculateIfGoesIn, the rebound section",
-          );
-          throw new Error(
-            "Error: newPlayerWithBall not found in calculateIfGoesIn, the rebound section while handling shot",
-          );
-        }
+        newPlayerWithBall.setHaveBall(true);
+
+        newGameNarration.unshift(
+          `The shot is off ${
+            newPlayerWithBall.team == atackingTeam.name ? "but" : "and"
+          } ${isNaN(Number(newPlayerWithBall.name)) ? newPlayerWithBall.name : newPlayerWithBall.position} gets the rebound!`,
+        );
+        shooterTeam.resetLastPasserForAllPlayers();
+
+        shooter.setShotAttempt(false);
       }
     }
 
@@ -1208,7 +1205,6 @@ export class Match {
 
     if (this.freeThrowsLeft > 0) {
       // console.log("Shooting free throw");
-
       this.freeThrowsLeft--;
 
       this.handleShot(
@@ -1222,20 +1218,22 @@ export class Match {
     }
 
     // console.log("End FT sequence");
-    // TODO uncomment this line
-    // newPlayerWithBall.setHaveBall(true);
+    if (!!!newPlayerWithBall) {
+      console.error("newPlayerWithBall not defined in handle shot");
+      throw new Error("Error: newPlayerWithBall not defined in handle shot");
+    }
+    newPlayerWithBall.setHaveBall(true);
 
     this.teamA.resetLastPasserForAllPlayers();
     this.teamB.resetLastPasserForAllPlayers();
 
-    // TODO uncomment this line
-    // if (!isItIn) {
-    //   if (newPlayerWithBall.team == atackingTeam.name) {
-    //     atackingTeam.statsAddRebound(atackingTeam);
-    //   } else {
-    //     defendingTeam.statsAddRebound(atackingTeam);
-    //   }
-    // }
+    if (!isItIn) {
+      if (newPlayerWithBall.team == atackingTeam.name) {
+        atackingTeam.statsAddRebound(atackingTeam);
+      } else {
+        defendingTeam.statsAddRebound(atackingTeam);
+      }
+    }
 
     setGameNarration(() => newGameNarration);
 
@@ -1347,15 +1345,21 @@ export class Match {
       teamAAtacking,
     );
 
-    let closestPlayersToWhereBallLands = getClosestPlayers(
+    rebounder = calculateRebounder(
       [...this.teamA.players, ...this.teamB.players],
       whereItReboundsTo,
     );
 
-    //TODO fix rebounding function
-    throw new Error("Rebound function not ended");
-    return closestPlayersToWhereBallLands[0];
-    // return rebounder;
+    if (!!!rebounder) {
+      console.error(
+        "calculateRebounder didn't return a player in getRebounder",
+      );
+      throw new Error(
+        "Error: calculateRebounder didn't return a player in getRebounder",
+      );
+    }
+
+    return rebounder;
   }
 
   handleEndTurn(

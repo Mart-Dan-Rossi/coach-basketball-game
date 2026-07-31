@@ -6,6 +6,9 @@ import {
 } from "../entities/myInterfaces";
 import { Player } from "../entities/players";
 
+export const teamARimUbication: Coordinate = [2, 8];
+export const teamBRimUbication: Coordinate = [27, 8];
+
 export const maxTeamPointsInTeamCreation = 70 * 5 * 9;
 
 export function isPlayerWaiting(player: Player) {
@@ -370,6 +373,10 @@ export function setPointsUsedOnThisSkill(
 
 export function roll20SidesDice() {
   return Math.random() * (21 - 1) + 1;
+}
+
+export function roll6SidesDice() {
+  return Math.random() * (7 - 1) + 1;
 }
 
 export const ranges = {
@@ -1590,6 +1597,54 @@ export function checkTilesThatWillInfluenceInTheCalculations(
   ];
 }
 
+export function getDistanceToAPoint(
+  coordinate: Coordinate,
+  targetPoint: Coordinate,
+): number {
+  return (
+    Math.abs(coordinate[0] - targetPoint[0]) +
+    Math.abs(coordinate[1] - targetPoint[1])
+  );
+}
+
+export function getClosestPlayerOfATeanFromAPoint(
+  players: Player[],
+  targetPoint: Coordinate,
+) {
+  if (players.length === 0) {
+    console.error("Players length is 0 in getClosestPlayerOfATeanFromAPoint");
+    throw new Error(
+      "Error: Players length is 0 in getClosestPlayerOfATeanFromAPoint",
+    );
+  }
+
+  let closestPlayer: Player | undefined;
+  let minDistance = Infinity;
+
+  for (const player of players) {
+    const distance = getDistanceToAPoint(
+      [player.ubicationX, player.ubicationY],
+      targetPoint,
+    );
+
+    if (distance < minDistance) {
+      minDistance = distance;
+      closestPlayer = player;
+    }
+  }
+
+  if (!!!closestPlayer) {
+    console.error(
+      "Couldn't find the closest player to the designed target point",
+    );
+    throw new Error(
+      "Error: Couldn't find the closest player to the designed target point",
+    );
+  }
+
+  return closestPlayer;
+}
+
 export function getDistanceToRim(player: Player) {
   let distanceToRim: number;
   let dXToRim = getShotDistance(player, "X");
@@ -1642,7 +1697,7 @@ export function getShotDistance(player: Player, direction: string) {
   return shotDistance;
 }
 
-export function getReboundDistance(
+export function getWhereItReboundsTo(
   shotDirectionY: string,
   reboundDirectionY: string,
   shotDistanceY: number,
@@ -1690,40 +1745,126 @@ export function getReboundDistance(
     reboundLandingX = Math.round(2 + shotDistanceX * rollDiceMultiplierX);
   }
 
-  return [reboundLandingX, reboundLandingY];
+  return [reboundLandingX, reboundLandingY] as Coordinate;
 }
 
-export function getDistanceToPoint() {}
-
-export function getClosestPlayers(
+function getReboundCandidates(
   allPlayers: Player[],
-  targetPoint: number[],
+  whereItReboundsTo: Coordinate,
 ): Player[] {
-  const closestPlayers: Player[] = [];
-  // Find the closest player to the targetPoint
-  let minDistance = Infinity;
-  let closestPlayer: Player | undefined = undefined;
-  for (const player of allPlayers) {
-    const distance =
-      Math.abs(player.ubicationX - targetPoint[0]) +
-      Math.abs(player.ubicationY - targetPoint[1]);
-    if (distance < minDistance) {
-      minDistance = distance;
-      closestPlayer = player;
+  //Add distance atribute
+  const playersWithDistance = allPlayers.map((player) => ({
+    player,
+    distance: getDistanceToAPoint(
+      [player.ubicationX, player.ubicationY],
+      whereItReboundsTo,
+    ),
+  }));
+
+  //Get the closest player to where it rebounds
+  const minDistance = Math.min(
+    ...playersWithDistance.map((player) => player.distance),
+  );
+
+  //Discard players that are farther than 3 from the closest player
+  return playersWithDistance
+    .filter((player) => player.distance <= minDistance + 3)
+    .map((player) => player.player);
+}
+
+function getNearbyPlayers(
+  playerToCheck: Player,
+  allPlayers: Player[],
+): Player[] {
+  return allPlayers.filter((player) => {
+    //Avoid duplicate player
+    if (player === playerToCheck) {
+      return false;
     }
+
+    const distance = getDistanceToAPoint(
+      [player.ubicationX, player.ubicationY],
+      [playerToCheck.ubicationX, playerToCheck.ubicationY],
+    );
+
+    return distance < 2;
+  });
+}
+
+function getReboundScore(
+  player: Player,
+  allPlayers: Player[],
+  whereItReboundsTo: Coordinate,
+): number {
+  const distance = getDistanceToAPoint(
+    [player.ubicationX, player.ubicationY],
+    whereItReboundsTo,
+  );
+
+  const nearbyPlayers = getNearbyPlayers(player, allPlayers);
+
+  const teammates = nearbyPlayers.filter(
+    (nearbyPlayer) => nearbyPlayer.team === player.team,
+  );
+
+  const opponents = nearbyPlayers.filter(
+    (nearbyPlayer) => nearbyPlayer.team !== player.team,
+  );
+
+  let sixSidedDiceRoll = roll6SidesDice();
+
+  let reboundScore = 0;
+
+  if (distance <= 1) {
+    reboundScore =
+      (player.rebounding * 3 + player.weight + player.height * 2) *
+        sixSidedDiceRoll +
+      teammates.length * 5 -
+      (distance + opponents.length * 5);
+  } else if (distance <= 3) {
+    reboundScore =
+      (player.rebounding * 2 + player.weight * 0.5 + player.height) *
+        sixSidedDiceRoll +
+      teammates.length * 5 -
+      (distance * 2 + opponents.length * 5.5);
+  } else if (distance <= 5) {
+    reboundScore =
+      (player.rebounding + player.height) * sixSidedDiceRoll +
+      teammates.length * 5 -
+      (player.weight + distance * 7 + opponents.length * 6);
+  } else {
+    reboundScore =
+      player.rebounding * 0.7 * sixSidedDiceRoll +
+      teammates.length * 5 -
+      (player.weight * 2 + distance * 15 + opponents.length * 9);
   }
-  if (closestPlayer) {
-    // Get all close players to the closest player to the target point
-    for (const player of allPlayers) {
-      const distance =
-        Math.abs(player.ubicationX - closestPlayer.ubicationX) +
-        Math.abs(player.ubicationY - closestPlayer.ubicationY);
-      if (distance <= 2) {
-        closestPlayers.push(player);
-      }
+
+  return reboundScore;
+}
+
+export function calculateRebounder(
+  allPlayers: Player[],
+  whereItReboundsTo: Coordinate,
+): Player {
+  const candidates = getReboundCandidates(allPlayers, whereItReboundsTo);
+
+  let highestScore = -Infinity;
+  let rebounder: Player | undefined;
+
+  candidates.forEach((player) => {
+    const score = getReboundScore(player, candidates, whereItReboundsTo);
+
+    if (score > highestScore) {
+      highestScore = score;
+      rebounder = player;
     }
+  });
+
+  if (!rebounder) {
+    throw new Error("Error: Rebounder not found in calculateRebounder.");
   }
-  return closestPlayers;
+
+  return rebounder;
 }
 
 export const boardYDimentions = 15;

@@ -321,19 +321,6 @@ export class Match {
         points = points * 0.2;
       }
 
-      if (defensorWithTheHighestDefensivePoints[1] === undefined) {
-        console.error(
-          "defensorWithTheHighestDefensivePoints[1] undefined in calculateDefensivePointsPerDefensor",
-        );
-        throw new Error(
-          "Error: defensorWithTheHighestDefensivePoints[1] undefined in calculateDefensivePointsPerDefensor",
-        );
-      }
-
-      if (defensorWithTheHighestDefensivePoints[1] < points) {
-        defensorWithTheHighestDefensivePoints = [player, points];
-      }
-
       return points;
     }
 
@@ -881,7 +868,7 @@ export class Match {
       return totalDefendersPoints;
     };
 
-    const calculateIfGoesIn = ():boolean => {
+    const calculateIfGoesIn = (): boolean => {
       // console.log("In calculateIfGoesIn");
       if (!shooter) {
         console.error("shooter not found in calculateIfGoesIn");

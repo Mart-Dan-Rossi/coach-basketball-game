@@ -20,7 +20,7 @@ const PlayerSelector = ({
 }: Props) => {
   const { createPlayer, setCreatePlayer } = useContext(GameContext);
 
-  function selectPlayer(player: number) {
+  function selectPlayer(player: number): void {
     if (player != createPlayer) {
       setCreatePlayer(player);
     } else {

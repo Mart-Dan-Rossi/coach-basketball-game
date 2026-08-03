@@ -15,6 +15,7 @@ import {
 } from "../../utilities/exportableFunctions";
 //@ts-ignore
 import "../../styles/NumericInput.css";
+import toast from "react-hot-toast";
 
 interface Props {
   stat: PlayerEditableStatsKeys;
@@ -48,7 +49,9 @@ const NumericInput = ({
   setPointsUsedInPlayer,
   playerSetter,
 }: Props) => {
-  function inputOnChangeHandler(statType: PlayerEditableStatsKeys) {
+  function inputOnChangeHandler(
+    statType: PlayerEditableStatsKeys,
+  ): (e: React.ChangeEvent<HTMLInputElement>) => void {
     return (e: React.ChangeEvent<HTMLInputElement>) => {
       if (!statType) return;
 
@@ -91,10 +94,24 @@ const NumericInput = ({
     };
   }
 
-  function pointsUsedOnThisSkill(statType: PlayerEditableStatsKeys) {
+  function pointsUsedOnThisSkill(statType: PlayerEditableStatsKeys): number {
     if (statType) {
       return pointsUsedInStats[statType];
     } else {
+      return 0;
+    }
+  }
+
+  function tryGetStatValue(): number {
+    try {
+      return getStatValue(stat, player);
+    } catch (error) {
+      console.error(
+        `Error occurred while trying to get value for stat: ${stat}`,
+      );
+      toast.error(
+        `Error: Error occurred while trying to get value for stat: ${stat}`,
+      );
       return 0;
     }
   }
@@ -111,7 +128,7 @@ const NumericInput = ({
         type="range"
         name={`${stat}`}
         id={`${stat}-input`}
-        value={getStatValue(stat, player)}
+        value={tryGetStatValue()}
         min={getMinStatPerPosition(stat, player.position)}
         max={getMaxStatPerPosition(stat, player.position)}
         onChange={inputOnChangeHandler(stat)}

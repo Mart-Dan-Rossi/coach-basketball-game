@@ -107,7 +107,7 @@ const CreateTeam = ({
     pointsUsedInPlayerB5,
   ];
 
-  function confirmTeamButtonHandler() {
+  function confirmTeamButtonHandler(): void {
     if (totalTeamAPoints <= 2 && totalTeamBPoints <= 2) {
       setTeamAStats({
         playerA1Stats,

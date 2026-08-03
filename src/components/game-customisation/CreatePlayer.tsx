@@ -3,6 +3,7 @@ import {
   PlayerEditableInfo,
   PlayerEditableStatsKeys,
   PlayerStats,
+  ValidPositions,
 } from "../../entities/myInterfaces";
 import NumericInputs from "./NumericInputs";
 //@ts-ignore
@@ -11,7 +12,7 @@ import toast from "react-hot-toast";
 
 interface Props {
   team: string;
-  playerPosition: "G" | "SG" | "SF" | "PF" | "C" | "Not detected";
+  playerPosition: ValidPositions;
   player: PlayerEditableInfo;
   playerSetter: React.Dispatch<React.SetStateAction<PlayerEditableInfo>>;
   totalTeamPoints: number;
@@ -45,7 +46,7 @@ const CreatePlayer = ({
     }
   }, []);
 
-  function nameOnkeydownHandler(e: React.ChangeEvent<HTMLInputElement>) {
+  function nameOnkeydownHandler(e: React.ChangeEvent<HTMLInputElement>): void {
     let inputModified = e.target as HTMLInputElement;
     let inputValue = inputModified.value as string;
 

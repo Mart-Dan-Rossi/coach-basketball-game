@@ -73,7 +73,7 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
       showState: showMoveButton,
       selectedState: moveButtonSelected,
       selectedSetter: setMoveButtonSelected,
-      actionFunction: hendleMove,
+      actionFunction: handleMove,
     },
     STEAL_ATTEMPT_BUTTON: {
       id: 1,
@@ -89,7 +89,7 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
       showState: showInterceptPassAttemptButton,
       selectedState: interceptPassAttemptButtonSelected,
       selectedSetter: setInterceptPassAttemptButtonSelected,
-      actionFunction: hanldeInterceptPassAttempt,
+      actionFunction: handleInterceptPassAttempt,
     },
     OVERWHELING_WAITING_BUTTON: {
       id: 3,
@@ -158,32 +158,32 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
     },
   };
 
-  function hendleMove() {
+  function handleMove(): void {
     setActionConfirmed(() => "move");
     setFinalisingAction(() => true);
     setMoveButtonSelected(() => false);
   }
 
-  function handleStealAttempt() {
+  function handleStealAttempt(): void {
     setActionConfirmed(() => "stealAttempt");
   }
 
-  function hanldeInterceptPassAttempt() {
+  function handleInterceptPassAttempt(): void {
     setActionConfirmed(() => "interceptPassAttempt");
   }
 
-  function handlePass() {
+  function handlePass(): void {
     setActionConfirmed(() => "pass");
     setFinalisingAction(() => true);
   }
 
-  function handleDribbling() {
+  function handleDribbling(): void {
     setActionConfirmed(() => "dribbling");
     setFinalisingAction(() => true);
     setDribblingButtonSelected(() => false);
   }
 
-  function handleWait(type: string) {
+  function handleWait(type: string): void {
     setActionConfirmed(() => type);
 
     setWaitWithCautionButtonSelected(() => false);
@@ -212,7 +212,7 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
     setMatchState(() => matchCopy);
   }
 
-  function handleShot() {
+  function handleShot(): void {
     setActionConfirmed(() => "shoot");
 
     setShootButtonSelected(() => false);
@@ -234,7 +234,7 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
     // console.log("GameBoard 3: ", gameBoard);
   }
 
-  function handleEndTurn() {
+  function handleEndTurn(): void {
     setActionConfirmed(() => "end turn");
 
     setEndTurnButtonSelected(() => false);
@@ -263,11 +263,11 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
     // console.log("Turn ended.");
   }
 
-  function clickActionButtonHanddler(
+  function clickActionButtonHandler(
     previousValueOfThisActionState: boolean,
     setter: React.Dispatch<React.SetStateAction<boolean>>,
     actionFunction: (match: Match) => void,
-  ) {
+  ): () => void {
     return () => {
       previousValueOfThisActionState
         ? setActivateConfirmButton(() => false)
@@ -285,7 +285,7 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
     };
   }
 
-  function clickStatsButtonHandler() {
+  function clickStatsButtonHandler(): void {
     setIsModalOpen(true);
   }
 
@@ -313,7 +313,7 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
               >
                 {action.showState && (
                   <button
-                    onClick={clickActionButtonHanddler(
+                    onClick={clickActionButtonHandler(
                       action.selectedState,
                       action.selectedSetter,
                       action.actionFunction,

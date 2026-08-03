@@ -14,7 +14,7 @@ const CustomizeGame = () => {
   );
   const [showTeam, setShowTeam] = useState(true);
 
-  function changeTeamToCustomize() {
+  function changeTeamToCustomize(): void {
     setShowTeam(() => !showTeam);
   }
 

@@ -3,7 +3,7 @@ import { Team } from "./team";
 import {
   roll20SidesDice,
   numberEntire,
-  playerZone,
+  playerZoneId,
   ranges,
   checkTilesThatWillInfluenceInTheCalculations,
   mathShotPointsCloseToTheRim,
@@ -43,7 +43,7 @@ import {
   teamBOffensiveFTPositions,
   teamARimUbication,
   teamBRimUbication,
-  getClosestPlayerOfATeanFromAPoint as findNearestPlayerToPoint,
+  findNearestPlayerToPoint,
 } from "../utilities/exportableFunctions";
 import React from "react";
 import { Player } from "./players";
@@ -277,12 +277,12 @@ export class Match {
     function calculateDefensivePointsPerDefensor(
       player: Player,
       inPassLine: boolean,
-    ) {
+    ): number {
       let points = 0;
-      let playerZoneUbication = playerZone(player, player.team == "TeamB");
+      let playerZoneUbicationId = playerZoneId(player, player.team == "TeamB");
 
       //Do math to calculate points on each sector
-      if (playerZoneUbication == ranges.closeToTheRim.id) {
+      if (playerZoneUbicationId == ranges.closeToTheRim.id) {
         points =
           player.insideDefence * 3 +
           player.atleticism +
@@ -290,8 +290,8 @@ export class Match {
           190 +
           roll20SidesDice() * 3;
       } else if (
-        playerZoneUbication == ranges.inShortRange.id ||
-        playerZoneUbication == ranges.behindTheBoard.id
+        playerZoneUbicationId == ranges.inShortRange.id ||
+        playerZoneUbicationId == ranges.behindTheBoard.id
       ) {
         points =
           player.insideDefence * 1.5 +
@@ -300,7 +300,7 @@ export class Match {
           player.height * 0.5 -
           170 +
           roll20SidesDice() * 3;
-      } else if (playerZoneUbication == ranges.inMidRange.id) {
+      } else if (playerZoneUbicationId == ranges.inMidRange.id) {
         points =
           player.insideDefence +
           player.perimeterDefence * 2 +
@@ -308,7 +308,7 @@ export class Match {
           100 / (player.weight - 50) +
           roll20SidesDice() * 3;
       } else if (
-        (playerZoneUbication as number) >= ranges.outsideThe3PointLine.id
+        (playerZoneUbicationId as number) >= ranges.outsideThe3PointLine.id
       ) {
         points =
           player.perimeterDefence * 3 +
@@ -342,7 +342,7 @@ export class Match {
       team: Team,
       arrayOfUbications: any[] | [number[]],
       inPassLine: boolean,
-    ) {
+    ): void {
       //Check every player to know his defensive points for this situation
       team.players.forEach((player) => {
         if (
@@ -546,7 +546,7 @@ export class Match {
       });
     };
 
-    const moveAtackersToReboundPositions = () => {
+    const moveAtackersToReboundPositions = (): void => {
       // console.log("In moveAtackersToReboundPositions");
       let positionIndex = 1;
 
@@ -685,12 +685,12 @@ export class Match {
     let defendingTeam = shooter.team == "TeamA" ? this.teamB : this.teamA;
 
     //I get in what part of the field is him located to calculate with the propper math
-    let shooterZoneUbication = playerZone(shooter, shooter.team == "TeamB");
+    let shooterZoneUbicationId = playerZoneId(shooter, shooter.team == "TeamB");
 
     if (!(this.freeThrowsLeft > 0)) {
       newGameNarration.unshift(
         `${isNaN(Number(shooter.name)) ? shooter.name : shooter.position} is attempting a shot from ${getRangeText(
-          shooterZoneUbication,
+          shooterZoneUbicationId,
         )}!`,
       );
     } else {
@@ -699,7 +699,7 @@ export class Match {
       );
     }
 
-    const getShooterPointsInShot = () => {
+    const getShooterPointsInShot = (): number => {
       if (!shooter) {
         console.error("shooter not found in getShooterPointsInShot");
         throw new Error(
@@ -717,30 +717,30 @@ export class Match {
 
       if (this.freeThrowsLeft > 0) {
         shooterPointsInShot = mathShotPointsInFreeThrow(shooter);
-      } else if (shooterZoneUbication == ranges.closeToTheRim.id) {
+      } else if (shooterZoneUbicationId == ranges.closeToTheRim.id) {
         shooterPointsInShot = mathShotPointsCloseToTheRim(multiplier, shooter);
       } else if (
-        shooterZoneUbication == ranges.inShortRange.id ||
-        shooterZoneUbication == ranges.behindTheBoard.id
+        shooterZoneUbicationId == ranges.inShortRange.id ||
+        shooterZoneUbicationId == ranges.behindTheBoard.id
       ) {
         shooterPointsInShot = mathShotPointsInShortRange(multiplier, shooter);
-      } else if (shooterZoneUbication == ranges.inMidRange.id) {
+      } else if (shooterZoneUbicationId == ranges.inMidRange.id) {
         shooterPointsInShot = mathShotPointsInMidRange(multiplier, shooter);
-      } else if (shooterZoneUbication == ranges.outsideThe3PointLine.id) {
+      } else if (shooterZoneUbicationId == ranges.outsideThe3PointLine.id) {
         shooterPointsInShot = mathShotPointsCloseToThe3PointLine(
           multiplier,
           shooter,
         );
-      } else if (shooterZoneUbication == ranges.long3Range.id) {
+      } else if (shooterZoneUbicationId == ranges.long3Range.id) {
         shooterPointsInShot = mathShotPointsInLong3Range(multiplier, shooter);
-      } else if (shooterZoneUbication == ranges.halfCourt.id) {
+      } else if (shooterZoneUbicationId == ranges.halfCourt.id) {
         shooterPointsInShot = mathShotPointsInHalfCourt(multiplier, shooter);
-      } else if (shooterZoneUbication == ranges.behindHalfCourt.id) {
+      } else if (shooterZoneUbicationId == ranges.behindHalfCourt.id) {
         shooterPointsInShot = mathShotPointsBehindHalfCourt(
           multiplier,
           shooter,
         );
-      } else if (shooterZoneUbication == ranges.theOtherRim.id) {
+      } else if (shooterZoneUbicationId == ranges.theOtherRim.id) {
         shooterPointsInShot = mathShotPointsCloseToTheOtherRim(
           multiplier,
           shooter,
@@ -750,7 +750,7 @@ export class Match {
       return shooterPointsInShot;
     };
 
-    const getDefendersPointsInShot = () => {
+    const getDefendersPointsInShot = (): number => {
       // console.log("in getDefendersPointsInShot");
       if (!shooter) {
         console.error("shooter not found in getDefendersPointsInShot");
@@ -780,7 +780,7 @@ export class Match {
             //If there's a player located in this position
             if (defenderInThisUbication != undefined) {
               //I get in what part of the field is him located to calculate with the propper math
-              let defenderZoneUbication = playerZone(
+              let defenderZoneUbicationId = playerZoneId(
                 defenderInThisUbication,
                 defenderInThisUbication.team == "TeamB",
               );
@@ -792,40 +792,40 @@ export class Match {
                 multiplier = 1.4;
               }
               //Do math to calculate points on each sector
-              if (defenderZoneUbication == ranges.closeToTheRim.id) {
+              if (defenderZoneUbicationId == ranges.closeToTheRim.id) {
                 defenderPoints = mathDefensePointsCloseToTheRim(
                   multiplier,
                   defenderInThisUbication,
                 );
               } else if (
-                defenderZoneUbication == ranges.inShortRange.id ||
-                defenderZoneUbication == ranges.behindTheBoard.id
+                defenderZoneUbicationId == ranges.inShortRange.id ||
+                defenderZoneUbicationId == ranges.behindTheBoard.id
               ) {
                 defenderPoints = mathDefensePointsInShortRange(
                   multiplier,
                   defenderInThisUbication,
                 );
-              } else if (defenderZoneUbication == ranges.inMidRange.id) {
+              } else if (defenderZoneUbicationId == ranges.inMidRange.id) {
                 defenderPoints = mathDefensePointsInMidRange(
                   multiplier,
                   defenderInThisUbication,
                 );
               } else if (
-                defenderZoneUbication == ranges.outsideThe3PointLine.id
+                defenderZoneUbicationId == ranges.outsideThe3PointLine.id
               ) {
                 defenderPoints = mathDefensePointsCloseToThe3PointLine(
                   multiplier,
                   defenderInThisUbication,
                 );
-              } else if (defenderZoneUbication == ranges.long3Range.id) {
+              } else if (defenderZoneUbicationId == ranges.long3Range.id) {
                 defenderPoints = mathDefensePointsLong3Range(
                   multiplier,
                   defenderInThisUbication,
                 );
               } else if (
-                defenderZoneUbication == ranges.halfCourt.id ||
-                defenderZoneUbication == ranges.behindHalfCourt.id ||
-                defenderZoneUbication == ranges.theOtherRim.id
+                defenderZoneUbicationId == ranges.halfCourt.id ||
+                defenderZoneUbicationId == ranges.behindHalfCourt.id ||
+                defenderZoneUbicationId == ranges.theOtherRim.id
               ) {
                 defenderPoints = mathDefensePointsHalfCourtAndFartherAway(
                   multiplier,
@@ -852,10 +852,10 @@ export class Match {
                 // if (true && !this.isFreeThrowSerie) {
                 let amountOfFreeThrows;
                 if (
-                  shooterZoneUbication == ranges.closeToTheRim.id ||
-                  shooterZoneUbication == ranges.inShortRange.id ||
-                  shooterZoneUbication == ranges.behindTheBoard.id ||
-                  shooterZoneUbication == ranges.inMidRange.id
+                  shooterZoneUbicationId == ranges.closeToTheRim.id ||
+                  shooterZoneUbicationId == ranges.inShortRange.id ||
+                  shooterZoneUbicationId == ranges.behindTheBoard.id ||
+                  shooterZoneUbicationId == ranges.inMidRange.id
                 ) {
                   amountOfFreeThrows = 2;
                 } else {
@@ -881,7 +881,7 @@ export class Match {
       return totalDefendersPoints;
     };
 
-    const calculateIfGoesIn = () => {
+    const calculateIfGoesIn = ():boolean => {
       // console.log("In calculateIfGoesIn");
       if (!shooter) {
         console.error("shooter not found in calculateIfGoesIn");
@@ -920,33 +920,33 @@ export class Match {
         position: "C",
       };
 
-      if (shooterZoneUbication == ranges.closeToTheRim.id) {
+      if (shooterZoneUbicationId == ranges.closeToTheRim.id) {
         maxShooterPoints = mathShotPointsCloseToTheRim(
           1.2,
           maxAPlayerAtributes,
         );
       } else if (
-        shooterZoneUbication == ranges.inShortRange.id ||
-        shooterZoneUbication == ranges.behindTheBoard.id
+        shooterZoneUbicationId == ranges.inShortRange.id ||
+        shooterZoneUbicationId == ranges.behindTheBoard.id
       ) {
         maxShooterPoints = mathShotPointsInShortRange(1.2, maxAPlayerAtributes);
-      } else if (shooterZoneUbication == ranges.inMidRange.id) {
+      } else if (shooterZoneUbicationId == ranges.inMidRange.id) {
         maxShooterPoints = mathShotPointsInMidRange(1.2, maxAPlayerAtributes);
-      } else if (shooterZoneUbication == ranges.outsideThe3PointLine.id) {
+      } else if (shooterZoneUbicationId == ranges.outsideThe3PointLine.id) {
         maxShooterPoints = mathShotPointsCloseToThe3PointLine(
           1.2,
           maxAPlayerAtributes,
         );
-      } else if (shooterZoneUbication == ranges.long3Range.id) {
+      } else if (shooterZoneUbicationId == ranges.long3Range.id) {
         maxShooterPoints = mathShotPointsInLong3Range(1.2, maxAPlayerAtributes);
-      } else if (shooterZoneUbication == ranges.halfCourt.id) {
+      } else if (shooterZoneUbicationId == ranges.halfCourt.id) {
         maxShooterPoints = mathShotPointsInHalfCourt(1.2, maxAPlayerAtributes);
-      } else if (shooterZoneUbication == ranges.behindHalfCourt.id) {
+      } else if (shooterZoneUbicationId == ranges.behindHalfCourt.id) {
         maxShooterPoints = mathShotPointsBehindHalfCourt(
           1.2,
           maxAPlayerAtributes,
         );
-      } else if (shooterZoneUbication == ranges.theOtherRim.id) {
+      } else if (shooterZoneUbicationId == ranges.theOtherRim.id) {
         maxShooterPoints = mathShotPointsCloseToTheOtherRim(
           1.2,
           maxAPlayerAtributes,
@@ -961,38 +961,38 @@ export class Match {
       let maxSingleDefenderPoints = 0;
 
       if (!(this.freeThrowsLeft > 0)) {
-        if (shooterZoneUbication == ranges.closeToTheRim.id) {
+        if (shooterZoneUbicationId == ranges.closeToTheRim.id) {
           maxSingleDefenderPoints = mathDefensePointsCloseToTheRim(
             1.4,
             maxPosiblePlayerAtributes,
           );
         } else if (
-          shooterZoneUbication == ranges.inShortRange.id ||
-          shooterZoneUbication == ranges.behindTheBoard.id
+          shooterZoneUbicationId == ranges.inShortRange.id ||
+          shooterZoneUbicationId == ranges.behindTheBoard.id
         ) {
           maxSingleDefenderPoints = mathDefensePointsInShortRange(
             1.4,
             maxPosiblePlayerAtributes,
           );
-        } else if (shooterZoneUbication == ranges.inMidRange.id) {
+        } else if (shooterZoneUbicationId == ranges.inMidRange.id) {
           maxSingleDefenderPoints = mathDefensePointsInMidRange(
             1.4,
             maxPosiblePlayerAtributes,
           );
-        } else if (shooterZoneUbication == ranges.outsideThe3PointLine.id) {
+        } else if (shooterZoneUbicationId == ranges.outsideThe3PointLine.id) {
           maxSingleDefenderPoints = mathDefensePointsCloseToThe3PointLine(
             1.4,
             maxPosiblePlayerAtributes,
           );
-        } else if (shooterZoneUbication == ranges.long3Range.id) {
+        } else if (shooterZoneUbicationId == ranges.long3Range.id) {
           maxSingleDefenderPoints = mathDefensePointsLong3Range(
             1.4,
             maxPosiblePlayerAtributes,
           );
         } else if (
-          shooterZoneUbication == ranges.halfCourt.id ||
-          shooterZoneUbication == ranges.behindHalfCourt.id ||
-          shooterZoneUbication == ranges.theOtherRim.id
+          shooterZoneUbicationId == ranges.halfCourt.id ||
+          shooterZoneUbicationId == ranges.behindHalfCourt.id ||
+          shooterZoneUbicationId == ranges.theOtherRim.id
         ) {
           maxSingleDefenderPoints = mathDefensePointsHalfCourtAndFartherAway(
             1.4,
@@ -1061,33 +1061,33 @@ export class Match {
         }
 
         if (defendersPointsVsSinlgePlayerMaxPossiblePointsPercentage < 100) {
-          if (shooterZoneUbication == ranges.closeToTheRim.id) {
+          if (shooterZoneUbicationId == ranges.closeToTheRim.id) {
             isItIn = mathChancesMakingShotInCloseToTheRim(
               pointsDif,
               shotDiceRoll,
             );
           } else if (
-            shooterZoneUbication == ranges.inShortRange.id ||
-            shooterZoneUbication == ranges.behindTheBoard.id
+            shooterZoneUbicationId == ranges.inShortRange.id ||
+            shooterZoneUbicationId == ranges.behindTheBoard.id
           ) {
             isItIn = mathChancesMakingShotInShortRange(pointsDif, shotDiceRoll);
-          } else if (shooterZoneUbication == ranges.inMidRange.id) {
+          } else if (shooterZoneUbicationId == ranges.inMidRange.id) {
             isItIn = mathChancesMakingShotInMidRange(pointsDif, shotDiceRoll);
-          } else if (shooterZoneUbication == ranges.outsideThe3PointLine.id) {
+          } else if (shooterZoneUbicationId == ranges.outsideThe3PointLine.id) {
             isItIn = mathChancesMakingShotInCloseToThe3PointLine(
               pointsDif,
               shotDiceRoll,
             );
-          } else if (shooterZoneUbication == ranges.long3Range.id) {
+          } else if (shooterZoneUbicationId == ranges.long3Range.id) {
             isItIn = mathChancesMakingShotInLong3Range(pointsDif, shotDiceRoll);
-          } else if (shooterZoneUbication == ranges.halfCourt.id) {
+          } else if (shooterZoneUbicationId == ranges.halfCourt.id) {
             isItIn = mathChancesMakingShotInHalfCourt(pointsDif, shotDiceRoll);
-          } else if (shooterZoneUbication == ranges.behindHalfCourt.id) {
+          } else if (shooterZoneUbicationId == ranges.behindHalfCourt.id) {
             isItIn = mathChancesMakingShotInBehindHalfCourt(
               pointsDif,
               shotDiceRoll,
             );
-          } else if (shooterZoneUbication == ranges.theOtherRim.id) {
+          } else if (shooterZoneUbicationId == ranges.theOtherRim.id) {
             isItIn = mathChancesMakingShotInCloseToTheOtherRim(
               pointsDif,
               shotDiceRoll,
@@ -1124,10 +1124,10 @@ export class Match {
         pointsToAdd = 1;
       } else {
         if (
-          shooterZoneUbication == ranges.closeToTheRim.id ||
-          shooterZoneUbication == ranges.inShortRange.id ||
-          shooterZoneUbication == ranges.behindTheBoard.id ||
-          shooterZoneUbication == ranges.inMidRange.id
+          shooterZoneUbicationId == ranges.closeToTheRim.id ||
+          shooterZoneUbicationId == ranges.inShortRange.id ||
+          shooterZoneUbicationId == ranges.behindTheBoard.id ||
+          shooterZoneUbicationId == ranges.inMidRange.id
         ) {
           newGameNarration.unshift(
             `The ball goes in! The team ${isNaN(Number(atackingTeam.name)) ? atackingTeam.name : "the attacking team"} add 2 points to the scoreboard`,
@@ -1149,13 +1149,6 @@ export class Match {
             ? teamARimUbication
             : teamBRimUbication,
         );
-
-        if (!newPlayerWithBall) {
-          console.error("newPlayerWithBall not found in calculateIfGoesIn");
-          throw new Error(
-            "Error: newPlayerWithBall not found in calculateIfGoesIn while handling shot",
-          );
-        }
 
         newPlayerWithBall.movePlayerToOwnRim();
         newPlayerWithBall.setHaveBall(true);

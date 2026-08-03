@@ -63,7 +63,7 @@ function GameBoard({ match, setMatchState }: Props) {
   ]);
 
   useEffect(() => {
-    function validateTeamUbication(teamIndicator: "A" | "B") {
+    function validateTeamUbication(teamIndicator: "A" | "B"): void {
       let team = teamIndicator === "A" ? teamA : teamB;
       let teamNumber = teamIndicator === "A" ? 1 : 2;
       let playersUbications = team.players.map((player) => {
@@ -99,7 +99,7 @@ function GameBoard({ match, setMatchState }: Props) {
   let teamAAnySelected = teamA.isAnyPlayerSelected();
   let teamBAnySelected = teamB.isAnyPlayerSelected();
 
-  function hideActionsButtons() {
+  function hideActionsButtons(): void {
     setShowMoveButton(() => false);
     setShowStealAttemptButton(() => false);
     setShowInterceptPassAttemptButton(() => false);
@@ -116,7 +116,7 @@ function GameBoard({ match, setMatchState }: Props) {
   function paintPlayerOnThisTileAsSelected(
     team: Team,
     ubicationScaned: number[],
-  ) {
+  ): "" | "selected-tile" | "highlighted-tile" {
     const playerOnThisUbication = team.players.find(
       (player) =>
         player.ubicationX === ubicationScaned[0] &&
@@ -127,13 +127,15 @@ function GameBoard({ match, setMatchState }: Props) {
 
     return playerOnThisUbication?.playerSelected
       ? "selected-tile"
-      : playerOnThisUbication?.playerHaveTurn && "highlighted-tile";
+      : playerOnThisUbication?.playerHaveTurn
+        ? "highlighted-tile"
+        : "";
   }
 
   function showPosibleActionsButtons(
     teamActivePlayer: Player | undefined,
     team: Team,
-  ) {
+  ): void {
     if (teamActivePlayer) {
       //End turn button is allways shown
       setShowEndTurnButton(() => true);
@@ -207,7 +209,15 @@ function GameBoard({ match, setMatchState }: Props) {
     teamNumber: number,
     col: number,
     row: number,
-  ) {
+  ):
+    | "selected-tile"
+    | "highlighted-tile"
+    | "selected-tile pointer"
+    | "highlighted-tile pointer"
+    | "active-tile"
+    | "shooter-tile"
+    | "not-highlighted"
+    | undefined {
     let thisUbication = [col, row];
 
     if (actionConfirmed != "") {
@@ -385,7 +395,11 @@ function GameBoard({ match, setMatchState }: Props) {
     }
   }
 
-  function clickTileHandler(teamNumber: number, col: number, row: number) {
+  function clickTileHandler(
+    teamNumber: number,
+    col: number,
+    row: number,
+  ): () => void {
     if (actionConfirmed == "move" || actionConfirmed == "dribbling") {
       return () => {
         let thisUbication = [col, row];
@@ -493,7 +507,7 @@ function GameBoard({ match, setMatchState }: Props) {
     }
   }
 
-  function movePlayer(dx: number, dy: number) {
+  function movePlayer(dx: number, dy: number): () => void {
     console.log("Move player");
     if (activePlayer) {
       // console.log("activePlayer: ", activePlayer);
@@ -536,7 +550,7 @@ function GameBoard({ match, setMatchState }: Props) {
     }
   }
 
-  function makePass(team: Team, ubicationScaned: number[]) {
+  function makePass(team: Team, ubicationScaned: number[]): () => void {
     return () => {
       console.log("Make pass");
       let receiver = team.players.find((player) => {
@@ -590,7 +604,7 @@ function GameBoard({ match, setMatchState }: Props) {
     team: Team,
     ubicationScaned: number[],
     otherTeam: Team,
-  ) {
+  ): void {
     console.log("Confirm player selection");
     let teamStillHaveTurnLeft = false;
     team.players.forEach((player) => {

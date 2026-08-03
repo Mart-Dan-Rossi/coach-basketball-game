@@ -1,7 +1,7 @@
 import {
   getMaxStatPerPosition,
   getMinStatPerPosition,
-  playerZone,
+  playerZoneId,
 } from "../utilities/exportableFunctions";
 import { Team } from "./team";
 export class Player {
@@ -318,10 +318,11 @@ export class Player {
   getDribblerPoints() {
     let dribblerPointsInAction: number;
     let teamAAtacking = this.team == "TeamA";
-    let dribblerZone = playerZone(this, teamAAtacking);
+    let dribblerZoneId
+     = playerZoneId(this, teamAAtacking);
 
     let multiplier = this.lastAction == "triple threat" ? 1.5 : 1;
-    if (dribblerZone <= 2) {
+    if (dribblerZoneId <= 2) {
       dribblerPointsInAction =
         (this.playMaking * 6 + this.atleticism * 2 + this.insideScoring * 2) *
         multiplier;
@@ -339,7 +340,7 @@ export class Player {
   getDribbleDefenderPoints() {
     let defenderPointsInAction: number;
     let teamAAtacking = this.team == "TeamA";
-    let dribblerZone = playerZone(this, teamAAtacking);
+    let dribblerZoneId = playerZoneId(this, teamAAtacking);
 
     //Adjust dribblingStealConstant for defender for getting the balanced game
     let dribblingStealConstant = 0.1;
@@ -349,7 +350,7 @@ export class Player {
       (this.lastAction == "stealAttempt" ? 1 : 0) +
       (this.lastAction.toLowerCase() === "overwhelmingWaiting" ? 0.2 : 0);
 
-    if (dribblerZone <= 2) {
+    if (dribblerZoneId <= 2) {
       defenderPointsInAction =
         (this.insideDefence * 2 +
           this.perimeterDefence * 4 +

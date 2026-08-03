@@ -98,3 +98,5 @@ export interface GameStats {
 }
 
 export type Coordinate = [number, number];
+
+export type ValidPositions = "G" | "SG" | "SF" | "PF" | "C" | "Not detected";

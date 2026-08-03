@@ -3,6 +3,7 @@ import {
   PlayerEditableInfo,
   PlayerEditableStatsKeys,
   PlayerStats,
+  ValidPositions,
 } from "../entities/myInterfaces";
 import { Player } from "../entities/players";
 
@@ -11,7 +12,7 @@ export const teamBRimUbication: Coordinate = [27, 8];
 
 export const maxTeamPointsInTeamCreation = 70 * 5 * 9;
 
-export function isPlayerWaiting(player: Player) {
+export function isPlayerWaiting(player: Player): boolean {
   return (
     player.lastAction === "waitWithCaution" ||
     player.lastAction === "overwhelmingWaiting" ||
@@ -20,7 +21,10 @@ export function isPlayerWaiting(player: Player) {
   );
 }
 
-export function getHeightPoints(playerPosition: string, playerHeight: number) {
+export function getHeightPoints(
+  playerPosition: string,
+  playerHeight: number,
+): number {
   let minHeight = getMinStatPerPosition("height", playerPosition);
   let maxHeight = getMaxStatPerPosition("height", playerPosition);
 
@@ -30,7 +34,10 @@ export function getHeightPoints(playerPosition: string, playerHeight: number) {
   return (playerDifferenceToMax * 100) / minMaxDifference;
 }
 
-export function getWeightPoints(playerPosition: string, playerWeight: number) {
+export function getWeightPoints(
+  playerPosition: string,
+  playerWeight: number,
+): number {
   let minWeight = getMinStatPerPosition("weight", playerPosition);
   let maxWeight = getMaxStatPerPosition("weight", playerPosition);
 
@@ -43,7 +50,7 @@ export function getWeightPoints(playerPosition: string, playerWeight: number) {
 export function getMinStatPerPosition(
   thisStat: PlayerEditableStatsKeys,
   playerPosition: string,
-) {
+): number {
   if (thisStat == "height") {
     if (playerPosition == "1") {
       return 165;
@@ -157,7 +164,9 @@ export function getMinStatPerPosition(
   }
 }
 
-export function getInitialPlayerStatsOnCreation(positionNumber: string) {
+export function getInitialPlayerStatsOnCreation(
+  positionNumber: string,
+): PlayerEditableInfo {
   return {
     name: "",
     position: positionNumber,
@@ -176,7 +185,7 @@ export function getInitialPlayerStatsOnCreation(positionNumber: string) {
 export function getMaxStatPerPosition(
   thisStat: PlayerEditableStatsKeys,
   playerPosition: string,
-) {
+): number {
   if (thisStat == "height") {
     if (playerPosition == "1") {
       return 200;
@@ -293,13 +302,23 @@ export function getMaxStatPerPosition(
 export function getStatValue(
   key: PlayerEditableStatsKeys,
   player: PlayerEditableInfo,
-) {
+): number {
   if (key) {
-    return player[key];
+    if (player[key] === undefined) {
+      console.error(`Stat ${key} not found in player object`, player);
+      throw new Error(`Error: Stat ${key} not found in player object`);
+    } else {
+      return player[key];
+    }
+  } else {
+    console.error(`Stat ${key} not passed to getStatValue`, player);
+    throw new Error(`Error: Stat ${key} not passed to getStatValue`);
   }
 }
 
-export function playerPositionDetection(playerPosition: string) {
+export function playerPositionDetection(
+  playerPosition: string | number,
+): ValidPositions {
   if (playerPosition == "1") {
     return "G";
   } else if (playerPosition == "2") {
@@ -315,11 +334,13 @@ export function playerPositionDetection(playerPosition: string) {
   }
 }
 
-export function firstLetterToUpper(string: string) {
+export function firstLetterToUpper(string: string): string {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-export function separateCamelCaseBySpace(string: PlayerEditableStatsKeys) {
+export function separateCamelCaseBySpace(
+  string: PlayerEditableStatsKeys,
+): string {
   let separatedText = "";
 
   if (string !== null) {
@@ -335,7 +356,7 @@ export function separateCamelCaseBySpace(string: PlayerEditableStatsKeys) {
   return separatedText;
 }
 
-export function numberEntire(number: number) {
+export function numberEntire(number: number): number {
   let numberInString = number.toString();
   let entireNumberInString = "";
 
@@ -350,7 +371,9 @@ export function numberEntire(number: number) {
   return Number(entireNumberInString);
 }
 
-export function calculatePlayerOverallRating(pointsUsedOnPlayer: number) {
+export function calculatePlayerOverallRating(
+  pointsUsedOnPlayer: number,
+): string {
   let overallRating: number;
   //50 is the min overall rating
   overallRating = 50 + pointsUsedOnPlayer / 9 / 2;
@@ -363,7 +386,7 @@ export function setPointsUsedOnThisSkill(
   previousStats: PlayerStats,
   setter: React.Dispatch<React.SetStateAction<PlayerStats>>,
   pointsUsedOnThisSkill: number,
-) {
+): void {
   let previousStatsCopy = previousStats;
   if (statType) {
     previousStatsCopy[statType] = pointsUsedOnThisSkill;
@@ -371,11 +394,11 @@ export function setPointsUsedOnThisSkill(
   }
 }
 
-export function roll20SidesDice() {
+export function roll20SidesDice(): number {
   return Math.random() * (21 - 1) + 1;
 }
 
-export function roll6SidesDice() {
+export function roll6SidesDice(): number {
   return Math.random() * (7 - 1) + 1;
 }
 
@@ -433,7 +456,7 @@ export function getRangeText(rangeId: number): string {
 export function isCloseToTheRim(
   teamAAtacking: boolean,
   coordinate: Coordinate,
-) {
+): boolean {
   return (
     (!teamAAtacking &&
       ((coordinate[0] == 2 && coordinate[1] > 5 && coordinate[1] < 11) ||
@@ -447,7 +470,7 @@ export function isCloseToTheRim(
 export function isBehindTheBoard(
   teamAAtacking: boolean,
   coordinate: Coordinate,
-) {
+): boolean {
   return (
     (!teamAAtacking &&
       coordinate[0] == 1 &&
@@ -460,7 +483,10 @@ export function isBehindTheBoard(
   );
 }
 
-export function isInShortRange(teamAAtacking: boolean, coordinate: Coordinate) {
+export function isInShortRange(
+  teamAAtacking: boolean,
+  coordinate: Coordinate,
+): boolean {
   return (
     (!teamAAtacking &&
       ((coordinate[0] < 5 &&
@@ -483,7 +509,10 @@ export function isInShortRange(teamAAtacking: boolean, coordinate: Coordinate) {
   );
 }
 
-export function isInMidRange(teamAAtacking: boolean, coordinate: Coordinate) {
+export function isInMidRange(
+  teamAAtacking: boolean,
+  coordinate: Coordinate,
+): boolean {
   return (
     (!teamAAtacking &&
       coordinate[0] == 1 &&
@@ -533,7 +562,7 @@ export function isInMidRange(teamAAtacking: boolean, coordinate: Coordinate) {
 export function isCloseToThe3PointLine(
   teamAAtacking: boolean,
   coordinate: Coordinate,
-) {
+): boolean {
   return (
     (!teamAAtacking &&
       coordinate[0] > 7 &&
@@ -572,7 +601,10 @@ export function isCloseToThe3PointLine(
   );
 }
 
-export function isInLong3Range(teamAAtacking: boolean, coordinate: Coordinate) {
+export function isInLong3Range(
+  teamAAtacking: boolean,
+  coordinate: Coordinate,
+): boolean {
   return (
     (!teamAAtacking &&
       coordinate[0] < 10 &&
@@ -618,7 +650,7 @@ export function isInLong3Range(teamAAtacking: boolean, coordinate: Coordinate) {
 export function isCloseToHalfCourt(
   teamAAtacking: boolean,
   coordinate: Coordinate,
-) {
+): boolean {
   return (
     (!teamAAtacking &&
       ((coordinate[0] < 15 &&
@@ -668,7 +700,7 @@ export function isCloseToHalfCourt(
 export function isBehindTheHalfCourt(
   teamAAtacking: boolean,
   coordinate: Coordinate,
-) {
+): boolean {
   return (
     (!teamAAtacking &&
       ((coordinate[0] < 19 &&
@@ -710,7 +742,7 @@ export function isBehindTheHalfCourt(
 export function isIntheOtherRim(
   teamAAtacking: boolean,
   coordinate: Coordinate,
-) {
+): boolean {
   return (
     (!teamAAtacking &&
       ((coordinate[0] > 18 && (coordinate[1] == 1 || coordinate[1] == 15)) ||
@@ -733,14 +765,14 @@ export function isIntheOtherRim(
   );
 }
 
-export function mathShotPointsInFreeThrow(shooter: PlayerStats) {
+export function mathShotPointsInFreeThrow(shooter: PlayerStats): number {
   return (shooter.insideScoring + shooter.perimeterScoring) / 2;
 }
 
 export function mathChancesMakingShotInFreeThrow(
   maxShooterPoints: number,
   shotDiceRoll: number,
-) {
+): boolean {
   return (
     (maxShooterPoints >= 100 && shotDiceRoll > 1) ||
     (maxShooterPoints >= 97 && shotDiceRoll > 2) ||
@@ -763,7 +795,7 @@ export function mathChancesMakingShotInFreeThrow(
 export function mathShotPointsCloseToTheRim(
   multiplier: number,
   shooter: PlayerStats,
-) {
+): number {
   const insideScoring = shooter.insideScoring;
 
   if (shooter.position === undefined) {
@@ -790,7 +822,7 @@ export function mathShotPointsCloseToTheRim(
 export function mathChancesMakingShotInCloseToTheRim(
   pointsDif: number,
   shotDiceRoll: number,
-) {
+): boolean {
   return (
     pointsDif > 60 ||
     (pointsDif > 55 && shotDiceRoll > 1) ||
@@ -818,7 +850,7 @@ export function mathChancesMakingShotInCloseToTheRim(
 export function mathShotPointsInShortRange(
   multiplier: number,
   shooter: PlayerStats,
-) {
+): number {
   if (shooter.position === undefined) {
     console.error("shooter.position not found in mathShotPointsInShortRange");
     throw new Error(
@@ -844,7 +876,7 @@ export function mathShotPointsInShortRange(
 export function mathChancesMakingShotInShortRange(
   pointsDif: number,
   shotDiceRoll: number,
-) {
+): boolean {
   return (
     (pointsDif > 98 && shotDiceRoll > 1) ||
     (pointsDif > 96 && shotDiceRoll > 2) ||
@@ -871,7 +903,7 @@ export function mathChancesMakingShotInShortRange(
 export function mathShotPointsInMidRange(
   multiplier: number,
   shooter: PlayerStats,
-) {
+): number {
   if (shooter.position === undefined) {
     console.error("shooter.position not found in mathShotPointsInMidRange");
     throw new Error(
@@ -894,7 +926,7 @@ export function mathShotPointsInMidRange(
 export function mathChancesMakingShotInMidRange(
   pointsDif: number,
   shotDiceRoll: number,
-) {
+): boolean {
   return (
     (pointsDif > 98 && shotDiceRoll > 3) ||
     (pointsDif > 94 && shotDiceRoll > 4) ||
@@ -919,7 +951,7 @@ export function mathChancesMakingShotInMidRange(
 export function mathShotPointsCloseToThe3PointLine(
   multiplier: number,
   shooter: PlayerStats,
-) {
+): number {
   if (shooter.position === undefined) {
     console.error(
       "shooter.position not found in mathShotPointsCloseToThe3PointLine",
@@ -944,7 +976,7 @@ export function mathShotPointsCloseToThe3PointLine(
 export function mathChancesMakingShotInCloseToThe3PointLine(
   pointsDif: number,
   shotDiceRoll: number,
-) {
+): boolean {
   return (
     (pointsDif > 98 && shotDiceRoll > 5) ||
     (pointsDif > 94 && shotDiceRoll > 6) ||
@@ -967,7 +999,7 @@ export function mathChancesMakingShotInCloseToThe3PointLine(
 export function mathShotPointsInLong3Range(
   multiplier: number,
   shooter: PlayerStats,
-) {
+): number {
   if (shooter.position === undefined) {
     console.error("shooter.position not found in mathShotPointsInLong3Range");
     throw new Error(
@@ -991,7 +1023,7 @@ export function mathShotPointsInLong3Range(
 export function mathChancesMakingShotInLong3Range(
   pointsDif: number,
   shotDiceRoll: number,
-) {
+): boolean {
   return (
     (pointsDif > 98 && shotDiceRoll > 6) ||
     (pointsDif > 92 && shotDiceRoll > 7) ||
@@ -1013,7 +1045,7 @@ export function mathChancesMakingShotInLong3Range(
 export function mathShotPointsInHalfCourt(
   multiplier: number,
   shooter: PlayerStats,
-) {
+): number {
   if (shooter.position === undefined) {
     console.error("shooter.position not found in mathShotPointsInHalfCourt");
     throw new Error(
@@ -1036,7 +1068,7 @@ export function mathShotPointsInHalfCourt(
 export function mathChancesMakingShotInHalfCourt(
   pointsDif: number,
   shotDiceRoll: number,
-) {
+): boolean {
   return (
     (pointsDif > 98 && shotDiceRoll > 7) ||
     (pointsDif > 92 && shotDiceRoll > 8) ||
@@ -1057,7 +1089,7 @@ export function mathChancesMakingShotInHalfCourt(
 export function mathShotPointsBehindHalfCourt(
   multiplier: number,
   shooter: PlayerStats,
-) {
+): number {
   if (shooter.position === undefined) {
     console.error(
       "shooter.position not found in mathShotPointsBehindHalfCourt",
@@ -1082,7 +1114,7 @@ export function mathShotPointsBehindHalfCourt(
 export function mathChancesMakingShotInBehindHalfCourt(
   pointsDif: number,
   shotDiceRoll: number,
-) {
+): boolean {
   return (
     (pointsDif > 98 && shotDiceRoll > 8) ||
     (pointsDif > 92 && shotDiceRoll > 9) ||
@@ -1102,7 +1134,7 @@ export function mathChancesMakingShotInBehindHalfCourt(
 export function mathShotPointsCloseToTheOtherRim(
   multiplier: number,
   shooter: PlayerStats,
-) {
+): number {
   if (shooter.position === undefined) {
     console.error(
       "shooter.position not found in mathShotPointsCloseToTheOtherRim",
@@ -1127,7 +1159,7 @@ export function mathShotPointsCloseToTheOtherRim(
 export function mathChancesMakingShotInCloseToTheOtherRim(
   pointsDif: number,
   shotDiceRoll: number,
-) {
+): boolean {
   return (
     (pointsDif > 98 && shotDiceRoll > 9) ||
     (pointsDif > 92 && shotDiceRoll > 10) ||
@@ -1146,7 +1178,7 @@ export function mathChancesMakingShotInCloseToTheOtherRim(
 export function mathDefensePointsCloseToTheRim(
   multiplier: number,
   defender: PlayerStats,
-) {
+): number {
   if (defender.position === undefined) {
     console.error(
       "defender.position not found in mathDefensePointsCloseToTheRim",
@@ -1174,7 +1206,7 @@ export function mathDefensePointsCloseToTheRim(
 export function mathDefensePointsInShortRange(
   multiplier: number,
   defender: PlayerStats,
-) {
+): number {
   if (defender.position === undefined) {
     console.error(
       "defender.position not found in mathDefensePointsInShortRange",
@@ -1201,7 +1233,7 @@ export function mathDefensePointsInShortRange(
 export function mathDefensePointsInMidRange(
   multiplier: number,
   defender: PlayerStats,
-) {
+): number {
   if (defender.position === undefined) {
     console.error("defender.position not found in mathDefensePointsInMidRange");
     throw new Error(
@@ -1225,7 +1257,7 @@ export function mathDefensePointsInMidRange(
 export function mathDefensePointsCloseToThe3PointLine(
   multiplier: number,
   defender: PlayerStats,
-) {
+): number {
   if (defender.position === undefined) {
     console.error(
       "defender.position not found in mathDefensePointsCloseToThe3PointLine",
@@ -1250,7 +1282,7 @@ export function mathDefensePointsCloseToThe3PointLine(
 export function mathDefensePointsLong3Range(
   multiplier: number,
   defender: PlayerStats,
-) {
+): number {
   if (defender.position === undefined) {
     console.error("defender.position not found in mathDefensePointsLong3Range");
     throw new Error(
@@ -1273,7 +1305,7 @@ export function mathDefensePointsLong3Range(
 export function mathDefensePointsHalfCourtAndFartherAway(
   multiplier: number,
   defender: PlayerStats,
-) {
+): number {
   if (defender.position === undefined) {
     console.error(
       "defender.position not found in mathDefensePointsHalfCourtAndFartherAway",
@@ -1291,7 +1323,7 @@ export function mathDefensePointsHalfCourtAndFartherAway(
   );
 }
 
-export function playerZone(player: Player, teamAAtacking: boolean) {
+export function playerZoneId(player: Player, teamAAtacking: boolean): number {
   if (isCloseToTheRim(teamAAtacking, [player.ubicationX, player.ubicationY])) {
     return ranges.closeToTheRim.id;
   } else if (
@@ -1338,7 +1370,7 @@ export function compareIniciatives(
   playerA: Player,
   playerB: Player,
   isTeamAAtacking: Player | undefined,
-) {
+): Player {
   let defender = !!isTeamAAtacking ? playerB : playerA;
   let atacker = !!isTeamAAtacking ? playerA : playerB;
 
@@ -1434,45 +1466,51 @@ export function compareIniciatives(
   while (compareIniciatives == 0) {
     if (!isTeamAAtacking) {
       //If the player is close to the rim
-      if (playerZone(defender, !isTeamAAtacking) == ranges.closeToTheRim.id) {
+      if (playerZoneId(defender, !isTeamAAtacking) == ranges.closeToTheRim.id) {
         defenderIniciative = calculationIfDefensorIsCloseToTheRim();
       }
       //If the player is in short range
       else if (
-        playerZone(defender, !isTeamAAtacking) == ranges.inShortRange.id ||
-        playerZone(defender, !isTeamAAtacking) == ranges.behindTheBoard.id
+        playerZoneId(defender, !isTeamAAtacking) == ranges.inShortRange.id ||
+        playerZoneId(defender, !isTeamAAtacking) == ranges.behindTheBoard.id
       ) {
         defenderIniciative = calculationIfDefenderIsInShortRange();
       }
       //If the player is in mid range
-      else if (playerZone(defender, !isTeamAAtacking) == ranges.inMidRange.id) {
+      else if (
+        playerZoneId(defender, !isTeamAAtacking) == ranges.inMidRange.id
+      ) {
         defenderIniciative = calculationIfDefenderIsInMidRange();
       }
       //If he is outside 3 point range or farther away
       else if (
-        playerZone(defender, !isTeamAAtacking) >= ranges.outsideThe3PointLine.id
+        playerZoneId(defender, !isTeamAAtacking) >=
+        ranges.outsideThe3PointLine.id
       ) {
         defenderIniciative = calculationIfDefenderIsOutsideThe3PointLine();
       }
 
       //If the player is close to the rim
-      if (playerZone(atacker, !isTeamAAtacking) == ranges.closeToTheRim.id) {
+      if (playerZoneId(atacker, !isTeamAAtacking) == ranges.closeToTheRim.id) {
         atackerInisiative = calculationIfAtackerIsCloseToTheRim();
       }
       //If the player is in short range
       else if (
-        playerZone(atacker, !isTeamAAtacking) == ranges.inShortRange.id ||
-        playerZone(atacker, !isTeamAAtacking) == ranges.behindTheBoard.id
+        playerZoneId(atacker, !isTeamAAtacking) == ranges.inShortRange.id ||
+        playerZoneId(atacker, !isTeamAAtacking) == ranges.behindTheBoard.id
       ) {
         atackerInisiative = calculationIfAtackerIsInShortRange();
       }
       //If the player is in mid range
-      else if (playerZone(atacker, !isTeamAAtacking) == ranges.inMidRange.id) {
+      else if (
+        playerZoneId(atacker, !isTeamAAtacking) == ranges.inMidRange.id
+      ) {
         atackerInisiative = calculationIfAtackerIsInMidRange();
       }
       //If he is outside 3 point range or farther away
       else if (
-        playerZone(atacker, !isTeamAAtacking) >= ranges.outsideThe3PointLine.id
+        playerZoneId(atacker, !isTeamAAtacking) >=
+        ranges.outsideThe3PointLine.id
       ) {
         atackerInisiative = calculationIfAtackerIsOutsideThe3PointLine();
       }
@@ -1481,53 +1519,56 @@ export function compareIniciatives(
     } else if (isTeamAAtacking) {
       //If the player is close to the rim
       if (
-        playerZone(defender, isTeamAAtacking !== undefined) ==
+        playerZoneId(defender, isTeamAAtacking !== undefined) ==
         ranges.closeToTheRim.id
       ) {
         defenderIniciative = calculationIfDefensorIsCloseToTheRim();
       }
       //If the player is in short range
       else if (
-        playerZone(defender, isTeamAAtacking !== undefined) ==
+        playerZoneId(defender, isTeamAAtacking !== undefined) ==
           ranges.inShortRange.id ||
-        playerZone(defender, isTeamAAtacking !== undefined) ==
+        playerZoneId(defender, isTeamAAtacking !== undefined) ==
           ranges.behindTheBoard.id
       ) {
         defenderIniciative = calculationIfAtackerIsInShortRange();
       }
       //If the player is in mid range
       else if (
-        playerZone(defender, isTeamAAtacking !== undefined) ==
+        playerZoneId(defender, isTeamAAtacking !== undefined) ==
         ranges.inMidRange.id
       ) {
         defenderIniciative = calculationIfAtackerIsInMidRange();
       }
       //If he is outside 3 point range or farther away
       else if (
-        playerZone(defender, isTeamAAtacking !== undefined) >=
+        playerZoneId(defender, isTeamAAtacking !== undefined) >=
         ranges.outsideThe3PointLine.id
       ) {
         defenderIniciative = calculationIfDefenderIsOutsideThe3PointLine();
       }
 
       //If the player is close to the rim
-      if (playerZone(atacker, !isTeamAAtacking) == ranges.closeToTheRim.id) {
+      if (playerZoneId(atacker, !isTeamAAtacking) == ranges.closeToTheRim.id) {
         atackerInisiative = calculationIfAtackerIsCloseToTheRim();
       }
       //If the player is in short range
       else if (
-        playerZone(atacker, !isTeamAAtacking) == ranges.inShortRange.id ||
-        playerZone(atacker, !isTeamAAtacking) == ranges.behindTheBoard.id
+        playerZoneId(atacker, !isTeamAAtacking) == ranges.inShortRange.id ||
+        playerZoneId(atacker, !isTeamAAtacking) == ranges.behindTheBoard.id
       ) {
         atackerInisiative = calculationIfAtackerIsInShortRange();
       }
       //If the player is in mid range
-      else if (playerZone(atacker, !isTeamAAtacking) == ranges.inMidRange.id) {
+      else if (
+        playerZoneId(atacker, !isTeamAAtacking) == ranges.inMidRange.id
+      ) {
         atackerInisiative = calculationIfAtackerIsInMidRange();
       }
       //If he is outside 3 point range or farther away
       else if (
-        playerZone(atacker, !isTeamAAtacking) >= ranges.outsideThe3PointLine.id
+        playerZoneId(atacker, !isTeamAAtacking) >=
+        ranges.outsideThe3PointLine.id
       ) {
         atackerInisiative = calculationIfAtackerIsOutsideThe3PointLine();
       }
@@ -1549,7 +1590,7 @@ export function checkTilesThatWillInfluenceInTheCalculations(
   gameBoard: number[][],
   startingUbication: number[],
   endingUbication: number[],
-) {
+): any[][] {
   const [width, height] = [gameBoard[0].length, gameBoard.length];
 
   const x1 = startingUbication[0];
@@ -1607,15 +1648,13 @@ export function getDistanceToAPoint(
   );
 }
 
-export function getClosestPlayerOfATeanFromAPoint(
+export function findNearestPlayerToPoint(
   players: Player[],
   targetPoint: Coordinate,
-) {
+): Player {
   if (players.length === 0) {
-    console.error("Players length is 0 in getClosestPlayerOfATeanFromAPoint");
-    throw new Error(
-      "Error: Players length is 0 in getClosestPlayerOfATeanFromAPoint",
-    );
+    console.error("Players length is 0 in findNearestPlayerToPoint");
+    throw new Error("Error: Players length is 0 in findNearestPlayerToPoint");
   }
 
   let closestPlayer: Player | undefined;
@@ -1645,7 +1684,7 @@ export function getClosestPlayerOfATeanFromAPoint(
   return closestPlayer;
 }
 
-export function getDistanceToRim(player: Player) {
+export function getDistanceToRim(player: Player): number {
   let distanceToRim: number;
   let dXToRim = getShotDistance(player, "X");
   let dYToRim = getShotDistance(player, "Y");
@@ -1660,7 +1699,7 @@ export function getDistanceToRim(player: Player) {
   }
 }
 
-export function getShotDistance(player: Player, direction: string) {
+export function getShotDistance(player: Player, direction: string): number {
   //This function get the distance to the rim in given axis (direction)
   let shotDistance: number | undefined;
 
@@ -1694,6 +1733,11 @@ export function getShotDistance(player: Player, direction: string) {
     }
   }
 
+  if (!shotDistance) {
+    console.error("shotDistance not found in getShotDistance");
+    throw new Error("Error: shotDistance not found in getShotDistance");
+  }
+
   return shotDistance;
 }
 
@@ -1703,7 +1747,7 @@ export function getWhereItReboundsTo(
   shotDistanceY: number,
   shotDistanceX: number,
   teamAAtacking: boolean,
-) {
+): Coordinate {
   let reboundLandingX: number;
   let reboundLandingY: number;
 
@@ -1745,7 +1789,7 @@ export function getWhereItReboundsTo(
     reboundLandingX = Math.round(2 + shotDistanceX * rollDiceMultiplierX);
   }
 
-  return [reboundLandingX, reboundLandingY] as Coordinate;
+  return [reboundLandingX, reboundLandingY];
 }
 
 function getReboundCandidates(
@@ -1918,10 +1962,10 @@ export const teamBInitialPositions = [
   [15, 8],
 ];
 
-export function getInitialBoard(teamShootingFT?: string) {
+export function getInitialBoard(teamShootingFT?: string): number[][] {
   function getBoardFormatInitialTeamUbication(
     teamInitialPositions: number[][],
-  ) {
+  ): number[][] {
     return teamInitialPositions.map((playerInitialPosition) => [
       playerInitialPosition[1] - 1,
       playerInitialPosition[0] - 1,
@@ -1956,8 +2000,8 @@ export function getInitialBoard(teamShootingFT?: string) {
     playersUbication: number[][],
     y: number,
     x: number,
-  ) {
-    return playersUbication.find(
+  ): boolean {
+    return !!playersUbication.find(
       (playerUbication) => playerUbication[0] === y && playerUbication[1] === x,
     );
   }
@@ -1983,7 +2027,7 @@ export function isRivalNearby(
   gameBoard: number[][],
   player: Player,
   mustBeNext = false,
-) {
+): boolean {
   const x = player.ubicationX - 1;
   const y = player.ubicationY - 1;
 
@@ -1991,6 +2035,8 @@ export function isRivalNearby(
 
   let dx = mustBeNext ? 1 : 2;
   let dy = mustBeNext ? 1 : 2;
+
+  let finalValue = false;
 
   for (let i = dx * -1; i <= dx; i++) {
     for (let j = dy * -1; j <= dy; j++) {
@@ -2007,11 +2053,16 @@ export function isRivalNearby(
         newY < gameBoard.length
       ) {
         if (gameBoard[newY][newX] === rivalTeamNumber) {
-          return true;
+          finalValue = true;
+          //If it found return true, if not it will continue checking the rest of the tiles
+          return finalValue;
         }
       }
     }
   }
+
+  //If it didn't find any rival nearby, return false
+  return finalValue;
 }
 
 export const initialGameBoard = getInitialBoard();

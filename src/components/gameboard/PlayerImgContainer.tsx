@@ -11,7 +11,9 @@ interface Props {
 }
 
 function PlayerImgContainer({ team, col, row, teamLetterProps }: Props) {
-  function PlayerImgContainerClickHandler() {
+  function PlayerImgContainerClickHandler(): (
+    e: React.MouseEvent<Element, MouseEvent>,
+  ) => void {
     return (e: React.MouseEvent) => {
       e.preventDefault();
       e.currentTarget.classList.toggle("expand");

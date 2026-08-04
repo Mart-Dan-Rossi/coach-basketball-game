@@ -34,7 +34,7 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
     confirmButtonHandler,
     setConfirmButtonHandler,
     setActionConfirmed,
-    gameBoard,
+    gameboard,
     setGameBoard,
     setActivePlayer,
   } = useContext(GameContext);
@@ -196,7 +196,7 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
         type,
         gameNarration,
         setGameNarration,
-        gameBoard,
+        gameboard,
         setGameBoard,
       );
     } catch (err) {
@@ -231,7 +231,7 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
 
     handleEndTurn();
 
-    // console.log("GameBoard 3: ", gameBoard);
+    // console.log("Gameboard 3: ", gameboard);
   }
 
   function handleEndTurn(): void {
@@ -243,7 +243,7 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
       matchCopy.handleEndTurn(
         gameNarration,
         setGameNarration,
-        gameBoard,
+        gameboard,
         setGameBoard,
       );
     } catch (err) {

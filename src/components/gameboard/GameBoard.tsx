@@ -2,7 +2,7 @@ import React from "react";
 import { useEffect, useContext } from "react";
 import { Team } from "../../entities/team";
 //@ts-ignore
-import "../../styles/GameBoard.css";
+import "../../styles/Gameboard.css";
 import PlayerImgContainer from "./PlayerImgContainer";
 import { GameContext } from "../../context/GameContext";
 import {
@@ -20,7 +20,7 @@ interface Props {
   setMatchState: React.Dispatch<React.SetStateAction<Match>>;
 }
 
-function GameBoard({ match, setMatchState }: Props) {
+function Gameboard({ match, setMatchState }: Props) {
   const teamA = match.teamA;
   const teamB = match.teamB;
 
@@ -50,7 +50,7 @@ function GameBoard({ match, setMatchState }: Props) {
     setPlayerClikedTeamA,
     playerClikedTeamB,
     setPlayerClikedTeamB,
-    gameBoard,
+    gameboard,
     activePlayer,
     setActivePlayer,
   } = useContext(GameContext);
@@ -71,12 +71,25 @@ function GameBoard({ match, setMatchState }: Props) {
         return [player.ubicationY - 1, player.ubicationX - 1];
       });
 
-      const mismatchFound = playersUbications.some((ubicationScanned) => {
-        const numberInGameboard =
-          gameBoard[ubicationScanned[0]][ubicationScanned[1]];
+      const mismatchFound = playersUbications.some(
+        (ubicationScanned, index) => {
+          const numberInGameboard =
+            gameboard[ubicationScanned[0]][ubicationScanned[1]];
 
-        return numberInGameboard !== teamNumber;
-      });
+          if (numberInGameboard !== teamNumber) {
+            console.log("gameboard 0: ", gameboard);
+            console.log("ubicationScanned: ", ubicationScanned);
+            console.log("teamNumber: ", teamNumber);
+            console.log(
+              "numberInGameboard: ",
+              gameboard[ubicationScanned[0]][ubicationScanned[1]],
+            );
+            return true;
+          }
+
+          return false;
+        },
+      );
 
       if (mismatchFound) {
         toast.error(
@@ -85,7 +98,7 @@ function GameBoard({ match, setMatchState }: Props) {
 
         console.error(
           "Gameboard:",
-          gameBoard,
+          gameboard,
           "Team positions:",
           playersUbications,
         );
@@ -94,7 +107,7 @@ function GameBoard({ match, setMatchState }: Props) {
 
     validateTeamUbication("A");
     validateTeamUbication("B");
-  }, [gameBoard]);
+  }, [gameboard]);
 
   let teamAAnySelected = teamA.isAnyPlayerSelected();
   let teamBAnySelected = teamB.isAnyPlayerSelected();
@@ -166,14 +179,14 @@ function GameBoard({ match, setMatchState }: Props) {
         //TODO make waiting options work propperly
         //And have 0.5 or more action points
         if (teamActivePlayer.actionPoints >= 0.5) {
-          if (isRivalNearby(gameBoard, teamActivePlayer)) {
+          if (isRivalNearby(gameboard, teamActivePlayer)) {
             setShowWaitCarefullyButton(() => true);
           }
         }
 
         //And have 1 or more action point
         if (teamActivePlayer.actionPoints >= 1) {
-          if (isRivalNearby(gameBoard, teamActivePlayer, true)) {
+          if (isRivalNearby(gameboard, teamActivePlayer, true)) {
             setShowWaitPressingButton(() => true);
           }
           setShowMoveButton(() => true);
@@ -513,11 +526,11 @@ function GameBoard({ match, setMatchState }: Props) {
       // console.log("activePlayer: ", activePlayer);
       return () => {
         if (activePlayer.ubicationY && activePlayer.ubicationX) {
-          gameBoard[activePlayer.ubicationY - 1][activePlayer.ubicationX - 1] =
+          gameboard[activePlayer.ubicationY - 1][activePlayer.ubicationX - 1] =
             0;
 
           activePlayer.movePlayer(dx, dy);
-          gameBoard[activePlayer.ubicationY - 1][activePlayer.ubicationX - 1] =
+          gameboard[activePlayer.ubicationY - 1][activePlayer.ubicationX - 1] =
             activePlayer.team == "TeamA" ? 1 : 2;
 
           try {
@@ -568,7 +581,7 @@ function GameBoard({ match, setMatchState }: Props) {
           match.handlePassAction(
             passer,
             receiver,
-            gameBoard,
+            gameboard,
             gameNarration,
             setGameNarration,
           );
@@ -664,7 +677,7 @@ function GameBoard({ match, setMatchState }: Props) {
   return (
     <div id="gameboard-container">
       <div id="gameboard">
-        {gameBoard.map((rowContent, rowIndex) => {
+        {gameboard.map((rowContent, rowIndex) => {
           return rowContent.map((player, colIndex) => {
             return (
               <div
@@ -704,4 +717,4 @@ function GameBoard({ match, setMatchState }: Props) {
   );
 }
 
-export default GameBoard;
+export default Gameboard;

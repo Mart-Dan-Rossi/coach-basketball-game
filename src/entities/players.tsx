@@ -2,6 +2,8 @@ import {
   getMaxStatPerPosition,
   getMinStatPerPosition,
   playerZoneId,
+  teamARimUbication,
+  teamBRimUbication,
 } from "../utilities/exportableFunctions";
 import { Team } from "./team";
 export class Player {
@@ -291,20 +293,33 @@ export class Player {
         break;
       case "overwhelmingWaiting":
         this.actionPoints -= 1;
-        break;  
+        break;
     }
 
     this.setLastAction(type);
   }
 
-  movePlayerToOwnRim() {
+  movePlayerToOwnRim(
+    setGameBoard: React.Dispatch<React.SetStateAction<number[][]>>,
+  ) {
+    let previousUbicationX = this.ubicationX;
+    let previousUbicationY = this.ubicationY;
+    let teamNumber = this.team == "TeamA" ? 1 : 2;
+
     if (this.team == "TeamA") {
-      this.ubicationX = 2;
+      this.ubicationX = teamARimUbication[0] - 1;
     } else {
-      this.ubicationX = 27;
+      this.ubicationX = teamBRimUbication[0] + 1;
     }
 
-    this.ubicationY = 8;
+    //Both rims are in the same Y position
+    this.ubicationY = teamARimUbication[1];
+
+    setGameBoard((gameboard) => {
+      gameboard[previousUbicationY - 1][previousUbicationX - 1] = 0;
+      gameboard[this.ubicationY - 1][this.ubicationX - 1] = teamNumber;
+      return [...gameboard];
+    });
   }
 
   subtractActionPoints(points: number) {
@@ -318,8 +333,7 @@ export class Player {
   getDribblerPoints() {
     let dribblerPointsInAction: number;
     let teamAAtacking = this.team == "TeamA";
-    let dribblerZoneId
-     = playerZoneId(this, teamAAtacking);
+    let dribblerZoneId = playerZoneId(this, teamAAtacking);
 
     let multiplier = this.lastAction == "triple threat" ? 1.5 : 1;
     if (dribblerZoneId <= 2) {

@@ -1,5 +1,5 @@
 import React from "react";
-import GameBoard from "../gameboard/GameBoard";
+import Gameboard from "../gameboard/Gameboard";
 import { useContext, useEffect, useState } from "react";
 import { GameContext } from "../../context/GameContext";
 //@ts-ignore
@@ -20,7 +20,7 @@ const GameContainer = () => {
     teamBStats,
     gameNarration,
     setGameNarration,
-    gameBoard,
+    gameboard,
     setGameBoard,
   } = useContext(GameContext);
 
@@ -220,7 +220,7 @@ const GameContainer = () => {
       matchState.jumpBall(
         gameNarration,
         setGameNarration,
-        gameBoard,
+        gameboard,
         setGameBoard,
       );
     }
@@ -233,7 +233,7 @@ const GameContainer = () => {
   return (
     <div className="game-container">
       <MatchInfo match={matchState} />
-      <GameBoard match={matchState} setMatchState={setMatchState} />
+      <Gameboard match={matchState} setMatchState={setMatchState} />
       <MatchActionsContainer match={matchState} setMatchState={setMatchState} />
     </div>
   );

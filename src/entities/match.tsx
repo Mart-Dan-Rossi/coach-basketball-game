@@ -121,7 +121,7 @@ export class Match {
   jumpBall(
     gameNarration: string[],
     setGameNarration: React.Dispatch<React.SetStateAction<string[]>>,
-    gameBoard: number[][],
+    gameboard: number[][],
     setGameBoard: React.Dispatch<React.SetStateAction<number[][]>>,
   ) {
     let pointsObteinedInTheJumpBallA = 0;
@@ -232,13 +232,13 @@ export class Match {
     this.teamB.giveActionPointsToTeam();
 
     //Run clock
-    this.runClock(gameNarration, setGameNarration, gameBoard, setGameBoard);
+    this.runClock(gameNarration, setGameNarration, gameboard, setGameBoard);
   }
 
   handlePassAction(
     passer: Player,
     receiver: Player,
-    gameBoard: number[][],
+    gameboard: number[][],
     gameNarration: string[],
     setGameNarration: React.Dispatch<React.SetStateAction<string[]>>,
   ) {
@@ -269,7 +269,7 @@ export class Match {
     //Then i get the ubications that will have inpact in the calculation
     let tilesThatWillInfluenceInCalculations =
       checkTilesThatWillInfluenceInTheCalculations(
-        gameBoard,
+        gameboard,
         [passer.ubicationX, passer.ubicationY],
         [receiver.ubicationX, receiver.ubicationY],
       );
@@ -441,7 +441,7 @@ export class Match {
   calculateIfDribblingIsSuccesfull(
     dribbler: Player,
     endingUbication: number[],
-    gameBoard: [[]],
+    gameboard: [[]],
   ) {
     //I set dribbler as default player with the ball
     let playerWithBallAfterCalculations = dribbler;
@@ -451,7 +451,7 @@ export class Match {
 
     let tilesThatWillInfluenceInCalculations =
       checkTilesThatWillInfluenceInTheCalculations(
-        gameBoard,
+        gameboard,
         [dribbler.ubicationX, dribbler.ubicationY],
         endingUbication,
       ).flat(); //In this case there will be no defeders in the tile of the ball
@@ -652,7 +652,7 @@ export class Match {
   handleShot(
     gameNarration: string[],
     setGameNarration: React.Dispatch<React.SetStateAction<string[]>>,
-    gameBoard: number[][],
+    gameboard: number[][],
     setGameBoard: React.Dispatch<React.SetStateAction<number[][]>>,
   ) {
     // console.log("in handle shot method");
@@ -834,9 +834,9 @@ export class Match {
 
               //TODO Check if this points are fare to make a foul
 
-              if (defenderPoints < 10 && !this.isFreeThrowSerie) {
-                // Uncomment to test free throws
-                // if (true && !this.isFreeThrowSerie) {
+              // if (defenderPoints < 10 && !this.isFreeThrowSerie) {
+              // Uncomment to test free throws
+              if (true && !this.isFreeThrowSerie) {
                 let amountOfFreeThrows;
                 if (
                   shooterZoneUbicationId == ranges.closeToTheRim.id ||
@@ -1092,7 +1092,6 @@ export class Match {
 
     let asistant = atackingTeam.players.find((player) => player.lastPasser);
 
-    // WIP move players to FT rebounding positions in FT serie
     if (this.isFreeThrowSerie && this.isFirstFreeThrowInTheSerie) {
       this.movePlayersToReboundOnFTPositions(
         defendingTeam,
@@ -1137,35 +1136,36 @@ export class Match {
             : teamBRimUbication,
         );
 
-        newPlayerWithBall.movePlayerToOwnRim();
+        newPlayerWithBall.movePlayerToOwnRim(setGameBoard);
         newPlayerWithBall.setHaveBall(true);
         newGameNarration.unshift(
           `${isNaN(Number(newPlayerWithBall.name)) ? newPlayerWithBall.name : newPlayerWithBall.position} get the ball to start theyr posetion`,
         );
       }
-    } else {
-      //If the shot is off
-      if (this.freeThrowsLeft == 0) {
-        //If it doesn't goes in handle who get's the rebound
-        newPlayerWithBall = this.getRebounder(shooter);
-
-        newPlayerWithBall.statsAddRebound(atackingTeam);
-        newPlayerWithBall.setLastAction(
-          newPlayerWithBall.team == atackingTeam.name ? "getOReb" : "getDReb",
-        );
-
-        newPlayerWithBall.setHaveBall(true);
-
-        newGameNarration.unshift(
-          `The shot is off ${
-            newPlayerWithBall.team == atackingTeam.name ? "but" : "and"
-          } ${isNaN(Number(newPlayerWithBall.name)) ? newPlayerWithBall.name : newPlayerWithBall.position} gets the rebound!`,
-        );
-        shooterTeam.resetLastPasserForAllPlayers();
-
-        shooter.setShotAttempt(false);
-      }
     }
+    // } else {
+    //   //If the shot is off
+    //   if (this.freeThrowsLeft == 0) {
+    //     //If it doesn't goes in handle who get's the rebound
+    //     newPlayerWithBall = this.getRebounder(shooter);
+
+    //     newPlayerWithBall.statsAddRebound(atackingTeam);
+    //     newPlayerWithBall.setLastAction(
+    //       newPlayerWithBall.team == atackingTeam.name ? "getOReb" : "getDReb",
+    //     );
+
+    //     newPlayerWithBall.setHaveBall(true);
+
+    //     newGameNarration.unshift(
+    //       `The shot is off ${
+    //         newPlayerWithBall.team == atackingTeam.name ? "but" : "and"
+    //       } ${isNaN(Number(newPlayerWithBall.name)) ? newPlayerWithBall.name : newPlayerWithBall.position} gets the rebound!`,
+    //     );
+    //     shooterTeam.resetLastPasserForAllPlayers();
+
+    //     shooter.setShotAttempt(false);
+    //   }
+    // }
 
     //Then i handle the players status and stats
     shooter.setHaveBall(false);
@@ -1190,7 +1190,7 @@ export class Match {
       this.handleShot(
         newGameNarration,
         setGameNarration,
-        gameBoard,
+        gameboard,
         setGameBoard,
       );
 
@@ -1226,7 +1226,7 @@ export class Match {
     type: string,
     gameNarration: string[],
     setGameNarration: React.Dispatch<React.SetStateAction<string[]>>,
-    gameBoard: number[][],
+    gameboard: number[][],
     setGameBoard: React.Dispatch<React.SetStateAction<number[][]>>,
   ) {
     let activePlayer = this.getActivePlayer();
@@ -1250,7 +1250,7 @@ export class Match {
       this.handleEndTurn(
         gameNarration,
         setGameNarration,
-        gameBoard,
+        gameboard,
         setGameBoard,
         narrationText,
         // If it's withCaution or tripleTheat return true, otherwise return false
@@ -1345,7 +1345,7 @@ export class Match {
   handleEndTurn(
     gameNarration: string[],
     setGameNarration: React.Dispatch<React.SetStateAction<string[]>>,
-    gameBoard: number[][],
+    gameboard: number[][],
     setGameBoard: React.Dispatch<React.SetStateAction<number[][]>>,
     currentGameNarration?: string | undefined,
     isWaitingAction?: boolean,
@@ -1450,7 +1450,7 @@ export class Match {
           this.runClock(
             gameNarration,
             setGameNarration,
-            gameBoard,
+            gameboard,
             setGameBoard,
           );
 
@@ -1569,7 +1569,7 @@ export class Match {
   runClock(
     gameNarration: string[],
     setGameNarration: React.Dispatch<React.SetStateAction<string[]>>,
-    gameBoard: number[][],
+    gameboard: number[][],
     setGameBoard: React.Dispatch<React.SetStateAction<number[][]>>,
   ) {
     if (this.timeLeft.seconds == 0) {
@@ -1592,7 +1592,7 @@ export class Match {
     }
 
     if (this.shotHasBeenAttempted) {
-      this.handleShot(gameNarration, setGameNarration, gameBoard, setGameBoard);
+      this.handleShot(gameNarration, setGameNarration, gameboard, setGameBoard);
     }
 
     if (!this.gameOver) {

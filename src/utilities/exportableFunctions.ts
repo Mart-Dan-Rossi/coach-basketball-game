@@ -1587,11 +1587,11 @@ export function compareIniciatives(
 }
 
 export function checkTilesThatWillInfluenceInTheCalculations(
-  gameBoard: number[][],
+  gameboard: number[][],
   startingUbication: number[],
   endingUbication: number[],
 ): any[][] {
-  const [width, height] = [gameBoard[0].length, gameBoard.length];
+  const [width, height] = [gameboard[0].length, gameboard.length];
 
   const x1 = startingUbication[0];
   const y1 = startingUbication[1];
@@ -2024,7 +2024,7 @@ export function getInitialBoard(teamShootingFT?: string): number[][] {
 }
 
 export function isRivalNearby(
-  gameBoard: number[][],
+  gameboard: number[][],
   player: Player,
   mustBeNext = false,
 ): boolean {
@@ -2048,11 +2048,11 @@ export function isRivalNearby(
 
       if (
         newX >= 0 &&
-        newX < gameBoard[0].length &&
+        newX < gameboard[0].length &&
         newY >= 0 &&
-        newY < gameBoard.length
+        newY < gameboard.length
       ) {
-        if (gameBoard[newY][newX] === rivalTeamNumber) {
+        if (gameboard[newY][newX] === rivalTeamNumber) {
           finalValue = true;
           //If it found return true, if not it will continue checking the rest of the tiles
           return finalValue;

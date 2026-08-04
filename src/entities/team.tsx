@@ -175,7 +175,7 @@ export class Team {
     this.turnInInstantLeft = value;
   }
 
-  handleNewPasser(passer: Player): void {
+  changeLastPasserStatus(passer: Player): void {
     this.players.forEach((player) => {
       if (player === passer) {
         player.lastPasser = true;

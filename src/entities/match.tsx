@@ -1,4 +1,4 @@
-import { QuarterTimeLeft } from "./myInterfaces";
+import { Coordinate, QuarterTimeLeft } from "./myInterfaces";
 import { Team } from "./team";
 import {
   roll20SidesDice,
@@ -252,10 +252,7 @@ export class Match {
     let totalDefensivePoints = 0;
 
     //I'll use this to know who is the most likley defender to steal the ball. It have the player with the highest defensive points and the number of points he got
-    let defensorWithTheHighestDefensivePoints = [undefined, undefined] as [
-      Player | undefined,
-      number | undefined,
-    ];
+    let defensorWithTheHighestDefensivePoints: [Player, number][] = [];
 
     //The i get the pass points
     let passPoints =
@@ -267,14 +264,17 @@ export class Match {
     }
 
     //Then i get the ubications that will have inpact in the calculation
+    //First returned array contains the tiles where the ball goes over
+    //Second returned array contains the tiles where the ball goes close to
     let tilesThatWillInfluenceInCalculations =
       checkTilesThatWillInfluenceInTheCalculations(
         gameboard,
         [passer.ubicationX, passer.ubicationY],
         [receiver.ubicationX, receiver.ubicationY],
-      );
+      ) as Coordinate[][];
 
-    function calculateDefensivePointsPerDefensor(
+    function calculateDefensivePointsOfDefender(
+      distanceIndex: number,
       player: Player,
       inPassLine: boolean,
     ): number {
@@ -317,9 +317,13 @@ export class Match {
           roll20SidesDice() * 3;
       }
 
+      //If the defender is not in the pass line he gets a penalty to his defensive points
       if (!inPassLine) {
         points = points * 0.2;
       }
+
+      //The player gets a bonus considering the distance to the passer
+      points = points + distanceIndex * 0.5;
 
       return points;
     }
@@ -327,7 +331,7 @@ export class Match {
     function checkDefensivePlayersPoints(
       i: number,
       team: Team,
-      arrayOfUbications: any[] | [number[]],
+      arrayOfUbications: Coordinate[],
       inPassLine: boolean,
     ): void {
       //Check every player to know his defensive points for this situation
@@ -336,7 +340,17 @@ export class Match {
           player.ubicationX == arrayOfUbications[i][0] &&
           player.ubicationY == arrayOfUbications[i][1]
         ) {
-          let defensivePlayerPoints = calculateDefensivePointsPerDefensor(
+          //Prevent to do operations 2 times on the same player
+          if (
+            defensorWithTheHighestDefensivePoints.some(
+              ([p]) => p.position === player.position,
+            )
+          ) {
+            return;
+          }
+
+          let defensivePlayerPoints = calculateDefensivePointsOfDefender(
+            i,
             player,
             inPassLine,
           );
@@ -350,47 +364,37 @@ export class Match {
           );
 
           totalDefensivePoints += defensivePlayerPoints;
+          defensorWithTheHighestDefensivePoints.push([
+            player,
+            defensivePlayerPoints,
+          ]);
         }
       });
     }
 
     //I loop on the tiles where the ball goes over to set the defender team points in this situation
     for (let i = 0; i < tilesThatWillInfluenceInCalculations[0].length; i++) {
-      if (teamDefending == this.teamA.name) {
-        checkDefensivePlayersPoints(
-          i,
-          this.teamA,
-          tilesThatWillInfluenceInCalculations[0],
-          true,
-        );
-      } else if (teamDefending == this.teamB.name) {
-        checkDefensivePlayersPoints(
-          i,
-          this.teamB,
-          tilesThatWillInfluenceInCalculations[0],
-          true,
-        );
-      }
+      checkDefensivePlayersPoints(
+        i,
+        teamDefending == this.teamA.name ? this.teamA : this.teamB,
+        tilesThatWillInfluenceInCalculations[0],
+        true,
+      );
     }
 
     //I loop on the tiles where the ball goes close to it to set the defender team points in this situation
     for (let i = 0; i < tilesThatWillInfluenceInCalculations[1].length; i++) {
-      if (teamDefending == this.teamA.name) {
-        checkDefensivePlayersPoints(
-          i,
-          this.teamA,
-          tilesThatWillInfluenceInCalculations[1],
-          false,
-        );
-      } else if (teamDefending == this.teamB.name) {
-        checkDefensivePlayersPoints(
-          i,
-          this.teamB,
-          tilesThatWillInfluenceInCalculations[1],
-          false,
-        );
-      }
+      checkDefensivePlayersPoints(
+        i,
+        teamDefending == this.teamA.name ? this.teamA : this.teamB,
+        tilesThatWillInfluenceInCalculations[1],
+        false,
+      );
     }
+
+    defensorWithTheHighestDefensivePoints = [
+      ...defensorWithTheHighestDefensivePoints,
+    ].sort((a, b) => b[1] - a[1]);
 
     newGameNarration.unshift(
       `The total defensive points are ${Number(totalDefensivePoints).toFixed(2)}`,
@@ -412,23 +416,23 @@ export class Match {
         `${receiver.name && receiver.name.length === 0 ? playerPositionDetection(receiver.position) : receiver.name} of team ${receiver.team} gets the pass and is the new ball handler`,
       );
 
-      passerTeam.handleNewPasser(passer);
+      passerTeam.changeLastPasserStatus(passer);
 
       //If the total defensive points are higher than pass points
     } else {
-      if (defensorWithTheHighestDefensivePoints[0] === undefined) {
+      if (defensorWithTheHighestDefensivePoints[0][0] === undefined) {
         console.error(
-          "defensorWithTheHighestDefensivePoints[0] undefined in handlePassAction",
+          "defensorWithTheHighestDefensivePoints[0][0] undefined in handlePassAction",
         );
         throw new Error(
-          "Error: defensorWithTheHighestDefensivePoints[0] undefined in handlePassAction",
+          "Error: defensorWithTheHighestDefensivePoints[0][0] undefined in handlePassAction",
         );
       }
 
       //The player with the highest defensive points involved in this situation steal the ball
-      defensorWithTheHighestDefensivePoints[0].setHaveBall(true);
+      defensorWithTheHighestDefensivePoints[0][0].setHaveBall(true);
       newGameNarration.unshift(
-        `${defensorWithTheHighestDefensivePoints[0].name && defensorWithTheHighestDefensivePoints[0].name.length === 0 ? playerPositionDetection(defensorWithTheHighestDefensivePoints[0].position) : defensorWithTheHighestDefensivePoints[0].name} has stolen the ball!`,
+        `${defensorWithTheHighestDefensivePoints[0][0].name && defensorWithTheHighestDefensivePoints[0][0].name.length === 0 ? playerPositionDetection(defensorWithTheHighestDefensivePoints[0][0].position) : defensorWithTheHighestDefensivePoints[0][0].name} has stolen the ball!`,
       );
 
       passerTeam.resetLastPasserForAllPlayers();
@@ -1491,7 +1495,10 @@ export class Match {
     }
   }
 
-  searchForWaitingPlayersClose(opositeTeam: Team, shouldSetTeamTurn?: boolean): void {
+  searchForWaitingPlayersClose(
+    opositeTeam: Team,
+    shouldSetTeamTurn?: boolean,
+  ): void {
     let activePlayer = this.getActivePlayer();
     let selectedPlayers = this.getSelectedPlayers();
     let previousWaitingPlayers = [...this.waitingPlayers];

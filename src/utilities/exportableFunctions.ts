@@ -1590,7 +1590,7 @@ export function checkTilesThatWillInfluenceInTheCalculations(
   gameboard: number[][],
   startingUbication: number[],
   endingUbication: number[],
-): any[][] {
+): [Coordinate[], Coordinate[]] {
   const [width, height] = [gameboard[0].length, gameboard.length];
 
   const x1 = startingUbication[0];
@@ -1607,8 +1607,8 @@ export function checkTilesThatWillInfluenceInTheCalculations(
   let xIncrement = dx / steps;
   let yIncrement = dy / steps;
 
-  let ballGoesOverThisPositions = [] as any[] | [number[]];
-  let ballGoesCloseToThisPositions = [] as any[] | [number[]];
+  let ballGoesOverThisPositions = [] as Coordinate[];
+  let ballGoesCloseToThisPositions = [] as Coordinate[];
 
   for (let i = 0; i <= steps; i++) {
     let x = Math.round(x1 + i * xIncrement);

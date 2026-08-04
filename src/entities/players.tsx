@@ -132,7 +132,7 @@ export class Player {
 
   //---------------------------------START GET INFO METHODS--------------------------------------------------------------------------------------------------------
 
-  playerHaveTheBall() {
+  playerHaveTheBall(): boolean {
     return this.haveBall;
   }
 
@@ -144,7 +144,7 @@ export class Player {
     pointsIfMade: number,
     isItMade: boolean,
     wasThereAFoul: boolean,
-  ) {
+  ): void {
     if (pointsIfMade == 1) {
       this.stats.freeThrowsAttempt++;
 
@@ -178,11 +178,11 @@ export class Player {
     }
   }
 
-  statsAddAssist() {
+  statsAddAssist(): void {
     this.stats.assists++;
   }
 
-  statsAddRebound(atackingTeam: Team) {
+  statsAddRebound(atackingTeam: Team): void {
     if (atackingTeam.name == this.team) {
       this.stats.offensiveRebounds++;
     } else {
@@ -190,26 +190,26 @@ export class Player {
     }
   }
 
-  statsAddFoul() {
+  statsAddFoul(): void {
     this.stats.fouls++;
   }
 
-  statsAddTurnOver() {
+  statsAddTurnOver(): void {
     this.stats.turnOvers++;
   }
 
-  statsAddBlock() {
+  statsAddBlock(): void {
     this.stats.blocks++;
   }
 
-  statsAddSteal() {
+  statsAddSteal(): void {
     this.stats.steals++;
   }
   //-----------------------------------END STATS METHODS-----------------------------------------------------------------------------------------------------------
 
   //----------------------------START SET PLAYER STATUS METHODS----------------------------------------------------------------------------------------------------
 
-  giveActionPointsToPlayer() {
+  giveActionPointsToPlayer(): void {
     this.actionPoints = 0;
     let diceResult = 1;
 
@@ -236,31 +236,31 @@ export class Player {
     }
   }
 
-  setPlayerHaveTurn(value: boolean) {
+  setPlayerHaveTurn(value: boolean): void {
     this.playerHaveTurn = value;
   }
 
-  setActivePlayer(value: boolean) {
+  setActivePlayer(value: boolean): void {
     this.playerActive = value;
   }
 
-  setPlayerSelected(value: boolean) {
+  setPlayerSelected(value: boolean): void {
     this.playerSelected = value;
   }
 
-  setHaveBall(value: boolean) {
+  setHaveBall(value: boolean): void {
     this.haveBall = value;
   }
 
-  setShotAttempt(value: boolean) {
+  setShotAttempt(value: boolean): void {
     this.shotAttempt = value;
   }
 
-  setMovementLeft(value: boolean) {
+  setMovementLeft(value: boolean): void {
     this.movementLeft = value;
   }
 
-  setLastAction(action: string) {
+  setLastAction(action: string): void {
     this.lastAction = action;
   }
 
@@ -268,7 +268,7 @@ export class Player {
 
   //----------------------------------START PLAYER ACTIONS---------------------------------------------------------------------------------------------------------
 
-  movePlayer(dx: number, dy: number) {
+  movePlayer(dx: number, dy: number): void {
     let actionPointsToDecrease =
       Math.pow(dx, 2) + Math.pow(dy, 2) == 2 ? 1.5 : 1;
 
@@ -280,7 +280,7 @@ export class Player {
     this.setLastAction("move");
   }
 
-  handleWait(type: string) {
+  handleWait(type: string): void {
     switch (type) {
       case "tripleThreat":
         this.actionPoints -= 0.5;
@@ -301,7 +301,7 @@ export class Player {
 
   movePlayerToOwnRim(
     setGameBoard: React.Dispatch<React.SetStateAction<number[][]>>,
-  ) {
+  ): void {
     let previousUbicationX = this.ubicationX;
     let previousUbicationY = this.ubicationY;
     let teamNumber = this.team == "TeamA" ? 1 : 2;
@@ -322,15 +322,15 @@ export class Player {
     });
   }
 
-  subtractActionPoints(points: number) {
+  subtractActionPoints(points: number): void {
     this.actionPoints -= points;
   }
 
-  resetActionPoints() {
+  resetActionPoints(): void {
     this.actionPoints = 0;
   }
 
-  getDribblerPoints() {
+  getDribblerPoints(): number {
     let dribblerPointsInAction: number;
     let teamAAtacking = this.team == "TeamA";
     let dribblerZoneId = playerZoneId(this, teamAAtacking);
@@ -351,7 +351,7 @@ export class Player {
     return dribblerPointsInAction;
   }
 
-  getDribbleDefenderPoints() {
+  getDribbleDefenderPoints(): number {
     let defenderPointsInAction: number;
     let teamAAtacking = this.team == "TeamA";
     let dribblerZoneId = playerZoneId(this, teamAAtacking);

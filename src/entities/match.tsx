@@ -90,15 +90,15 @@ export class Match {
 
   //--------------------------------------START GET INFO METHODS------------------------------------------------------------------------------------------------------------
 
-  getActivePlayer() {
+  getActivePlayer(): Player | undefined {
     return this.teamA.returnActivePlayer() ?? this.teamB.returnActivePlayer();
   }
 
-  getShooter() {
+  getShooter(): Player | undefined {
     return this.teamA.getShooter() ?? this.teamB.getShooter();
   }
 
-  getSelectedPlayers() {
+  getSelectedPlayers(): (Player | undefined)[] {
     let teamASelectedPlayer: Player | undefined;
     let teamBSelectedPlayer: Player | undefined;
 
@@ -110,7 +110,7 @@ export class Match {
     return [teamASelectedPlayer, teamBSelectedPlayer];
   }
 
-  getClosestDefenderToTheRim(defendingTeam: Team) {
+  getClosestDefenderToTheRim(defendingTeam: Team): Player | undefined {
     return defendingTeam.getClosestDefenderToTheRim();
   }
 
@@ -123,7 +123,7 @@ export class Match {
     setGameNarration: React.Dispatch<React.SetStateAction<string[]>>,
     gameboard: number[][],
     setGameBoard: React.Dispatch<React.SetStateAction<number[][]>>,
-  ) {
+  ): void {
     let pointsObteinedInTheJumpBallA = 0;
     let pointsObteinedInTheJumpBallB = 0;
 
@@ -241,7 +241,7 @@ export class Match {
     gameboard: number[][],
     gameNarration: string[],
     setGameNarration: React.Dispatch<React.SetStateAction<string[]>>,
-  ) {
+  ): void {
     let newGameNarration = [...gameNarration];
 
     //First i get what's the defending team
@@ -442,7 +442,7 @@ export class Match {
     dribbler: Player,
     endingUbication: number[],
     gameboard: [[]],
-  ) {
+  ): (boolean | Player)[] {
     //I set dribbler as default player with the ball
     let playerWithBallAfterCalculations = dribbler;
     let dribblerTeam = dribbler.team == "TeamA" ? this.teamA : this.teamB;
@@ -516,7 +516,7 @@ export class Match {
     defendingTeam: Team,
     atackingTeam: Team,
     setGameBoard: React.Dispatch<React.SetStateAction<number[][]>>,
-  ) {
+  ): void {
     // console.log("In movePlayersToReboundOnFTPositions");
     const moveDefendersToReboundPositions = () => {
       // console.log("In moveDefendersToReboundPositions");
@@ -582,7 +582,7 @@ export class Match {
     gameNarration: string[],
     setGameNarration: React.Dispatch<React.SetStateAction<string[]>>,
     amountOfFreeThrows?: number,
-  ) {
+  ): void {
     // console.log("In handleFoul", defender, atacker);
     //TODO think how to handle the situation when a defender fouls a player without the ball while the ball player is shooting
     //This is important because currently the function serch for the last action been shotAttempt to get who shot the FT
@@ -654,7 +654,7 @@ export class Match {
     setGameNarration: React.Dispatch<React.SetStateAction<string[]>>,
     gameboard: number[][],
     setGameBoard: React.Dispatch<React.SetStateAction<number[][]>>,
-  ) {
+  ): void {
     // console.log("in handle shot method");
     //First i get the shooter
     let shooter = this.getShooter();
@@ -835,8 +835,8 @@ export class Match {
               //TODO Check if this points are fare to make a foul
 
               if (defenderPoints < 10 && !this.isFreeThrowSerie) {
-              // Uncomment to test free throws
-              // if (true && !this.isFreeThrowSerie) {
+                // Uncomment to test free throws
+                // if (true && !this.isFreeThrowSerie) {
                 let amountOfFreeThrows;
                 if (
                   shooterZoneUbicationId == ranges.closeToTheRim.id ||
@@ -1228,7 +1228,7 @@ export class Match {
     setGameNarration: React.Dispatch<React.SetStateAction<string[]>>,
     gameboard: number[][],
     setGameBoard: React.Dispatch<React.SetStateAction<number[][]>>,
-  ) {
+  ): void {
     let activePlayer = this.getActivePlayer();
 
     if (activePlayer) {
@@ -1262,18 +1262,18 @@ export class Match {
     }
   }
 
-  setShotHasBeenAttempted(value: boolean) {
+  setShotHasBeenAttempted(value: boolean): void {
     this.shotHasBeenAttempted = value;
   }
 
   //------------------------------------END PLAYER ACTIONS METHODS----------------------------------------------------------------------------------------------------------
 
   //-----------------------------------START MATCH HANDLER METHODS----------------------------------------------------------------------------------------------------------
-  setTeamTurn(team: string) {
+  setTeamTurn(team: string): void {
     this.teamTurn = team;
   }
 
-  getRebounder(shooter: Player) {
+  getRebounder(shooter: Player): Player {
     let rebounder: Player;
 
     let teamAAtacking = shooter.team == "TeamA";
@@ -1349,7 +1349,7 @@ export class Match {
     setGameBoard: React.Dispatch<React.SetStateAction<number[][]>>,
     currentGameNarration?: string | undefined,
     isWaitingAction?: boolean,
-  ) {
+  ): void {
     // console.log("handleEndTurn: ");
     let activePlayer = this.getActivePlayer();
 
@@ -1471,7 +1471,7 @@ export class Match {
     }
   }
 
-  addWaitingPlayersClose(isOnMove?: boolean) {
+  addWaitingPlayersClose(isOnMove?: boolean): void {
     let activePlayer = this.getActivePlayer();
     let newWaitingPlayers = [] as Player[];
 
@@ -1491,7 +1491,7 @@ export class Match {
     }
   }
 
-  searchForWaitingPlayersClose(opositeTeam: Team, shouldSetTeamTurn?: boolean) {
+  searchForWaitingPlayersClose(opositeTeam: Team, shouldSetTeamTurn?: boolean): void {
     let activePlayer = this.getActivePlayer();
     let selectedPlayers = this.getSelectedPlayers();
     let previousWaitingPlayers = [...this.waitingPlayers];
@@ -1553,7 +1553,7 @@ export class Match {
     }
   }
 
-  shotAttemptedStatus() {
+  shotAttemptedStatus(): void {
     let activePlayer = this.getActivePlayer();
 
     if (activePlayer) {
@@ -1571,7 +1571,7 @@ export class Match {
     setGameNarration: React.Dispatch<React.SetStateAction<string[]>>,
     gameboard: number[][],
     setGameBoard: React.Dispatch<React.SetStateAction<number[][]>>,
-  ) {
+  ): void {
     if (this.timeLeft.seconds == 0) {
       this.timeLeft.minutes--;
       this.timeLeft.seconds = 59;

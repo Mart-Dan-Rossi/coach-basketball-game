@@ -64,7 +64,7 @@ export class Team {
 
   //--------------------------------------START GET INFO METHODS------------------------------------------------------------------------------------------------------------
 
-  doesPlayersHaveMovement() {
+  doesPlayersHaveMovement(): boolean {
     let movementRemaining = false;
     this.players.forEach((player) => {
       !movementRemaining && (movementRemaining = player.movementLeft);
@@ -72,22 +72,22 @@ export class Team {
     return movementRemaining;
   }
 
-  getPlayerWithBallOrUndefined() {
+  getPlayerWithBall(): Player | undefined {
     return this.players.find((player) => player.playerHaveTheBall());
   }
 
-  isAnyPlayerSelected() {
+  isAnyPlayerSelected(): boolean {
     return this.players.find((player) => player.playerSelected) !== undefined;
   }
 
-  getShooter() {
+  getShooter(): Player | undefined {
     return this.players.find(
       (player) => player.shotAttempt,
       // || player.lastAction == "shotAttempt",
     );
   }
 
-  getClosestDefenderToTheRim() {
+  getClosestDefenderToTheRim(): Player | undefined {
     let closestPlayer: Player | undefined;
     let distanceToRim: number;
     this.players.forEach((player) => {
@@ -112,23 +112,23 @@ export class Team {
     return closestPlayer;
   }
 
-  getSelectedPlayer() {
+  getSelectedPlayer(): Player | undefined {
     return this.players.find((player) => player.playerSelected);
   }
 
-  isAPlayerActive() {
+  isAPlayerActive(): boolean {
     return this.players.find((player) => player.playerActive) !== undefined;
   }
 
-  returnActivePlayer() {
+  returnActivePlayer(): Player | undefined {
     return this.players.find((player) => player.playerActive);
   }
 
-  returnSelectedPlayer() {
+  returnSelectedPlayer(): Player | undefined {
     return this.players.find((player) => player.playerSelected);
   }
 
-  returnPlayerInThisPosition(coordinate: Coordinate) {
+  returnPlayerInThisPosition(coordinate: Coordinate): Player | undefined {
     //IMPORTANT First i check if that ubication is inside the board
     if (
       coordinate[0] < 0 &&
@@ -146,36 +146,36 @@ export class Team {
     );
   }
 
-  returnPlayerWithBall() {
+  returnPlayerWithBall(): Player | undefined {
     return this.players.find((player) => player.haveBall);
   }
 
-  playerOnThisTileHaveTurnLeft(ubicationScaned: number[]) {
+  playerOnThisTileHaveTurnLeft(ubicationScaned: number[]): boolean {
     const playerOnThisTile = this.players.find(
       (player) =>
         player.ubicationX === ubicationScaned[0] &&
         player.ubicationY === ubicationScaned[1],
     );
-    return playerOnThisTile && playerOnThisTile.playerHaveTurn;
+    return !!playerOnThisTile && playerOnThisTile.playerHaveTurn;
   }
 
   //---------------------------------------END GET INFO METHODS-------------------------------------------------------------------------------------------------------------
 
   //---------------------------------START SET PLAYER STATUS METHODS--------------------------------------------------------------------------------------------------------
 
-  setTeamTurn(value: boolean) {
+  setTeamTurn(value: boolean): void {
     this.teamTurn = value;
   }
 
-  setTeamTurnLeft(value: boolean) {
+  setTeamTurnLeft(value: boolean): void {
     this.teamTurnLeft = value;
   }
 
-  setTurnInInstantLeft(value: boolean) {
+  setTurnInInstantLeft(value: boolean): void {
     this.turnInInstantLeft = value;
   }
 
-  handleNewPasser(passer: Player) {
+  handleNewPasser(passer: Player): void {
     this.players.forEach((player) => {
       if (player === passer) {
         player.lastPasser = true;
@@ -185,7 +185,7 @@ export class Team {
     });
   }
 
-  resetLastPasserForAllPlayers() {
+  resetLastPasserForAllPlayers(): void {
     this.players.forEach((player) => {
       player.lastPasser = false;
     });
@@ -200,7 +200,7 @@ export class Team {
     isItMade: boolean,
     isItAnAssist: boolean,
     wasThereAFoul: boolean,
-  ) {
+  ): void {
     if (pointsIfMade == 1) {
       this.stats.freeThrowsAttempt++;
 
@@ -242,7 +242,7 @@ export class Team {
     }
   }
 
-  statsAddRebound(shootingTeam: Team) {
+  statsAddRebound(shootingTeam: Team): void {
     if (shootingTeam.name == this.name) {
       this.stats.offensiveRebounds++;
     } else {
@@ -250,42 +250,42 @@ export class Team {
     }
   }
 
-  statsAddFoul() {
+  statsAddFoul(): void {
     this.stats.totalFouls++;
     this.stats.foulsInQuarter++;
   }
 
-  statsAddTurnOver() {
+  statsAddTurnOver(): void {
     this.stats.turnOvers++;
   }
 
-  statsAddBlock() {
+  statsAddBlock(): void {
     this.stats.blocks++;
   }
 
-  statsAddSteal() {
+  statsAddSteal(): void {
     this.stats.steals++;
   }
 
-  teamHaveTheBall() {
+  teamHaveTheBall(): boolean {
     return (
       this.players.find((player) => player.playerHaveTheBall()) !== undefined
     );
   }
 
-  giveActionPointsToTeam() {
+  giveActionPointsToTeam(): void {
     this.players.forEach((player) => {
       player.giveActionPointsToPlayer();
     });
   }
 
-  giveMovementLeftToAllPlayers() {
+  giveMovementLeftToAllPlayers(): void {
     this.players.forEach((player) => {
       player.setMovementLeft(true);
     });
   }
 
-  givePlayerHaveTurnToAllPlayers() {
+  givePlayerHaveTurnToAllPlayers(): void {
     this.players.forEach((player) => {
       player.setPlayerHaveTurn(true);
     });

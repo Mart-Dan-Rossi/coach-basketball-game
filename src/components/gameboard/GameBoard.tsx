@@ -155,7 +155,7 @@ function Gameboard({ match, setMatchState }: Props) {
 
       //If the player is part of the atacking team
       //TODO make waiting options work propperly
-      if (team.getPlayerWithBallOrUndefined()) {
+      if (team.getPlayerWithBall()) {
         //And have 0.5 or more  action points
         if (teamActivePlayer.actionPoints >= 0.5) {
           if (teamActivePlayer.haveBall) {
@@ -650,7 +650,7 @@ function Gameboard({ match, setMatchState }: Props) {
         newActivePlayer = compareIniciatives(
           teamASelectedPlayer,
           teamBSelectedPlayer,
-          teamA.getPlayerWithBallOrUndefined(),
+          teamA.getPlayerWithBall(),
         );
         setActivePlayer(() => newActivePlayer);
         newActivePlayer.setActivePlayer(true);

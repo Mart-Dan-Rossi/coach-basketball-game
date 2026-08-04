@@ -17,7 +17,7 @@ const DrawPlayer = ({ team, col, row, teamLetterProps }: Props) => {
   return (
     <>
       {/* If the team is atacking */}
-      {team.getPlayerWithBallOrUndefined()
+      {team.getPlayerWithBall()
         ? team.players.map((player) => {
             playerImg = "";
             playerStatusImg = "";

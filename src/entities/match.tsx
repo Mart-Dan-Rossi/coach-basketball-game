@@ -834,9 +834,9 @@ export class Match {
 
               //TODO Check if this points are fare to make a foul
 
-              // if (defenderPoints < 10 && !this.isFreeThrowSerie) {
+              if (defenderPoints < 10 && !this.isFreeThrowSerie) {
               // Uncomment to test free throws
-              if (true && !this.isFreeThrowSerie) {
+              // if (true && !this.isFreeThrowSerie) {
                 let amountOfFreeThrows;
                 if (
                   shooterZoneUbicationId == ranges.closeToTheRim.id ||

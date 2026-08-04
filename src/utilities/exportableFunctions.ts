@@ -1733,7 +1733,7 @@ export function getShotDistance(player: Player, direction: string): number {
     }
   }
 
-  if (!shotDistance) {
+  if (shotDistance === undefined) {
     console.error("shotDistance not found in getShotDistance");
     throw new Error("Error: shotDistance not found in getShotDistance");
   }

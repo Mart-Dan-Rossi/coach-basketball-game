@@ -227,11 +227,7 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
       );
     }
 
-    // console.log("Shot attempted status setted.");
-
     handleEndTurn();
-
-    // console.log("Gameboard 3: ", gameboard);
   }
 
   function handleEndTurn(): void {
@@ -254,13 +250,9 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
       );
     }
 
-    // console.log("Ending turn.");
-
     setActivePlayer(() => matchCopy.getActivePlayer());
 
     setMatchState(() => matchCopy);
-
-    // console.log("Turn ended.");
   }
 
   function clickActionButtonHandler(
@@ -335,7 +327,7 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
                   confirmButtonHandler();
                 }
               : () => {
-                  console.log("Select action first");
+                  toast("Select action first");
                 }
           }
           className={

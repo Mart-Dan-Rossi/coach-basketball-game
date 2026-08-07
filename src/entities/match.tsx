@@ -617,9 +617,7 @@ export class Match {
     atackingTeam: Team,
     setGameboard: React.Dispatch<React.SetStateAction<number[][]>>,
   ): void {
-    // console.log("In movePlayersToReboundOnFTPositions");
     const moveDefendersToReboundPositions = () => {
-      // console.log("In moveDefendersToReboundPositions");
       defendingTeam.players.forEach((player) => {
         let appropriateDefensivePosition =
           player.team == "TeamA"
@@ -634,7 +632,6 @@ export class Match {
     };
 
     const moveAtackersToReboundPositions = (): void => {
-      // console.log("In moveAtackersToReboundPositions");
       let positionIndex = 1;
 
       let teamUbications =
@@ -670,10 +667,8 @@ export class Match {
 
     //Modify the classes of the players
     moveDefendersToReboundPositions();
-    // console.log("defendingTeam 2: ", defendingTeam);
 
     moveAtackersToReboundPositions();
-    // console.log("atackingTeam 2: ", atackingTeam);
   }
 
   handleFoul(
@@ -683,7 +678,6 @@ export class Match {
     setGameNarration: React.Dispatch<React.SetStateAction<string[]>>,
     amountOfFreeThrows?: number,
   ): void {
-    // console.log("In handleFoul", defender, atacker);
     //TODO think how to handle the situation when a defender fouls a player without the ball while the ball player is shooting
     //This is important because currently the function serch for the last action been shotAttempt to get who shot the FT
     //  and it can happen that 2 players have shotAttempt if the defender is in penalisation
@@ -755,7 +749,6 @@ export class Match {
     gameboard: number[][],
     setGameboard: React.Dispatch<React.SetStateAction<number[][]>>,
   ): void {
-    // console.log("in handle shot method");
     //First i get the shooter
     let shooter = this.getShooter();
     if (!shooter) {
@@ -838,7 +831,6 @@ export class Match {
     };
 
     const getDefendersPointsInShot = (): number => {
-      // console.log("in getDefendersPointsInShot");
       if (!shooter) {
         console.error("shooter not found in getDefendersPointsInShot");
         throw new Error(
@@ -850,9 +842,6 @@ export class Match {
         //If it is a free throw ther's no defenders so totalDefendersPoints is going to be 0
         return totalDefendersPoints;
       } else {
-        // console.log(
-        //   "Calculating defenders points in shot attempt for shooter: ",
-        // );
         //If it was a field shot attempt it cheks the tiles around the shooter. To do so we use one loop for the X direction and one for the Y direction
         for (let positionX = -2; positionX < 3; positionX++) {
           for (let positionY = -2; positionY < 3; positionY++) {
@@ -956,7 +945,6 @@ export class Match {
                   setGameNarration,
                   amountOfFreeThrows,
                 );
-                // console.log("After handleFoul");
               }
             }
 
@@ -969,7 +957,6 @@ export class Match {
     };
 
     const calculateIfGoesIn = (): boolean => {
-      // console.log("In calculateIfGoesIn");
       if (!shooter) {
         console.error("shooter not found in calculateIfGoesIn");
         throw new Error(
@@ -1285,7 +1272,6 @@ export class Match {
     );
 
     if (this.freeThrowsLeft > 0) {
-      // console.log("Shooting free throw");
       this.freeThrowsLeft--;
 
       this.handleShot(
@@ -1298,7 +1284,6 @@ export class Match {
       return;
     }
 
-    // console.log("End FT sequence");
     if (!!!newPlayerWithBall) {
       console.error("newPlayerWithBall not defined in handle shot");
       throw new Error("Error: newPlayerWithBall not defined in handle shot");
@@ -1491,7 +1476,6 @@ export class Match {
         );
         //If the ball gets stolen
       } else if (isBallStolen && defenderInteracting) {
-        console.log("In ball stolen code");
         defenderInteracting.setHaveBall(true);
         playerInMatch?.setHaveBall(false);
 
@@ -1514,7 +1498,7 @@ export class Match {
 
         setGameNarration(() => [...newGameNarration]);
       } else {
-        console.log(
+        console.error(
           "defenderInteracting was expected to be defined in evaluateDribblingOutcome but it's not",
         );
 
@@ -1555,7 +1539,6 @@ export class Match {
     currentGameNarration?: string | undefined,
     isWaitingAction?: boolean,
   ): void {
-    // console.log("handleEndTurn: ");
     let activePlayer = this.getActivePlayer();
 
     const newGameNarration = [...gameNarration];
@@ -1626,24 +1609,19 @@ export class Match {
           this.teamA.doesPlayersHaveMovement() ||
           this.teamB.doesPlayersHaveMovement()
         ) {
-          console.log("No players selected and a teams have movement left");
           if (this.teamA.doesPlayersHaveMovement()) {
-            console.log("Turn left on Team A");
             this.teamA.setTeamTurnLeft(true);
           }
 
           if (this.teamB.doesPlayersHaveMovement()) {
-            console.log("Turn left on Team B");
             this.teamB.setTeamTurnLeft(true);
           }
 
           if (this.teamA.teamHaveTheBall()) {
-            console.log("It's Team B turn");
             this.setTeamTurn("TeamB");
             this.teamB.setTeamTurn(true);
             newGameNarration.unshift(`It's now ${this.teamB.name} turn.`);
           } else {
-            console.log("It's Team A turn");
             this.setTeamTurn("TeamA");
             this.teamA.setTeamTurn(true);
             newGameNarration.unshift(`It's now ${this.teamA.name} turn.`);
@@ -1651,7 +1629,6 @@ export class Match {
 
           setGameNarration(() => newGameNarration);
         } else {
-          console.log("No players selected and noone have movement left");
           this.runClock(
             gameNarration,
             setGameNarration,

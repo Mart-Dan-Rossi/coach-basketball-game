@@ -349,15 +349,12 @@ function Gameboard({ match, setMatchState }: Props) {
         if (teamAAnySelected) {
           paintPlayerOnThisTileAsSelected(teamA, thisUbication);
         } else if (teamA.playerOnThisTileHaveTurnLeft(thisUbication)) {
-          // console.log("teamA.playerOnThisTileHaveTurnLeft", thisUbication);
           return "highlighted-tile";
         }
       } else if (teamB.teamTurn && teamNumber == 2) {
-        // console.log("teamTurn && teamNumber B")
         if (teamBAnySelected) {
           paintPlayerOnThisTileAsSelected(teamB, thisUbication);
         } else if (teamB.playerOnThisTileHaveTurnLeft(thisUbication)) {
-          // console.log("teamB.playerOnThisTileHaveTurnLeft", thisUbication);
           return "highlighted-tile";
         }
       }
@@ -464,7 +461,6 @@ function Gameboard({ match, setMatchState }: Props) {
               setFinalisingAction(() => false);
 
               setConfirmButtonHandler(() => {
-                // console.log("Confirm pass handler setted");
                 return makePass(team, thisUbication);
               });
 
@@ -511,10 +507,7 @@ function Gameboard({ match, setMatchState }: Props) {
   }
 
   function movePlayer(dx: number, dy: number): () => void {
-    console.log("Move player: ", activePlayer);
-    console.log(actionConfirmed);
     if (activePlayer) {
-      // console.log("activePlayer: ", activePlayer);
       return () => {
         if (activePlayer.ubicationY && activePlayer.ubicationX) {
           gameboard[activePlayer.ubicationY - 1][activePlayer.ubicationX - 1] =
@@ -583,7 +576,6 @@ function Gameboard({ match, setMatchState }: Props) {
 
   function makePass(team: Team, ubicationScaned: number[]): () => void {
     return () => {
-      console.log("Make pass");
       let receiver = team.players.find((player) => {
         return (
           player.ubicationX == ubicationScaned[0] &&
@@ -636,7 +628,6 @@ function Gameboard({ match, setMatchState }: Props) {
     ubicationScaned: number[],
     otherTeam: Team,
   ): void {
-    console.log("Confirm player selection");
     let teamStillHaveTurnLeft = false;
     team.players.forEach((player) => {
       if (!teamStillHaveTurnLeft && player.playerHaveTurn) {

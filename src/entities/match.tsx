@@ -1229,31 +1229,36 @@ export class Match {
           `${isNaN(Number(newPlayerWithBall.name)) ? newPlayerWithBall.name : newPlayerWithBall.position} get the ball to start theyr posetion`,
         );
       }
+    } else {
+      //If the shot is off
+      if (this.freeThrowsLeft == 0) {
+        //If it doesn't goes in handle who get's the rebound
+        newPlayerWithBall = this.getRebounder(shooter);
+
+        newPlayerWithBall.statsAddRebound(atackingTeam);
+
+        if (newPlayerWithBall.team == atackingTeam.name) {
+          atackingTeam.statsAddRebound(atackingTeam);
+        } else {
+          defendingTeam.statsAddRebound(atackingTeam);
+        }
+
+        newPlayerWithBall.setLastAction(
+          newPlayerWithBall.team == atackingTeam.name ? "getOReb" : "getDReb",
+        );
+
+        newPlayerWithBall.setHaveBall(true);
+
+        newGameNarration.unshift(
+          `The shot is off ${
+            newPlayerWithBall.team == atackingTeam.name ? "but" : "and"
+          } ${isNaN(Number(newPlayerWithBall.name)) ? newPlayerWithBall.name : newPlayerWithBall.position} gets the rebound!`,
+        );
+        shooterTeam.resetLastPasserForAllPlayers();
+
+        shooter.setShotAttempt(false);
+      }
     }
-    //TODO check if this is propperly commented
-    // } else {
-    //   //If the shot is off
-    //   if (this.freeThrowsLeft == 0) {
-    //     //If it doesn't goes in handle who get's the rebound
-    //     newPlayerWithBall = this.getRebounder(shooter);
-
-    //     newPlayerWithBall.statsAddRebound(atackingTeam);
-    //     newPlayerWithBall.setLastAction(
-    //       newPlayerWithBall.team == atackingTeam.name ? "getOReb" : "getDReb",
-    //     );
-
-    //     newPlayerWithBall.setHaveBall(true);
-
-    //     newGameNarration.unshift(
-    //       `The shot is off ${
-    //         newPlayerWithBall.team == atackingTeam.name ? "but" : "and"
-    //       } ${isNaN(Number(newPlayerWithBall.name)) ? newPlayerWithBall.name : newPlayerWithBall.position} gets the rebound!`,
-    //     );
-    //     shooterTeam.resetLastPasserForAllPlayers();
-
-    //     shooter.setShotAttempt(false);
-    //   }
-    // }
 
     //Then i handle the players status and stats
     shooter.setHaveBall(false);
@@ -1292,14 +1297,6 @@ export class Match {
 
     this.teamA.resetLastPasserForAllPlayers();
     this.teamB.resetLastPasserForAllPlayers();
-
-    if (!isItIn) {
-      if (newPlayerWithBall.team == atackingTeam.name) {
-        atackingTeam.statsAddRebound(atackingTeam);
-      } else {
-        defendingTeam.statsAddRebound(atackingTeam);
-      }
-    }
 
     setGameNarration(() => newGameNarration);
 

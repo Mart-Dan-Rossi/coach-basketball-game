@@ -153,7 +153,7 @@ export interface GameContextProps {
   setPlayerClikedTeamB: React.Dispatch<React.SetStateAction<number[]>>;
 
   gameboard: number[][];
-  setGameBoard: React.Dispatch<React.SetStateAction<number[][]>>;
+  setGameboard: React.Dispatch<React.SetStateAction<number[][]>>;
 
   createPlayer: number;
   setCreatePlayer: React.Dispatch<React.SetStateAction<number>>;

@@ -300,7 +300,7 @@ export class Player {
   }
 
   movePlayerToOwnRim(
-    setGameBoard: React.Dispatch<React.SetStateAction<number[][]>>,
+    setGameboard: React.Dispatch<React.SetStateAction<number[][]>>,
   ): void {
     let previousUbicationX = this.ubicationX;
     let previousUbicationY = this.ubicationY;
@@ -315,7 +315,7 @@ export class Player {
     //Both rims are in the same Y position
     this.ubicationY = teamARimUbication[1];
 
-    setGameBoard((gameboard) => {
+    setGameboard((gameboard) => {
       gameboard[previousUbicationY - 1][previousUbicationX - 1] = 0;
       gameboard[this.ubicationY - 1][this.ubicationX - 1] = teamNumber;
       return [...gameboard];
@@ -328,53 +328,6 @@ export class Player {
 
   resetActionPoints(): void {
     this.actionPoints = 0;
-  }
-
-  getDribblerPoints(): number {
-    let dribblerPointsInAction: number;
-    let teamAAtacking = this.team == "TeamA";
-    let dribblerZoneId = playerZoneId(this, teamAAtacking);
-
-    let multiplier = this.lastAction == "triple threat" ? 1.5 : 1;
-    if (dribblerZoneId <= 2) {
-      dribblerPointsInAction =
-        (this.playMaking * 6 + this.atleticism * 2 + this.insideScoring * 2) *
-        multiplier;
-    } else {
-      dribblerPointsInAction =
-        (this.playMaking * 6 +
-          this.atleticism * 2 +
-          this.perimeterScoring * 2) *
-        multiplier;
-    }
-
-    return dribblerPointsInAction;
-  }
-
-  getDribbleDefenderPoints(): number {
-    let defenderPointsInAction: number;
-    let teamAAtacking = this.team == "TeamA";
-    let dribblerZoneId = playerZoneId(this, teamAAtacking);
-
-    //Adjust dribblingStealConstant for defender for getting the balanced game
-    let dribblingStealConstant = 0.1;
-
-    let multiplier =
-      dribblingStealConstant +
-      (this.lastAction == "stealAttempt" ? 1 : 0) +
-      (this.lastAction.toLowerCase() === "overwhelmingWaiting" ? 0.2 : 0);
-
-    if (dribblerZoneId <= 2) {
-      defenderPointsInAction =
-        (this.insideDefence * 2 +
-          this.perimeterDefence * 4 +
-          this.atleticism * 2) *
-        multiplier;
-    } else {
-      defenderPointsInAction =
-        (this.perimeterDefence * 6 + this.atleticism * 2) * multiplier;
-    }
-    return defenderPointsInAction;
   }
 
   //-----------------------------------END PLAYER ACTIONS----------------------------------------------------------------------------------------------------------

@@ -170,7 +170,7 @@ export const GameContextProvider = ({ children }: props) => {
   const [playerClikedTeamA, setPlayerClikedTeamA] = useState([0, 0]);
   const [playerClikedTeamB, setPlayerClikedTeamB] = useState([0, 0]);
 
-  const [gameboard, setGameBoard] = useState(initialGameBoard);
+  const [gameboard, setGameboard] = useState(initialGameBoard);
 
   const [createPlayer, setCreatePlayer] = useState(0);
 
@@ -289,7 +289,7 @@ export const GameContextProvider = ({ children }: props) => {
         playerClikedTeamB,
         setPlayerClikedTeamB,
         gameboard,
-        setGameBoard,
+        setGameboard,
 
         createPlayer,
         setCreatePlayer,

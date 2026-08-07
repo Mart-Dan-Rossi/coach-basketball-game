@@ -51,6 +51,7 @@ function Gameboard({ match, setMatchState }: Props) {
     playerClikedTeamB,
     setPlayerClikedTeamB,
     gameboard,
+    setGameboard,
     activePlayer,
     setActivePlayer,
   } = useContext(GameContext);
@@ -71,25 +72,12 @@ function Gameboard({ match, setMatchState }: Props) {
         return [player.ubicationY - 1, player.ubicationX - 1];
       });
 
-      const mismatchFound = playersUbications.some(
-        (ubicationScanned, index) => {
-          const numberInGameboard =
-            gameboard[ubicationScanned[0]][ubicationScanned[1]];
+      const mismatchFound = playersUbications.some((ubicationScanned) => {
+        const numberInGameboard =
+          gameboard[ubicationScanned[0]][ubicationScanned[1]] !== teamNumber;
 
-          if (numberInGameboard !== teamNumber) {
-            console.log("gameboard 0: ", gameboard);
-            console.log("ubicationScanned: ", ubicationScanned);
-            console.log("teamNumber: ", teamNumber);
-            console.log(
-              "numberInGameboard: ",
-              gameboard[ubicationScanned[0]][ubicationScanned[1]],
-            );
-            return true;
-          }
-
-          return false;
-        },
-      );
+        return numberInGameboard;
+      });
 
       if (mismatchFound) {
         toast.error(
@@ -440,7 +428,9 @@ function Gameboard({ match, setMatchState }: Props) {
                       setTileClicked(() => thisUbication);
                       setFinalisingAction(() => false);
 
-                      setConfirmButtonHandler(() => movePlayer(dx, dy));
+                      setConfirmButtonHandler(() => {
+                        return movePlayer(dx, dy);
+                      });
                     }
 
                     setActivateConfirmButton(() => true);
@@ -521,7 +511,8 @@ function Gameboard({ match, setMatchState }: Props) {
   }
 
   function movePlayer(dx: number, dy: number): () => void {
-    console.log("Move player");
+    console.log("Move player: ", activePlayer);
+    console.log(actionConfirmed);
     if (activePlayer) {
       // console.log("activePlayer: ", activePlayer);
       return () => {
@@ -529,10 +520,37 @@ function Gameboard({ match, setMatchState }: Props) {
           gameboard[activePlayer.ubicationY - 1][activePlayer.ubicationX - 1] =
             0;
 
-          activePlayer.movePlayer(dx, dy);
+          if (actionConfirmed === "move" || actionConfirmed === "dribbling") {
+            try {
+              match.handleMovePlayer(
+                activePlayer,
+                [dx, dy],
+                actionConfirmed,
+                gameboard,
+                setMatchState,
+                setActionConfirmed,
+                setActivateConfirmButton,
+                setGameboard,
+                gameNarration,
+                setGameNarration,
+              );
+            } catch (err) {
+              toast.error(
+                `${
+                  err instanceof Error ? err.message : "Unexpected error"
+                } while moving player`,
+              );
+            }
+          } else {
+            console.error(
+              "actionConfirmed was expected to be 'move' or 'dribbling' and it was not",
+            );
+            toast.error(
+              "Error: actionConfirmed was expected to be 'move' or 'dribbling' and it was not",
+            );
+          }
           gameboard[activePlayer.ubicationY - 1][activePlayer.ubicationX - 1] =
             activePlayer.team == "TeamA" ? 1 : 2;
-
           try {
             match.addWaitingPlayersClose(true);
           } catch (err) {

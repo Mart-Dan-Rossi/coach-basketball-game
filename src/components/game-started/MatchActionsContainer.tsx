@@ -35,7 +35,7 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
     setConfirmButtonHandler,
     setActionConfirmed,
     gameboard,
-    setGameBoard,
+    setGameboard,
     setActivePlayer,
   } = useContext(GameContext);
 
@@ -197,7 +197,7 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
         gameNarration,
         setGameNarration,
         gameboard,
-        setGameBoard,
+        setGameboard,
       );
     } catch (err) {
       toast.error(
@@ -244,7 +244,7 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
         gameNarration,
         setGameNarration,
         gameboard,
-        setGameBoard,
+        setGameboard,
       );
     } catch (err) {
       toast.error(

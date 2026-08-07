@@ -6,6 +6,7 @@ import {
   ValidPositions,
 } from "../entities/myInterfaces";
 import { Player } from "../entities/players";
+import { Team } from "../entities/team";
 
 export const teamARimUbication: Coordinate = [2, 8];
 export const teamBRimUbication: Coordinate = [27, 8];
@@ -1591,7 +1592,7 @@ export function checkTilesThatWillInfluenceInTheCalculations(
   startingUbication: number[],
   endingUbication: number[],
 ): [Coordinate[], Coordinate[]] {
-  const [width, height] = [gameboard[0].length, gameboard.length];
+  const [gameboardX, gameboardY] = [gameboard[0].length, gameboard.length];
 
   const x1 = startingUbication[0];
   const y1 = startingUbication[1];
@@ -1599,22 +1600,22 @@ export function checkTilesThatWillInfluenceInTheCalculations(
   const x2 = endingUbication[0];
   const y2 = endingUbication[1];
 
-  let dx = x2 - x1;
-  let dy = y2 - y1;
+  const dx = x2 - x1;
+  const dy = y2 - y1;
 
-  let steps = Math.max(Math.abs(dx), Math.abs(dy));
+  const steps = Math.max(Math.abs(dx), Math.abs(dy));
 
-  let xIncrement = dx / steps;
-  let yIncrement = dy / steps;
+  const xIncrement = dx / steps;
+  const yIncrement = dy / steps;
 
-  let ballGoesOverThisPositions = [] as Coordinate[];
-  let ballGoesCloseToThisPositions = [] as Coordinate[];
+  const ballGoesOverThisPositions: Coordinate[] = [];
+  const ballGoesCloseToThisPositions: Coordinate[] = [];
 
   for (let i = 0; i <= steps; i++) {
-    let x = Math.round(x1 + i * xIncrement);
-    let y = Math.round(y1 + i * yIncrement);
+    const x = Math.round(x1 + i * xIncrement);
+    const y = Math.round(y1 + i * yIncrement);
 
-    if (x >= 0 && x < width && y >= 0 && y < height) {
+    if (x >= 0 && x < gameboardX && y >= 0 && y < gameboardY) {
       ballGoesOverThisPositions.push([x, y]);
 
       for (let j = -1; j <= 1; j++) {
@@ -1622,19 +1623,36 @@ export function checkTilesThatWillInfluenceInTheCalculations(
           if (j === 0 && k === 0) {
             continue;
           }
-          let x2 = x + j;
-          let y2 = y + k;
-          if (x2 >= 0 && x2 < width && y2 >= 0 && y2 < height) {
-            ballGoesCloseToThisPositions.push([x2, y2]);
+
+          const closeX = x + j;
+          const closeY = y + k;
+
+          if (
+            closeX >= 0 &&
+            closeX < gameboardX &&
+            closeY >= 0 &&
+            closeY < gameboardY
+          ) {
+            ballGoesCloseToThisPositions.push([closeX, closeY]);
           }
         }
       }
     }
   }
+
+  // Eliminar coordenadas repetidas
+  const uniqueClosePositions = [
+    ...new Map(
+      ballGoesCloseToThisPositions.map((coordinate) => [
+        coordinate.join(","),
+        coordinate,
+      ]),
+    ).values(),
+  ];
+
   return [
     ballGoesOverThisPositions,
-    //Delete repeated values
-    [...new Set(ballGoesCloseToThisPositions)],
+    uniqueClosePositions,
   ];
 }
 
@@ -2066,3 +2084,98 @@ export function isRivalNearby(
 }
 
 export const initialGameBoard = getInitialBoard();
+
+export const defensivePointsFoulInDribbling = 90;
+
+export function calculateDefenderPointsInDribbling(defender: Player): number {
+  let defenderZoneId = playerZoneId(defender, !(defender.team === "TeamA"));
+  let diceRoll = roll20SidesDice();
+  let multiplier = 1 + diceRoll / 10;
+
+  if (defender.lastAction == "overwhelming waiting") {
+    multiplier += 0.4;
+  } else if (defender.lastAction == "stealAttempt") {
+    multiplier += 1;
+  }
+
+  let defenderPonints = 0;
+  let height = defender.height;
+  let weight = defender.weight;
+  let atleticism = defender.atleticism;
+  let perDef = defender.perimeterDefence;
+  let insDef = defender.insideDefence;
+
+  if (defenderZoneId <= 2) {
+    defenderPonints =
+      (0.15 * height + atleticism + perDef * 0.1 + insDef * 2) * multiplier;
+  } else if (defenderZoneId <= 4) {
+    defenderPonints =
+      (0.1 * height - weight * 0.2 + atleticism * 1.2 + perDef + insDef) *
+      multiplier;
+  } else {
+    defenderPonints =
+      (0.05 * height - weight * 0.1 + atleticism * 2 + perDef * 2) * multiplier;
+  }
+
+  return defenderPonints;
+}
+
+export function calculateOffensivePlayerPoints(player: Player): number {
+  let atackerZoneId = playerZoneId(player, player.team === "TeamA");
+  let diceRoll = roll20SidesDice();
+  let multiplier = 2 + diceRoll / 10;
+
+  if (player.lastAction === "tripleThreat") {
+    multiplier += 1;
+  }
+
+  let totalPoints = 0;
+  let height = player.height;
+  let weight = player.weight;
+  let atleticism = player.atleticism;
+  let perScor = player.perimeterDefence;
+  let insScor = player.insideDefence;
+  let playMaking = player.playMaking;
+
+  if (atackerZoneId <= 2) {
+    totalPoints =
+      (0.05 * height +
+        atleticism +
+        perScor * 0.1 +
+        insScor * 2 +
+        playMaking * 0.2) *
+      multiplier;
+  } else if (atackerZoneId <= 4) {
+    totalPoints =
+      (0.03 * height -
+        weight +
+        atleticism * 1.2 +
+        perScor +
+        insScor +
+        playMaking) *
+      multiplier;
+  } else {
+    totalPoints =
+      (0.01 * height -
+        weight * 1.2 +
+        atleticism * 2 +
+        perScor * 2 +
+        playMaking * 2) *
+      multiplier;
+  }
+
+  return totalPoints;
+}
+
+export function getDefensivePlayersInDribblingAction(
+  team: Team,
+  tiles: Coordinate[],
+): Player[] {
+  //The flatMap is used to avoid returning undefined values in the array
+  return tiles.flatMap((tile) =>
+    team.players.filter(
+      (player) =>
+        player.ubicationX === tile[0] && player.ubicationY === tile[1],
+    ),
+  );
+}

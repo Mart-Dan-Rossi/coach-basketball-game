@@ -21,7 +21,7 @@ const GameContainer = () => {
     gameNarration,
     setGameNarration,
     gameboard,
-    setGameBoard,
+    setGameboard,
   } = useContext(GameContext);
 
   const playerA1: Player = new Player(
@@ -221,7 +221,7 @@ const GameContainer = () => {
         gameNarration,
         setGameNarration,
         gameboard,
-        setGameBoard,
+        setGameboard,
       );
     }
   }

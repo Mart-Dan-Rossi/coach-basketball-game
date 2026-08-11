@@ -147,12 +147,17 @@ function Gameboard({ match, setMatchState }: Props) {
         //And have 0.5 or more  action points
         if (teamActivePlayer.actionPoints >= 0.5) {
           if (teamActivePlayer.haveBall) {
-            setShowTripleThreatButton(() => true);
+            if (teamActivePlayer.lastAction !== "passingOutbands") {
+              setShowTripleThreatButton(() => true);
+            }
             setShowPassButton(() => true);
           }
         }
         //And have 1 or more action point
-        if (teamActivePlayer.actionPoints >= 1) {
+        if (
+          teamActivePlayer.actionPoints >= 1 &&
+          teamActivePlayer.lastAction !== "passingOutbands"
+        ) {
           if (teamActivePlayer.haveBall) {
             setShowDribblingButton(() => true);
             setShowShootButton(() => true);

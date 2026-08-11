@@ -1650,10 +1650,7 @@ export function checkTilesThatWillInfluenceInTheCalculations(
     ).values(),
   ];
 
-  return [
-    ballGoesOverThisPositions,
-    uniqueClosePositions,
-  ];
+  return [ballGoesOverThisPositions, uniqueClosePositions];
 }
 
 export function getDistanceToAPoint(
@@ -1980,6 +1977,160 @@ export const teamBInitialPositions = [
   [15, 8],
 ];
 
+export function getTeamAPositionWhenOutboundsOnTopLeftSideWithTeamBAtacking(
+  outOfBandsPosition: Coordinate,
+): Coordinate[] {
+  return [
+    [8, 3],
+    [8, 7],
+    [2, 4],
+    [outOfBandsPosition[0], outOfBandsPosition[1] + 1],
+    [3, 7],
+  ];
+}
+
+export function getTeamBPositionWhenOutboundsOnTopLeftSideWithTeamBAtacking(
+  outOfBandsPosition: Coordinate,
+): Coordinate[] {
+  return [[9, 3], [9, 7], [2, 3], outOfBandsPosition, [3, 6]];
+}
+
+export function getTeamAPositionWhenOutboundsOnTopLeftSideWithTeamAAtacking(
+  outOfBandsPosition: Coordinate,
+): Coordinate[] {
+  return [
+    [outOfBandsPosition[0], 3],
+    [outOfBandsPosition[0] + 3, 7],
+    outOfBandsPosition,
+    [22, 4],
+    [25, 7],
+  ];
+}
+
+export function getTeamBPositionWhenOutboundsOnTopLeftSideWithTeamAAtacking(): Coordinate[] {
+  return [
+    [15, 3],
+    [18, 7],
+    [18, 3],
+    [23, 4],
+    [26, 7],
+  ];
+}
+
+export function getTeamAPositionWhenOutboundsOnTopRightSideWithTeamBAtacking(): Coordinate[] {
+  return [
+    [14, 3],
+    [11, 7],
+    [11, 3],
+    [6, 4],
+    [3, 7],
+  ];
+}
+
+export function getTeamBPositionWhenOutboundsOnTopRightSideWithTeamBAtacking(
+  outOfBandsPosition: Coordinate,
+): Coordinate[] {
+  return [
+    [outOfBandsPosition[0], 3],
+    [outOfBandsPosition[0] - 3, 7],
+    outOfBandsPosition,
+    [7, 4],
+    [4, 7],
+  ];
+}
+
+export function getTeamAPositionWhenOutboundsOnTopRightSideWithTeamAAtacking(
+  outOfBandsPosition: Coordinate,
+): Coordinate[] {
+  return [[20, 3], [20, 7], [26, 3], outOfBandsPosition, [25, 6]];
+}
+
+export function getTeamBPositionWhenOutboundsOnTopRightSideWithTeamAAtacking(
+  outOfBandsPosition: Coordinate,
+): Coordinate[] {
+  return [
+    [21, 3],
+    [21, 7],
+    [26, 4],
+    [outOfBandsPosition[0], outOfBandsPosition[1] + 1],
+    [25, 7],
+  ];
+}
+
+export function mirrorCoordinateOnY(coordinate: Coordinate): Coordinate {
+  const [x, y] = coordinate;
+
+  return [x, boardYDimentions + 1 - y];
+}
+
+export function getTeamBNewPositionWhenOutboundsOnLeftSideWithTeamBAtacking(
+  outOfBandsPosition: Coordinate,
+): Coordinate[] {
+  if (outOfBandsPosition[1] < 8) {
+    return [
+      [9, outOfBandsPosition[1]],
+      [9, outOfBandsPosition[1] + 6],
+      [3, outOfBandsPosition[1] + 6],
+      outOfBandsPosition,
+      [3, outOfBandsPosition[1]],
+    ];
+  } else {
+    return [
+      [9, outOfBandsPosition[1]],
+      [9, outOfBandsPosition[1] - 6],
+      [3, outOfBandsPosition[1] - 6],
+      outOfBandsPosition,
+      [3, outOfBandsPosition[1]],
+    ];
+  }
+}
+
+export function getTeamANewPositionWhenOutboundsOnLeftSideWithTeamBAtacking(
+  outOfBandsPosition: Coordinate,
+): Coordinate[] {
+  if (outOfBandsPosition[1] < 8) {
+    return [
+      [8, outOfBandsPosition[1]],
+      [8, outOfBandsPosition[1] + 6],
+      [2, outOfBandsPosition[1] + 6],
+      outOfBandsPosition,
+      [2, outOfBandsPosition[1]],
+    ];
+  } else {
+    return [
+      [8, outOfBandsPosition[1]],
+      [8, outOfBandsPosition[1] - 6],
+      [2, outOfBandsPosition[1] - 6],
+      outOfBandsPosition,
+      [2, outOfBandsPosition[1]],
+    ];
+  }
+}
+
+export function getTeamANewPositionWhenOutboundsOnLeftSideWithTeamAAtacking(
+  outOfBandsPosition: Coordinate,
+): Coordinate[] {
+  return [[3, 4], [3, 12], outOfBandsPosition, [14, 4], [14, 12]];
+}
+
+export function getTeamBNewPositionWhenOutboundsOnLeftSideWithTeamAAtacking(
+  outOfBandsPosition: Coordinate,
+): Coordinate[] {
+  return [
+    [15, 4],
+    [15, 12],
+    [16, outOfBandsPosition[1]],
+    [18, 4],
+    [18, 12],
+  ];
+}
+
+export function mirrorCoordinateOnX(coordinate: Coordinate): Coordinate {
+  const [x, y] = coordinate;
+
+  return [29 - x, y];
+}
+
 export function getInitialBoard(teamShootingFT?: string): number[][] {
   function getBoardFormatInitialTeamUbication(
     teamInitialPositions: number[][],
@@ -2178,4 +2329,177 @@ export function getDefensivePlayersInDribblingAction(
         player.ubicationX === tile[0] && player.ubicationY === tile[1],
     ),
   );
+}
+
+export function getIsCloserToLeftSide(coords: Coordinate): boolean {
+  return boardXDimentions / 2 > coords[0];
+}
+
+export function getIsCloserToTop(coords: Coordinate): boolean {
+  return boardYDimentions / 2 > coords[1];
+}
+
+export function getNewTeamsPositions(
+  atackingTeamKeepsPosetion: boolean,
+  defenderTeam: Team,
+  closerOutOfBandsCoords: Coordinate,
+): Coordinate[][] {
+  let ballIsInLeftSide = getIsCloserToLeftSide(closerOutOfBandsCoords);
+
+  let teamANewPositions: Coordinate[] | undefined;
+  let teamBNewPositions: Coordinate[] | undefined;
+
+  let isTeamABall =
+    (atackingTeamKeepsPosetion && defenderTeam.name !== "TeamA") ||
+    (!atackingTeamKeepsPosetion && defenderTeam.name === "TeamA");
+
+  //If it's in top or bottom sideline
+  if (closerOutOfBandsCoords[1] === 1 || closerOutOfBandsCoords[1] === 15) {
+    if (ballIsInLeftSide) {
+      //And the team atacking is atacking to the left (is TeamB)
+      if (!isTeamABall) {
+        teamANewPositions =
+          getTeamAPositionWhenOutboundsOnTopLeftSideWithTeamBAtacking(
+            closerOutOfBandsCoords,
+          );
+
+        teamBNewPositions =
+          getTeamBPositionWhenOutboundsOnTopLeftSideWithTeamBAtacking(
+            closerOutOfBandsCoords,
+          );
+
+        //And the team atacking is atacking to the right (is TeamA)
+      } else {
+        teamANewPositions =
+          getTeamAPositionWhenOutboundsOnTopLeftSideWithTeamAAtacking(
+            closerOutOfBandsCoords,
+          );
+
+        teamBNewPositions =
+          getTeamBPositionWhenOutboundsOnTopLeftSideWithTeamAAtacking();
+      }
+      //The ball is in right side
+    } else {
+      if (!isTeamABall) {
+        teamANewPositions =
+          getTeamAPositionWhenOutboundsOnTopRightSideWithTeamBAtacking();
+
+        teamBNewPositions =
+          getTeamBPositionWhenOutboundsOnTopRightSideWithTeamBAtacking(
+            closerOutOfBandsCoords,
+          );
+
+        //And the team atacking is atacking to the right (is TeamA)
+      } else {
+        teamANewPositions =
+          getTeamAPositionWhenOutboundsOnTopRightSideWithTeamAAtacking(
+            closerOutOfBandsCoords,
+          );
+
+        teamBNewPositions =
+          getTeamBPositionWhenOutboundsOnTopRightSideWithTeamAAtacking(
+            closerOutOfBandsCoords,
+          );
+      }
+    }
+
+    //If it's in bottom sideline
+    if (closerOutOfBandsCoords[1] === 15) {
+      teamANewPositions = teamANewPositions.map((coord) => {
+        return mirrorCoordinateOnY(coord);
+      });
+      teamBNewPositions = teamBNewPositions.map((coord) => {
+        return mirrorCoordinateOnY(coord);
+      });
+    }
+    //If it's in left of right sideline
+  } else {
+    //Standard is left sideline
+    if (isTeamABall) {
+      teamANewPositions =
+        getTeamANewPositionWhenOutboundsOnLeftSideWithTeamAAtacking(
+          closerOutOfBandsCoords,
+        );
+      teamBNewPositions =
+        getTeamBNewPositionWhenOutboundsOnLeftSideWithTeamAAtacking(
+          closerOutOfBandsCoords,
+        );
+      //If teamB have the ball
+    } else {
+      teamANewPositions =
+        getTeamANewPositionWhenOutboundsOnLeftSideWithTeamBAtacking(
+          closerOutOfBandsCoords,
+        );
+      teamBNewPositions =
+        getTeamBNewPositionWhenOutboundsOnLeftSideWithTeamBAtacking(
+          closerOutOfBandsCoords,
+        );
+    }
+
+    //If it's in right sideline mirror the ubications in X
+    if (closerOutOfBandsCoords[0] === 28) {
+      teamANewPositions = teamANewPositions.map((playerPosition) => {
+        return mirrorCoordinateOnX(playerPosition);
+      });
+      teamBNewPositions = teamBNewPositions.map((playerPosition) => {
+        return mirrorCoordinateOnX(playerPosition);
+      });
+    }
+  }
+
+  if (teamANewPositions === undefined || teamBNewPositions === undefined) {
+    throw new Error(
+      "Error: a team ubication was not defined in getNewTeamsPositions, movePlayersToOutOfBandsPositions getTeamsPositions",
+    );
+  }
+
+  return [teamANewPositions, teamBNewPositions];
+}
+
+export function getClosestBorderToBall(ballCoords: Coordinate): Coordinate {
+  let distanceToClosestBorderInX = 0;
+  let distanceToClosestBorderInY = 0;
+  let finalUbication: Coordinate = [0, 0];
+  let isCloserToLeftSide = getIsCloserToLeftSide(ballCoords);
+  let isCloserToTop = getIsCloserToTop(ballCoords);
+
+  if (isCloserToLeftSide) {
+    distanceToClosestBorderInX = getDistanceToAPoint(ballCoords, [
+      1,
+      ballCoords[1],
+    ]);
+  } else {
+    distanceToClosestBorderInX = getDistanceToAPoint(ballCoords, [
+      boardXDimentions,
+      ballCoords[1],
+    ]);
+  }
+
+  if (isCloserToTop) {
+    distanceToClosestBorderInY = getDistanceToAPoint(ballCoords, [
+      ballCoords[0],
+      1,
+    ]);
+  } else {
+    distanceToClosestBorderInY = getDistanceToAPoint(ballCoords, [
+      ballCoords[0],
+      boardYDimentions,
+    ]);
+  }
+
+  if (distanceToClosestBorderInX < distanceToClosestBorderInY) {
+    if (isCloserToLeftSide) {
+      finalUbication = [1, ballCoords[1]];
+    } else {
+      finalUbication = [boardXDimentions, ballCoords[1]];
+    }
+  } else {
+    if (isCloserToTop) {
+      finalUbication = [ballCoords[0], 1];
+    } else {
+      finalUbication = [ballCoords[0], boardYDimentions];
+    }
+  }
+
+  return finalUbication;
 }

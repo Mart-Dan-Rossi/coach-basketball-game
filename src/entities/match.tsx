@@ -1,56 +1,58 @@
-import { Coordinate, QuarterTimeLeft } from "./myInterfaces";
-import { Team } from "./team";
+import React from "react";
 import {
-  roll20SidesDice,
-  numberEntire,
-  playerZoneId,
-  ranges,
-  checkTilesThatWillInfluenceInTheCalculations,
-  mathShotPointsCloseToTheRim,
-  mathShotPointsInShortRange,
-  mathShotPointsInMidRange,
-  mathShotPointsCloseToThe3PointLine,
-  mathShotPointsInLong3Range,
-  mathShotPointsInHalfCourt,
-  mathShotPointsBehindHalfCourt,
-  mathShotPointsCloseToTheOtherRim,
-  mathDefensePointsCloseToTheRim,
-  mathDefensePointsInShortRange,
-  mathDefensePointsInMidRange,
-  mathDefensePointsCloseToThe3PointLine,
-  mathDefensePointsLong3Range,
-  mathDefensePointsHalfCourtAndFartherAway,
-  getShotDistance,
-  getWhereItReboundsTo,
-  calculateRebounder,
-  getRangeText,
-  playerPositionDetection,
-  mathShotPointsInFreeThrow,
-  getMaxStatPerPosition,
-  mathChancesMakingShotInFreeThrow,
-  mathChancesMakingShotInCloseToTheRim,
-  mathChancesMakingShotInShortRange,
-  mathChancesMakingShotInMidRange,
-  mathChancesMakingShotInCloseToThe3PointLine,
-  mathChancesMakingShotInLong3Range,
-  mathChancesMakingShotInHalfCourt,
-  mathChancesMakingShotInBehindHalfCourt,
-  mathChancesMakingShotInCloseToTheOtherRim,
-  teamADefensiveFTPositions,
-  getInitialBoard,
-  teamBDefensiveFTPositions,
-  teamAOffensiveFTPositions,
-  teamBOffensiveFTPositions,
-  teamARimUbication,
-  teamBRimUbication,
-  findNearestPlayerToPoint,
   calculateDefenderPointsInDribbling,
   calculateOffensivePlayerPoints,
+  calculateRebounder,
+  checkTilesThatWillInfluenceInTheCalculations,
   defensivePointsFoulInDribbling,
+  findNearestPlayerToPoint,
+  getClosestBorderToBall,
   getDefensivePlayersInDribblingAction,
+  getInitialBoard,
+  getMaxStatPerPosition,
+  getNewTeamsPositions,
+  getRangeText,
+  getShotDistance,
+  getWhereItReboundsTo,
+  mathChancesMakingShotInBehindHalfCourt,
+  mathChancesMakingShotInCloseToThe3PointLine,
+  mathChancesMakingShotInCloseToTheOtherRim,
+  mathChancesMakingShotInCloseToTheRim,
+  mathChancesMakingShotInFreeThrow,
+  mathChancesMakingShotInHalfCourt,
+  mathChancesMakingShotInLong3Range,
+  mathChancesMakingShotInMidRange,
+  mathChancesMakingShotInShortRange,
+  mathDefensePointsCloseToThe3PointLine,
+  mathDefensePointsCloseToTheRim,
+  mathDefensePointsHalfCourtAndFartherAway,
+  mathDefensePointsInMidRange,
+  mathDefensePointsInShortRange,
+  mathDefensePointsLong3Range,
+  mathShotPointsBehindHalfCourt,
+  mathShotPointsCloseToThe3PointLine,
+  mathShotPointsCloseToTheOtherRim,
+  mathShotPointsCloseToTheRim,
+  mathShotPointsInFreeThrow,
+  mathShotPointsInHalfCourt,
+  mathShotPointsInLong3Range,
+  mathShotPointsInMidRange,
+  mathShotPointsInShortRange,
+  numberEntire,
+  playerPositionDetection,
+  playerZoneId,
+  ranges,
+  roll20SidesDice,
+  teamADefensiveFTPositions,
+  teamAOffensiveFTPositions,
+  teamARimUbication,
+  teamBDefensiveFTPositions,
+  teamBOffensiveFTPositions,
+  teamBRimUbication,
 } from "../utilities/exportableFunctions";
-import React from "react";
+import { Coordinate, QuarterTimeLeft } from "./myInterfaces";
 import { Player } from "./players";
+import { Team } from "./team";
 
 export class Match {
   teamA: Team;
@@ -63,6 +65,8 @@ export class Match {
   isFreeThrowSerie: boolean;
   isFirstFreeThrowInTheSerie: boolean;
   waitingPlayers: Player[] = [];
+  secondsPassingFromOutbands: number;
+  passingFromOutbands: boolean;
 
   //Match basic info
   quarter: number;
@@ -83,6 +87,8 @@ export class Match {
     this.freeThrowsLeft = 0;
     this.isFreeThrowSerie = false;
     this.isFirstFreeThrowInTheSerie = false;
+    this.secondsPassingFromOutbands = 0;
+    this.passingFromOutbands = false;
 
     //Match basic info
     this.quarter = 1;
@@ -578,7 +584,6 @@ export class Match {
     passer.subtractActionPoints(0.5);
     passer.setHaveBall(false);
 
-    //TODO check why this is working wonky. Even when defenders get more points the pass is succesfull.
     //If the pass have more points than the defensive points
     if (passPoints >= totalDefensivePoints) {
       //The receiver gets the ball
@@ -608,6 +613,9 @@ export class Match {
 
       passerTeam.resetLastPasserForAllPlayers();
     }
+
+    this.secondsPassingFromOutbands = 0;
+    this.passingFromOutbands = false;
 
     setGameNarration(() => newGameNarration);
   }
@@ -671,11 +679,93 @@ export class Match {
     moveAtackersToReboundPositions();
   }
 
+  movePlayersToOutOfBandsPositions(
+    defenderTeam: Team,
+    setGameboard: React.Dispatch<React.SetStateAction<number[][]>>,
+    atackingTeamKeepsPosetion: boolean = true,
+  ): void {
+    let atackingTeam = defenderTeam.name === "TeamA" ? this.teamB : this.teamA;
+    let playerWithBall = atackingTeam.players.find((p) => p.haveBall);
+    if (!playerWithBall) {
+      throw new Error(
+        "Error: Player with ball not found while trying to move players to inbounds position",
+      );
+    }
+
+    let ballUbication: Coordinate = [
+      playerWithBall?.ubicationX,
+      playerWithBall?.ubicationY,
+    ];
+
+    let closerOutOfBandsCoords = getClosestBorderToBall(ballUbication);
+
+    let newTeamsPositions: Coordinate[][] = getNewTeamsPositions(
+      atackingTeamKeepsPosetion,
+      defenderTeam,
+      closerOutOfBandsCoords,
+    );
+    let bothTeams = [this.teamA, this.teamB];
+    let playerPassing: Player | undefined;
+
+    this.secondsPassingFromOutbands = 0;
+    this.passingFromOutbands = true;
+
+    playerWithBall.haveBall = false;
+
+    //Find playerPassing
+    bothTeams.forEach((team) => {
+      team.giveActionPointsToTeam();
+      team.giveMovementLeftToAllPlayers();
+      team.givePlayerHaveTurnToAllPlayers();
+      team.setTeamTurnLeft(true);
+
+      if (!playerPassing) {
+        playerPassing = team.players.find((p) => {
+          return (
+            p.ubicationX === closerOutOfBandsCoords[0] &&
+            p.ubicationY === closerOutOfBandsCoords[1]
+          );
+        });
+      }
+    });
+
+    if (!playerPassing) {
+      throw new Error(
+        "Error: playerPassing not found in movePlayersToOutOfBandsPositions",
+      );
+    }
+
+    setGameboard((gameboard) => {
+      let newGameboard = [...gameboard];
+
+      bothTeams.forEach((t) => {
+        t.players.forEach((p) => {
+          //Remove players form gameboard
+          newGameboard[p.ubicationY - 1][p.ubicationX - 1] = 0;
+          //Remove last actions
+          p.lastAction = "";
+        });
+      });
+
+      newTeamsPositions.forEach((team, i) => {
+        //Add new players positions to the gameboard
+        team.forEach(([x, y]) => {
+          newGameboard[y - 1][x - 1] = i + 1;
+        });
+      });
+
+      return newGameboard;
+    });
+
+    playerPassing.lastAction = "passingOutbands";
+  }
+
   handleFoul(
     defender: Player,
     atacker: Player,
     gameNarration: string[],
     setGameNarration: React.Dispatch<React.SetStateAction<string[]>>,
+    setGameboard: React.Dispatch<React.SetStateAction<number[][]>>,
     amountOfFreeThrows?: number,
   ): void {
     //TODO think how to handle the situation when a defender fouls a player without the ball while the ball player is shooting
@@ -738,6 +828,9 @@ export class Match {
       //Set flags to indicate it is a free throw serie and that it is the first one
       this.isFreeThrowSerie = true;
       this.isFirstFreeThrowInTheSerie = true;
+    } else {
+      //TODO If there are no FT handle the out of bands
+      this.movePlayersToOutOfBandsPositions(defenderTeam, setGameboard);
     }
 
     setGameNarration(() => newGameNarration);
@@ -943,6 +1036,7 @@ export class Match {
                   shooter,
                   newGameNarration,
                   setGameNarration,
+                  setGameboard,
                   amountOfFreeThrows,
                 );
               }
@@ -1470,6 +1564,7 @@ export class Match {
           player,
           gameNarration,
           setGameNarration,
+          setGameboard,
         );
         //If the ball gets stolen
       } else if (isBallStolen && defenderInteracting) {
@@ -1519,6 +1614,20 @@ export class Match {
     setMatchState(() => this);
 
     setActivateConfirmButton(() => false);
+  }
+
+  handleViolation(
+    setGameboard: React.Dispatch<React.SetStateAction<number[][]>>,
+  ): void {
+    let defensiveTeam = this.teamA.getPlayerWithBall()
+      ? this.teamB
+      : this.teamA;
+
+    let teamWithBall = defensiveTeam.name === "TeamA" ? this.teamB : this.teamA;
+    teamWithBall.statsAddTurnOver();
+    teamWithBall.getPlayerWithBall()?.statsAddTurnOver();
+
+    this.movePlayersToOutOfBandsPositions(defensiveTeam, setGameboard, false);
   }
 
   //------------------------------------END PLAYER ACTIONS METHODS----------------------------------------------------------------------------------------------------------
@@ -1623,15 +1732,46 @@ export class Match {
             this.teamA.setTeamTurn(true);
             newGameNarration.unshift(`It's now ${this.teamA.name} turn.`);
           }
-
-          setGameNarration(() => newGameNarration);
         } else {
-          this.runClock(
-            gameNarration,
-            setGameNarration,
-            gameboard,
-            setGameboard,
-          );
+          if (this.passingFromOutbands) {
+            if (this.secondsPassingFromOutbands >= 5) {
+              let atackingTeam = this.teamA.teamHaveTheBall()
+                ? this.teamA
+                : this.teamB;
+              newGameNarration.unshift(
+                `5 seconds violation! ${atackingTeam.name} have lost the ball.`,
+              );
+              this.handleViolation(setGameboard);
+            } else {
+              this.secondsPassingFromOutbands++;
+              newGameNarration.unshift(
+                `A second has passed without passing the ball on the inboud.`,
+              );
+              newGameNarration.unshift(
+                `${5 - this.secondsPassingFromOutbands} seconds left`,
+              );
+            }
+          } else {
+            this.runClock(
+              gameNarration,
+              setGameNarration,
+              gameboard,
+              setGameboard,
+            );
+          }
+
+          if (!this.gameOver) {
+            //Give players action points and movement left
+            this.teamA.giveActionPointsToTeam();
+            this.teamA.giveMovementLeftToAllPlayers();
+            this.teamA.givePlayerHaveTurnToAllPlayers();
+            this.teamA.setTeamTurnLeft(true);
+
+            this.teamB.giveActionPointsToTeam();
+            this.teamB.giveMovementLeftToAllPlayers();
+            this.teamB.givePlayerHaveTurnToAllPlayers();
+            this.teamB.setTeamTurnLeft(true);
+          }
 
           if (this.teamA.teamHaveTheBall()) {
             this.setTeamTurn("TeamA");
@@ -1643,6 +1783,8 @@ export class Match {
             this.teamA.setTeamTurn(false);
           }
         }
+
+        setGameNarration(() => newGameNarration);
       }
     } else {
       console.error("activePlayer not found in handleEndTurn");
@@ -1677,19 +1819,6 @@ export class Match {
 
     if (this.shotHasBeenAttempted) {
       this.handleShot(gameNarration, setGameNarration, gameboard, setGameboard);
-    }
-
-    if (!this.gameOver) {
-      //Give players action points and movement left
-      this.teamA.giveActionPointsToTeam();
-      this.teamA.giveMovementLeftToAllPlayers();
-      this.teamA.givePlayerHaveTurnToAllPlayers();
-      this.teamA.setTeamTurnLeft(true);
-
-      this.teamB.giveActionPointsToTeam();
-      this.teamB.giveMovementLeftToAllPlayers();
-      this.teamB.givePlayerHaveTurnToAllPlayers();
-      this.teamB.setTeamTurnLeft(true);
     }
   }
 

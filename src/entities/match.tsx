@@ -1269,6 +1269,8 @@ export class Match {
 
     let pointsToAdd = 0;
     let isItIn = calculateIfGoesIn();
+    //Testing value
+    isItIn = true;
     let newPlayerWithBall: Player | undefined;
 
     let asistant = atackingTeam.players.find((player) => player.lastPasser);
@@ -1319,9 +1321,13 @@ export class Match {
 
         newPlayerWithBall.movePlayerToOwnRim(setGameboard);
         newPlayerWithBall.setHaveBall(true);
+        newPlayerWithBall.lastAction = "passingOutbands";
+        
         newGameNarration.unshift(
           `${isNaN(Number(newPlayerWithBall.name)) ? newPlayerWithBall.name : newPlayerWithBall.position} get the ball to start theyr posetion`,
         );
+
+        this.passingFromOutbands = true;
       }
     } else {
       //If the shot is off

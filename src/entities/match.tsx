@@ -858,7 +858,8 @@ export class Match {
     let defendingTeam = shooter.team == "TeamA" ? this.teamB : this.teamA;
 
     //I get in what part of the field is him located to calculate with the propper math
-    let shooterZoneUbicationId = playerZoneId(shooter, shooter.team == "TeamB");
+    let shooterZoneUbicationId = playerZoneId(shooter, shooter.team == "TeamA");
+    console.log("shooterZoneUbicationId: ", shooterZoneUbicationId);
 
     if (!(this.freeThrowsLeft > 0)) {
       newGameNarration.unshift(
@@ -1268,7 +1269,8 @@ export class Match {
     };
 
     let pointsToAdd = 0;
-    let isItIn = calculateIfGoesIn();
+    let isItIn = true;
+    // let isItIn = calculateIfGoesIn();
     let newPlayerWithBall: Player | undefined;
 
     let asistant = atackingTeam.players.find((player) => player.lastPasser);

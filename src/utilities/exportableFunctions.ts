@@ -1370,7 +1370,7 @@ export function playerZoneId(player: Player, teamAAtacking: boolean): number {
 export function compareIniciatives(
   playerA: Player,
   playerB: Player,
-  isTeamAAtacking: Player | undefined,
+  isTeamAAtacking: boolean,
 ): Player {
   let defender = !!isTeamAAtacking ? playerB : playerA;
   let atacker = !!isTeamAAtacking ? playerA : playerB;
@@ -1465,114 +1465,47 @@ export function compareIniciatives(
   }
 
   while (compareIniciatives == 0) {
-    if (!isTeamAAtacking) {
-      //If the player is close to the rim
-      if (playerZoneId(defender, !isTeamAAtacking) == ranges.closeToTheRim.id) {
-        defenderIniciative = calculationIfDefensorIsCloseToTheRim();
-      }
-      //If the player is in short range
-      else if (
-        playerZoneId(defender, !isTeamAAtacking) == ranges.inShortRange.id ||
-        playerZoneId(defender, !isTeamAAtacking) == ranges.behindTheBoard.id
-      ) {
-        defenderIniciative = calculationIfDefenderIsInShortRange();
-      }
-      //If the player is in mid range
-      else if (
-        playerZoneId(defender, !isTeamAAtacking) == ranges.inMidRange.id
-      ) {
-        defenderIniciative = calculationIfDefenderIsInMidRange();
-      }
-      //If he is outside 3 point range or farther away
-      else if (
-        playerZoneId(defender, !isTeamAAtacking) >=
-        ranges.outsideThe3PointLine.id
-      ) {
-        defenderIniciative = calculationIfDefenderIsOutsideThe3PointLine();
-      }
+    let atackerZoneId = playerZoneId(atacker, isTeamAAtacking);
+    let defenderZoneId = playerZoneId(defender, isTeamAAtacking);
 
-      //If the player is close to the rim
-      if (playerZoneId(atacker, !isTeamAAtacking) == ranges.closeToTheRim.id) {
-        atackerInisiative = calculationIfAtackerIsCloseToTheRim();
-      }
-      //If the player is in short range
-      else if (
-        playerZoneId(atacker, !isTeamAAtacking) == ranges.inShortRange.id ||
-        playerZoneId(atacker, !isTeamAAtacking) == ranges.behindTheBoard.id
-      ) {
-        atackerInisiative = calculationIfAtackerIsInShortRange();
-      }
-      //If the player is in mid range
-      else if (
-        playerZoneId(atacker, !isTeamAAtacking) == ranges.inMidRange.id
-      ) {
-        atackerInisiative = calculationIfAtackerIsInMidRange();
-      }
-      //If he is outside 3 point range or farther away
-      else if (
-        playerZoneId(atacker, !isTeamAAtacking) >=
-        ranges.outsideThe3PointLine.id
-      ) {
-        atackerInisiative = calculationIfAtackerIsOutsideThe3PointLine();
-      }
+    //If the player is close to the rim
+    if (defenderZoneId == ranges.closeToTheRim.id) {
+      defenderIniciative = calculationIfDefensorIsCloseToTheRim();
+    }
+    //If the player is in short range
+    else if (
+      defenderZoneId == ranges.inShortRange.id ||
+      defenderZoneId == ranges.behindTheBoard.id
+    ) {
+      defenderIniciative = calculationIfDefenderIsInShortRange();
+    }
+    //If the player is in mid range
+    else if (defenderZoneId == ranges.inMidRange.id) {
+      defenderIniciative = calculationIfDefenderIsInMidRange();
+    }
+    //If he is outside 3 point range or farther away
+    else if (defenderZoneId >= ranges.outsideThe3PointLine.id) {
+      defenderIniciative = calculationIfDefenderIsOutsideThe3PointLine();
+    }
 
-      //If team B is defending
-    } else if (isTeamAAtacking) {
-      //If the player is close to the rim
-      if (
-        playerZoneId(defender, isTeamAAtacking !== undefined) ==
-        ranges.closeToTheRim.id
-      ) {
-        defenderIniciative = calculationIfDefensorIsCloseToTheRim();
-      }
-      //If the player is in short range
-      else if (
-        playerZoneId(defender, isTeamAAtacking !== undefined) ==
-          ranges.inShortRange.id ||
-        playerZoneId(defender, isTeamAAtacking !== undefined) ==
-          ranges.behindTheBoard.id
-      ) {
-        defenderIniciative = calculationIfAtackerIsInShortRange();
-      }
-      //If the player is in mid range
-      else if (
-        playerZoneId(defender, isTeamAAtacking !== undefined) ==
-        ranges.inMidRange.id
-      ) {
-        defenderIniciative = calculationIfAtackerIsInMidRange();
-      }
-      //If he is outside 3 point range or farther away
-      else if (
-        playerZoneId(defender, isTeamAAtacking !== undefined) >=
-        ranges.outsideThe3PointLine.id
-      ) {
-        defenderIniciative = calculationIfDefenderIsOutsideThe3PointLine();
-      }
-
-      //If the player is close to the rim
-      if (playerZoneId(atacker, !isTeamAAtacking) == ranges.closeToTheRim.id) {
-        atackerInisiative = calculationIfAtackerIsCloseToTheRim();
-      }
-      //If the player is in short range
-      else if (
-        playerZoneId(atacker, !isTeamAAtacking) == ranges.inShortRange.id ||
-        playerZoneId(atacker, !isTeamAAtacking) == ranges.behindTheBoard.id
-      ) {
-        atackerInisiative = calculationIfAtackerIsInShortRange();
-      }
-      //If the player is in mid range
-      else if (
-        playerZoneId(atacker, !isTeamAAtacking) == ranges.inMidRange.id
-      ) {
-        atackerInisiative = calculationIfAtackerIsInMidRange();
-      }
-      //If he is outside 3 point range or farther away
-      else if (
-        playerZoneId(atacker, !isTeamAAtacking) >=
-        ranges.outsideThe3PointLine.id
-      ) {
-        atackerInisiative = calculationIfAtackerIsOutsideThe3PointLine();
-      }
+    //If the player is close to the rim
+    if (atackerZoneId == ranges.closeToTheRim.id) {
+      atackerInisiative = calculationIfAtackerIsCloseToTheRim();
+    }
+    //If the player is in short range
+    else if (
+      atackerZoneId == ranges.inShortRange.id ||
+      atackerZoneId == ranges.behindTheBoard.id
+    ) {
+      atackerInisiative = calculationIfAtackerIsInShortRange();
+    }
+    //If the player is in mid range
+    else if (atackerZoneId == ranges.inMidRange.id) {
+      atackerInisiative = calculationIfAtackerIsInMidRange();
+    }
+    //If he is outside 3 point range or farther away
+    else if (atackerZoneId >= ranges.outsideThe3PointLine.id) {
+      atackerInisiative = calculationIfAtackerIsOutsideThe3PointLine();
     }
 
     //Compare iniciatives

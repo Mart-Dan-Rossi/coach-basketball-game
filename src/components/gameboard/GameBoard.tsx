@@ -664,7 +664,7 @@ function Gameboard({ match, setMatchState }: Props) {
         newActivePlayer = compareIniciatives(
           teamASelectedPlayer,
           teamBSelectedPlayer,
-          teamA.getPlayerWithBall(),
+          !!teamA.getPlayerWithBall(),
         );
         setActivePlayer(() => newActivePlayer);
         newActivePlayer.setActivePlayer(true);

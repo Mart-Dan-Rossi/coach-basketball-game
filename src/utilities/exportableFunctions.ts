@@ -12,6 +12,7 @@ export const teamARimUbication: Coordinate = [2, 8];
 export const teamBRimUbication: Coordinate = [27, 8];
 
 export const maxTeamPointsInTeamCreation = 70 * 5 * 9;
+export const defendersPointsToAvoidFoul = 10;
 
 export function isPlayerWaiting(player: Player): boolean {
   return (
@@ -458,13 +459,13 @@ export function isCloseToTheRim(
   teamAAtacking: boolean,
   coordinate: Coordinate,
 ): boolean {
+  const [x, y] = coordinate;
+
+  const normalizedX = teamAAtacking ? 29 - x : x;
+
   return (
-    (!teamAAtacking &&
-      ((coordinate[0] == 2 && coordinate[1] > 5 && coordinate[1] < 11) ||
-        (coordinate[0] == 3 && coordinate[1] > 6 && coordinate[1] < 11))) ||
-    (teamAAtacking &&
-      ((coordinate[0] == 27 && coordinate[1] > 5 && coordinate[1] < 11) ||
-        (coordinate[0] == 26 && coordinate[1] > 6 && coordinate[1] < 11)))
+    (normalizedX == 2 && y > 5 && y < 11) ||
+    (normalizedX == 3 && y > 6 && y < 10)
   );
 }
 
@@ -472,41 +473,26 @@ export function isBehindTheBoard(
   teamAAtacking: boolean,
   coordinate: Coordinate,
 ): boolean {
-  return (
-    (!teamAAtacking &&
-      coordinate[0] == 1 &&
-      coordinate[1] > 5 &&
-      coordinate[1] < 11) ||
-    (teamAAtacking &&
-      coordinate[0] == 28 &&
-      coordinate[1] > 5 &&
-      coordinate[1] < 11)
-  );
+  const [x, y] = coordinate;
+
+  const normalizedX = teamAAtacking ? 29 - x : x;
+
+  return normalizedX == 1 && y > 5 && y < 11;
 }
 
 export function isInShortRange(
   teamAAtacking: boolean,
   coordinate: Coordinate,
 ): boolean {
+  const [x, y] = coordinate;
+
+  const normalizedX = teamAAtacking ? 29 - x : x;
+
   return (
-    (!teamAAtacking &&
-      ((coordinate[0] < 5 &&
-        coordinate[0] > 1 &&
-        (coordinate[1] == 5 || coordinate[1] == 11)) ||
-        (coordinate[0] < 6 &&
-          coordinate[0] > 2 &&
-          (coordinate[1] == 6 || coordinate[1] == 10)) ||
-        (coordinate[0] == 5 && coordinate[1] > 5 && coordinate[1] < 11) ||
-        (coordinate[0] == 7 && coordinate[1] == 8))) ||
-    (teamAAtacking &&
-      ((coordinate[0] > 24 &&
-        coordinate[0] < 28 &&
-        (coordinate[1] == 5 || coordinate[1] == 11)) ||
-        (coordinate[0] > 23 &&
-          coordinate[0] < 27 &&
-          (coordinate[1] == 6 || coordinate[1] == 10)) ||
-        (coordinate[0] == 5 && coordinate[1] > 5 && coordinate[1] < 11) ||
-        (coordinate[0] == 7 && coordinate[1] == 8)))
+    (normalizedX < 5 && normalizedX > 1 && (y == 5 || y == 11)) ||
+    (normalizedX < 6 && normalizedX > 2 && (y == 6 || y == 10)) ||
+    (normalizedX == 5 && y > 5 && y < 11) ||
+    (normalizedX == 4 && y > 6 && y < 10)
   );
 }
 
@@ -514,49 +500,20 @@ export function isInMidRange(
   teamAAtacking: boolean,
   coordinate: Coordinate,
 ): boolean {
+  const [x, y] = coordinate;
+
+  const normalizedX = teamAAtacking ? 29 - x : x;
+
   return (
-    (!teamAAtacking &&
-      coordinate[0] == 1 &&
-      coordinate[1] > 1 &&
-      coordinate[1] < 15) ||
-    (coordinate[0] < 6 &&
-      coordinate[0] > 1 &&
-      ((coordinate[1] > 1 && coordinate[1] < 5) ||
-        (coordinate[1] > 11 && coordinate[1] < 15))) ||
-    (coordinate[0] == 6 &&
-      ((coordinate[1] > 2 && coordinate[1] < 5) ||
-        (coordinate[1] > 11 && coordinate[1] < 13))) ||
-    ((coordinate[1] == 5 || coordinate[1] == 11) &&
-      coordinate[0] < 9 &&
-      coordinate[0] > 4) ||
-    (coordinate[0] < 9 &&
-      coordinate[0] > 5 &&
-      (coordinate[1] == 6 ||
-        coordinate[1] == 7 ||
-        coordinate[1] == 9 ||
-        coordinate[1] == 10)) ||
-    (coordinate[0] < 9 && coordinate[0] > 6 && coordinate[1] == 8) ||
-    (teamAAtacking &&
-      coordinate[0] == 28 &&
-      coordinate[1] > 1 &&
-      coordinate[1] < 15) ||
-    (coordinate[0] > 23 &&
-      coordinate[0] < 28 &&
-      ((coordinate[1] > 1 && coordinate[1] < 5) ||
-        (coordinate[1] > 11 && coordinate[1] < 15))) ||
-    (coordinate[0] == 23 &&
-      ((coordinate[1] > 2 && coordinate[1] < 5) ||
-        (coordinate[1] > 11 && coordinate[1] < 13))) ||
-    ((coordinate[1] == 5 || coordinate[1] == 11) &&
-      coordinate[0] > 20 &&
-      coordinate[0] < 25) ||
-    (coordinate[0] > 20 &&
-      coordinate[0] < 24 &&
-      (coordinate[1] == 6 ||
-        coordinate[1] == 7 ||
-        coordinate[1] == 9 ||
-        coordinate[1] == 10)) ||
-    (coordinate[0] > 20 && coordinate[0] < 23 && coordinate[1] == 8)
+    (normalizedX == 1 && ((y > 1 && y < 6) || (y > 10 && y < 15))) ||
+    (normalizedX > 1 &&
+      normalizedX < 6 &&
+      ((y > 1 && y < 5) || (y > 11 && y < 15))) ||
+    (normalizedX == 6 && ((y > 2 && y < 5) || (y > 11 && y < 14))) ||
+    ((y == 5 || y == 11) && normalizedX > 4 && normalizedX < 9) ||
+    // Mantiene (7, 8) dentro del bloque central de media distancia
+    (normalizedX > 5 && normalizedX < 9 && y >= 6 && y <= 10) ||
+    (normalizedX == 7 && (y == 4 || y == 12))
   );
 }
 
@@ -564,41 +521,17 @@ export function isCloseToThe3PointLine(
   teamAAtacking: boolean,
   coordinate: Coordinate,
 ): boolean {
+  const [x, y] = coordinate;
+
+  const normalizedX = teamAAtacking ? 29 - x : x;
+
   return (
-    (!teamAAtacking &&
-      coordinate[0] > 7 &&
-      (coordinate[1] == 1 || coordinate[1] == 15)) ||
-    (coordinate[0] > 8 &&
-      coordinate[0] < 5 &&
-      (coordinate[1] == 2 || coordinate[1] == 14)) ||
-    (coordinate[0] > 9 &&
-      coordinate[0] < 6 &&
-      (coordinate[1] == 3 || coordinate[1] == 13)) ||
-    (coordinate[0] > 10 &&
-      coordinate[0] < 7 &&
-      (coordinate[1] == 4 || coordinate[1] == 12)) ||
-    (coordinate[0] == 9 && (coordinate[1] == 5 || coordinate[1] == 11)) ||
-    (coordinate[0] > 8 &&
-      coordinate[0] < 11 &&
-      coordinate[1] > 5 &&
-      coordinate[1] < 11) ||
-    (teamAAtacking &&
-      coordinate[0] < 22 &&
-      (coordinate[1] == 1 || coordinate[1] == 15)) ||
-    (coordinate[0] < 21 &&
-      coordinate[0] > 24 &&
-      (coordinate[1] == 2 || coordinate[1] == 14)) ||
-    (coordinate[0] < 20 &&
-      coordinate[0] > 23 &&
-      (coordinate[1] == 3 || coordinate[1] == 13)) ||
-    (coordinate[0] < 19 &&
-      coordinate[0] > 22 &&
-      (coordinate[1] == 4 || coordinate[1] == 12)) ||
-    (coordinate[0] == 20 && (coordinate[1] == 5 || coordinate[1] == 11)) ||
-    (coordinate[0] < 21 &&
-      coordinate[0] > 18 &&
-      coordinate[1] > 5 &&
-      coordinate[1] < 11)
+    (normalizedX < 7 && (y == 1 || y == 15)) ||
+    (normalizedX < 8 && normalizedX > 5 && (y == 2 || y == 14)) ||
+    (normalizedX < 9 && normalizedX > 6 && (y == 3 || y == 13)) ||
+    (normalizedX < 10 && normalizedX > 7 && (y == 4 || y == 12)) ||
+    (normalizedX == 9 && (y == 5 || y == 11)) ||
+    (normalizedX < 11 && normalizedX > 8 && y > 5 && y < 11)
   );
 }
 
@@ -606,45 +539,17 @@ export function isInLong3Range(
   teamAAtacking: boolean,
   coordinate: Coordinate,
 ): boolean {
+  const [x, y] = coordinate;
+
+  const normalizedX = teamAAtacking ? 29 - x : x;
+
   return (
-    (!teamAAtacking &&
-      coordinate[0] < 10 &&
-      coordinate[0] > 6 &&
-      (coordinate[1] == 1 || coordinate[1] == 15)) ||
-    (coordinate[0] < 11 &&
-      coordinate[0] > 7 &&
-      (coordinate[1] == 2 || coordinate[1] == 14)) ||
-    (coordinate[0] < 12 &&
-      coordinate[0] > 8 &&
-      (coordinate[1] == 3 || coordinate[1] == 13)) ||
-    (coordinate[0] < 12 &&
-      coordinate[0] > 9 &&
-      (coordinate[1] == 4 || coordinate[1] == 12)) ||
-    (coordinate[0] < 13 &&
-      coordinate[0] > 9 &&
-      (coordinate[1] == 5 || coordinate[1] == 11)) ||
-    (coordinate[0] < 14 &&
-      coordinate[0] > 10 &&
-      (coordinate[1] > 5 || coordinate[1] < 11)) ||
-    (teamAAtacking &&
-      coordinate[0] > 19 &&
-      coordinate[0] < 23 &&
-      (coordinate[1] == 1 || coordinate[1] == 15)) ||
-    (coordinate[0] > 18 &&
-      coordinate[0] < 22 &&
-      (coordinate[1] == 2 || coordinate[1] == 14)) ||
-    (coordinate[0] > 17 &&
-      coordinate[0] < 21 &&
-      (coordinate[1] == 3 || coordinate[1] == 13)) ||
-    (coordinate[0] > 17 &&
-      coordinate[0] < 20 &&
-      (coordinate[1] == 4 || coordinate[1] == 12)) ||
-    (coordinate[0] > 16 &&
-      coordinate[0] < 20 &&
-      (coordinate[1] == 5 || coordinate[1] == 11)) ||
-    (coordinate[0] > 15 &&
-      coordinate[0] < 19 &&
-      (coordinate[1] > 5 || coordinate[1] < 11))
+    (normalizedX < 10 && normalizedX > 6 && (y == 1 || y == 15)) ||
+    (normalizedX < 11 && normalizedX > 7 && (y == 2 || y == 14)) ||
+    (normalizedX < 12 && normalizedX > 8 && (y == 3 || y == 13)) ||
+    (normalizedX < 12 && normalizedX > 9 && (y == 4 || y == 12)) ||
+    (normalizedX < 13 && normalizedX > 9 && (y == 5 || y == 11)) ||
+    (normalizedX < 14 && normalizedX > 10 && y > 5 && y < 11)
   );
 }
 
@@ -652,49 +557,18 @@ export function isCloseToHalfCourt(
   teamAAtacking: boolean,
   coordinate: Coordinate,
 ): boolean {
+  const [x, y] = coordinate;
+
+  const normalizedX = teamAAtacking ? 29 - x : x;
+
   return (
-    (!teamAAtacking &&
-      ((coordinate[0] < 15 &&
-        coordinate[0] > 9 &&
-        (coordinate[1] == 1 || coordinate[1] == 15)) ||
-        (coordinate[0] < 16 &&
-          coordinate[0] > 10 &&
-          (coordinate[1] == 2 || coordinate[1] == 14)) ||
-        (coordinate[0] < 16 &&
-          coordinate[0] > 11 &&
-          (coordinate[1] == 3 || coordinate[1] == 13)) ||
-        (coordinate[0] < 17 &&
-          coordinate[0] > 11 &&
-          (coordinate[1] == 4 || coordinate[1] == 12)) ||
-        (coordinate[0] < 17 &&
-          coordinate[0] > 12 &&
-          (coordinate[1] == 5 || coordinate[1] == 11)) ||
-        (coordinate[0] < 18 &&
-          coordinate[0] > 13 &&
-          coordinate[1] < 11 &&
-          coordinate[1] > 5) ||
-        (coordinate[0] == 18 && coordinate[1] == 8))) ||
-    (teamAAtacking &&
-      ((coordinate[0] > 14 &&
-        coordinate[0] < 20 &&
-        (coordinate[1] == 1 || coordinate[1] == 15)) ||
-        (coordinate[0] > 13 &&
-          coordinate[0] > 19 &&
-          (coordinate[1] == 2 || coordinate[1] == 14)) ||
-        (coordinate[0] > 13 &&
-          coordinate[0] < 18 &&
-          (coordinate[1] == 3 || coordinate[1] == 13)) ||
-        (coordinate[0] > 12 &&
-          coordinate[0] < 18 &&
-          (coordinate[1] == 4 || coordinate[1] == 12)) ||
-        (coordinate[0] > 12 &&
-          coordinate[0] < 17 &&
-          (coordinate[1] == 5 || coordinate[1] == 11)) ||
-        (coordinate[0] > 11 &&
-          coordinate[0] < 16 &&
-          coordinate[1] < 11 &&
-          coordinate[1] > 5) ||
-        (coordinate[0] == 11 && coordinate[1] == 8)))
+    (normalizedX < 15 && normalizedX > 9 && (y == 1 || y == 15)) ||
+    (normalizedX < 16 && normalizedX > 10 && (y == 2 || y == 14)) ||
+    (normalizedX < 16 && normalizedX > 11 && (y == 3 || y == 13)) ||
+    (normalizedX < 17 && normalizedX > 11 && (y == 4 || y == 12)) ||
+    (normalizedX < 17 && normalizedX > 12 && (y == 5 || y == 11)) ||
+    (normalizedX < 18 && normalizedX > 13 && y < 11 && y > 5) ||
+    (normalizedX == 18 && y == 8)
   );
 }
 
@@ -702,41 +576,22 @@ export function isBehindTheHalfCourt(
   teamAAtacking: boolean,
   coordinate: Coordinate,
 ): boolean {
+  const [x, y] = coordinate;
+
+  const normalizedX = teamAAtacking ? 29 - x : x;
+
   return (
-    (!teamAAtacking &&
-      ((coordinate[0] < 19 &&
-        coordinate[0] > 14 &&
-        (coordinate[1] == 1 || coordinate[1] == 15)) ||
-        (coordinate[0] < 20 &&
-          coordinate[0] > 15 &&
-          ((coordinate[1] < 4 && coordinate[1] > 1) ||
-            (coordinate[1] < 15 && coordinate[1] > 12))) ||
-        (coordinate[0] < 21 &&
-          coordinate[0] > 16 &&
-          ((coordinate[1] < 6 && coordinate[1] > 3) ||
-            (coordinate[1] < 13 && coordinate[1] > 10))) ||
-        (coordinate[0] < 22 &&
-          coordinate[0] > 17 &&
-          ((coordinate[1] < 8 && coordinate[1] > 5) ||
-            (coordinate[1] < 11 && coordinate[1] > 8))) ||
-        (coordinate[0] < 22 && coordinate[0] > 18 && coordinate[1] == 8))) ||
-    (teamAAtacking &&
-      ((coordinate[0] > 10 &&
-        coordinate[0] < 15 &&
-        (coordinate[1] == 1 || coordinate[1] == 15)) ||
-        (coordinate[0] > 9 &&
-          coordinate[0] < 14 &&
-          ((coordinate[1] < 4 && coordinate[1] > 1) ||
-            (coordinate[1] < 15 && coordinate[1] > 12))) ||
-        (coordinate[0] > 8 &&
-          coordinate[0] < 13 &&
-          ((coordinate[1] < 6 && coordinate[1] > 3) ||
-            (coordinate[1] < 13 && coordinate[1] > 10))) ||
-        (coordinate[0] > 7 &&
-          coordinate[0] < 12 &&
-          ((coordinate[1] < 8 && coordinate[1] > 5) ||
-            (coordinate[1] < 11 && coordinate[1] > 8))) ||
-        (coordinate[0] > 7 && coordinate[0] < 11 && coordinate[1] == 8)))
+    (normalizedX < 19 && normalizedX > 14 && (y == 1 || y == 15)) ||
+    (normalizedX < 20 &&
+      normalizedX > 15 &&
+      ((y < 4 && y > 1) || (y < 15 && y > 12))) ||
+    (normalizedX < 21 &&
+      normalizedX > 16 &&
+      ((y < 6 && y > 3) || (y < 13 && y > 10))) ||
+    (normalizedX < 22 &&
+      normalizedX > 17 &&
+      ((y < 8 && y > 5) || (y < 11 && y > 8))) ||
+    (normalizedX < 22 && normalizedX > 18 && y == 8)
   );
 }
 
@@ -744,25 +599,15 @@ export function isIntheOtherRim(
   teamAAtacking: boolean,
   coordinate: Coordinate,
 ): boolean {
+  const [x, y] = coordinate;
+
+  const normalizedX = teamAAtacking ? 29 - x : x;
+
   return (
-    (!teamAAtacking &&
-      ((coordinate[0] > 18 && (coordinate[1] == 1 || coordinate[1] == 15)) ||
-        (coordinate[0] > 19 &&
-          ((coordinate[1] < 4 && coordinate[1] > 1) ||
-            (coordinate[1] < 15 && coordinate[1] > 12))) ||
-        (coordinate[0] > 20 &&
-          ((coordinate[1] < 6 && coordinate[1] > 3) ||
-            (coordinate[1] < 13 && coordinate[1] > 10))) ||
-        (coordinate[0] > 21 && coordinate[1] < 11 && coordinate[1] > 5))) ||
-    (teamAAtacking &&
-      ((coordinate[0] < 11 && (coordinate[1] == 1 || coordinate[1] == 15)) ||
-        (coordinate[0] < 10 &&
-          ((coordinate[1] < 4 && coordinate[1] > 1) ||
-            (coordinate[1] < 15 && coordinate[1] > 12))) ||
-        (coordinate[0] < 9 &&
-          ((coordinate[1] < 6 && coordinate[1] > 3) ||
-            (coordinate[1] < 13 && coordinate[1] > 10))) ||
-        (coordinate[0] < 8 && coordinate[1] < 11 && coordinate[1] > 5)))
+    (normalizedX > 18 && (y == 1 || y == 15)) ||
+    (normalizedX > 19 && ((y < 4 && y > 1) || (y < 15 && y > 12))) ||
+    (normalizedX > 20 && ((y < 6 && y > 3) || (y < 13 && y > 10))) ||
+    (normalizedX > 21 && y < 11 && y > 5)
   );
 }
 
@@ -1363,7 +1208,9 @@ export function playerZoneId(player: Player, teamAAtacking: boolean): number {
   ) {
     return ranges.theOtherRim.id;
   } else {
-    throw new Error("Error: Player zone not found in playerZone");
+    throw new Error(
+      `Player zone not found in playerZone: ${JSON.stringify(player)}, teamAAtacking: ${teamAAtacking}`,
+    );
   }
 }
 
@@ -2170,6 +2017,8 @@ export function isRivalNearby(
 export const initialGameBoard = getInitialBoard();
 
 export const defensivePointsFoulInDribbling = 90;
+// export const defensivePointsFoulInStealAttempt = 130;
+export const defensivePointsFoulInStealAttempt = 999;
 
 export function calculateDefenderPointsInDribbling(defender: Player): number {
   let defenderZoneId = playerZoneId(defender, !(defender.team === "TeamA"));
@@ -2204,7 +2053,9 @@ export function calculateDefenderPointsInDribbling(defender: Player): number {
   return defenderPonints;
 }
 
-export function calculateOffensivePlayerPoints(player: Player): number {
+export function calculateOffensivePlayerBallHandlingPoints(
+  player: Player,
+): number {
   let atackerZoneId = playerZoneId(player, player.team === "TeamA");
   let diceRoll = roll20SidesDice();
   let multiplier = 2 + diceRoll / 10;
@@ -2264,12 +2115,52 @@ export function getDefensivePlayersInDribblingAction(
   );
 }
 
+export function calculateDefenderPointsInStealAttempt(
+  defender: Player,
+): number {
+  let defenderZoneId = playerZoneId(defender, !(defender.team === "TeamA"));
+  let diceRoll = roll20SidesDice();
+  let multiplier = 2 + diceRoll / 10;
+
+  if (defender.lastAction == "overwhelming waiting") {
+    multiplier += 0.4;
+  } else if (defender.lastAction == "stealAttempt") {
+    multiplier += 1;
+  }
+
+  let defenderPonints = 0;
+  let height = defender.height;
+  let weight = defender.weight;
+  let atleticism = defender.atleticism;
+  let perDef = defender.perimeterDefence;
+  let insDef = defender.insideDefence;
+
+  if (defenderZoneId <= 2) {
+    defenderPonints =
+      (0.1 * height + atleticism * 1.5 + perDef * 0.2 + insDef * 2.3) *
+      multiplier;
+  } else if (defenderZoneId <= 4) {
+    defenderPonints =
+      (0.8 * height -
+        weight * 0.2 +
+        atleticism * 1.5 +
+        perDef * 1.2 +
+        insDef * 1.1) *
+      multiplier;
+  } else {
+    defenderPonints =
+      (-weight * 0.1 + atleticism * 2.3 + perDef * 3) * multiplier;
+  }
+
+  return defenderPonints;
+}
+
 export function getIsCloserToLeftSide(coords: Coordinate): boolean {
-  return boardXDimentions / 2 > coords[0];
+  return boardXDimentions / 2 >= coords[0];
 }
 
 export function getIsCloserToTop(coords: Coordinate): boolean {
-  return boardYDimentions / 2 > coords[1];
+  return boardYDimentions / 2 >= coords[1];
 }
 
 export function getNewTeamsPositions(
@@ -2313,6 +2204,7 @@ export function getNewTeamsPositions(
       }
       //The ball is in right side
     } else {
+      //And the team atacking is atacking to the left (is TeamB)
       if (!isTeamABall) {
         teamANewPositions =
           getTeamAPositionWhenOutboundsOnTopRightSideWithTeamBAtacking();
@@ -2339,9 +2231,17 @@ export function getNewTeamsPositions(
     //If it's in bottom sideline
     if (closerOutOfBandsCoords[1] === 15) {
       teamANewPositions = teamANewPositions.map((coord) => {
+        if (coord === closerOutOfBandsCoords) {
+          return coord;
+        }
+
         return mirrorCoordinateOnY(coord);
       });
       teamBNewPositions = teamBNewPositions.map((coord) => {
+        if (coord === closerOutOfBandsCoords) {
+          return coord;
+        }
+
         return mirrorCoordinateOnY(coord);
       });
     }
@@ -2372,18 +2272,20 @@ export function getNewTeamsPositions(
     //If it's in right sideline mirror the ubications in X
     if (closerOutOfBandsCoords[0] === 28) {
       teamANewPositions = teamANewPositions.map((playerPosition) => {
+        if (playerPosition === closerOutOfBandsCoords) {
+          return playerPosition;
+        }
+
         return mirrorCoordinateOnX(playerPosition);
       });
       teamBNewPositions = teamBNewPositions.map((playerPosition) => {
+        if (playerPosition === closerOutOfBandsCoords) {
+          return playerPosition;
+        }
+
         return mirrorCoordinateOnX(playerPosition);
       });
     }
-  }
-
-  if (teamANewPositions === undefined || teamBNewPositions === undefined) {
-    throw new Error(
-      "Error: a team ubication was not defined in getNewTeamsPositions, movePlayersToOutOfBandsPositions getTeamsPositions",
-    );
   }
 
   return [teamANewPositions, teamBNewPositions];

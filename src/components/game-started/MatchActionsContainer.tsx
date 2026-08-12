@@ -166,6 +166,22 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
 
   function handleStealAttempt(): void {
     setActionConfirmed(() => "stealAttempt");
+
+    try {
+      matchCopy.handleStealAttempt(
+        gameNarration,
+        setGameNarration,
+        setGameboard,
+      );
+    } catch (err) {
+      toast.error(
+        `${
+          err instanceof Error ? err.message : "Unexpected error"
+        } while handling steal attempt`,
+      );
+    }
+
+    setMatchState(() => matchCopy);
   }
 
   function handleInterceptPassAttempt(): void {

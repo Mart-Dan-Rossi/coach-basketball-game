@@ -1,7 +1,4 @@
 import {
-  getMaxStatPerPosition,
-  getMinStatPerPosition,
-  playerZoneId,
   teamARimUbication,
   teamBRimUbication,
 } from "../utilities/exportableFunctions";

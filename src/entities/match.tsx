@@ -1,10 +1,13 @@
 import React from "react";
 import {
   calculateDefenderPointsInDribbling,
-  calculateOffensivePlayerPoints,
+  calculateDefenderPointsInStealAttempt,
+  calculateOffensivePlayerBallHandlingPoints,
   calculateRebounder,
   checkTilesThatWillInfluenceInTheCalculations,
+  defendersPointsToAvoidFoul,
   defensivePointsFoulInDribbling,
+  defensivePointsFoulInStealAttempt,
   findNearestPlayerToPoint,
   getClosestBorderToBall,
   getDefensivePlayersInDribblingAction,
@@ -193,6 +196,22 @@ export class Match {
     return rebounder;
   }
 
+  getPlayerWithBall(functionCalling: string): Player {
+    let playerWithBall =
+      this.teamA.getPlayerWithBall() ?? this.teamB.getPlayerWithBall();
+
+    if (!playerWithBall) {
+      console.error(
+        `Player not found in getPlayerWithBall in ${functionCalling}`,
+      );
+      throw new Error(
+        `Error: player not found in getPlayerWithBall in ${functionCalling}`,
+      );
+    }
+
+    return playerWithBall;
+  }
+
   addWaitingPlayersClose(isOnMove?: boolean): void {
     let activePlayer = this.getActivePlayer();
     let newWaitingPlayers = [] as Player[];
@@ -284,7 +303,7 @@ export class Match {
     if (activePlayer) {
       this.setShotHasBeenAttempted(true);
       activePlayer.setShotAttempt(true);
-      activePlayer.lastAction = "shotAttempt";
+      activePlayer.setLastAction("shotAttempt");
     } else {
       console.error("activePlayer not found in shotAttemptedStatus");
       throw new Error("Error: activePlayer not found in shotAttemptedStatus");
@@ -294,123 +313,6 @@ export class Match {
   //---------------------------------------END GET INFO METHODS-------------------------------------------------------------------------------------------------------------
 
   //-----------------------------------START PLAYER ACTIONS METHODS---------------------------------------------------------------------------------------------------------
-
-  jumpBall(
-    gameNarration: string[],
-    setGameNarration: React.Dispatch<React.SetStateAction<string[]>>,
-    gameboard: number[][],
-    setGameboard: React.Dispatch<React.SetStateAction<number[][]>>,
-  ): void {
-    let pointsObteinedInTheJumpBallA = 0;
-    let pointsObteinedInTheJumpBallB = 0;
-
-    let newGameNarration = [...gameNarration];
-
-    //I loop the calculation until ther's a winner
-    while (pointsObteinedInTheJumpBallA === pointsObteinedInTheJumpBallB) {
-      //Check the centers points in the jump ball
-      this.teamA.players.forEach((player) => {
-        if (player.position === "5") {
-          pointsObteinedInTheJumpBallA = numberEntire(
-            roll20SidesDice() + player.height + player.atleticism,
-          );
-
-          //Give feedback
-          newGameNarration.unshift(
-            `${
-              (player.name && player.name.length === 0) || !player.name
-                ? `The ${playerPositionDetection(player.position)} of team A`
-                : player.name
-            }, get ${pointsObteinedInTheJumpBallA} points in the jump`,
-          );
-          setGameNarration(() => newGameNarration);
-        }
-      });
-
-      //Check the centers points in the jump ball
-      this.teamB.players.forEach((player) => {
-        if (player.position === "5") {
-          pointsObteinedInTheJumpBallB = numberEntire(
-            roll20SidesDice() + player.height + player.atleticism,
-          );
-
-          //Give feedback
-          newGameNarration.unshift(
-            `${
-              player.name && player.name.length === 0
-                ? `The ${playerPositionDetection(player.position)} of team B`
-                : player.name
-            }, get ${pointsObteinedInTheJumpBallB} points in the jump`,
-          );
-          setGameNarration(() => newGameNarration);
-        }
-      });
-
-      //Check who win the jump ball
-      let whoWinTheJump =
-        pointsObteinedInTheJumpBallA - pointsObteinedInTheJumpBallB;
-
-      if (whoWinTheJump > 0) {
-        //If teamA won the jump ball give it to the PG of that team
-        this.teamA.players.forEach((player) => {
-          if (player.position === "1") {
-            player.setHaveBall(true);
-
-            //Give feedback
-            newGameNarration.unshift(
-              `${this.teamA.name} won the jump. Now ${
-                player.name && player.name.length === 0
-                  ? `the ${playerPositionDetection(player.position)} of team A`
-                  : player.name
-              } have the ball.`,
-            );
-            setGameNarration(() => newGameNarration);
-
-            this.setTeamTurn("TeamB");
-          }
-        });
-      } else if (whoWinTheJump < 0) {
-        //If teamB won the jump ball give it to the PG of that team
-        this.teamB.players.forEach((player) => {
-          if (player.position === "1") {
-            player.setHaveBall(true);
-
-            //Give feedback
-            newGameNarration.unshift(
-              `${this.teamB.name} won the jump. Now ${
-                player.name && player.name.length === 0
-                  ? `the ${playerPositionDetection(player.position)} of team B`
-                  : player.name
-              } have the ball.`,
-            );
-            setGameNarration(() => newGameNarration);
-
-            this.setTeamTurn("TeamA");
-          }
-        });
-      } else {
-        //Give feedback
-        newGameNarration.unshift(
-          `Both players touch the ball at the same time! The jump ball continues`,
-        );
-        setGameNarration(() => newGameNarration);
-      }
-    }
-
-    //Set the team with the ball
-    if (this.teamTurn == "TeamA") {
-      this.teamA.setTeamTurn(true);
-    } else if (this.teamTurn == "TeamB") {
-      this.teamB.setTeamTurn(true);
-    }
-
-    //Give players action points
-    this.teamA.giveActionPointsToTeam();
-    this.teamB.giveActionPointsToTeam();
-
-    //Run clock
-    this.runClock(gameNarration, setGameNarration, gameboard, setGameboard);
-  }
 
   handlePassAction(
     passer: Player,
@@ -620,146 +522,6 @@ export class Match {
     setGameNarration(() => newGameNarration);
   }
 
-  movePlayersToReboundOnFTPositions(
-    defendingTeam: Team,
-    atackingTeam: Team,
-    setGameboard: React.Dispatch<React.SetStateAction<number[][]>>,
-  ): void {
-    const moveDefendersToReboundPositions = () => {
-      defendingTeam.players.forEach((player) => {
-        let appropriateDefensivePosition =
-          player.team == "TeamA"
-            ? teamADefensiveFTPositions
-            : teamBDefensiveFTPositions;
-
-        player.ubicationX =
-          appropriateDefensivePosition[Number(player.position) - 1][0];
-        player.ubicationY =
-          appropriateDefensivePosition[Number(player.position) - 1][1];
-      });
-    };
-
-    const moveAtackersToReboundPositions = (): void => {
-      let positionIndex = 1;
-
-      let teamUbications =
-        atackingTeam.name == "TeamA"
-          ? teamAOffensiveFTPositions
-          : teamBOffensiveFTPositions;
-
-      atackingTeam.players.forEach((player) => {
-        // If its the shooter he goes to the free throw line
-        if (player.lastAction === "shotAttempt") {
-          player.ubicationX = teamUbications[0][0];
-          player.ubicationY = teamUbications[0][1];
-          // If not he goes to the next available rebounding position
-        } else {
-          player.ubicationX = teamUbications[positionIndex][0];
-          player.ubicationY = teamUbications[positionIndex][1];
-
-          positionIndex++;
-        }
-      });
-    };
-
-    //Modify the gameboard
-    if (defendingTeam.name == "TeamA") {
-      const newBoard = getInitialBoard("B");
-
-      setGameboard(newBoard);
-    } else {
-      const newBoard = getInitialBoard("A");
-
-      setGameboard(newBoard);
-    }
-
-    //Modify the classes of the players
-    moveDefendersToReboundPositions();
-
-    moveAtackersToReboundPositions();
-  }
-
-  movePlayersToOutOfBandsPositions(
-    defenderTeam: Team,
-    setGameboard: React.Dispatch<React.SetStateAction<number[][]>>,
-    atackingTeamKeepsPosetion: boolean = true,
-  ): void {
-    let atackingTeam = defenderTeam.name === "TeamA" ? this.teamB : this.teamA;
-    let playerWithBall = atackingTeam.players.find((p) => p.haveBall);
-    if (!playerWithBall) {
-      throw new Error(
-        "Error: Player with ball not found while trying to move players to inbounds position",
-      );
-    }
-
-    let ballUbication: Coordinate = [
-      playerWithBall?.ubicationX,
-      playerWithBall?.ubicationY,
-    ];
-
-    let closerOutOfBandsCoords = getClosestBorderToBall(ballUbication);
-
-    let newTeamsPositions: Coordinate[][] = getNewTeamsPositions(
-      atackingTeamKeepsPosetion,
-      defenderTeam,
-      closerOutOfBandsCoords,
-    );
-    let bothTeams = [this.teamA, this.teamB];
-    let playerPassing: Player | undefined;
-
-    this.secondsPassingFromOutbands = 0;
-    this.passingFromOutbands = true;
-
-    playerWithBall.haveBall = false;
-
-    //Find playerPassing
-    bothTeams.forEach((team) => {
-      team.giveActionPointsToTeam();
-      team.giveMovementLeftToAllPlayers();
-      team.givePlayerHaveTurnToAllPlayers();
-      team.setTeamTurnLeft(true);
-
-      if (!playerPassing) {
-        playerPassing = team.players.find((p) => {
-          return (
-            p.ubicationX === closerOutOfBandsCoords[0] &&
-            p.ubicationY === closerOutOfBandsCoords[1]
-          );
-        });
-      }
-    });
-
-    if (!playerPassing) {
-      throw new Error(
-        "Error: playerPassing not found in movePlayersToOutOfBandsPositions",
-      );
-    }
-
-    setGameboard((gameboard) => {
-      let newGameboard = [...gameboard];
-
-      bothTeams.forEach((t) => {
-        t.players.forEach((p) => {
-          //Remove players form gameboard
-          newGameboard[p.ubicationY - 1][p.ubicationX - 1] = 0;
-          //Remove last actions
-          p.lastAction = "";
-        });
-      });
-
-      newTeamsPositions.forEach((team, i) => {
-        //Add new players positions to the gameboard
-        team.forEach(([x, y]) => {
-          newGameboard[y - 1][x - 1] = i + 1;
-        });
-      });
-
-      return newGameboard;
-    });
-
-    playerPassing.lastAction = "passingOutbands";
-  }
-
   handleFoul(
     defender: Player,
     atacker: Player,
@@ -792,7 +554,7 @@ export class Match {
     //If it was not in shoting action and the defender is in penalty (more than 4 fouls)
     if (amountOfFreeThrows == undefined && defender.stats.fouls > 4) {
       //Must change the last action so the shooting function finds the player
-      atacker.lastAction = "shotAttempt";
+      atacker.setLastAction("shotAttempt");
 
       newNarrationText = `${isNaN(Number(defender.name)) ? defender.name : defender.position} of team ${defender.team} have more fouls than allowed. ${isNaN(Number(atacker.name)) ? atacker.name : atacker.position} of team ${atacker.team} will have 2 free throws.`;
     } else {
@@ -808,7 +570,7 @@ export class Match {
       defenderTeam.stats.foulsInQuarter > 4
     ) {
       //Must change the last action so the shooting function finds the player
-      atacker.lastAction = "shotAttempt";
+      atacker.setLastAction("shotAttempt");
 
       newNarrationText = `${defender.team} is in penalisation. ${isNaN(Number(atacker.name)) ? atacker.name : atacker.position} of team ${atacker.team} will have 2 free throws.`;
     } else {
@@ -829,7 +591,7 @@ export class Match {
       this.isFreeThrowSerie = true;
       this.isFirstFreeThrowInTheSerie = true;
     } else {
-      //TODO If there are no FT handle the out of bands
+      //If there are no FT handle the out of bands
       this.movePlayersToOutOfBandsPositions(defenderTeam, setGameboard);
     }
 
@@ -1016,7 +778,10 @@ export class Match {
 
               //TODO Check if this points are fare to make a foul
 
-              if (defenderPoints < 10 && !this.isFreeThrowSerie) {
+              if (
+                defenderPoints < defendersPointsToAvoidFoul &&
+                !this.isFreeThrowSerie
+              ) {
                 // Uncomment to test free throws
                 // if (true && !this.isFreeThrowSerie) {
                 let amountOfFreeThrows;
@@ -1270,7 +1035,7 @@ export class Match {
     let pointsToAdd = 0;
     let isItIn = calculateIfGoesIn();
     //Testing value
-    isItIn = true;
+    // isItIn = true;
     let newPlayerWithBall: Player | undefined;
 
     let asistant = atackingTeam.players.find((player) => player.lastPasser);
@@ -1321,8 +1086,8 @@ export class Match {
 
         newPlayerWithBall.movePlayerToOwnRim(setGameboard);
         newPlayerWithBall.setHaveBall(true);
-        newPlayerWithBall.lastAction = "passingOutbands";
-        
+        newPlayerWithBall.setLastAction("passingOutbands");
+
         newGameNarration.unshift(
           `${isNaN(Number(newPlayerWithBall.name)) ? newPlayerWithBall.name : newPlayerWithBall.position} get the ball to start theyr posetion`,
         );
@@ -1515,7 +1280,8 @@ export class Match {
       //If defenders were found close to the atacker
       if (defensivePlayersPoints.length > 0) {
         //Check the offensive player points on the dribble
-        let offensivePlayerPoints = calculateOffensivePlayerPoints(player);
+        let offensivePlayerPoints =
+          calculateOffensivePlayerBallHandlingPoints(player);
 
         let sortedPlayersWithPoints = defensivePlayersPoints.sort((a, b) => {
           if (isFoul) {
@@ -1622,6 +1388,73 @@ export class Match {
     setActivateConfirmButton(() => false);
   }
 
+  handleStealAttempt(
+    gameNarration: string[],
+    setGameNarration: React.Dispatch<React.SetStateAction<string[]>>,
+    setGameboard: React.Dispatch<React.SetStateAction<number[][]>>,
+  ): void {
+    let playerWithBall = this.getPlayerWithBall("handleStealAttempt");
+    let defender = this.getActivePlayer();
+
+    if (!defender) {
+      console.error("Defender not found in handleStealAttempt");
+      throw new Error("Error: defender not found in handleStealAttempt");
+    }
+
+    let atackingPlayerPoints =
+      calculateOffensivePlayerBallHandlingPoints(playerWithBall);
+    let defendersPointsInStealAttempt =
+      calculateDefenderPointsInStealAttempt(defender);
+
+    //If defender doesn't get enough points he commit a foul
+    if (defendersPointsInStealAttempt < defensivePointsFoulInStealAttempt) {
+      this.handleFoul(
+        defender,
+        playerWithBall,
+        gameNarration,
+        setGameNarration,
+        setGameboard,
+      );
+      //If defender have more points than atacker he steals it
+    } else if (atackingPlayerPoints < defendersPointsInStealAttempt) {
+      let newGameNarration = [...gameNarration];
+      let defensiveTeam = defender.team === "TeamA" ? this.teamA : this.teamB;
+      let atackingTeam =
+        playerWithBall.team === "TeamA" ? this.teamA : this.teamB;
+
+      defender.setHaveBall(true);
+      playerWithBall?.setHaveBall(false);
+
+      //Handle narration and stats for the ball being stolen
+      newGameNarration.unshift(
+        `${
+          (defender.name && defender.name.length === 0) || !defender.name
+            ? `The ${playerPositionDetection(defender.position)} of team A`
+            : defender.name
+        }, reach for the ball and gets it!`,
+      );
+
+      defender.statsAddSteal();
+      defensiveTeam.statsAddSteal();
+
+      playerWithBall.statsAddTurnOver();
+      atackingTeam.statsAddTurnOver();
+
+      setGameNarration(() => [...newGameNarration]);
+    } else {
+      console.error(
+        "defender was expected to be defined in evaluateDribblingOutcome but it's not",
+      );
+
+      throw new Error(
+        "Error: defender was expected to be defined in evaluateDribblingOutcome but it's not",
+      );
+    }
+  }
+
+  //------------------------------------END PLAYER ACTIONS METHODS----------------------------------------------------------------------------------------------------------
+
+  //-----------------------------------START MATCH HANDLER METHODS----------------------------------------------------------------------------------------------------------
   handleViolation(
     setGameboard: React.Dispatch<React.SetStateAction<number[][]>>,
   ): void {
@@ -1636,9 +1469,255 @@ export class Match {
     this.movePlayersToOutOfBandsPositions(defensiveTeam, setGameboard, false);
   }
 
-  //------------------------------------END PLAYER ACTIONS METHODS----------------------------------------------------------------------------------------------------------
+  jumpBall(
+    gameNarration: string[],
+    setGameNarration: React.Dispatch<React.SetStateAction<string[]>>,
+    gameboard: number[][],
+    setGameboard: React.Dispatch<React.SetStateAction<number[][]>>,
+  ): void {
+    let pointsObteinedInTheJumpBallA = 0;
+    let pointsObteinedInTheJumpBallB = 0;
 
-  //-----------------------------------START MATCH HANDLER METHODS----------------------------------------------------------------------------------------------------------
+    let newGameNarration = [...gameNarration];
+
+    //I loop the calculation until ther's a winner
+    while (pointsObteinedInTheJumpBallA === pointsObteinedInTheJumpBallB) {
+      //Check the centers points in the jump ball
+      this.teamA.players.forEach((player) => {
+        if (player.position === "5") {
+          pointsObteinedInTheJumpBallA = numberEntire(
+            roll20SidesDice() + player.height + player.atleticism,
+          );
+
+          //Give feedback
+          newGameNarration.unshift(
+            `${
+              (player.name && player.name.length === 0) || !player.name
+                ? `The ${playerPositionDetection(player.position)} of team A`
+                : player.name
+            }, get ${pointsObteinedInTheJumpBallA} points in the jump`,
+          );
+          setGameNarration(() => newGameNarration);
+        }
+      });
+
+      //Check the centers points in the jump ball
+      this.teamB.players.forEach((player) => {
+        if (player.position === "5") {
+          pointsObteinedInTheJumpBallB = numberEntire(
+            roll20SidesDice() + player.height + player.atleticism,
+          );
+
+          //Give feedback
+          newGameNarration.unshift(
+            `${
+              player.name && player.name.length === 0
+                ? `The ${playerPositionDetection(player.position)} of team B`
+                : player.name
+            }, get ${pointsObteinedInTheJumpBallB} points in the jump`,
+          );
+          setGameNarration(() => newGameNarration);
+        }
+      });
+
+      //Check who win the jump ball
+      let whoWinTheJump =
+        pointsObteinedInTheJumpBallA - pointsObteinedInTheJumpBallB;
+
+      if (whoWinTheJump > 0) {
+        //If teamA won the jump ball give it to the PG of that team
+        this.teamA.players.forEach((player) => {
+          if (player.position === "1") {
+            player.setHaveBall(true);
+
+            //Give feedback
+            newGameNarration.unshift(
+              `${this.teamA.name} won the jump. Now ${
+                player.name && player.name.length === 0
+                  ? `the ${playerPositionDetection(player.position)} of team A`
+                  : player.name
+              } have the ball.`,
+            );
+            setGameNarration(() => newGameNarration);
+
+            this.setTeamTurn("TeamB");
+          }
+        });
+      } else if (whoWinTheJump < 0) {
+        //If teamB won the jump ball give it to the PG of that team
+        this.teamB.players.forEach((player) => {
+          if (player.position === "1") {
+            player.setHaveBall(true);
+
+            //Give feedback
+            newGameNarration.unshift(
+              `${this.teamB.name} won the jump. Now ${
+                player.name && player.name.length === 0
+                  ? `the ${playerPositionDetection(player.position)} of team B`
+                  : player.name
+              } have the ball.`,
+            );
+            setGameNarration(() => newGameNarration);
+
+            this.setTeamTurn("TeamA");
+          }
+        });
+      } else {
+        //Give feedback
+        newGameNarration.unshift(
+          `Both players touch the ball at the same time! The jump ball continues`,
+        );
+        setGameNarration(() => newGameNarration);
+      }
+    }
+
+    //Set the team with the ball
+    if (this.teamTurn == "TeamA") {
+      this.teamA.setTeamTurn(true);
+    } else if (this.teamTurn == "TeamB") {
+      this.teamB.setTeamTurn(true);
+    }
+
+    //Give players action points
+    this.teamA.giveActionPointsToTeam();
+    this.teamB.giveActionPointsToTeam();
+
+    //Run clock
+    this.runClock(gameNarration, setGameNarration, gameboard, setGameboard);
+  }
+
+  movePlayersToReboundOnFTPositions(
+    defendingTeam: Team,
+    atackingTeam: Team,
+    setGameboard: React.Dispatch<React.SetStateAction<number[][]>>,
+  ): void {
+    const moveDefendersToReboundPositions = () => {
+      defendingTeam.players.forEach((player) => {
+        let appropriateDefensivePosition =
+          player.team == "TeamA"
+            ? teamADefensiveFTPositions
+            : teamBDefensiveFTPositions;
+
+        player.ubicationX =
+          appropriateDefensivePosition[Number(player.position) - 1][0];
+        player.ubicationY =
+          appropriateDefensivePosition[Number(player.position) - 1][1];
+      });
+    };
+
+    const moveAtackersToReboundPositions = (): void => {
+      let positionIndex = 1;
+
+      let teamUbications =
+        atackingTeam.name == "TeamA"
+          ? teamAOffensiveFTPositions
+          : teamBOffensiveFTPositions;
+
+      atackingTeam.players.forEach((player) => {
+        // If its the shooter he goes to the free throw line
+        if (player.lastAction === "shotAttempt") {
+          player.ubicationX = teamUbications[0][0];
+          player.ubicationY = teamUbications[0][1];
+          // If not he goes to the next available rebounding position
+        } else {
+          player.ubicationX = teamUbications[positionIndex][0];
+          player.ubicationY = teamUbications[positionIndex][1];
+
+          positionIndex++;
+        }
+      });
+    };
+
+    //Modify the gameboard
+    if (defendingTeam.name == "TeamA") {
+      const newBoard = getInitialBoard("B");
+
+      setGameboard(newBoard);
+    } else {
+      const newBoard = getInitialBoard("A");
+
+      setGameboard(newBoard);
+    }
+
+    //Modify the classes of the players
+    moveDefendersToReboundPositions();
+
+    moveAtackersToReboundPositions();
+  }
+
+  movePlayersToOutOfBandsPositions(
+    defenderTeam: Team,
+    setGameboard: React.Dispatch<React.SetStateAction<number[][]>>,
+    atackingTeamKeepsPosetion: boolean = true,
+  ): void {
+    let atackingTeam = defenderTeam.name === "TeamA" ? this.teamB : this.teamA;
+    let playerWithBall = atackingTeam.players.find((p) => p.haveBall);
+
+    if (!playerWithBall) {
+      throw new Error(
+        "Error: Player with ball not found while trying to move players to inbounds position",
+      );
+    }
+
+    let ballUbication: Coordinate = [
+      playerWithBall?.ubicationX,
+      playerWithBall?.ubicationY,
+    ];
+
+    let closerOutOfBandsCoords = getClosestBorderToBall(ballUbication);
+
+    let newTeamsPositions: Coordinate[][] = getNewTeamsPositions(
+      atackingTeamKeepsPosetion,
+      defenderTeam,
+      closerOutOfBandsCoords,
+    );
+
+    let bothTeams = [this.teamA, this.teamB];
+
+    this.secondsPassingFromOutbands = 0;
+    this.passingFromOutbands = true;
+
+    playerWithBall.setHaveBall(false);
+
+    setGameboard((gameboard) => {
+      let newGameboard = [...gameboard];
+
+      bothTeams.forEach((t, tIndex) => {
+        t.giveActionPointsToTeam();
+        t.giveMovementLeftToAllPlayers();
+        t.givePlayerHaveTurnToAllPlayers();
+        t.setTeamTurnLeft(true);
+
+        t.players.forEach((p, pIndex) => {
+          //Move players on the players classes
+          p.ubicationX = newTeamsPositions[tIndex][pIndex][0];
+          p.ubicationY = newTeamsPositions[tIndex][pIndex][1];
+
+          if (
+            p.ubicationX === closerOutOfBandsCoords[0] &&
+            p.ubicationY === closerOutOfBandsCoords[1]
+          ) {
+            //Give ball to new player passing the ball
+            p.setLastAction("passingOutbands");
+            p.setHaveBall(true);
+          }
+
+          //Remove players form gameboard
+          newGameboard[p.ubicationY - 1][p.ubicationX - 1] = 0;
+        });
+      });
+
+      newTeamsPositions.forEach((team, i) => {
+        //Add new players positions to the gameboard
+        team.forEach(([x, y]) => {
+          newGameboard[y - 1][x - 1] = i + 1;
+        });
+      });
+
+      return newGameboard;
+    });
+  }
+
   setTeamTurn(team: string): void {
     this.teamTurn = team;
   }

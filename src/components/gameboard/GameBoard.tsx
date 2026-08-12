@@ -9,11 +9,13 @@ import {
   boardXDimentions,
   boardYDimentions,
   compareIniciatives,
+  getDistanceToAPoint,
   isRivalNearby,
 } from "../../utilities/exportableFunctions";
 import { Player } from "../../entities/players";
 import { Match } from "../../entities/match";
 import toast from "react-hot-toast";
+import { Coordinate } from "../../entities/myInterfaces";
 
 interface Props {
   match: Match;
@@ -142,7 +144,6 @@ function Gameboard({ match, setMatchState }: Props) {
       setShowEndTurnButton(() => true);
 
       //If the player is part of the atacking team
-      //TODO make waiting options work propperly
       if (team.getPlayerWithBall()) {
         //And have 0.5 or more  action points
         if (teamActivePlayer.actionPoints >= 0.5) {
@@ -169,7 +170,6 @@ function Gameboard({ match, setMatchState }: Props) {
 
         //Else if the player is part of the defending team
       } else {
-        //TODO make waiting options work propperly
         //And have 0.5 or more action points
         if (teamActivePlayer.actionPoints >= 0.5) {
           if (isRivalNearby(gameboard, teamActivePlayer)) {
@@ -190,24 +190,29 @@ function Gameboard({ match, setMatchState }: Props) {
           const playerWithBall = otherTeam.returnPlayerWithBall();
 
           if (playerWithBall) {
-            const xDistance =
-              playerWithBall?.ubicationX - teamActivePlayer.ubicationX;
-            const yDistance =
-              playerWithBall?.ubicationY - teamActivePlayer.ubicationY;
+            let teamActivePlayerUbication = [
+              teamActivePlayer.ubicationX,
+              teamActivePlayer.ubicationY,
+            ] as Coordinate;
 
-            if (Math.pow(xDistance, 2) == 1 && Math.pow(yDistance, 2) == 1) {
+            let ballUbication = [
+              playerWithBall.ubicationX,
+              playerWithBall.ubicationY,
+            ] as Coordinate;
+
+            if (
+              getDistanceToAPoint(teamActivePlayerUbication, ballUbication) <= 2
+            ) {
               setShowStealAttemptButton(() => true);
             }
-          } else {
-            console.error(
-              "playerWithBall not found in showPosibleActionsButtons",
-            );
-            toast.error(
-              "Error: PlayerWithBall not found in showPosibleActionsButtons",
-            );
           }
         }
       }
+    } else {
+      console.error("teamActivePlayer not found in showPosibleActionsButtons");
+      toast.error(
+        "Error: teamActivePlayer not found in showPosibleActionsButtons",
+      );
     }
   }
 
@@ -661,19 +666,24 @@ function Gameboard({ match, setMatchState }: Props) {
       let teamBSelectedPlayer = teamB.returnSelectedPlayer();
 
       if (teamASelectedPlayer && teamBSelectedPlayer) {
-        newActivePlayer = compareIniciatives(
-          teamASelectedPlayer,
-          teamBSelectedPlayer,
-          !!teamA.getPlayerWithBall(),
-        );
-        setActivePlayer(() => newActivePlayer);
-        newActivePlayer.setActivePlayer(true);
-        newActivePlayer.setPlayerSelected(false);
+        try {
+          newActivePlayer = compareIniciatives(
+            teamASelectedPlayer,
+            teamBSelectedPlayer,
+            !!teamA.getPlayerWithBall(),
+          );
+          setActivePlayer(() => newActivePlayer);
+          newActivePlayer.setActivePlayer(true);
+          newActivePlayer.setPlayerSelected(false);
 
-        if (newActivePlayer.team == "TeamA") {
-          setPlayerClikedTeamA(() => [0, 0]);
-        } else {
-          setPlayerClikedTeamB(() => [0, 0]);
+          if (newActivePlayer.team == "TeamA") {
+            setPlayerClikedTeamA(() => [0, 0]);
+          } else {
+            setPlayerClikedTeamB(() => [0, 0]);
+          }
+        } catch (err) {
+          console.error(err);
+          toast.error(`${err} in confirmPlayerSelection`);
         }
       } else {
         console.error(

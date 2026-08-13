@@ -1260,7 +1260,6 @@ export class Match {
         defensiveTeam,
         tilesThatWillInfluenceInCalculations,
       );
-      console.log("defensivePlayers: ", defensivePlayers);
       let totalDefensivePoints = 0;
       let defensivePlayersPoints: [Player, number][] = [];
 
@@ -1289,8 +1288,6 @@ export class Match {
         });
       }
 
-      console.log("defensivePlayersPoints: ", defensivePlayersPoints);
-
       //If defenders were found close to the atacker
       if (defensivePlayersPoints.length > 0) {
         //Check the offensive player points on the dribble
@@ -1313,8 +1310,6 @@ export class Match {
           defenderInteracting = sortedPlayersWithPoints[0][0];
         }
       }
-
-      console.log("defenderInteracting: ", defenderInteracting);
 
       return [isBallStolen, defenderInteracting];
     };

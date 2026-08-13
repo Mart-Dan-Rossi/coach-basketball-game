@@ -22,6 +22,7 @@ const GameContainer = () => {
     setGameNarration,
     gameboard,
     setGameboard,
+    setActivePlayer,
   } = useContext(GameContext);
 
   const playerA1: Player = new Player(
@@ -222,6 +223,7 @@ const GameContainer = () => {
         setGameNarration,
         gameboard,
         setGameboard,
+        setActivePlayer,
       );
     }
   }

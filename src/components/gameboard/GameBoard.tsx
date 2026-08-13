@@ -534,6 +534,7 @@ function Gameboard({ match, setMatchState }: Props) {
                 setActionConfirmed,
                 setActivateConfirmButton,
                 setGameboard,
+                setActivePlayer,
                 gameNarration,
                 setGameNarration,
               );

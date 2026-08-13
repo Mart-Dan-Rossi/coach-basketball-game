@@ -172,6 +172,7 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
         gameNarration,
         setGameNarration,
         setGameboard,
+        setActivePlayer,
       );
     } catch (err) {
       toast.error(
@@ -214,6 +215,7 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
         setGameNarration,
         gameboard,
         setGameboard,
+        setActivePlayer,
       );
     } catch (err) {
       toast.error(
@@ -257,6 +259,7 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
         setGameNarration,
         gameboard,
         setGameboard,
+        setActivePlayer,
       );
     } catch (err) {
       toast.error(

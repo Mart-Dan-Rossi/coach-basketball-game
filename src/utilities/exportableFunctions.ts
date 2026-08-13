@@ -2017,8 +2017,8 @@ export function isRivalNearby(
 export const initialGameBoard = getInitialBoard();
 
 export const defensivePointsFoulInDribbling = 90;
-// export const defensivePointsFoulInStealAttempt = 130;
-export const defensivePointsFoulInStealAttempt = 999;
+export const defensivePointsFoulInStealAttempt = 130;
+// export const defensivePointsFoulInStealAttempt = 999;
 
 export function calculateDefenderPointsInDribbling(defender: Player): number {
   let defenderZoneId = playerZoneId(defender, !(defender.team === "TeamA"));

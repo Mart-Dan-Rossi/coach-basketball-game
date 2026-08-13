@@ -528,6 +528,7 @@ export class Match {
     gameNarration: string[],
     setGameNarration: React.Dispatch<React.SetStateAction<string[]>>,
     setGameboard: React.Dispatch<React.SetStateAction<number[][]>>,
+    setActivePlayer: React.Dispatch<React.SetStateAction<Player | undefined>>,
     amountOfFreeThrows?: number,
   ): void {
     //TODO think how to handle the situation when a defender fouls a player without the ball while the ball player is shooting
@@ -592,7 +593,11 @@ export class Match {
       this.isFirstFreeThrowInTheSerie = true;
     } else {
       //If there are no FT handle the out of bands
-      this.movePlayersToOutOfBandsPositions(defenderTeam, setGameboard);
+      this.movePlayersToOutOfBandsPositions(
+        defenderTeam,
+        setGameboard,
+        setActivePlayer,
+      );
     }
 
     setGameNarration(() => newGameNarration);
@@ -603,6 +608,7 @@ export class Match {
     setGameNarration: React.Dispatch<React.SetStateAction<string[]>>,
     gameboard: number[][],
     setGameboard: React.Dispatch<React.SetStateAction<number[][]>>,
+    setActivePlayer: React.Dispatch<React.SetStateAction<Player | undefined>>,
   ): void {
     //First i get the shooter
     let shooter = this.getShooter();
@@ -802,6 +808,7 @@ export class Match {
                   newGameNarration,
                   setGameNarration,
                   setGameboard,
+                  setActivePlayer,
                   amountOfFreeThrows,
                 );
               }
@@ -1149,6 +1156,7 @@ export class Match {
         setGameNarration,
         gameboard,
         setGameboard,
+        setActivePlayer,
       );
 
       return;
@@ -1176,6 +1184,7 @@ export class Match {
     setGameNarration: React.Dispatch<React.SetStateAction<string[]>>,
     gameboard: number[][],
     setGameboard: React.Dispatch<React.SetStateAction<number[][]>>,
+    setActivePlayer: React.Dispatch<React.SetStateAction<Player | undefined>>,
   ): void {
     let activePlayer = this.getActivePlayer();
 
@@ -1200,6 +1209,7 @@ export class Match {
         setGameNarration,
         gameboard,
         setGameboard,
+        setActivePlayer,
         narrationText,
         // If it's withCaution or tripleTheat return true, otherwise return false
         !!(type == "withCaution" || type == "tripleThreat"),
@@ -1223,6 +1233,7 @@ export class Match {
     setActionConfirmed: React.Dispatch<React.SetStateAction<string>>,
     setActivateConfirmButton: React.Dispatch<React.SetStateAction<boolean>>,
     setGameboard: React.Dispatch<React.SetStateAction<number[][]>>,
+    setActivePlayer: React.Dispatch<React.SetStateAction<Player | undefined>>,
     gameNarration: string[],
     setGameNarration: React.Dispatch<React.SetStateAction<string[]>>,
   ): void {
@@ -1249,6 +1260,7 @@ export class Match {
         defensiveTeam,
         tilesThatWillInfluenceInCalculations,
       );
+      console.log("defensivePlayers: ", defensivePlayers);
       let totalDefensivePoints = 0;
       let defensivePlayersPoints: [Player, number][] = [];
 
@@ -1277,6 +1289,8 @@ export class Match {
         });
       }
 
+      console.log("defensivePlayersPoints: ", defensivePlayersPoints);
+
       //If defenders were found close to the atacker
       if (defensivePlayersPoints.length > 0) {
         //Check the offensive player points on the dribble
@@ -1299,6 +1313,8 @@ export class Match {
           defenderInteracting = sortedPlayersWithPoints[0][0];
         }
       }
+
+      console.log("defenderInteracting: ", defenderInteracting);
 
       return [isBallStolen, defenderInteracting];
     };
@@ -1329,46 +1345,51 @@ export class Match {
       //Evaluate if the ball gets stolen during the dribbling, is a foul or is succesfull
       let [isBallStolen, defenderInteracting] = evaluateDribblingOutcome();
 
-      //If it's a foul
-      if (isFoul && defenderInteracting) {
-        this.handleFoul(
-          defenderInteracting,
-          player,
-          gameNarration,
-          setGameNarration,
-          setGameboard,
-        );
-        //If the ball gets stolen
-      } else if (isBallStolen && defenderInteracting) {
-        defenderInteracting.setHaveBall(true);
-        playerInMatch?.setHaveBall(false);
+      if (isFoul || isBallStolen) {
+        if (!defenderInteracting) {
+          console.error(
+            "defenderInteracting was expected to be defined in evaluateDribblingOutcome but it's not",
+          );
 
-        //Handle narration and stats for the ball being stolen
-        newGameNarration.unshift(
-          `${
-            (defenderInteracting.name &&
-              defenderInteracting.name.length === 0) ||
-            !defenderInteracting.name
-              ? `The ${playerPositionDetection(defenderInteracting.position)} of team A`
-              : defenderInteracting.name
-          }, reach for the ball and gets it!`,
-        );
+          throw new Error(
+            "Error: defenderInteracting was expected to be defined in evaluateDribblingOutcome but it's not",
+          );
+        }
 
-        defenderInteracting.statsAddSteal();
-        defensiveTeam.statsAddSteal();
+        //If it's a foul
+        if (isFoul) {
+          this.handleFoul(
+            defenderInteracting,
+            player,
+            gameNarration,
+            setGameNarration,
+            setGameboard,
+            setActivePlayer,
+          );
+          //If the ball gets stolen
+        } else if (isBallStolen) {
+          defenderInteracting.setHaveBall(true);
+          playerInMatch?.setHaveBall(false);
 
-        player.statsAddTurnOver();
-        atackingTeam.statsAddTurnOver();
+          defenderInteracting.statsAddSteal();
+          defensiveTeam.statsAddSteal();
 
-        setGameNarration(() => [...newGameNarration]);
-      } else {
-        console.error(
-          "defenderInteracting was expected to be defined in evaluateDribblingOutcome but it's not",
-        );
+          player.statsAddTurnOver();
+          atackingTeam.statsAddTurnOver();
 
-        throw new Error(
-          "Error: defenderInteracting was expected to be defined in evaluateDribblingOutcome but it's not",
-        );
+          //Handle narration and stats for the ball being stolen
+          newGameNarration.unshift(
+            `${
+              (defenderInteracting.name &&
+                defenderInteracting.name.length === 0) ||
+              !defenderInteracting.name
+                ? `The ${playerPositionDetection(defenderInteracting.position)} of team A`
+                : defenderInteracting.name
+            }, reach for the ball and gets it!`,
+          );
+
+          setGameNarration(() => [...newGameNarration]);
+        }
       }
     }
 
@@ -1392,6 +1413,7 @@ export class Match {
     gameNarration: string[],
     setGameNarration: React.Dispatch<React.SetStateAction<string[]>>,
     setGameboard: React.Dispatch<React.SetStateAction<number[][]>>,
+    setActivePlayer: React.Dispatch<React.SetStateAction<Player | undefined>>,
   ): void {
     let playerWithBall = this.getPlayerWithBall("handleStealAttempt");
     let defender = this.getActivePlayer();
@@ -1404,7 +1426,8 @@ export class Match {
     let atackingPlayerPoints =
       calculateOffensivePlayerBallHandlingPoints(playerWithBall);
     let defendersPointsInStealAttempt =
-      calculateDefenderPointsInStealAttempt(defender);
+      // calculateDefenderPointsInStealAttempt(defender);
+      999;
 
     //If defender doesn't get enough points he commit a foul
     if (defendersPointsInStealAttempt < defensivePointsFoulInStealAttempt) {
@@ -1414,6 +1437,7 @@ export class Match {
         gameNarration,
         setGameNarration,
         setGameboard,
+        setActivePlayer,
       );
       //If defender have more points than atacker he steals it
     } else if (atackingPlayerPoints < defendersPointsInStealAttempt) {
@@ -1457,6 +1481,7 @@ export class Match {
   //-----------------------------------START MATCH HANDLER METHODS----------------------------------------------------------------------------------------------------------
   handleViolation(
     setGameboard: React.Dispatch<React.SetStateAction<number[][]>>,
+    setActivePlayer: React.Dispatch<React.SetStateAction<Player | undefined>>,
   ): void {
     let defensiveTeam = this.teamA.getPlayerWithBall()
       ? this.teamB
@@ -1466,7 +1491,12 @@ export class Match {
     teamWithBall.statsAddTurnOver();
     teamWithBall.getPlayerWithBall()?.statsAddTurnOver();
 
-    this.movePlayersToOutOfBandsPositions(defensiveTeam, setGameboard, false);
+    this.movePlayersToOutOfBandsPositions(
+      defensiveTeam,
+      setGameboard,
+      setActivePlayer,
+      false,
+    );
   }
 
   jumpBall(
@@ -1474,6 +1504,7 @@ export class Match {
     setGameNarration: React.Dispatch<React.SetStateAction<string[]>>,
     gameboard: number[][],
     setGameboard: React.Dispatch<React.SetStateAction<number[][]>>,
+    setActivePlayer: React.Dispatch<React.SetStateAction<Player | undefined>>,
   ): void {
     let pointsObteinedInTheJumpBallA = 0;
     let pointsObteinedInTheJumpBallB = 0;
@@ -1583,7 +1614,13 @@ export class Match {
     this.teamB.giveActionPointsToTeam();
 
     //Run clock
-    this.runClock(gameNarration, setGameNarration, gameboard, setGameboard);
+    this.runClock(
+      gameNarration,
+      setGameNarration,
+      gameboard,
+      setGameboard,
+      setActivePlayer,
+    );
   }
 
   movePlayersToReboundOnFTPositions(
@@ -1648,6 +1685,7 @@ export class Match {
   movePlayersToOutOfBandsPositions(
     defenderTeam: Team,
     setGameboard: React.Dispatch<React.SetStateAction<number[][]>>,
+    setActivePlayer: React.Dispatch<React.SetStateAction<Player | undefined>>,
     atackingTeamKeepsPosetion: boolean = true,
   ): void {
     let atackingTeam = defenderTeam.name === "TeamA" ? this.teamB : this.teamA;
@@ -1702,10 +1740,16 @@ export class Match {
             p.setHaveBall(true);
           }
 
+          if (p.playerActive) {
+            p.setActivePlayer(false);
+          }
+
           //Remove players form gameboard
           newGameboard[p.ubicationY - 1][p.ubicationX - 1] = 0;
         });
       });
+
+      setActivePlayer(() => undefined);
 
       newTeamsPositions.forEach((team, i) => {
         //Add new players positions to the gameboard
@@ -1713,6 +1757,16 @@ export class Match {
           newGameboard[y - 1][x - 1] = i + 1;
         });
       });
+
+      if (this.teamA.teamHaveTheBall()) {
+        this.setTeamTurn("TeamA");
+        this.teamA.setTeamTurn(true);
+        this.teamB.setTeamTurn(false);
+      } else {
+        this.setTeamTurn("TeamB");
+        this.teamB.setTeamTurn(true);
+        this.teamA.setTeamTurn(false);
+      }
 
       return newGameboard;
     });
@@ -1727,6 +1781,7 @@ export class Match {
     setGameNarration: React.Dispatch<React.SetStateAction<string[]>>,
     gameboard: number[][],
     setGameboard: React.Dispatch<React.SetStateAction<number[][]>>,
+    setActivePlayer: React.Dispatch<React.SetStateAction<Player | undefined>>,
     currentGameNarration?: string | undefined,
     isWaitingAction?: boolean,
   ): void {
@@ -1826,7 +1881,7 @@ export class Match {
               newGameNarration.unshift(
                 `5 seconds violation! ${atackingTeam.name} have lost the ball.`,
               );
-              this.handleViolation(setGameboard);
+              this.handleViolation(setGameboard, setActivePlayer);
             } else {
               this.secondsPassingFromOutbands++;
               newGameNarration.unshift(
@@ -1842,6 +1897,7 @@ export class Match {
               setGameNarration,
               gameboard,
               setGameboard,
+              setActivePlayer,
             );
           }
 
@@ -1882,6 +1938,7 @@ export class Match {
     setGameNarration: React.Dispatch<React.SetStateAction<string[]>>,
     gameboard: number[][],
     setGameboard: React.Dispatch<React.SetStateAction<number[][]>>,
+    setActivePlayer: React.Dispatch<React.SetStateAction<Player | undefined>>,
   ): void {
     if (this.timeLeft.seconds == 0) {
       this.timeLeft.minutes--;
@@ -1903,7 +1960,13 @@ export class Match {
     }
 
     if (this.shotHasBeenAttempted) {
-      this.handleShot(gameNarration, setGameNarration, gameboard, setGameboard);
+      this.handleShot(
+        gameNarration,
+        setGameNarration,
+        gameboard,
+        setGameboard,
+        setActivePlayer,
+      );
     }
   }
 

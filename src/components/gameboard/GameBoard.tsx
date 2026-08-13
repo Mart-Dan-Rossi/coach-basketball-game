@@ -482,35 +482,55 @@ function Gameboard({ match, setMatchState }: Props) {
     } else {
       return () => {
         let thisUbication = [col, row];
+        let bothTeams = [teamA, teamB];
 
         if (teamNumber != 0) {
-          if (teamNumber == 1) {
-            if (teamA.teamTurn) {
-              setPlayerClikedTeamA(() => [col, row]);
-
-              if (!teamAAnySelected) {
-                setConfirmButtonHandler(
-                  () => () =>
-                    confirmPlayerSelection(teamA, thisUbication, teamB),
+          bothTeams.forEach((team, index) => {
+            let isTeamA = team.name === "TeamA";
+            if (teamNumber == index + 1) {
+              if (team.teamTurn) {
+                let teamPlayerInThisUbication = team.players.find(
+                  (p) => p.ubicationX === col && p.ubicationY === row,
                 );
+
+                if (teamPlayerInThisUbication) {
+                  let clickedPlayerHaveTurnLeft =
+                    teamPlayerInThisUbication.playerHaveTurn;
+
+                  if (clickedPlayerHaveTurnLeft) {
+                    if (isTeamA) {
+                      setPlayerClikedTeamA(() => [col, row]);
+                    } else {
+                      setPlayerClikedTeamB(() => [col, row]);
+                    }
+
+                    if (
+                      (isTeamA && !teamAAnySelected) ||
+                      (!isTeamA && !teamBAnySelected)
+                    ) {
+                      setConfirmButtonHandler(
+                        () => () =>
+                          confirmPlayerSelection(
+                            isTeamA ? teamA : teamB,
+                            thisUbication,
+                            isTeamA ? teamB : teamA,
+                          ),
+                      );
+                    }
+
+                    setActivateConfirmButton(() => true);
+                  }
+                } else {
+                  console.error(
+                    "In clickTileHandler it should find teamPlayerInThisUbication but it doesn't",
+                  );
+                  toast(
+                    "Error: In clickTileHandler it should find teamPlayerInThisUbication but it doesn't",
+                  );
+                }
               }
-
-              setActivateConfirmButton(() => true);
             }
-          } else if (teamNumber == 2) {
-            if (teamB.teamTurn) {
-              setPlayerClikedTeamB(() => [col, row]);
-
-              if (!teamBAnySelected) {
-                setConfirmButtonHandler(
-                  () => () =>
-                    confirmPlayerSelection(teamB, thisUbication, teamA),
-                );
-              }
-
-              setActivateConfirmButton(true);
-            }
-          }
+          });
         }
       };
     }

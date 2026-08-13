@@ -455,7 +455,7 @@ function Gameboard({ match, setMatchState }: Props) {
       return () => {
         let thisUbication = [col, row];
 
-        if (teamNumber != 0) {
+        if (teamNumber == (activePlayer?.team === "TeamA" ? 1 : 2)) {
           let team = teamNumber == 1 ? teamA : teamB;
           let setPlayerClicked =
             teamNumber == 1 ? setPlayerClikedTeamA : setPlayerClikedTeamB;

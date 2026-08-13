@@ -1421,8 +1421,7 @@ export class Match {
     let atackingPlayerPoints =
       calculateOffensivePlayerBallHandlingPoints(playerWithBall);
     let defendersPointsInStealAttempt =
-      // calculateDefenderPointsInStealAttempt(defender);
-      999;
+      calculateDefenderPointsInStealAttempt(defender);
 
     //If defender doesn't get enough points he commit a foul
     if (defendersPointsInStealAttempt < defensivePointsFoulInStealAttempt) {

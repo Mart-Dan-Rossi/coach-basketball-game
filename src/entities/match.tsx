@@ -1420,8 +1420,7 @@ export class Match {
     }
 
     let atackingPlayerPoints =
-      // calculateOffensivePlayerBallHandlingPoints(playerWithBall);
-      999;
+      calculateOffensivePlayerBallHandlingPoints(playerWithBall);
     let defendersPointsInStealAttempt =
       calculateDefenderPointsInStealAttempt(defender);
 

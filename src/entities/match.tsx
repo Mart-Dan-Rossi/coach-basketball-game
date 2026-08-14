@@ -1420,7 +1420,8 @@ export class Match {
     }
 
     let atackingPlayerPoints =
-      calculateOffensivePlayerBallHandlingPoints(playerWithBall);
+      // calculateOffensivePlayerBallHandlingPoints(playerWithBall);
+      999;
     let defendersPointsInStealAttempt =
       calculateDefenderPointsInStealAttempt(defender);
 
@@ -1469,6 +1470,8 @@ export class Match {
       );
       setGameNarration(() => [...newGameNarration]);
     }
+
+    defender.actionPoints -= 1;
   }
 
   //------------------------------------END PLAYER ACTIONS METHODS----------------------------------------------------------------------------------------------------------

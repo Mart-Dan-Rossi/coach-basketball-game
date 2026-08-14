@@ -6,6 +6,7 @@ import {
   PlayerStats,
 } from "../entities/myInterfaces";
 import { Player } from "../entities/players";
+import { Match } from "../entities/match";
 
 export interface GameContextProps {
   playerA1Stats: PlayerEditableInfo;
@@ -158,10 +159,18 @@ export interface GameContextProps {
   createPlayer: number;
   setCreatePlayer: React.Dispatch<React.SetStateAction<number>>;
 
-  activePlayer: Player|undefined;
-  setActivePlayer: React.Dispatch<React.SetStateAction<Player|undefined>>;
+  activePlayer: Player | undefined;
+  setActivePlayer: React.Dispatch<React.SetStateAction<Player | undefined>>;
+
+  matchHistoryRef: React.MutableRefObject<
+    {
+      action: string;
+      timestamp: number;
+      state: ReturnType<Match["createSnapshot"]>;
+    }[]
+  >;
 }
 
 export const GameContext = createContext<GameContextProps>(
-  {} as GameContextProps
+  {} as GameContextProps,
 );

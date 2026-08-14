@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   PlayerEditableInfo,
   PlayerEditableStatsKeys,
@@ -16,6 +16,7 @@ import {
 //@ts-ignore
 import "../../styles/NumericInput.css";
 import toast from "react-hot-toast";
+import { GameContext } from "../../context/GameContext";
 
 interface Props {
   stat: PlayerEditableStatsKeys;
@@ -49,6 +50,8 @@ const NumericInput = ({
   setPointsUsedInPlayer,
   playerSetter,
 }: Props) => {
+  const { matchHistoryRef } = useContext(GameContext);
+  
   function inputOnChangeHandler(
     statType: PlayerEditableStatsKeys,
   ): (e: React.ChangeEvent<HTMLInputElement>) => void {
@@ -108,6 +111,7 @@ const NumericInput = ({
     } catch (error) {
       console.error(
         `Error occurred while trying to get value for stat: ${stat}`,
+        matchHistoryRef.current,
       );
       toast.error(
         `Error: Error occurred while trying to get value for stat: ${stat}`,

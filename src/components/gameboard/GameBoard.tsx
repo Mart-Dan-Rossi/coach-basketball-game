@@ -19,7 +19,7 @@ import { Coordinate } from "../../entities/myInterfaces";
 
 interface Props {
   match: Match;
-  setMatchState: React.Dispatch<React.SetStateAction<Match>>;
+  setMatchState: (newMatchState: Match, action: string) => void;
 }
 
 function Gameboard({ match, setMatchState }: Props) {
@@ -56,6 +56,7 @@ function Gameboard({ match, setMatchState }: Props) {
     setGameboard,
     activePlayer,
     setActivePlayer,
+    matchHistoryRef,
   } = useContext(GameContext);
 
   useEffect(() => {}, [
@@ -91,6 +92,11 @@ function Gameboard({ match, setMatchState }: Props) {
           gameboard,
           "Team positions:",
           playersUbications,
+        );
+
+        console.error(
+          "match data and gameboard data mismatch. Check console for more data.",
+          matchHistoryRef.current,
         );
       }
     }
@@ -209,7 +215,10 @@ function Gameboard({ match, setMatchState }: Props) {
         }
       }
     } else {
-      console.error("teamActivePlayer not found in showPosibleActionsButtons");
+      console.error(
+        "teamActivePlayer not found in showPosibleActionsButtons",
+        matchHistoryRef,
+      );
       toast.error(
         "Error: teamActivePlayer not found in showPosibleActionsButtons",
       );
@@ -255,42 +264,45 @@ function Gameboard({ match, setMatchState }: Props) {
       }
 
       if (actionConfirmed == "move" || actionConfirmed == "dribbling") {
-        if (activePlayer) {
-          for (let dx = -1; dx < 2; dx++) {
-            for (let dy = -1; dy < 2; dy++) {
-              //Don't add class to player tile
-
-              if (activePlayer && !(dx == 0 && dy == 0)) {
-                //If the scanned ubication is around the active player
-                if (
-                  activePlayer.ubicationX &&
-                  activePlayer.ubicationX + dx == thisUbication[0] &&
-                  activePlayer.ubicationY &&
-                  activePlayer.ubicationY + dy == thisUbication[1]
-                ) {
-                  //The player have more than 1.5 action points and the tile is in the diagonal or less than 1.5 points and the sile is next to the player
-                  if (
-                    (activePlayer.actionPoints >= 1.5 &&
-                      Math.pow(dx, 2) + Math.pow(dy, 2) == 2) ||
-                    (activePlayer.actionPoints >= 1 && (dx == 0 || dy == 0))
-                  ) {
-                    if (teamNumber == 0) {
-                      if (
-                        tileClicked[0] == thisUbication[0] &&
-                        tileClicked[1] == thisUbication[1]
-                      ) {
-                        return "selected-tile pointer";
-                      } else {
-                        return "highlighted-tile pointer";
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
+        if (false) {
+          // if (activePlayer) {
+          //   for (let dx = -1; dx < 2; dx++) {
+          //     for (let dy = -1; dy < 2; dy++) {
+          //       //Don't add class to player tile
+          //       if (activePlayer && !(dx == 0 && dy == 0)) {
+          //         //If the scanned ubication is around the active player
+          //         if (
+          //           activePlayer.ubicationX &&
+          //           activePlayer.ubicationX + dx == thisUbication[0] &&
+          //           activePlayer.ubicationY &&
+          //           activePlayer.ubicationY + dy == thisUbication[1]
+          //         ) {
+          //           //The player have more than 1.5 action points and the tile is in the diagonal or less than 1.5 points and the sile is next to the player
+          //           if (
+          //             (activePlayer.actionPoints >= 1.5 &&
+          //               Math.pow(dx, 2) + Math.pow(dy, 2) == 2) ||
+          //             (activePlayer.actionPoints >= 1 && (dx == 0 || dy == 0))
+          //           ) {
+          //             if (teamNumber == 0) {
+          //               if (
+          //                 tileClicked[0] == thisUbication[0] &&
+          //                 tileClicked[1] == thisUbication[1]
+          //               ) {
+          //                 return "selected-tile pointer";
+          //               } else {
+          //                 return "highlighted-tile pointer";
+          //               }
+          //             }
+          //           }
+          //         }
+          //       }
+          //     }
+          //   }
         } else {
-          console.error("Active player not found while attempt to move player");
+          console.error(
+            "Active player not found while attempt to move player",
+            matchHistoryRef.current,
+          );
           toast.error(
             "Error: Active player not found while attempt to move player",
           );
@@ -315,7 +327,10 @@ function Gameboard({ match, setMatchState }: Props) {
             }
           }
         } else {
-          console.error("Active player not found while attempt pass");
+          console.error(
+            "Active player not found while attempt pass",
+            matchHistoryRef.current,
+          );
           toast.error("Error: Active player not found while attempt pass");
         }
       }
@@ -447,7 +462,10 @@ function Gameboard({ match, setMatchState }: Props) {
             }
           }
         } else {
-          console.error("Active player not found while clicking tile");
+          console.error(
+            "Active player not found while clicking tile",
+            matchHistoryRef.current,
+          );
           toast.error("Error: Active player not found while clicking tile");
         }
       };
@@ -523,6 +541,7 @@ function Gameboard({ match, setMatchState }: Props) {
                 } else {
                   console.error(
                     "In clickTileHandler it should find teamPlayerInThisUbication but it doesn't",
+                    matchHistoryRef.current,
                   );
                   toast(
                     "Error: In clickTileHandler it should find teamPlayerInThisUbication but it doesn't",
@@ -568,6 +587,7 @@ function Gameboard({ match, setMatchState }: Props) {
           } else {
             console.error(
               "actionConfirmed was expected to be 'move' or 'dribbling' and it was not",
+              matchHistoryRef.current,
             );
             toast.error(
               "Error: actionConfirmed was expected to be 'move' or 'dribbling' and it was not",
@@ -587,11 +607,14 @@ function Gameboard({ match, setMatchState }: Props) {
 
           setActionConfirmed(() => "");
 
-          setMatchState(() => match);
+          setMatchState(match, "Moving player");
 
           setActivateConfirmButton(() => false);
         } else {
-          console.error("player ubication is undefined while moving player");
+          console.error(
+            "player ubication is undefined while moving player",
+            matchHistoryRef.current,
+          );
           toast.error(
             "Error: player ubication is undefined while moving player",
           );
@@ -599,7 +622,10 @@ function Gameboard({ match, setMatchState }: Props) {
       };
     } else {
       return () => {
-        console.error("Active player not found while moving player");
+        console.error(
+          "Active player not found while moving player",
+          matchHistoryRef.current,
+        );
         toast.error("Error: Active player not found while moving player");
       };
     }
@@ -642,11 +668,14 @@ function Gameboard({ match, setMatchState }: Props) {
 
         setActionConfirmed(() => "");
 
-        setMatchState(() => match);
+        setMatchState(match, "Make pass");
 
         setActivateConfirmButton(() => false);
       } else {
-        console.error("Passer or receiver was not found while making pass");
+        console.error(
+          "Passer or receiver was not found while making pass",
+          matchHistoryRef.current,
+        );
         toast.error(
           "Error: Passer or receiver was not found while making pass",
         );
@@ -703,12 +732,13 @@ function Gameboard({ match, setMatchState }: Props) {
             setPlayerClikedTeamB(() => [0, 0]);
           }
         } catch (err) {
-          console.error(err);
+          console.error(err, matchHistoryRef.current);
           toast.error(`${err} in confirmPlayerSelection`);
         }
       } else {
         console.error(
           "At least 1 selected player was not found while confirming player selection",
+          matchHistoryRef.current,
         );
         toast.error(
           "Error: At least 1 selected player was not found while confirming player selection",

@@ -10,7 +10,7 @@ import toast from "react-hot-toast";
 
 interface Props {
   match: Match;
-  setMatchState: React.Dispatch<React.SetStateAction<Match>>;
+  setMatchState: (newMatchState: Match, action: string) => void;
 }
 
 const MatchActionsContainer = ({ match, setMatchState }: Props) => {
@@ -37,6 +37,7 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
     gameboard,
     setGameboard,
     setActivePlayer,
+    matchHistoryRef,
   } = useContext(GameContext);
 
   let matchCopy = match;
@@ -182,7 +183,7 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
       );
     }
 
-    setMatchState(() => matchCopy);
+    setMatchState(matchCopy, "Steal attempt");
   }
 
   function handleInterceptPassAttempt(): void {
@@ -216,6 +217,7 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
         gameboard,
         setGameboard,
         setActivePlayer,
+        matchHistoryRef,
       );
     } catch (err) {
       toast.error(
@@ -227,7 +229,7 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
 
     setActivePlayer(() => matchCopy.getActivePlayer());
 
-    setMatchState(() => matchCopy);
+    setMatchState(matchCopy, `Handle ${type} wait`);
   }
 
   function handleShot(): void {
@@ -260,6 +262,7 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
         gameboard,
         setGameboard,
         setActivePlayer,
+        matchHistoryRef,
       );
     } catch (err) {
       toast.error(
@@ -271,7 +274,7 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
 
     setActivePlayer(() => matchCopy.getActivePlayer());
 
-    setMatchState(() => matchCopy);
+    setMatchState(matchCopy, "Ending turn");
   }
 
   function clickActionButtonHandler(

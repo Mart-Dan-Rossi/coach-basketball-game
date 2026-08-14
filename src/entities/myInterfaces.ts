@@ -1,3 +1,5 @@
+import { Match } from "./match";
+
 export type PlayerEditableStatsKeys =
   | "height"
   | "weight"
@@ -100,3 +102,9 @@ export interface GameStats {
 export type Coordinate = [number, number];
 
 export type ValidPositions = "G" | "SG" | "SF" | "PF" | "C" | "Not detected";
+
+export type MatchHistoryEntry = {
+  match: Match;
+  gameBoard: number[][];
+  action: string;
+};

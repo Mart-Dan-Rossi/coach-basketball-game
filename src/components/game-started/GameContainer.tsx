@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import Gameboard from "../gameboard/Gameboard";
 import { useContext, useEffect, useState } from "react";
 import { GameContext } from "../../context/GameContext";
@@ -13,6 +13,7 @@ import {
   teamAInitialPositions,
   teamBInitialPositions,
 } from "../../utilities/exportableFunctions";
+import { MatchHistoryEntry } from "../../entities/myInterfaces";
 
 const GameContainer = () => {
   const {
@@ -23,6 +24,7 @@ const GameContainer = () => {
     gameboard,
     setGameboard,
     setActivePlayer,
+    matchHistoryRef,
   } = useContext(GameContext);
 
   const playerA1: Player = new Player(
@@ -216,6 +218,24 @@ const GameContainer = () => {
 
   const [matchState, setMatchState] = useState(match);
 
+  const saveMatchSnapshot = (action: string) => {
+    matchHistoryRef.current.push({
+      action,
+      timestamp: Date.now(),
+      state: matchState.createSnapshot(),
+    });
+
+    if (matchHistoryRef.current.length > 30) {
+      matchHistoryRef.current.shift();
+    }
+  };
+
+  const updateMatchState = (newMatchState: Match, action: string): void => {
+    saveMatchSnapshot(action);
+
+    setMatchState(() => newMatchState);
+  };
+
   function matchHandler(): void {
     if (matchState.quarter == 1 && matchState.timeLeft.minutes == 6) {
       matchState.jumpBall(
@@ -224,6 +244,7 @@ const GameContainer = () => {
         gameboard,
         setGameboard,
         setActivePlayer,
+        matchHistoryRef,
       );
     }
   }
@@ -235,8 +256,11 @@ const GameContainer = () => {
   return (
     <div className="game-container">
       <MatchInfo match={matchState} />
-      <Gameboard match={matchState} setMatchState={setMatchState} />
-      <MatchActionsContainer match={matchState} setMatchState={setMatchState} />
+      <Gameboard match={matchState} setMatchState={updateMatchState} />
+      <MatchActionsContainer
+        match={matchState}
+        setMatchState={updateMatchState}
+      />
     </div>
   );
 };

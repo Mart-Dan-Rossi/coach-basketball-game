@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import {
   PlayerEditableInfo,
   PlayerEditableStatsKeys,
@@ -9,6 +9,7 @@ import NumericInputs from "./NumericInputs";
 //@ts-ignore
 import "../../styles/CreatePlayer.css";
 import toast from "react-hot-toast";
+import { GameContext } from "../../context/GameContext";
 
 interface Props {
   team: string;
@@ -35,6 +36,8 @@ const CreatePlayer = ({
   pointsUsedInStats,
   setPointsUsedInStats,
 }: Props) => {
+  const { matchHistoryRef } = useContext(GameContext);
+
   useEffect(() => {
     if (playerPosition === "Not detected") {
       toast.error(
@@ -42,6 +45,7 @@ const CreatePlayer = ({
       );
       console.error(
         "playerPosition was not detected while triying to create player",
+        matchHistoryRef.current,
       );
     }
   }, []);

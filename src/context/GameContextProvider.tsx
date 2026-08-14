@@ -1,9 +1,10 @@
 import { GameContext } from "./GameContext";
-import React from "react";
+import React, { useRef } from "react";
 import { useState } from "react";
 import { getInitialPlayerStatsOnCreation } from "../utilities/exportableFunctions";
 import { initialGameBoard } from "../utilities/exportableFunctions";
 import { Player } from "../entities/players";
+import { Match } from "../entities/match";
 
 interface props {
   children: JSX.Element | JSX.Element[];
@@ -11,23 +12,23 @@ interface props {
 
 export const GameContextProvider = ({ children }: props) => {
   const [playerA1Stats, setPlayerA1Stats] = useState(
-    getInitialPlayerStatsOnCreation("1")
+    getInitialPlayerStatsOnCreation("1"),
   );
 
   const [playerA2Stats, setPlayerA2Stats] = useState(
-    getInitialPlayerStatsOnCreation("2")
+    getInitialPlayerStatsOnCreation("2"),
   );
 
   const [playerA3Stats, setPlayerA3Stats] = useState(
-    getInitialPlayerStatsOnCreation("3")
+    getInitialPlayerStatsOnCreation("3"),
   );
 
   const [playerA4Stats, setPlayerA4Stats] = useState(
-    getInitialPlayerStatsOnCreation("4")
+    getInitialPlayerStatsOnCreation("4"),
   );
 
   const [playerA5Stats, setPlayerA5Stats] = useState(
-    getInitialPlayerStatsOnCreation("5")
+    getInitialPlayerStatsOnCreation("5"),
   );
 
   const [teamAStats, setTeamAStats] = useState({
@@ -39,23 +40,23 @@ export const GameContextProvider = ({ children }: props) => {
   });
 
   const [playerB1Stats, setPlayerB1Stats] = useState(
-    getInitialPlayerStatsOnCreation("1")
+    getInitialPlayerStatsOnCreation("1"),
   );
 
   const [playerB2Stats, setPlayerB2Stats] = useState(
-    getInitialPlayerStatsOnCreation("2")
+    getInitialPlayerStatsOnCreation("2"),
   );
 
   const [playerB3Stats, setPlayerB3Stats] = useState(
-    getInitialPlayerStatsOnCreation("3")
+    getInitialPlayerStatsOnCreation("3"),
   );
 
   const [playerB4Stats, setPlayerB4Stats] = useState(
-    getInitialPlayerStatsOnCreation("4")
+    getInitialPlayerStatsOnCreation("4"),
   );
 
   const [playerB5Stats, setPlayerB5Stats] = useState(
-    getInitialPlayerStatsOnCreation("5")
+    getInitialPlayerStatsOnCreation("5"),
   );
 
   const [teamBStats, setTeamBStats] = useState({
@@ -82,52 +83,52 @@ export const GameContextProvider = ({ children }: props) => {
 
   const [pointsUsedInPlayerA1, setPointsUsedInPlayerA1] = useState(0);
   const [pointsUsedInStatsPlayerA1, setPointsUsedInStatsPlayerA1] = useState(
-    initialPointsUsedInStats
+    initialPointsUsedInStats,
   );
 
   const [pointsUsedInPlayerA2, setPointsUsedInPlayerA2] = useState(0);
   const [pointsUsedInStatsPlayerA2, setPointsUsedInStatsPlayerA2] = useState(
-    initialPointsUsedInStats
+    initialPointsUsedInStats,
   );
 
   const [pointsUsedInPlayerA3, setPointsUsedInPlayerA3] = useState(0);
   const [pointsUsedInStatsPlayerA3, setPointsUsedInStatsPlayerA3] = useState(
-    initialPointsUsedInStats
+    initialPointsUsedInStats,
   );
 
   const [pointsUsedInPlayerA4, setPointsUsedInPlayerA4] = useState(0);
   const [pointsUsedInStatsPlayerA4, setPointsUsedInStatsPlayerA4] = useState(
-    initialPointsUsedInStats
+    initialPointsUsedInStats,
   );
 
   const [pointsUsedInPlayerA5, setPointsUsedInPlayerA5] = useState(0);
   const [pointsUsedInStatsPlayerA5, setPointsUsedInStatsPlayerA5] = useState(
-    initialPointsUsedInStats
+    initialPointsUsedInStats,
   );
 
   const [pointsUsedInPlayerB1, setPointsUsedInPlayerB1] = useState(0);
   const [pointsUsedInStatsPlayerB1, setPointsUsedInStatsPlayerB1] = useState(
-    initialPointsUsedInStats
+    initialPointsUsedInStats,
   );
 
   const [pointsUsedInPlayerB2, setPointsUsedInPlayerB2] = useState(0);
   const [pointsUsedInStatsPlayerB2, setPointsUsedInStatsPlayerB2] = useState(
-    initialPointsUsedInStats
+    initialPointsUsedInStats,
   );
 
   const [pointsUsedInPlayerB3, setPointsUsedInPlayerB3] = useState(0);
   const [pointsUsedInStatsPlayerB3, setPointsUsedInStatsPlayerB3] = useState(
-    initialPointsUsedInStats
+    initialPointsUsedInStats,
   );
 
   const [pointsUsedInPlayerB4, setPointsUsedInPlayerB4] = useState(0);
   const [pointsUsedInStatsPlayerB4, setPointsUsedInStatsPlayerB4] = useState(
-    initialPointsUsedInStats
+    initialPointsUsedInStats,
   );
 
   const [pointsUsedInPlayerB5, setPointsUsedInPlayerB5] = useState(0);
   const [pointsUsedInStatsPlayerB5, setPointsUsedInStatsPlayerB5] = useState(
-    initialPointsUsedInStats
+    initialPointsUsedInStats,
   );
 
   const [gameNarration, setGameNarration] = useState(["Game narration."]);
@@ -162,7 +163,7 @@ export const GameContextProvider = ({ children }: props) => {
   const [finalisingAction, setFinalisingAction] = useState(false);
 
   const [confirmButtonHandler, setConfirmButtonHandler] = useState(
-    () => () => {}
+    () => () => {},
   );
 
   const [tileClicked, setTileClicked] = useState([0, 0]);
@@ -175,6 +176,14 @@ export const GameContextProvider = ({ children }: props) => {
   const [createPlayer, setCreatePlayer] = useState(0);
 
   const [activePlayer, setActivePlayer] = useState<Player | undefined>();
+
+  const matchHistoryRef = useRef<
+    {
+      action: string;
+      timestamp: number;
+      state: ReturnType<Match["createSnapshot"]>;
+    }[]
+  >([]);
 
   return (
     <GameContext.Provider
@@ -296,6 +305,8 @@ export const GameContextProvider = ({ children }: props) => {
 
         activePlayer,
         setActivePlayer,
+
+        matchHistoryRef,
       }}
     >
       {children}

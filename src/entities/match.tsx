@@ -310,6 +310,34 @@ export class Match {
     }
   }
 
+  createSnapshot() {
+    return {
+      teamA: structuredClone(this.teamA),
+      teamB: structuredClone(this.teamB),
+
+      //Match status
+      teamTurn: structuredClone(this.teamTurn),
+      shotHasBeenAttempted: structuredClone(this.shotHasBeenAttempted),
+      freeThrowsLeft: structuredClone(this.freeThrowsLeft),
+      isFreeThrowSerie: structuredClone(this.isFreeThrowSerie),
+      isFirstFreeThrowInTheSerie: structuredClone(
+        this.isFirstFreeThrowInTheSerie,
+      ),
+      waitingPlayers: structuredClone(this.waitingPlayers),
+      secondsPassingFromOutbands: structuredClone(
+        this.secondsPassingFromOutbands,
+      ),
+      passingFromOutbands: structuredClone(this.passingFromOutbands),
+
+      //Match basic info
+      quarter: structuredClone(this.quarter),
+      timeLeft: structuredClone(this.timeLeft),
+      shotClock: structuredClone(this.shotClock),
+      turnOver: structuredClone(this.turnOver),
+      gameOver: structuredClone(this.gameOver),
+    };
+  }
+
   //---------------------------------------END GET INFO METHODS-------------------------------------------------------------------------------------------------------------
 
   //-----------------------------------START PLAYER ACTIONS METHODS---------------------------------------------------------------------------------------------------------
@@ -609,6 +637,13 @@ export class Match {
     gameboard: number[][],
     setGameboard: React.Dispatch<React.SetStateAction<number[][]>>,
     setActivePlayer: React.Dispatch<React.SetStateAction<Player | undefined>>,
+    matchHistoryRef: React.MutableRefObject<
+      {
+        action: string;
+        timestamp: number;
+        state: ReturnType<Match["createSnapshot"]>;
+      }[]
+    >,
   ): void {
     //First i get the shooter
     let shooter = this.getShooter();
@@ -1157,6 +1192,7 @@ export class Match {
         gameboard,
         setGameboard,
         setActivePlayer,
+        matchHistoryRef,
       );
 
       return;
@@ -1185,6 +1221,13 @@ export class Match {
     gameboard: number[][],
     setGameboard: React.Dispatch<React.SetStateAction<number[][]>>,
     setActivePlayer: React.Dispatch<React.SetStateAction<Player | undefined>>,
+    matchHistoryRef: React.MutableRefObject<
+      {
+        action: string;
+        timestamp: number;
+        state: ReturnType<Match["createSnapshot"]>;
+      }[]
+    >,
   ): void {
     let activePlayer = this.getActivePlayer();
 
@@ -1210,6 +1253,7 @@ export class Match {
         gameboard,
         setGameboard,
         setActivePlayer,
+        matchHistoryRef,
         narrationText,
         // If it's withCaution or tripleTheat return true, otherwise return false
         !!(type == "withCaution" || type == "tripleThreat"),
@@ -1229,7 +1273,7 @@ export class Match {
     newUbication: Coordinate,
     typeOfMove: "move" | "dribbling",
     gameboard: number[][],
-    setMatchState: React.Dispatch<React.SetStateAction<Match>>,
+    setMatchState: (newMatchState: Match, action: string) => void,
     setActionConfirmed: React.Dispatch<React.SetStateAction<string>>,
     setActivateConfirmButton: React.Dispatch<React.SetStateAction<boolean>>,
     setGameboard: React.Dispatch<React.SetStateAction<number[][]>>,
@@ -1399,7 +1443,7 @@ export class Match {
 
     setActionConfirmed(() => "");
 
-    setMatchState(() => this);
+    setMatchState(this, "Moving player");
 
     setActivateConfirmButton(() => false);
   }
@@ -1502,6 +1546,13 @@ export class Match {
     gameboard: number[][],
     setGameboard: React.Dispatch<React.SetStateAction<number[][]>>,
     setActivePlayer: React.Dispatch<React.SetStateAction<Player | undefined>>,
+    matchHistoryRef: React.MutableRefObject<
+      {
+        action: string;
+        timestamp: number;
+        state: ReturnType<Match["createSnapshot"]>;
+      }[]
+    >,
   ): void {
     let pointsObteinedInTheJumpBallA = 0;
     let pointsObteinedInTheJumpBallB = 0;
@@ -1617,6 +1668,7 @@ export class Match {
       gameboard,
       setGameboard,
       setActivePlayer,
+      matchHistoryRef,
     );
   }
 
@@ -1779,6 +1831,13 @@ export class Match {
     gameboard: number[][],
     setGameboard: React.Dispatch<React.SetStateAction<number[][]>>,
     setActivePlayer: React.Dispatch<React.SetStateAction<Player | undefined>>,
+    matchHistoryRef: React.MutableRefObject<
+      {
+        action: string;
+        timestamp: number;
+        state: ReturnType<Match["createSnapshot"]>;
+      }[]
+    >,
     currentGameNarration?: string | undefined,
     isWaitingAction?: boolean,
   ): void {
@@ -1895,6 +1954,7 @@ export class Match {
               gameboard,
               setGameboard,
               setActivePlayer,
+              matchHistoryRef,
             );
           }
 
@@ -1936,6 +1996,13 @@ export class Match {
     gameboard: number[][],
     setGameboard: React.Dispatch<React.SetStateAction<number[][]>>,
     setActivePlayer: React.Dispatch<React.SetStateAction<Player | undefined>>,
+    matchHistoryRef: React.MutableRefObject<
+      {
+        action: string;
+        timestamp: number;
+        state: ReturnType<Match["createSnapshot"]>;
+      }[]
+    >,
   ): void {
     if (this.timeLeft.seconds == 0) {
       this.timeLeft.minutes--;
@@ -1963,6 +2030,7 @@ export class Match {
         gameboard,
         setGameboard,
         setActivePlayer,
+        matchHistoryRef,
       );
     }
   }

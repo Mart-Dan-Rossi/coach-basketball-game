@@ -1412,6 +1412,7 @@ export class Match {
   ): void {
     let playerWithBall = this.getPlayerWithBall("handleStealAttempt");
     let defender = this.getActivePlayer();
+    let newGameNarration = [...gameNarration];
 
     if (!defender) {
       console.error("Defender not found in handleStealAttempt");
@@ -1435,13 +1436,18 @@ export class Match {
       );
       //If defender have more points than atacker he steals it
     } else if (atackingPlayerPoints < defendersPointsInStealAttempt) {
-      let newGameNarration = [...gameNarration];
       let defensiveTeam = defender.team === "TeamA" ? this.teamA : this.teamB;
       let atackingTeam =
         playerWithBall.team === "TeamA" ? this.teamA : this.teamB;
 
       defender.setHaveBall(true);
       playerWithBall?.setHaveBall(false);
+
+      defender.statsAddSteal();
+      defensiveTeam.statsAddSteal();
+
+      playerWithBall.statsAddTurnOver();
+      atackingTeam.statsAddTurnOver();
 
       //Handle narration and stats for the ball being stolen
       newGameNarration.unshift(
@@ -1452,21 +1458,16 @@ export class Match {
         }, reach for the ball and gets it!`,
       );
 
-      defender.statsAddSteal();
-      defensiveTeam.statsAddSteal();
-
-      playerWithBall.statsAddTurnOver();
-      atackingTeam.statsAddTurnOver();
-
       setGameNarration(() => [...newGameNarration]);
     } else {
-      console.error(
-        "defender was expected to be defined in evaluateDribblingOutcome but it's not",
+      newGameNarration.unshift(
+        `${
+          (defender.name && defender.name.length === 0) || !defender.name
+            ? `The ${playerPositionDetection(defender.position)} of team A`
+            : defender.name
+        }, reach for the ball but he doesn't gets it`,
       );
-
-      throw new Error(
-        "Error: defender was expected to be defined in evaluateDribblingOutcome but it's not",
-      );
+      setGameNarration(() => [...newGameNarration]);
     }
   }
 

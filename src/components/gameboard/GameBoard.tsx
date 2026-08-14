@@ -264,40 +264,39 @@ function Gameboard({ match, setMatchState }: Props) {
       }
 
       if (actionConfirmed == "move" || actionConfirmed == "dribbling") {
-        if (false) {
-          // if (activePlayer) {
-          //   for (let dx = -1; dx < 2; dx++) {
-          //     for (let dy = -1; dy < 2; dy++) {
-          //       //Don't add class to player tile
-          //       if (activePlayer && !(dx == 0 && dy == 0)) {
-          //         //If the scanned ubication is around the active player
-          //         if (
-          //           activePlayer.ubicationX &&
-          //           activePlayer.ubicationX + dx == thisUbication[0] &&
-          //           activePlayer.ubicationY &&
-          //           activePlayer.ubicationY + dy == thisUbication[1]
-          //         ) {
-          //           //The player have more than 1.5 action points and the tile is in the diagonal or less than 1.5 points and the sile is next to the player
-          //           if (
-          //             (activePlayer.actionPoints >= 1.5 &&
-          //               Math.pow(dx, 2) + Math.pow(dy, 2) == 2) ||
-          //             (activePlayer.actionPoints >= 1 && (dx == 0 || dy == 0))
-          //           ) {
-          //             if (teamNumber == 0) {
-          //               if (
-          //                 tileClicked[0] == thisUbication[0] &&
-          //                 tileClicked[1] == thisUbication[1]
-          //               ) {
-          //                 return "selected-tile pointer";
-          //               } else {
-          //                 return "highlighted-tile pointer";
-          //               }
-          //             }
-          //           }
-          //         }
-          //       }
-          //     }
-          //   }
+        if (activePlayer) {
+          for (let dx = -1; dx < 2; dx++) {
+            for (let dy = -1; dy < 2; dy++) {
+              //Don't add class to player tile
+              if (activePlayer && !(dx == 0 && dy == 0)) {
+                //If the scanned ubication is around the active player
+                if (
+                  activePlayer.ubicationX &&
+                  activePlayer.ubicationX + dx == thisUbication[0] &&
+                  activePlayer.ubicationY &&
+                  activePlayer.ubicationY + dy == thisUbication[1]
+                ) {
+                  //The player have more than 1.5 action points and the tile is in the diagonal or less than 1.5 points and the sile is next to the player
+                  if (
+                    (activePlayer.actionPoints >= 1.5 &&
+                      Math.pow(dx, 2) + Math.pow(dy, 2) == 2) ||
+                    (activePlayer.actionPoints >= 1 && (dx == 0 || dy == 0))
+                  ) {
+                    if (teamNumber == 0) {
+                      if (
+                        tileClicked[0] == thisUbication[0] &&
+                        tileClicked[1] == thisUbication[1]
+                      ) {
+                        return "selected-tile pointer";
+                      } else {
+                        return "highlighted-tile pointer";
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
         } else {
           console.error(
             "Active player not found while attempt to move player",

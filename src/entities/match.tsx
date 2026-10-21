@@ -1389,9 +1389,9 @@ export class Match {
         //Calculate defender points
         let defenderPoints = calculateDefenderPointsInDribbling(defender);
 
-        // if (defenderPoints < defensivePointsFoulInDribbling) {
+        if (defenderPoints < defensivePointsFoulInDribbling) {
         //Uncomment to force foul
-        if (0 < defensivePointsFoulInDribbling) {
+        // if (0 < defensivePointsFoulInDribbling) {
           isFoul = true;
         }
 

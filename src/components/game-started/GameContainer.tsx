@@ -25,6 +25,8 @@ const GameContainer = () => {
     setGameboard,
     setActivePlayer,
     matchHistoryRef,
+    setPlayerClikedTeamA,
+    setPlayerClikedTeamB,
   } = useContext(GameContext);
 
   const playerA1: Player = new Player(
@@ -244,6 +246,8 @@ const GameContainer = () => {
         gameboard,
         setGameboard,
         setActivePlayer,
+        setPlayerClikedTeamA,
+        setPlayerClikedTeamB,
         matchHistoryRef,
       );
     }

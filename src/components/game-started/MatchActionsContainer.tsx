@@ -38,6 +38,8 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
     setGameboard,
     setActivePlayer,
     matchHistoryRef,
+    setPlayerClikedTeamA,
+    setPlayerClikedTeamB,
   } = useContext(GameContext);
 
   let matchCopy = match;
@@ -174,6 +176,8 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
         setGameNarration,
         setGameboard,
         setActivePlayer,
+        setPlayerClikedTeamA,
+        setPlayerClikedTeamB,
       );
     } catch (err) {
       toast.error(
@@ -218,6 +222,8 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
         setGameboard,
         setActivePlayer,
         matchHistoryRef,
+        setPlayerClikedTeamA,
+        setPlayerClikedTeamB
       );
     } catch (err) {
       toast.error(
@@ -263,6 +269,8 @@ const MatchActionsContainer = ({ match, setMatchState }: Props) => {
         setGameboard,
         setActivePlayer,
         matchHistoryRef,
+        setPlayerClikedTeamA,
+        setPlayerClikedTeamB
       );
     } catch (err) {
       toast.error(

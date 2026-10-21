@@ -77,13 +77,17 @@ export class Team {
   }
 
   isAnyPlayerSelected(): boolean {
-    return this.players.find((player) => player.playerSelected) !== undefined;
+    return (
+      this.players.find((player) => {
+        return player.playerSelected;
+      }) !== undefined
+    );
   }
 
   getShooter(): Player | undefined {
     return this.players.find(
       (player) => player.shotAttempt,
-      // || player.lastAction == "shotAttempt",
+      // || player.lastAction === "shotAttempt",
     );
   }
 
@@ -101,7 +105,7 @@ export class Team {
         if (distanceToRim > playerDistanceToRim) {
           closestPlayer = player;
           distanceToRim = playerDistanceToRim;
-        } else if (distanceToRim == playerDistanceToRim) {
+        } else if (distanceToRim === playerDistanceToRim) {
           if (closestPlayer.atleticism < player.atleticism) {
             closestPlayer = player;
           }
@@ -113,19 +117,29 @@ export class Team {
   }
 
   getSelectedPlayer(): Player | undefined {
-    return this.players.find((player) => player.playerSelected);
+    return this.players.find((player) => {
+      return player.playerSelected;
+    });
   }
 
   isAPlayerActive(): boolean {
-    return this.players.find((player) => player.playerActive) !== undefined;
+    return (
+      this.players.find((player) => {
+        return player.playerActive;
+      }) !== undefined
+    );
   }
 
   returnActivePlayer(): Player | undefined {
-    return this.players.find((player) => player.playerActive);
+    return this.players.find((player) => {
+      return player.playerActive;
+    });
   }
 
   returnSelectedPlayer(): Player | undefined {
-    return this.players.find((player) => player.playerSelected);
+    return this.players.find((player) => {
+      return player.playerSelected;
+    });
   }
 
   returnPlayerInThisPosition(coordinate: Coordinate): Player | undefined {
@@ -201,14 +215,14 @@ export class Team {
     isItAnAssist: boolean,
     wasThereAFoul: boolean,
   ): void {
-    if (pointsIfMade == 1) {
+    if (pointsIfMade === 1) {
       this.stats.freeThrowsAttempt++;
 
       if (isItMade) {
         this.stats.freeThrowsMade++;
         this.stats.points++;
       }
-    } else if (pointsIfMade == 2) {
+    } else if (pointsIfMade === 2) {
       this.stats.fieldGoalsattempt++;
 
       if (isItMade) {
@@ -223,7 +237,7 @@ export class Team {
       if (wasThereAFoul && !isItMade) {
         this.stats.fieldGoalsattempt--;
       }
-    } else if (pointsIfMade == 3) {
+    } else if (pointsIfMade === 3) {
       this.stats.fieldGoalsattempt++;
       this.stats.triplesAttempt++;
 
@@ -243,7 +257,7 @@ export class Team {
   }
 
   statsAddRebound(shootingTeam: Team): void {
-    if (shootingTeam.name == this.name) {
+    if (shootingTeam.name === this.name) {
       this.stats.offensiveRebounds++;
     } else {
       this.stats.rebounds++;

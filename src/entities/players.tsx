@@ -38,6 +38,7 @@ export class Player {
   playerActive: boolean;
   playerHaveTurn: boolean;
   shotAttempt: boolean;
+  secsInOPaint: number;
 
   //Player stats
   stats: {
@@ -107,6 +108,7 @@ export class Player {
     this.playerActive = false;
     this.playerHaveTurn = true;
     this.shotAttempt = false;
+    this.secsInOPaint = 0;
 
     //Player stats
     this.stats = {

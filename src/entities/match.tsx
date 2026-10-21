@@ -17,6 +17,8 @@ import {
   getRangeText,
   getShotDistance,
   getWhereItReboundsTo,
+  isInBackHalfCourt,
+  isInOffensivePaint,
   mathChancesMakingShotInBehindHalfCourt,
   mathChancesMakingShotInCloseToThe3PointLine,
   mathChancesMakingShotInCloseToTheOtherRim,
@@ -70,6 +72,8 @@ export class Match {
   waitingPlayers: Player[] = [];
   secondsPassingFromOutbands: number;
   passingFromOutbands: boolean;
+  haveCrossedHalfCourt: boolean;
+  secondsCrossingHalfCourt: number;
 
   //Match basic info
   quarter: number;
@@ -77,6 +81,7 @@ export class Match {
   shotClock: number;
   turnOver: boolean;
   gameOver: boolean;
+  wasFaulInTheLastAction: boolean;
 
   constructor(teamA: Team, teamB: Team) {
     //Change validation
@@ -93,12 +98,16 @@ export class Match {
     this.secondsPassingFromOutbands = 0;
     this.passingFromOutbands = false;
 
+    this.haveCrossedHalfCourt = false;
+    this.secondsCrossingHalfCourt = 0;
+
     //Match basic info
     this.quarter = 1;
     this.timeLeft = { minutes: 6, seconds: 0 };
     this.shotClock = 24;
     this.turnOver = false;
     this.gameOver = false;
+    this.wasFaulInTheLastAction = false;
   }
 
   //--------------------------------------START GET INFO METHODS------------------------------------------------------------------------------------------------------------
@@ -338,6 +347,16 @@ export class Match {
     };
   }
 
+  is3SecsViolation(): boolean {
+    let atackingTeam = this.teamA.teamHaveTheBall() ? this.teamA : this.teamB;
+
+    return atackingTeam.players.some((p: Player) => p.secsInOPaint > 3);
+  }
+
+  is8SecsViolation(): boolean {
+    return this.secondsCrossingHalfCourt >= 8 && !this.haveCrossedHalfCourt;
+  }
+
   //---------------------------------------END GET INFO METHODS-------------------------------------------------------------------------------------------------------------
 
   //-----------------------------------START PLAYER ACTIONS METHODS---------------------------------------------------------------------------------------------------------
@@ -348,6 +367,10 @@ export class Match {
     gameboard: number[][],
     gameNarration: string[],
     setGameNarration: React.Dispatch<React.SetStateAction<string[]>>,
+    setGameboard: React.Dispatch<React.SetStateAction<number[][]>>,
+    setActivePlayer: React.Dispatch<React.SetStateAction<Player | undefined>>,
+    setPlayerClikedTeamA: React.Dispatch<React.SetStateAction<number[]>>,
+    setPlayerClikedTeamB: React.Dispatch<React.SetStateAction<number[]>>,
   ): void {
     let newGameNarration = [...gameNarration];
 
@@ -518,6 +541,27 @@ export class Match {
     if (passPoints >= totalDefensivePoints) {
       //The receiver gets the ball
       receiver.setHaveBall(true);
+
+      //TODO make back court violation
+      if (
+        this.haveCrossedHalfCourt &&
+        isInBackHalfCourt(passerTeam.name === "TeamA", receiver)
+      ) {
+        this.handleViolation(
+          setGameboard,
+          setActivePlayer,
+          setPlayerClikedTeamA,
+          setPlayerClikedTeamB,
+        );
+      }
+
+      if (
+        !this.haveCrossedHalfCourt &&
+        !isInBackHalfCourt(passerTeam.name === "TeamA", receiver)
+      ) {
+        this.setCrossedHalfCourt(true);
+      }
+
       newGameNarration.unshift(
         `${receiver.name && receiver.name.length === 0 ? playerPositionDetection(receiver.position) : receiver.name} of team ${receiver.team} gets the pass and is the new ball handler`,
       );
@@ -557,6 +601,8 @@ export class Match {
     setGameNarration: React.Dispatch<React.SetStateAction<string[]>>,
     setGameboard: React.Dispatch<React.SetStateAction<number[][]>>,
     setActivePlayer: React.Dispatch<React.SetStateAction<Player | undefined>>,
+    setPlayerClikedTeamA: React.Dispatch<React.SetStateAction<number[]>>,
+    setPlayerClikedTeamB: React.Dispatch<React.SetStateAction<number[]>>,
     amountOfFreeThrows?: number,
   ): void {
     //TODO think how to handle the situation when a defender fouls a player without the ball while the ball player is shooting
@@ -625,6 +671,8 @@ export class Match {
         defenderTeam,
         setGameboard,
         setActivePlayer,
+        setPlayerClikedTeamA,
+        setPlayerClikedTeamB,
       );
     }
 
@@ -644,6 +692,8 @@ export class Match {
         state: ReturnType<Match["createSnapshot"]>;
       }[]
     >,
+    setPlayerClikedTeamA: React.Dispatch<React.SetStateAction<number[]>>,
+    setPlayerClikedTeamB: React.Dispatch<React.SetStateAction<number[]>>,
   ): void {
     //First i get the shooter
     let shooter = this.getShooter();
@@ -844,6 +894,8 @@ export class Match {
                   setGameNarration,
                   setGameboard,
                   setActivePlayer,
+                  setPlayerClikedTeamA,
+                  setPlayerClikedTeamB,
                   amountOfFreeThrows,
                 );
               }
@@ -1130,6 +1182,16 @@ export class Match {
         newPlayerWithBall.setHaveBall(true);
         newPlayerWithBall.setLastAction("passingOutbands");
 
+        // let newTeamWithBall =
+        //   newPlayerWithBall.team === "TeamA" ? this.teamA : this.teamB;
+
+        this.setCrossedHalfCourt(
+          !isInBackHalfCourt(
+            newPlayerWithBall.team === "TeamA",
+            newPlayerWithBall,
+          ),
+        );
+
         newGameNarration.unshift(
           `${isNaN(Number(newPlayerWithBall.name)) ? newPlayerWithBall.name : newPlayerWithBall.position} get the ball to start theyr posetion`,
         );
@@ -1193,6 +1255,8 @@ export class Match {
         setGameboard,
         setActivePlayer,
         matchHistoryRef,
+        setPlayerClikedTeamA,
+        setPlayerClikedTeamB,
       );
 
       return;
@@ -1228,6 +1292,8 @@ export class Match {
         state: ReturnType<Match["createSnapshot"]>;
       }[]
     >,
+    setPlayerClikedTeamA: React.Dispatch<React.SetStateAction<number[]>>,
+    setPlayerClikedTeamB: React.Dispatch<React.SetStateAction<number[]>>,
   ): void {
     let activePlayer = this.getActivePlayer();
 
@@ -1254,6 +1320,8 @@ export class Match {
         setGameboard,
         setActivePlayer,
         matchHistoryRef,
+        setPlayerClikedTeamA,
+        setPlayerClikedTeamB,
         narrationText,
         // If it's withCaution or tripleTheat return true, otherwise return false
         !!(type == "withCaution" || type == "tripleThreat"),
@@ -1280,6 +1348,8 @@ export class Match {
     setActivePlayer: React.Dispatch<React.SetStateAction<Player | undefined>>,
     gameNarration: string[],
     setGameNarration: React.Dispatch<React.SetStateAction<string[]>>,
+    setPlayerClikedTeamA: React.Dispatch<React.SetStateAction<number[]>>,
+    setPlayerClikedTeamB: React.Dispatch<React.SetStateAction<number[]>>,
   ): void {
     let isFoul = false;
     let newGameNarration = [...gameNarration];
@@ -1308,29 +1378,31 @@ export class Match {
       let defensivePlayersPoints: [Player, number][] = [];
 
       //Loop in the tiles that will influence in the calculations
-      for (let i = 0; i < tilesThatWillInfluenceInCalculations.length; i++) {
-        //And for each defensive player
-        defensivePlayers.forEach((defender) => {
-          //Check if they are in this ubication
-          if (
-            defender.ubicationX == tilesThatWillInfluenceInCalculations[i][0] &&
-            defender.ubicationY == tilesThatWillInfluenceInCalculations[i][1]
-          ) {
-            //Calculate defender points
-            let defenderPoints = calculateDefenderPointsInDribbling(defender);
+      // for (let i = 0; i < tilesThatWillInfluenceInCalculations.length; i++) {
+      //For each defensive player
+      defensivePlayers.forEach((defender) => {
+        //Check if they are in this ubication
+        // if (
+        //   defender.ubicationX == tilesThatWillInfluenceInCalculations[i][0] &&
+        //   defender.ubicationY == tilesThatWillInfluenceInCalculations[i][1]
+        // ) {
+        //Calculate defender points
+        let defenderPoints = calculateDefenderPointsInDribbling(defender);
 
-            if (defenderPoints < defensivePointsFoulInDribbling) {
-              isFoul = true;
-            }
+        // if (defenderPoints < defensivePointsFoulInDribbling) {
+        //Uncomment to force foul
+        if (0 < defensivePointsFoulInDribbling) {
+          isFoul = true;
+        }
 
-            //Add the points to the sumatory of defenders points
-            totalDefensivePoints += defenderPoints;
+        //Add the points to the sumatory of defenders points
+        totalDefensivePoints += defenderPoints;
 
-            //Save data to check who gets the ball in case it's needed
-            defensivePlayersPoints.push([defender, defenderPoints]);
-          }
-        });
-      }
+        //Save data to check who gets the ball in case it's needed
+        defensivePlayersPoints.push([defender, defenderPoints]);
+        // }
+      });
+      // }
 
       //If defenders were found close to the atacker
       if (defensivePlayersPoints.length > 0) {
@@ -1351,8 +1423,9 @@ export class Match {
         // if (true) {
         if (offensivePlayerPoints < totalDefensivePoints && !isFoul) {
           isBallStolen = true;
-          defenderInteracting = sortedPlayersWithPoints[0][0];
         }
+
+        defenderInteracting = sortedPlayersWithPoints[0][0];
       }
 
       return [isBallStolen, defenderInteracting];
@@ -1384,8 +1457,10 @@ export class Match {
       //Evaluate if the ball gets stolen during the dribbling, is a foul or is succesfull
       let [isBallStolen, defenderInteracting] = evaluateDribblingOutcome();
 
+      // console.log("isFoul: ", isFoul);
+      // console.log("isBallStolen: ", isBallStolen);
       if (isFoul || isBallStolen) {
-        if (!defenderInteracting) {
+        if (defenderInteracting === undefined) {
           console.error(
             "defenderInteracting was expected to be defined in evaluateDribblingOutcome but it's not",
           );
@@ -1404,6 +1479,8 @@ export class Match {
             setGameNarration,
             setGameboard,
             setActivePlayer,
+            setPlayerClikedTeamA,
+            setPlayerClikedTeamB,
           );
           //If the ball gets stolen
         } else if (isBallStolen) {
@@ -1415,6 +1492,16 @@ export class Match {
 
           player.statsAddTurnOver();
           atackingTeam.statsAddTurnOver();
+
+          //TODO make back court violation
+          if (
+            !isInBackHalfCourt(
+              atackingTeam.name === "TeamA",
+              defenderInteracting,
+            )
+          ) {
+            this.setCrossedHalfCourt(true);
+          }
 
           //Handle narration and stats for the ball being stolen
           newGameNarration.unshift(
@@ -1429,6 +1516,14 @@ export class Match {
 
           setGameNarration(() => [...newGameNarration]);
         }
+      } else {
+        if (
+          !this.haveCrossedHalfCourt &&
+          !isInBackHalfCourt(atackingTeam.name === "TeamA", player)
+        ) {
+          this.setCrossedHalfCourt(true);
+        }
+        //TODO make back court violation
       }
     }
 
@@ -1453,6 +1548,8 @@ export class Match {
     setGameNarration: React.Dispatch<React.SetStateAction<string[]>>,
     setGameboard: React.Dispatch<React.SetStateAction<number[][]>>,
     setActivePlayer: React.Dispatch<React.SetStateAction<Player | undefined>>,
+    setPlayerClikedTeamA: React.Dispatch<React.SetStateAction<number[]>>,
+    setPlayerClikedTeamB: React.Dispatch<React.SetStateAction<number[]>>,
   ): void {
     let playerWithBall = this.getPlayerWithBall("handleStealAttempt");
     let defender = this.getActivePlayer();
@@ -1469,6 +1566,7 @@ export class Match {
       calculateDefenderPointsInStealAttempt(defender);
 
     //If defender doesn't get enough points he commit a foul
+    //Comment to force not commiting a foul
     if (defendersPointsInStealAttempt < defensivePointsFoulInStealAttempt) {
       this.handleFoul(
         defender,
@@ -1477,9 +1575,13 @@ export class Match {
         setGameNarration,
         setGameboard,
         setActivePlayer,
+        setPlayerClikedTeamA,
+        setPlayerClikedTeamB,
       );
       //If defender have more points than atacker he steals it
     } else if (atackingPlayerPoints < defendersPointsInStealAttempt) {
+      //Uncomment to force a steal
+      // if (0 < defendersPointsInStealAttempt) {
       let defensiveTeam = defender.team === "TeamA" ? this.teamA : this.teamB;
       let atackingTeam =
         playerWithBall.team === "TeamA" ? this.teamA : this.teamB;
@@ -1492,6 +1594,11 @@ export class Match {
 
       playerWithBall.statsAddTurnOver();
       atackingTeam.statsAddTurnOver();
+
+      //TODO make back court violation
+      if (!isInBackHalfCourt(atackingTeam.name === "TeamA", defender)) {
+        this.setCrossedHalfCourt(true);
+      }
 
       //Handle narration and stats for the ball being stolen
       newGameNarration.unshift(
@@ -1523,6 +1630,8 @@ export class Match {
   handleViolation(
     setGameboard: React.Dispatch<React.SetStateAction<number[][]>>,
     setActivePlayer: React.Dispatch<React.SetStateAction<Player | undefined>>,
+    setPlayerClikedTeamA: React.Dispatch<React.SetStateAction<number[]>>,
+    setPlayerClikedTeamB: React.Dispatch<React.SetStateAction<number[]>>,
   ): void {
     let defensiveTeam = this.teamA.getPlayerWithBall()
       ? this.teamB
@@ -1536,6 +1645,8 @@ export class Match {
       defensiveTeam,
       setGameboard,
       setActivePlayer,
+      setPlayerClikedTeamA,
+      setPlayerClikedTeamB,
       false,
     );
   }
@@ -1546,6 +1657,8 @@ export class Match {
     gameboard: number[][],
     setGameboard: React.Dispatch<React.SetStateAction<number[][]>>,
     setActivePlayer: React.Dispatch<React.SetStateAction<Player | undefined>>,
+    setPlayerClikedTeamA: React.Dispatch<React.SetStateAction<number[]>>,
+    setPlayerClikedTeamB: React.Dispatch<React.SetStateAction<number[]>>,
     matchHistoryRef: React.MutableRefObject<
       {
         action: string;
@@ -1669,6 +1782,8 @@ export class Match {
       setGameboard,
       setActivePlayer,
       matchHistoryRef,
+      setPlayerClikedTeamA,
+      setPlayerClikedTeamB,
     );
   }
 
@@ -1735,10 +1850,24 @@ export class Match {
     defenderTeam: Team,
     setGameboard: React.Dispatch<React.SetStateAction<number[][]>>,
     setActivePlayer: React.Dispatch<React.SetStateAction<Player | undefined>>,
+    setPlayerClikedTeamA: React.Dispatch<React.SetStateAction<number[]>>,
+    setPlayerClikedTeamB: React.Dispatch<React.SetStateAction<number[]>>,
     atackingTeamKeepsPosetion: boolean = true,
   ): void {
     let atackingTeam = defenderTeam.name === "TeamA" ? this.teamB : this.teamA;
     let playerWithBall = atackingTeam.players.find((p) => p.haveBall);
+
+    //Remove the selected players status
+    this.getSelectedPlayers().forEach((p) => {
+      if (!!p) {
+        p.setPlayerSelected(false);
+        if (p.team === "TeamA") {
+          setPlayerClikedTeamA(() => [0, 0]);
+        } else {
+          setPlayerClikedTeamB(() => [0, 0]);
+        }
+      }
+    });
 
     if (!playerWithBall) {
       throw new Error(
@@ -1763,6 +1892,7 @@ export class Match {
 
     this.secondsPassingFromOutbands = 0;
     this.passingFromOutbands = true;
+    this.secondsCrossingHalfCourt = 0;
 
     playerWithBall.setHaveBall(false);
 
@@ -1776,6 +1906,9 @@ export class Match {
         t.setTeamTurnLeft(true);
 
         t.players.forEach((p, pIndex) => {
+          //Clean previous position
+          newGameboard[p.ubicationY - 1][p.ubicationX - 1] = 0;
+
           //Move players on the players classes
           p.ubicationX = newTeamsPositions[tIndex][pIndex][0];
           p.ubicationY = newTeamsPositions[tIndex][pIndex][1];
@@ -1787,18 +1920,24 @@ export class Match {
             //Give ball to new player passing the ball
             p.setLastAction("passingOutbands");
             p.setHaveBall(true);
+
+            if (isInBackHalfCourt(p.name === "TeamA", p)) {
+              this.setCrossedHalfCourt(false);
+              this.shotClock = 24;
+            } else {
+              this.setCrossedHalfCourt(true);
+              this.shotClock = 14;
+            }
           }
 
           if (p.playerActive) {
             p.setActivePlayer(false);
           }
-
-          //Remove players form gameboard
-          newGameboard[p.ubicationY - 1][p.ubicationX - 1] = 0;
         });
       });
 
       setActivePlayer(() => undefined);
+      this.wasFaulInTheLastAction = true;
 
       newTeamsPositions.forEach((team, i) => {
         //Add new players positions to the gameboard
@@ -1816,6 +1955,10 @@ export class Match {
         this.teamB.setTeamTurn(true);
         this.teamA.setTeamTurn(false);
       }
+
+      this.setCrossedHalfCourt(
+        !isInBackHalfCourt(atackingTeam.name === "TeamA", playerWithBall!),
+      );
 
       return newGameboard;
     });
@@ -1838,10 +1981,13 @@ export class Match {
         state: ReturnType<Match["createSnapshot"]>;
       }[]
     >,
+    setPlayerClikedTeamA: React.Dispatch<React.SetStateAction<number[]>>,
+    setPlayerClikedTeamB: React.Dispatch<React.SetStateAction<number[]>>,
     currentGameNarration?: string | undefined,
     isWaitingAction?: boolean,
   ): void {
     let activePlayer = this.getActivePlayer();
+    let teamAIsAtacking = this.teamA.teamHaveTheBall();
 
     const newGameNarration = [...gameNarration];
 
@@ -1919,7 +2065,7 @@ export class Match {
             this.teamB.setTeamTurnLeft(true);
           }
 
-          if (this.teamA.teamHaveTheBall()) {
+          if (teamAIsAtacking) {
             this.setTeamTurn("TeamB");
             this.teamB.setTeamTurn(true);
             newGameNarration.unshift(`It's now ${this.teamB.name} turn.`);
@@ -1931,13 +2077,16 @@ export class Match {
         } else {
           if (this.passingFromOutbands) {
             if (this.secondsPassingFromOutbands >= 5) {
-              let atackingTeam = this.teamA.teamHaveTheBall()
-                ? this.teamA
-                : this.teamB;
+              let atackingTeam = teamAIsAtacking ? this.teamA : this.teamB;
               newGameNarration.unshift(
                 `5 seconds violation! ${atackingTeam.name} have lost the ball.`,
               );
-              this.handleViolation(setGameboard, setActivePlayer);
+              this.handleViolation(
+                setGameboard,
+                setActivePlayer,
+                setPlayerClikedTeamA,
+                setPlayerClikedTeamB,
+              );
             } else {
               this.secondsPassingFromOutbands++;
               newGameNarration.unshift(
@@ -1955,6 +2104,8 @@ export class Match {
               setGameboard,
               setActivePlayer,
               matchHistoryRef,
+              setPlayerClikedTeamA,
+              setPlayerClikedTeamB,
             );
           }
 
@@ -1971,14 +2122,41 @@ export class Match {
             this.teamB.setTeamTurnLeft(true);
           }
 
-          if (this.teamA.teamHaveTheBall()) {
-            this.setTeamTurn("TeamA");
-            this.teamA.setTeamTurn(true);
-            this.teamB.setTeamTurn(false);
+          if (
+            this.shotClock === 0 ||
+            this.is3SecsViolation() ||
+            this.is8SecsViolation()
+          ) {
+            if (this.shotClock === 0) {
+              newGameNarration.unshift(
+                `The buzzer beats! ${teamAIsAtacking ? this.teamA.name : this.teamB.name} have lost the ball!`,
+              );
+            } else if (this.is3SecsViolation()) {
+              newGameNarration.unshift(
+                `The wisle blows! An atacking player was more than 3 secs on the ofensive paint. ${teamAIsAtacking ? this.teamA.name : this.teamB.name} have lost the ball!`,
+              );
+            } else if (this.is8SecsViolation()) {
+              newGameNarration.unshift(
+                `The wisle blows! The ball didn't reach the front court in 8 secs! ${teamAIsAtacking ? this.teamA.name : this.teamB.name} have lost the ball!`,
+              );
+            }
+
+            this.handleViolation(
+              setGameboard,
+              setActivePlayer,
+              setPlayerClikedTeamA,
+              setPlayerClikedTeamB,
+            );
           } else {
-            this.setTeamTurn("TeamB");
-            this.teamB.setTeamTurn(true);
-            this.teamA.setTeamTurn(false);
+            if (teamAIsAtacking) {
+              this.setTeamTurn("TeamA");
+              this.teamA.setTeamTurn(true);
+              this.teamB.setTeamTurn(false);
+            } else {
+              this.setTeamTurn("TeamB");
+              this.teamB.setTeamTurn(true);
+              this.teamA.setTeamTurn(false);
+            }
           }
         }
 
@@ -2003,6 +2181,8 @@ export class Match {
         state: ReturnType<Match["createSnapshot"]>;
       }[]
     >,
+    setPlayerClikedTeamA: React.Dispatch<React.SetStateAction<number[]>>,
+    setPlayerClikedTeamB: React.Dispatch<React.SetStateAction<number[]>>,
   ): void {
     if (this.timeLeft.seconds == 0) {
       this.timeLeft.minutes--;
@@ -2023,6 +2203,22 @@ export class Match {
       }
     }
 
+    if (
+      this.timeLeft.minutes === 0 &&
+      this.timeLeft.seconds < 24 &&
+      this.timeLeft.seconds < this.shotClock
+    ) {
+      this.shotClock = 999;
+    } else {
+      this.shotClock--;
+    }
+
+    let atackingTeam = this.teamA.teamHaveTheBall() ? this.teamA : this.teamB;
+
+    if (!this.haveCrossedHalfCourt) {
+      this.secondsCrossingHalfCourt++;
+    }
+
     if (this.shotHasBeenAttempted) {
       this.handleShot(
         gameNarration,
@@ -2031,8 +2227,32 @@ export class Match {
         setGameboard,
         setActivePlayer,
         matchHistoryRef,
+        setPlayerClikedTeamA,
+        setPlayerClikedTeamB,
       );
+
+      //3 secs on paint resets if ther's a shot attempt
+      atackingTeam.players.forEach((p: Player) => {
+        p.secsInOPaint = 0;
+      });
+    } else {
+      atackingTeam.players.forEach((p: Player) => {
+        let playerIsInOPaint = isInOffensivePaint(
+          atackingTeam.name === "TeamA",
+          p,
+        );
+
+        if (playerIsInOPaint) {
+          p.secsInOPaint++;
+        } else {
+          p.secsInOPaint = 0;
+        }
+      });
     }
+  }
+
+  setCrossedHalfCourt(newValue: boolean): void {
+    this.haveCrossedHalfCourt = newValue;
   }
 
   //------------------------------------END MATCH HANDLER METHODS-----------------------------------------------------------------------------------------------------------

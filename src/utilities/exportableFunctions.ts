@@ -455,6 +455,43 @@ export function getRangeText(rangeId: number): string {
   throw new Error(`Range ${rangeId} text not found`);
 }
 
+export function isInBackHalfCourt(
+  teamAAtacking: boolean,
+  player: Player,
+): boolean {
+  if (
+    (teamAAtacking && player.team === "TeamA") ||
+    (!teamAAtacking && player.team === "TeamB")
+  ) {
+    const x = player.ubicationX;
+
+    const normalizedX = teamAAtacking ? 29 - x : x;
+
+    return normalizedX <= 14;
+  } else {
+    return false;
+  }
+}
+
+export function isInOffensivePaint(
+  teamAAtacking: boolean,
+  player: Player,
+): boolean {
+  if (
+    (teamAAtacking && player.team === "TeamA") ||
+    (!teamAAtacking && player.team === "TeamB")
+  ) {
+    const x = player.ubicationX;
+    const y = player.ubicationY;
+
+    const normalizedX = teamAAtacking ? 29 - x : x;
+
+    return normalizedX < 6 && y > 5 && y < 11;
+  } else {
+    return false;
+  }
+}
+
 export function isCloseToTheRim(
   teamAAtacking: boolean,
   coordinate: Coordinate,
@@ -2107,12 +2144,12 @@ export function getDefensivePlayersInDribblingAction(
   tiles: Coordinate[],
 ): Player[] {
   //The flatMap is used to avoid returning undefined values in the array
-  return tiles.flatMap((tile) =>
-    team.players.filter(
+  return tiles.flatMap((tile) => {
+    return team.players.filter(
       (player) =>
         player.ubicationX === tile[0] && player.ubicationY === tile[1],
-    ),
-  );
+    );
+  });
 }
 
 export function calculateDefenderPointsInStealAttempt(

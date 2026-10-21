@@ -43,7 +43,9 @@ const MatchInfo = ({ match }: Props) => {
                   : "RTH"}
           </span>
         </div>
-        <span className="shot-clock">{match.shotClock}</span>
+        <span className="shot-clock">
+          {match.shotClock === 999 ? "--" : match.shotClock}
+        </span>
       </div>
 
       <span className="team-name team-b-name-in-scoreboard">

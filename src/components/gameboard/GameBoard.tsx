@@ -762,8 +762,6 @@ function Gameboard({ match, setMatchState }: Props) {
     setActivateConfirmButton(() => false);
   }
 
-  // console.log("gameboard: ", gameboard);
-
   return (
     <div id="gameboard-container">
       <div id="gameboard">

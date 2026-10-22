@@ -542,22 +542,39 @@ export class Match {
       //The receiver gets the ball
       receiver.setHaveBall(true);
 
-      //TODO make back court violation
+      console.log("haveCrossedHalfCourt: ", this.haveCrossedHalfCourt);
+      console.log(
+        "isbhc: ",
+        isInBackHalfCourt(
+          passerTeam.name === "TeamA",
+          receiver.team,
+          receiver.ubicationX,
+        ),
+      );
+
+      //Handle back court violation
       if (
         this.haveCrossedHalfCourt &&
-        isInBackHalfCourt(passerTeam.name === "TeamA", receiver)
+        isInBackHalfCourt(
+          passerTeam.name === "TeamA",
+          receiver.team,
+          receiver.ubicationX,
+        )
       ) {
+        console.log("handling back C violation");
         this.handleViolation(
           setGameboard,
           setActivePlayer,
           setPlayerClikedTeamA,
           setPlayerClikedTeamB,
         );
-      }
-
-      if (
+      } else if (
         !this.haveCrossedHalfCourt &&
-        !isInBackHalfCourt(passerTeam.name === "TeamA", receiver)
+        !isInBackHalfCourt(
+          passerTeam.name === "TeamA",
+          receiver.team,
+          receiver.ubicationX,
+        )
       ) {
         this.setCrossedHalfCourt(true);
       }
@@ -1188,7 +1205,8 @@ export class Match {
         this.setCrossedHalfCourt(
           !isInBackHalfCourt(
             newPlayerWithBall.team === "TeamA",
-            newPlayerWithBall,
+            newPlayerWithBall.team,
+            newPlayerWithBall.ubicationX,
           ),
         );
 
@@ -1390,8 +1408,8 @@ export class Match {
         let defenderPoints = calculateDefenderPointsInDribbling(defender);
 
         if (defenderPoints < defensivePointsFoulInDribbling) {
-        //Uncomment to force foul
-        // if (0 < defensivePointsFoulInDribbling) {
+          //Uncomment to force foul
+          // if (0 < defensivePointsFoulInDribbling) {
           isFoul = true;
         }
 
@@ -1457,8 +1475,6 @@ export class Match {
       //Evaluate if the ball gets stolen during the dribbling, is a foul or is succesfull
       let [isBallStolen, defenderInteracting] = evaluateDribblingOutcome();
 
-      // console.log("isFoul: ", isFoul);
-      // console.log("isBallStolen: ", isBallStolen);
       if (isFoul || isBallStolen) {
         if (defenderInteracting === undefined) {
           console.error(
@@ -1493,11 +1509,12 @@ export class Match {
           player.statsAddTurnOver();
           atackingTeam.statsAddTurnOver();
 
-          //TODO make back court violation
+          //Handle back court violation
           if (
             !isInBackHalfCourt(
               atackingTeam.name === "TeamA",
-              defenderInteracting,
+              defenderInteracting.team,
+              defenderInteracting.ubicationX,
             )
           ) {
             this.setCrossedHalfCourt(true);
@@ -1518,12 +1535,31 @@ export class Match {
         }
       } else {
         if (
+          this.haveCrossedHalfCourt &&
+          isInBackHalfCourt(
+            atackingTeam.name === "TeamA",
+            player.team,
+            //This is the new ubication of the player after moving, so this is the position to check if it's legal or not
+            player.ubicationX + newUbication[0],
+          )
+        ) {
+          this.handleViolation(
+            setGameboard,
+            setActivePlayer,
+            setPlayerClikedTeamA,
+            setPlayerClikedTeamB,
+          );
+        } else if (
           !this.haveCrossedHalfCourt &&
-          !isInBackHalfCourt(atackingTeam.name === "TeamA", player)
+          !isInBackHalfCourt(
+            atackingTeam.name === "TeamA",
+            player.team,
+            //This is the new ubication of the player after moving, so this is the position to check if it's legal or not
+            player.ubicationX + newUbication[0],
+          )
         ) {
           this.setCrossedHalfCourt(true);
         }
-        //TODO make back court violation
       }
     }
 
@@ -1595,8 +1631,14 @@ export class Match {
       playerWithBall.statsAddTurnOver();
       atackingTeam.statsAddTurnOver();
 
-      //TODO make back court violation
-      if (!isInBackHalfCourt(atackingTeam.name === "TeamA", defender)) {
+      //Handle back court violation
+      if (
+        !isInBackHalfCourt(
+          atackingTeam.name === "TeamA",
+          defender.team,
+          defender.ubicationX,
+        )
+      ) {
         this.setCrossedHalfCourt(true);
       }
 
@@ -1921,7 +1963,7 @@ export class Match {
             p.setLastAction("passingOutbands");
             p.setHaveBall(true);
 
-            if (isInBackHalfCourt(p.name === "TeamA", p)) {
+            if (isInBackHalfCourt(p.name === "TeamA", p.team, p.ubicationX)) {
               this.setCrossedHalfCourt(false);
               this.shotClock = 24;
             } else {
@@ -1957,7 +1999,11 @@ export class Match {
       }
 
       this.setCrossedHalfCourt(
-        !isInBackHalfCourt(atackingTeam.name === "TeamA", playerWithBall!),
+        !isInBackHalfCourt(
+          atackingTeam.name === "TeamA",
+          playerWithBall!.team,
+          playerWithBall!.ubicationX,
+        ),
       );
 
       return newGameboard;

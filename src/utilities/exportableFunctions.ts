@@ -457,15 +457,20 @@ export function getRangeText(rangeId: number): string {
 
 export function isInBackHalfCourt(
   teamAAtacking: boolean,
-  player: Player,
+  playerTeam: "TeamA" | "TeamB",
+  playerUbicationX: number,
 ): boolean {
   if (
-    (teamAAtacking && player.team === "TeamA") ||
-    (!teamAAtacking && player.team === "TeamB")
+    (teamAAtacking && playerTeam === "TeamA") ||
+    (!teamAAtacking && playerTeam === "TeamB")
   ) {
-    const x = player.ubicationX;
+    const normalizedX = teamAAtacking
+      ? playerUbicationX
+      : 29 - playerUbicationX;
 
-    const normalizedX = teamAAtacking ? 29 - x : x;
+    console.log("teamAAtacking: ", teamAAtacking);
+    console.log("normalizedX: ", playerUbicationX, normalizedX);
+    console.log("return: ", normalizedX <= 14);
 
     return normalizedX <= 14;
   } else {
@@ -484,7 +489,7 @@ export function isInOffensivePaint(
     const x = player.ubicationX;
     const y = player.ubicationY;
 
-    const normalizedX = teamAAtacking ? 29 - x : x;
+    const normalizedX = teamAAtacking ? x : 29 - x;
 
     return normalizedX < 6 && y > 5 && y < 11;
   } else {
@@ -498,7 +503,7 @@ export function isCloseToTheRim(
 ): boolean {
   const [x, y] = coordinate;
 
-  const normalizedX = teamAAtacking ? 29 - x : x;
+  const normalizedX = teamAAtacking ? x : 29 - x;
 
   return (
     (normalizedX == 2 && y > 5 && y < 11) ||
@@ -512,7 +517,7 @@ export function isBehindTheBoard(
 ): boolean {
   const [x, y] = coordinate;
 
-  const normalizedX = teamAAtacking ? 29 - x : x;
+  const normalizedX = teamAAtacking ? x : 29 - x;
 
   return normalizedX == 1 && y > 5 && y < 11;
 }
@@ -523,7 +528,7 @@ export function isInShortRange(
 ): boolean {
   const [x, y] = coordinate;
 
-  const normalizedX = teamAAtacking ? 29 - x : x;
+  const normalizedX = teamAAtacking ? x : 29 - x;
 
   return (
     (normalizedX < 5 && normalizedX > 1 && (y == 5 || y == 11)) ||
@@ -539,7 +544,7 @@ export function isInMidRange(
 ): boolean {
   const [x, y] = coordinate;
 
-  const normalizedX = teamAAtacking ? 29 - x : x;
+  const normalizedX = teamAAtacking ? x : 29 - x;
 
   return (
     (normalizedX == 1 && ((y > 1 && y < 6) || (y > 10 && y < 15))) ||
@@ -560,7 +565,7 @@ export function isCloseToThe3PointLine(
 ): boolean {
   const [x, y] = coordinate;
 
-  const normalizedX = teamAAtacking ? 29 - x : x;
+  const normalizedX = teamAAtacking ? x : 29 - x;
 
   return (
     (normalizedX < 7 && (y == 1 || y == 15)) ||
@@ -578,7 +583,7 @@ export function isInLong3Range(
 ): boolean {
   const [x, y] = coordinate;
 
-  const normalizedX = teamAAtacking ? 29 - x : x;
+  const normalizedX = teamAAtacking ? x : 29 - x;
 
   return (
     (normalizedX < 10 && normalizedX > 6 && (y == 1 || y == 15)) ||
@@ -596,7 +601,7 @@ export function isCloseToHalfCourt(
 ): boolean {
   const [x, y] = coordinate;
 
-  const normalizedX = teamAAtacking ? 29 - x : x;
+  const normalizedX = teamAAtacking ? x : 29 - x;
 
   return (
     (normalizedX < 15 && normalizedX > 9 && (y == 1 || y == 15)) ||
@@ -615,7 +620,7 @@ export function isBehindTheHalfCourt(
 ): boolean {
   const [x, y] = coordinate;
 
-  const normalizedX = teamAAtacking ? 29 - x : x;
+  const normalizedX = teamAAtacking ? x : 29 - x;
 
   return (
     (normalizedX < 19 && normalizedX > 14 && (y == 1 || y == 15)) ||
@@ -638,7 +643,7 @@ export function isIntheOtherRim(
 ): boolean {
   const [x, y] = coordinate;
 
-  const normalizedX = teamAAtacking ? 29 - x : x;
+  const normalizedX = teamAAtacking ? x : 29 - x;
 
   return (
     (normalizedX > 18 && (y == 1 || y == 15)) ||
@@ -1945,7 +1950,7 @@ export function getTeamBNewPositionWhenOutboundsOnLeftSideWithTeamAAtacking(
 export function mirrorCoordinateOnX(coordinate: Coordinate): Coordinate {
   const [x, y] = coordinate;
 
-  return [29 - x, y];
+  return [30 - x, y];
 }
 
 export function getInitialBoard(teamShootingFT?: string): number[][] {

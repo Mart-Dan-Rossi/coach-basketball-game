@@ -1199,6 +1199,8 @@ export class Match {
         newPlayerWithBall.setHaveBall(true);
         newPlayerWithBall.setLastAction("passingOutbands");
 
+        this.resetShotClockOnDefensiveHalf();
+
         // let newTeamWithBall =
         //   newPlayerWithBall.team === "TeamA" ? this.teamA : this.teamB;
 
@@ -1226,8 +1228,10 @@ export class Match {
 
         if (newPlayerWithBall.team == atackingTeam.name) {
           atackingTeam.statsAddRebound(atackingTeam);
+          this.resetShotClockOnOfensiveHalf();
         } else {
           defendingTeam.statsAddRebound(atackingTeam);
+          this.resetShotClockOnDefensiveHalf();
         }
 
         newPlayerWithBall.setLastAction(
@@ -1518,6 +1522,9 @@ export class Match {
             )
           ) {
             this.setCrossedHalfCourt(true);
+            this.resetShotClockOnOfensiveHalf();
+          } else {
+            this.resetShotClockOnDefensiveHalf();
           }
 
           //Handle narration and stats for the ball being stolen
@@ -1631,7 +1638,7 @@ export class Match {
       playerWithBall.statsAddTurnOver();
       atackingTeam.statsAddTurnOver();
 
-      //Handle back court violation
+      //Handle back court violation and shot clock reset
       if (
         !isInBackHalfCourt(
           atackingTeam.name === "TeamA",
@@ -1640,6 +1647,9 @@ export class Match {
         )
       ) {
         this.setCrossedHalfCourt(true);
+        this.resetShotClockOnDefensiveHalf();
+      } else {
+        this.resetShotClockOnOfensiveHalf();
       }
 
       //Handle narration and stats for the ball being stolen
@@ -1669,6 +1679,14 @@ export class Match {
   //------------------------------------END PLAYER ACTIONS METHODS----------------------------------------------------------------------------------------------------------
 
   //-----------------------------------START MATCH HANDLER METHODS----------------------------------------------------------------------------------------------------------
+  resetShotClockOnDefensiveHalf(): void {
+    this.shotClock = 24;
+  }
+
+  resetShotClockOnOfensiveHalf(): void {
+    this.shotClock = 14;
+  }
+
   handleViolation(
     setGameboard: React.Dispatch<React.SetStateAction<number[][]>>,
     setActivePlayer: React.Dispatch<React.SetStateAction<Player | undefined>>,
@@ -1965,10 +1983,8 @@ export class Match {
 
             if (isInBackHalfCourt(p.name === "TeamA", p.team, p.ubicationX)) {
               this.setCrossedHalfCourt(false);
-              this.shotClock = 24;
             } else {
               this.setCrossedHalfCourt(true);
-              this.shotClock = 14;
             }
           }
 
@@ -1998,13 +2014,12 @@ export class Match {
         this.teamA.setTeamTurn(false);
       }
 
-      this.setCrossedHalfCourt(
-        !isInBackHalfCourt(
-          atackingTeam.name === "TeamA",
-          playerWithBall!.team,
-          playerWithBall!.ubicationX,
-        ),
-      );
+      //Handle shot clcok reset
+      if (this.haveCrossedHalfCourt) {
+        this.resetShotClockOnOfensiveHalf();
+      } else {
+        this.resetShotClockOnDefensiveHalf();
+      }
 
       return newGameboard;
     });
@@ -2247,6 +2262,7 @@ export class Match {
       } else {
         this.gameOver = true;
       }
+      this.resetShotClockOnDefensiveHalf();
     }
 
     if (

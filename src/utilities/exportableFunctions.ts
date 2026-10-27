@@ -712,26 +712,12 @@ export function mathChancesMakingShotInCloseToTheRim(
   shotDiceRoll: number,
 ): boolean {
   return (
-    pointsDif > 60 ||
-    (pointsDif > 55 && shotDiceRoll > 1) ||
-    (pointsDif > 50 && shotDiceRoll > 2) ||
-    (pointsDif > 47 && shotDiceRoll > 3) ||
-    (pointsDif > 43 && shotDiceRoll > 4) ||
-    (pointsDif > 40 && shotDiceRoll > 5) ||
-    (pointsDif > 30 && shotDiceRoll > 6) ||
-    (pointsDif > 20 && shotDiceRoll > 7) ||
-    (pointsDif > 17.5 && shotDiceRoll > 8) ||
-    (pointsDif > 14 && shotDiceRoll > 9) ||
-    (pointsDif > 10 && shotDiceRoll > 10) ||
-    (pointsDif > 5 && shotDiceRoll > 11) ||
-    (pointsDif > 0 && shotDiceRoll > 12) ||
-    (pointsDif > -10 && shotDiceRoll > 13) ||
-    (pointsDif > -15 && shotDiceRoll > 14) ||
-    (pointsDif > -17.5 && shotDiceRoll > 15) ||
-    (pointsDif > -19 && shotDiceRoll > 16) ||
-    (pointsDif > -20 && shotDiceRoll > 17) ||
-    (pointsDif > -22 && shotDiceRoll > 18) ||
-    (pointsDif > -25 && shotDiceRoll > 19)
+    (pointsDif > 120 && shotDiceRoll > 1) ||
+    (pointsDif > 60 && shotDiceRoll > 3) ||
+    (pointsDif > 20 && shotDiceRoll > 6) ||
+    (pointsDif > 0 && shotDiceRoll > 10) ||
+    (pointsDif > -40 && shotDiceRoll > 15) ||
+    false
   );
 }
 
@@ -766,25 +752,26 @@ export function mathChancesMakingShotInShortRange(
   shotDiceRoll: number,
 ): boolean {
   return (
-    (pointsDif > 98 && shotDiceRoll > 1) ||
-    (pointsDif > 96 && shotDiceRoll > 2) ||
-    (pointsDif > 92 && shotDiceRoll > 3) ||
-    (pointsDif > 89 && shotDiceRoll > 4) ||
-    (pointsDif > 86 && shotDiceRoll > 5) ||
-    (pointsDif > 82 && shotDiceRoll > 6) ||
-    (pointsDif > 79 && shotDiceRoll > 7) ||
-    (pointsDif > 72 && shotDiceRoll > 8) ||
-    (pointsDif > 64 && shotDiceRoll > 9) ||
-    (pointsDif > 58 && shotDiceRoll > 10) ||
-    (pointsDif > 50 && shotDiceRoll > 11) ||
-    (pointsDif > 48 && shotDiceRoll > 12) ||
-    (pointsDif > 43 && shotDiceRoll > 13) ||
-    (pointsDif > 37 && shotDiceRoll > 14) ||
-    (pointsDif > 30 && shotDiceRoll > 15) ||
-    (pointsDif > 20 && shotDiceRoll > 16) ||
-    (pointsDif > 12.5 && shotDiceRoll > 17) ||
-    (pointsDif > 0 && shotDiceRoll > 18) ||
-    (pointsDif > -3 && shotDiceRoll > 19)
+    pointsDif > 55 ||
+    (pointsDif > 50 && shotDiceRoll > 1) ||
+    (pointsDif > 45 && shotDiceRoll > 2) ||
+    (pointsDif > 40 && shotDiceRoll > 3) ||
+    (pointsDif > 35 && shotDiceRoll > 4) ||
+    (pointsDif > 30 && shotDiceRoll > 5) ||
+    (pointsDif > 25 && shotDiceRoll > 6) ||
+    (pointsDif > 20 && shotDiceRoll > 7) ||
+    (pointsDif > 15 && shotDiceRoll > 8) ||
+    (pointsDif > 10 && shotDiceRoll > 9) ||
+    (pointsDif > 5 && shotDiceRoll > 10) ||
+    (pointsDif > 0 && shotDiceRoll > 11) ||
+    (pointsDif > -5 && shotDiceRoll > 12) ||
+    (pointsDif > -10 && shotDiceRoll > 13) ||
+    (pointsDif > -16 && shotDiceRoll > 14) ||
+    (pointsDif > -22 && shotDiceRoll > 15) ||
+    (pointsDif > -28 && shotDiceRoll > 16) ||
+    (pointsDif > -35 && shotDiceRoll > 17) ||
+    (pointsDif > -42 && shotDiceRoll > 18) ||
+    (pointsDif > -50 && shotDiceRoll > 19)
   );
 }
 
@@ -816,23 +803,12 @@ export function mathChancesMakingShotInMidRange(
   shotDiceRoll: number,
 ): boolean {
   return (
-    (pointsDif > 98 && shotDiceRoll > 3) ||
-    (pointsDif > 94 && shotDiceRoll > 4) ||
-    (pointsDif > 90 && shotDiceRoll > 5) ||
-    (pointsDif > 87 && shotDiceRoll > 6) ||
-    (pointsDif > 83 && shotDiceRoll > 7) ||
-    (pointsDif > 77 && shotDiceRoll > 8) ||
-    (pointsDif > 69 && shotDiceRoll > 9) ||
-    (pointsDif > 63 && shotDiceRoll > 10) ||
-    (pointsDif > 58 && shotDiceRoll > 11) ||
-    (pointsDif > 53 && shotDiceRoll > 12) ||
-    (pointsDif > 49 && shotDiceRoll > 13) ||
-    (pointsDif > 40 && shotDiceRoll > 14) ||
-    (pointsDif > 34 && shotDiceRoll > 15) ||
-    (pointsDif > 23 && shotDiceRoll > 16) ||
-    (pointsDif > 15 && shotDiceRoll > 17) ||
-    (pointsDif > 9 && shotDiceRoll > 18) ||
-    (pointsDif > 3 && shotDiceRoll > 19)
+    (pointsDif > 60 && shotDiceRoll > 8) ||
+    (pointsDif > 30 && shotDiceRoll > 10) ||
+    (pointsDif > 0 && shotDiceRoll > 12) ||
+    (pointsDif > -50 && shotDiceRoll > 14) ||
+    (pointsDif > -100 && shotDiceRoll > 16) ||
+    false
   );
 }
 
@@ -866,21 +842,12 @@ export function mathChancesMakingShotInCloseToThe3PointLine(
   shotDiceRoll: number,
 ): boolean {
   return (
-    (pointsDif > 98 && shotDiceRoll > 5) ||
-    (pointsDif > 94 && shotDiceRoll > 6) ||
-    (pointsDif > 89 && shotDiceRoll > 7) ||
-    (pointsDif > 83 && shotDiceRoll > 8) ||
-    (pointsDif > 75 && shotDiceRoll > 9) ||
-    (pointsDif > 69 && shotDiceRoll > 10) ||
-    (pointsDif > 63 && shotDiceRoll > 11) ||
-    (pointsDif > 58 && shotDiceRoll > 12) ||
-    (pointsDif > 50 && shotDiceRoll > 13) ||
-    (pointsDif > 45 && shotDiceRoll > 14) ||
-    (pointsDif > 40 && shotDiceRoll > 15) ||
-    (pointsDif > 35 && shotDiceRoll > 16) ||
-    (pointsDif > 28 && shotDiceRoll > 17) ||
-    (pointsDif > 20 && shotDiceRoll > 18) ||
-    (pointsDif > 13 && shotDiceRoll > 19)
+    (pointsDif > 80 && shotDiceRoll > 9) ||
+    (pointsDif > 40 && shotDiceRoll > 11) ||
+    (pointsDif > 0 && shotDiceRoll > 13) ||
+    (pointsDif > -50 && shotDiceRoll > 16) ||
+    (pointsDif > -95 && shotDiceRoll > 18) ||
+    false
   );
 }
 
@@ -912,21 +879,16 @@ export function mathChancesMakingShotInLong3Range(
   pointsDif: number,
   shotDiceRoll: number,
 ): boolean {
+  if (pointsDif <= -10) return false;
+
+  const miracleDiceRoll = roll20SidesDice();
+
   return (
-    (pointsDif > 98 && shotDiceRoll > 6) ||
-    (pointsDif > 92 && shotDiceRoll > 7) ||
-    (pointsDif > 89 && shotDiceRoll > 8) ||
-    (pointsDif > 80 && shotDiceRoll > 9) ||
-    (pointsDif > 76 && shotDiceRoll > 10) ||
-    (pointsDif > 70 && shotDiceRoll > 11) ||
-    (pointsDif > 65 && shotDiceRoll > 12) ||
-    (pointsDif > 60 && shotDiceRoll > 13) ||
-    (pointsDif > 54 && shotDiceRoll > 14) ||
-    (pointsDif > 49 && shotDiceRoll > 15) ||
-    (pointsDif > 42 && shotDiceRoll > 16) ||
-    (pointsDif > 37 && shotDiceRoll > 17) ||
-    (pointsDif > 31 && shotDiceRoll > 18) ||
-    (pointsDif > 20 && shotDiceRoll > 19)
+    (pointsDif > 35 && shotDiceRoll > 9 && miracleDiceRoll > 8) ||
+    (pointsDif > 15 && shotDiceRoll > 11 && miracleDiceRoll > 10) ||
+    (pointsDif > 0 && shotDiceRoll > 14 && miracleDiceRoll > 12) ||
+    (pointsDif > -10 && shotDiceRoll > 17 && miracleDiceRoll > 15) ||
+    false
   );
 }
 
@@ -935,10 +897,7 @@ export function mathShotPointsInHalfCourt(
   shooter: PlayerStats,
 ): number {
   if (shooter.position === undefined) {
-    console.error("shooter.position not found in mathShotPointsInHalfCourt");
-    throw new Error(
-      "Error: shooter.position not found in mathShotPointsInHalfCourt",
-    );
+    throw new Error("shooter.position not found");
   }
 
   const weightPoints = getWeightPoints(shooter.position, shooter.weight);
@@ -957,20 +916,15 @@ export function mathChancesMakingShotInHalfCourt(
   pointsDif: number,
   shotDiceRoll: number,
 ): boolean {
+  if (pointsDif <= 0) return false;
+
+  const miracleDiceRoll = roll20SidesDice();
+
   return (
-    (pointsDif > 98 && shotDiceRoll > 7) ||
-    (pointsDif > 92 && shotDiceRoll > 8) ||
-    (pointsDif > 89 && shotDiceRoll > 9) ||
-    (pointsDif > 80 && shotDiceRoll > 10) ||
-    (pointsDif > 76 && shotDiceRoll > 11) ||
-    (pointsDif > 70 && shotDiceRoll > 12) ||
-    (pointsDif > 65 && shotDiceRoll > 13) ||
-    (pointsDif > 60 && shotDiceRoll > 14) ||
-    (pointsDif > 54 && shotDiceRoll > 15) ||
-    (pointsDif > 49 && shotDiceRoll > 16) ||
-    (pointsDif > 42 && shotDiceRoll > 17) ||
-    (pointsDif > 37 && shotDiceRoll > 18) ||
-    (pointsDif > 31 && shotDiceRoll > 19)
+    (pointsDif > 30 && shotDiceRoll > 15 && miracleDiceRoll > 12) ||
+    (pointsDif > 15 && shotDiceRoll > 17 && miracleDiceRoll > 14) ||
+    (pointsDif > 0 && shotDiceRoll > 18 && miracleDiceRoll > 16) ||
+    false
   );
 }
 
@@ -994,28 +948,22 @@ export function mathShotPointsBehindHalfCourt(
     (shooter.perimeterScoring * 3 -
       heightPoints -
       weightPoints +
-      roll20SidesDice()) *
+      roll20SidesDice() * 2) *
     multiplier
   );
 }
-
 export function mathChancesMakingShotInBehindHalfCourt(
   pointsDif: number,
   shotDiceRoll: number,
 ): boolean {
+  if (pointsDif <= 0) return false;
+
+  const miracleDiceRoll = roll20SidesDice();
+
   return (
-    (pointsDif > 98 && shotDiceRoll > 8) ||
-    (pointsDif > 92 && shotDiceRoll > 9) ||
-    (pointsDif > 89 && shotDiceRoll > 10) ||
-    (pointsDif > 80 && shotDiceRoll > 11) ||
-    (pointsDif > 76 && shotDiceRoll > 12) ||
-    (pointsDif > 70 && shotDiceRoll > 13) ||
-    (pointsDif > 65 && shotDiceRoll > 14) ||
-    (pointsDif > 60 && shotDiceRoll > 15) ||
-    (pointsDif > 54 && shotDiceRoll > 16) ||
-    (pointsDif > 49 && shotDiceRoll > 17) ||
-    (pointsDif > 42 && shotDiceRoll > 18) ||
-    (pointsDif > 37 && shotDiceRoll > 19)
+    (pointsDif > 30 && shotDiceRoll > 15 && miracleDiceRoll > 17) ||
+    (pointsDif > 0 && shotDiceRoll > 18 && miracleDiceRoll > 19) ||
+    false
   );
 }
 
@@ -1039,28 +987,19 @@ export function mathShotPointsCloseToTheOtherRim(
     (shooter.perimeterScoring * 2 -
       heightPoints -
       weightPoints * 1.5 +
-      roll20SidesDice() * 0.5) *
+      roll20SidesDice() * 2) *
     multiplier
   );
 }
-
 export function mathChancesMakingShotInCloseToTheOtherRim(
   pointsDif: number,
   shotDiceRoll: number,
 ): boolean {
-  return (
-    (pointsDif > 98 && shotDiceRoll > 9) ||
-    (pointsDif > 92 && shotDiceRoll > 10) ||
-    (pointsDif > 89 && shotDiceRoll > 11) ||
-    (pointsDif > 80 && shotDiceRoll > 12) ||
-    (pointsDif > 76 && shotDiceRoll > 13) ||
-    (pointsDif > 70 && shotDiceRoll > 14) ||
-    (pointsDif > 65 && shotDiceRoll > 15) ||
-    (pointsDif > 60 && shotDiceRoll > 16) ||
-    (pointsDif > 54 && shotDiceRoll > 17) ||
-    (pointsDif > 49 && shotDiceRoll > 18) ||
-    (pointsDif > 42 && shotDiceRoll > 19)
-  );
+  if (pointsDif <= 0) return false;
+
+  const miracleDiceRoll = roll20SidesDice();
+
+  return (pointsDif > 0 && shotDiceRoll > 18 && miracleDiceRoll > 19) || false;
 }
 
 export function mathDefensePointsCloseToTheRim(
@@ -1195,18 +1134,13 @@ export function mathDefensePointsHalfCourtAndFartherAway(
   defender: PlayerStats,
 ): number {
   if (defender.position === undefined) {
-    console.error(
-      "defender.position not found in mathDefensePointsHalfCourtAndFartherAway",
-    );
-    throw new Error(
-      "Error: defender.position not found in mathDefensePointsHalfCourtAndFartherAway",
-    );
+    throw new Error("defender.position not found");
   }
 
   const heightPoints = getHeightPoints(defender.position, defender.height);
 
   return (
-    (defender.perimeterDefence * 5 + heightPoints + roll20SidesDice() * 4) *
+    (defender.perimeterDefence * 5 + heightPoints + roll20SidesDice() * 2) *
     multiplier
   );
 }
@@ -1692,32 +1626,37 @@ function getReboundScore(
     (nearbyPlayer) => nearbyPlayer.team !== player.team,
   );
 
-  let sixSidedDiceRoll = roll6SidesDice();
-
+  const sixSidedDiceRoll = roll6SidesDice();
   let reboundScore = 0;
 
   if (distance <= 1) {
     reboundScore =
-      (player.rebounding * 3 + player.weight + player.height * 2) *
-        sixSidedDiceRoll +
-      teammates.length * 5 -
-      (distance + opponents.length * 5);
+      player.rebounding * 3 +
+      roll6SidesDice() * 3 +
+      player.height * 1.5 +
+      player.weight * 0.5 +
+      teammates.length * 3 -
+      (distance * 2 + opponents.length * 4);
   } else if (distance <= 3) {
     reboundScore =
-      (player.rebounding * 2 + player.weight * 0.5 + player.height) *
-        sixSidedDiceRoll +
-      teammates.length * 5 -
-      (distance * 2 + opponents.length * 5.5);
+      player.rebounding * 2 +
+      roll6SidesDice() * 2.5 +
+      player.height +
+      player.weight * 0.3 +
+      teammates.length * 3 -
+      (distance * 4 + opponents.length * 4);
   } else if (distance <= 5) {
     reboundScore =
-      (player.rebounding + player.height) * sixSidedDiceRoll +
-      teammates.length * 5 -
-      (player.weight + distance * 7 + opponents.length * 6);
+      player.rebounding +
+      roll6SidesDice() * 2 +
+      player.height * 0.5 +
+      teammates.length * 2 -
+      (player.weight * 0.5 + distance * 6 + opponents.length * 5);
   } else {
     reboundScore =
-      player.rebounding * 0.7 * sixSidedDiceRoll +
-      teammates.length * 5 -
-      (player.weight * 2 + distance * 15 + opponents.length * 9);
+      player.rebounding * 0.7 +
+      roll6SidesDice() * 1.5 -
+      (player.weight * 1.0 + distance * 8 + opponents.length * 6);
   }
 
   return reboundScore;

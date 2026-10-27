@@ -373,28 +373,28 @@ export class Match {
   ): void {
     let newGameNarration = [...gameNarration];
 
-    //First i get what's the defending team
+    // First i get what's the defending team
     let teamDefending =
       passer.team == this.teamA.name ? this.teamB.name : this.teamA.name;
     let passerTeam = passer.team == this.teamA.name ? this.teamA : this.teamB;
 
     let totalDefensivePoints = 0;
 
-    //I'll use this to know who is the most likley defender to steal the ball. It have the player with the highest defensive points and the number of points he got
+    // I'll use this to know who is the most likley defender to steal the ball. It have the player with the highest defensive points and the number of points he got
     let defensorWithTheHighestDefensivePoints: [Player, number][] = [];
 
-    //The i get the pass points
+    // Then i get the pass points (Balanced playMaking weight to match defensive scaling)
     let passPoints =
-      passer.playMaking * 5 + passer.height * 2 + roll20SidesDice() * 5;
+      passer.playMaking * 3.5 + passer.height * 2 + roll20SidesDice() * 5;
 
-    //The passer get a boost if he used the tripple threat beffore
+    // The passer get a boost if he used the tripple threat beffore
     if (passer.lastAction == "Tripple threat") {
       passPoints = passPoints * 1.2;
     }
 
-    //Then i get the ubications that will have inpact in the calculation
-    //First returned array contains the tiles where the ball goes over
-    //Second returned array contains the tiles where the ball goes close to
+    // Then i get the ubications that will have inpact in the calculation
+    // First returned array contains the tiles where the ball goes over
+    // Second returned array contains the tiles where the ball goes close to
     let tilesThatWillInfluenceInCalculations =
       checkTilesThatWillInfluenceInTheCalculations(
         gameboard,
@@ -410,7 +410,7 @@ export class Match {
       let points = 0;
       let playerZoneUbicationId = playerZoneId(player, player.team == "TeamB");
 
-      //Do math to calculate points on each sector
+      // Do math to calculate points on each sector
       if (playerZoneUbicationId == ranges.closeToTheRim.id) {
         points =
           player.insideDefence * 3 +
@@ -446,12 +446,12 @@ export class Match {
           roll20SidesDice() * 3;
       }
 
-      //If the defender is not in the pass line he gets a penalty to his defensive points
+      // If the defender is not in the pass line he gets a penalty to his defensive points
       if (!inPassLine) {
         points = points * 0.2;
       }
 
-      //The player gets a bonus considering the distance to the passer
+      // The player gets a bonus considering the distance to the passer
       points = points + distanceIndex * 0.5;
 
       return points;
@@ -463,13 +463,13 @@ export class Match {
       arrayOfUbications: Coordinate[],
       inPassLine: boolean,
     ): void {
-      //Check every player to know his defensive points for this situation
+      // Check every player to know his defensive points for this situation
       team.players.forEach((player) => {
         if (
           player.ubicationX == arrayOfUbications[i][0] &&
           player.ubicationY == arrayOfUbications[i][1]
         ) {
-          //Prevent to do operations 2 times on the same player
+          // Prevent to do operations 2 times on the same player
           if (
             defensorWithTheHighestDefensivePoints.some(
               ([p]) => p.position === player.position,
@@ -489,7 +489,7 @@ export class Match {
           }
 
           newGameNarration.unshift(
-            `${player.name && player.name.length === 0 ? playerPositionDetection(player.position) : player.name} (Defender) gets ${defensivePlayerPoints} defensive points`,
+            `${player.name && player.name.length === 0 ? playerPositionDetection(player.position) : player.name} (Defender) gets ${Number(defensivePlayerPoints).toFixed(2)} defensive points`,
           );
 
           totalDefensivePoints += defensivePlayerPoints;
@@ -501,7 +501,7 @@ export class Match {
       });
     }
 
-    //I loop on the tiles where the ball goes over to set the defender team points in this situation
+    // I loop on the tiles where the ball goes over to set the defender team points in this situation
     for (let i = 0; i < tilesThatWillInfluenceInCalculations[0].length; i++) {
       checkDefensivePlayersPoints(
         i,
@@ -511,7 +511,7 @@ export class Match {
       );
     }
 
-    //I loop on the tiles where the ball goes close to it to set the defender team points in this situation
+    // I loop on the tiles where the ball goes close to it to set the defender team points in this situation
     for (let i = 0; i < tilesThatWillInfluenceInCalculations[1].length; i++) {
       checkDefensivePlayersPoints(
         i,
@@ -529,29 +529,19 @@ export class Match {
       `The total defensive points are ${Number(totalDefensivePoints).toFixed(2)}`,
     );
     newGameNarration.unshift(
-      `${passer.name && passer.name.length === 0 ? playerPositionDetection(passer.position) : passer.name} of team ${passer.team} gets ${Number(passer.actionPoints).toFixed(2)} pass points`,
+      `${passer.name && passer.name.length === 0 ? playerPositionDetection(passer.position) : passer.name} of team ${passer.team} gets ${Number(passPoints).toFixed(2)} pass points`,
     );
 
     passer.setLastAction("pass");
     passer.subtractActionPoints(0.5);
     passer.setHaveBall(false);
 
-    //If the pass have more points than the defensive points
+    // If the pass have more points than the defensive points
     if (passPoints >= totalDefensivePoints) {
-      //The receiver gets the ball
+      // The receiver gets the ball
       receiver.setHaveBall(true);
 
-      console.log("haveCrossedHalfCourt: ", this.haveCrossedHalfCourt);
-      console.log(
-        "isbhc: ",
-        isInBackHalfCourt(
-          passerTeam.name === "TeamA",
-          receiver.team,
-          receiver.ubicationX,
-        ),
-      );
-
-      //Handle back court violation
+      // Handle back court violation
       if (
         this.haveCrossedHalfCourt &&
         isInBackHalfCourt(
@@ -560,7 +550,6 @@ export class Match {
           receiver.ubicationX,
         )
       ) {
-        console.log("handling back C violation");
         this.handleViolation(
           setGameboard,
           setActivePlayer,
@@ -584,7 +573,7 @@ export class Match {
 
       passerTeam.changeLastPasserStatus(passer);
 
-      //If the total defensive points are higher than pass points
+      // If the total defensive points are higher than pass points
     } else {
       if (defensorWithTheHighestDefensivePoints[0][0] === undefined) {
         console.error(
@@ -595,7 +584,7 @@ export class Match {
         );
       }
 
-      //The player with the highest defensive points involved in this situation steal the ball
+      // The player with the highest defensive points involved in this situation steal the ball
       defensorWithTheHighestDefensivePoints[0][0].setHaveBall(true);
       newGameNarration.unshift(
         `${defensorWithTheHighestDefensivePoints[0][0].name && defensorWithTheHighestDefensivePoints[0][0].name.length === 0 ? playerPositionDetection(defensorWithTheHighestDefensivePoints[0][0].position) : defensorWithTheHighestDefensivePoints[0][0].name} has stolen the ball!`,

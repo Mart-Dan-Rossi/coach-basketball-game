@@ -2058,8 +2058,8 @@ export function isRivalNearby(
 
 export const initialGameBoard = getInitialBoard();
 
-export const defensivePointsFoulInDribblingMultiplier = 0.40;
-export const defensivePointsFoulInStealAttempt = 130;
+export const defensivePointsFoulInDribblingMultiplier = 0.4;
+export const defensivePointsFoulInStealAttemptMultiplier = 0.5;
 // export const defensivePointsFoulInStealAttempt = 999;
 
 export function calculateDefenderPointsInDribbling(defender: Player): number {
@@ -2186,7 +2186,7 @@ export function calculateDefenderPointsInStealAttempt(
       multiplier;
   } else if (defenderZoneId <= 4) {
     defenderPoints =
-      (0.8 * height -
+      (0.08 * height -
         weight * 0.2 +
         atleticism * 1.5 +
         perDef * 1.2 +

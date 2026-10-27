@@ -6,7 +6,7 @@ import {
   calculateRebounder,
   checkTilesThatWillInfluenceInTheCalculations,
   defendersPointsToAvoidFoul,
-  defensivePointsFoulInStealAttempt,
+  defensivePointsFoulInStealAttemptMultiplier,
   findNearestPlayerToPoint,
   getClosestBorderToBall,
   getDefensivePlayersInDribblingAction,
@@ -52,7 +52,7 @@ import {
   teamARimUbication,
   teamBDefensiveFTPositions,
   teamBOffensiveFTPositions,
-  teamBRimUbication
+  teamBRimUbication,
 } from "../utilities/exportableFunctions";
 import { Coordinate, QuarterTimeLeft } from "./myInterfaces";
 import { Player } from "./players";
@@ -1609,7 +1609,10 @@ export class Match {
 
     //If defender doesn't get enough points he commit a foul
     //Comment to force not commiting a foul
-    if (defendersPointsInStealAttempt < defensivePointsFoulInStealAttempt) {
+    if (
+      defendersPointsInStealAttempt <
+      atackingPlayerPoints * defensivePointsFoulInStealAttemptMultiplier
+    ) {
       this.handleFoul(
         defender,
         playerWithBall,
@@ -1621,7 +1624,10 @@ export class Match {
         setPlayerClikedTeamB,
       );
       //If defender have more points than atacker he steals it
-    } else if (atackingPlayerPoints < defendersPointsInStealAttempt) {
+    } else if (
+      atackingPlayerPoints <
+      atackingPlayerPoints * defensivePointsFoulInStealAttemptMultiplier
+    ) {
       //Uncomment to force a steal
       // if (0 < defendersPointsInStealAttempt) {
       let defensiveTeam = defender.team === "TeamA" ? this.teamA : this.teamB;

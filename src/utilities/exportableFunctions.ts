@@ -2058,7 +2058,7 @@ export function isRivalNearby(
 
 export const initialGameBoard = getInitialBoard();
 
-export const defensivePointsFoulInDribbling = 90;
+export const defensivePointsFoulInDribblingMultiplier = 0.40;
 export const defensivePointsFoulInStealAttempt = 130;
 // export const defensivePointsFoulInStealAttempt = 999;
 

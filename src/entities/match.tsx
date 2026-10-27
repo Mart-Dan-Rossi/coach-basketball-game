@@ -1613,10 +1613,7 @@ export class Match {
         setPlayerClikedTeamB,
       );
       //If defender have more points than atacker he steals it
-    } else if (
-      atackingPlayerPoints <
-      atackingPlayerPoints * defensivePointsFoulInStealAttemptMultiplier
-    ) {
+    } else if (defendersPointsInStealAttempt > atackingPlayerPoints) {
       //Uncomment to force a steal
       // if (0 < defendersPointsInStealAttempt) {
       let defensiveTeam = defender.team === "TeamA" ? this.teamA : this.teamB;
@@ -1650,7 +1647,7 @@ export class Match {
       newGameNarration.unshift(
         `${
           (defender.name && defender.name.length === 0) || !defender.name
-            ? `The ${playerPositionDetection(defender.position)} of team A`
+            ? `The ${playerPositionDetection(defender.position)} of ${defender.team}`
             : defender.name
         }, reach for the ball and gets it!`,
       );
@@ -1660,7 +1657,7 @@ export class Match {
       newGameNarration.unshift(
         `${
           (defender.name && defender.name.length === 0) || !defender.name
-            ? `The ${playerPositionDetection(defender.position)} of team A`
+            ? `The ${playerPositionDetection(defender.position)} of ${defender.team}`
             : defender.name
         }, reach for the ball but he doesn't gets it`,
       );

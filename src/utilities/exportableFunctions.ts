@@ -2047,14 +2047,14 @@ export function calculateOffensivePlayerBallHandlingPoints(
     multiplier += 1;
   }
 
-  let totalPoints = 0;
   let height = player.height;
   let weight = player.weight;
   let atleticism = player.atleticism;
-  // Fixed: Using scoring stats instead of defensive stats
   let perScor = player.perimeterScoring;
   let insScor = player.insideScoring;
   let playMaking = player.playMaking;
+
+  let totalPoints = 0;
 
   if (atackerZoneId <= 2) {
     totalPoints =
@@ -2067,19 +2067,19 @@ export function calculateOffensivePlayerBallHandlingPoints(
   } else if (atackerZoneId <= 4) {
     totalPoints =
       (0.03 * height -
-        weight * 0.3 +
+        weight * 0.15 +
         atleticism * 1.2 +
         perScor +
-        insScor +
-        playMaking * 1.5) *
+        insScor * 0.5 +
+        playMaking * 1.8) *
       multiplier;
   } else {
     totalPoints =
       (0.01 * height -
-        weight * 0.3 +
+        weight * 0.15 +
         atleticism * 1.8 +
-        perScor * 1.5 +
-        playMaking * 2) *
+        perScor * 1.2 +
+        playMaking * 2.5) *
       multiplier;
   }
 
@@ -2106,37 +2106,39 @@ export function calculateDefenderPointsInStealAttempt(
   let diceRoll = roll20SidesDice();
   let multiplier = 2 + diceRoll / 10;
 
-  if (defender.lastAction == "overwhelming waiting") {
+  if (defender.lastAction === "overwhelming waiting") {
     multiplier += 0.4;
-  } else if (defender.lastAction == "stealAttempt") {
-    multiplier += 1;
+  } else if (defender.lastAction === "stealAttempt") {
+    multiplier += 1.0;
   }
 
-  let defenderPoints = 0;
   let height = defender.height;
   let weight = defender.weight;
   let atleticism = defender.atleticism;
   let perDef = defender.perimeterDefence;
   let insDef = defender.insideDefence;
 
+  let rawDefenderPoints = 0;
+
   if (defenderZoneId <= 2) {
-    defenderPoints =
+    rawDefenderPoints =
       (0.1 * height + atleticism * 1.5 + perDef * 0.2 + insDef * 2.3) *
       multiplier;
   } else if (defenderZoneId <= 4) {
-    defenderPoints =
+    rawDefenderPoints =
       (0.08 * height -
-        weight * 0.2 +
+        weight * 0.15 +
         atleticism * 1.5 +
         perDef * 1.2 +
         insDef * 1.1) *
       multiplier;
   } else {
-    defenderPoints =
-      (-weight * 0.1 + atleticism * 2.3 + perDef * 3) * multiplier;
+    rawDefenderPoints =
+      (0.02 * height - weight * 0.15 + atleticism * 2.2 + perDef * 2.8) *
+      multiplier;
   }
 
-  return defenderPoints;
+  return rawDefenderPoints * 0.85;
 }
 
 export function getIsCloserToLeftSide(coords: Coordinate): boolean {

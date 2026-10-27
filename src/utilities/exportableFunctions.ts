@@ -397,11 +397,11 @@ export function setPointsUsedOnThisSkill(
 }
 
 export function roll20SidesDice(): number {
-  return Math.random() * (21 - 1) + 1;
+  return Math.floor(Math.random() * (21 - 1) + 1);
 }
 
 export function roll6SidesDice(): number {
-  return Math.random() * (7 - 1) + 1;
+  return Math.floor(Math.random() * (7 - 1) + 1);
 }
 
 export const ranges = {
@@ -2073,26 +2073,28 @@ export function calculateDefenderPointsInDribbling(defender: Player): number {
     multiplier += 1;
   }
 
-  let defenderPonints = 0;
+  // Fixed typo in variable name for consistency
+  let defenderPoints = 0;
   let height = defender.height;
   let weight = defender.weight;
   let atleticism = defender.atleticism;
   let perDef = defender.perimeterDefence;
   let insDef = defender.insideDefence;
 
+  // Zone based defensive calculation reflecting real basketball logic (paint vs perimeter)
   if (defenderZoneId <= 2) {
-    defenderPonints =
+    defenderPoints =
       (0.15 * height + atleticism + perDef * 0.1 + insDef * 2) * multiplier;
   } else if (defenderZoneId <= 4) {
-    defenderPonints =
+    defenderPoints =
       (0.1 * height - weight * 0.2 + atleticism * 1.2 + perDef + insDef) *
       multiplier;
   } else {
-    defenderPonints =
+    defenderPoints =
       (0.05 * height - weight * 0.1 + atleticism * 2 + perDef * 2) * multiplier;
   }
 
-  return defenderPonints;
+  return defenderPoints;
 }
 
 export function calculateOffensivePlayerBallHandlingPoints(
@@ -2110,8 +2112,9 @@ export function calculateOffensivePlayerBallHandlingPoints(
   let height = player.height;
   let weight = player.weight;
   let atleticism = player.atleticism;
-  let perScor = player.perimeterDefence;
-  let insScor = player.insideDefence;
+  // Fixed: Using scoring stats instead of defensive stats
+  let perScor = player.perimeterScoring;
+  let insScor = player.insideScoring;
   let playMaking = player.playMaking;
 
   if (atackerZoneId <= 2) {
@@ -2119,24 +2122,24 @@ export function calculateOffensivePlayerBallHandlingPoints(
       (0.05 * height +
         atleticism +
         perScor * 0.1 +
-        insScor * 2 +
-        playMaking * 0.2) *
+        insScor * 1.5 +
+        playMaking * 1.5) *
       multiplier;
   } else if (atackerZoneId <= 4) {
     totalPoints =
       (0.03 * height -
-        weight +
+        weight * 0.3 +
         atleticism * 1.2 +
         perScor +
         insScor +
-        playMaking) *
+        playMaking * 1.5) *
       multiplier;
   } else {
     totalPoints =
       (0.01 * height -
-        weight * 1.2 +
-        atleticism * 2 +
-        perScor * 2 +
+        weight * 0.3 +
+        atleticism * 1.8 +
+        perScor * 1.5 +
         playMaking * 2) *
       multiplier;
   }
@@ -2170,7 +2173,7 @@ export function calculateDefenderPointsInStealAttempt(
     multiplier += 1;
   }
 
-  let defenderPonints = 0;
+  let defenderPoints = 0;
   let height = defender.height;
   let weight = defender.weight;
   let atleticism = defender.atleticism;
@@ -2178,11 +2181,11 @@ export function calculateDefenderPointsInStealAttempt(
   let insDef = defender.insideDefence;
 
   if (defenderZoneId <= 2) {
-    defenderPonints =
+    defenderPoints =
       (0.1 * height + atleticism * 1.5 + perDef * 0.2 + insDef * 2.3) *
       multiplier;
   } else if (defenderZoneId <= 4) {
-    defenderPonints =
+    defenderPoints =
       (0.8 * height -
         weight * 0.2 +
         atleticism * 1.5 +
@@ -2190,11 +2193,11 @@ export function calculateDefenderPointsInStealAttempt(
         insDef * 1.1) *
       multiplier;
   } else {
-    defenderPonints =
+    defenderPoints =
       (-weight * 0.1 + atleticism * 2.3 + perDef * 3) * multiplier;
   }
 
-  return defenderPonints;
+  return defenderPoints;
 }
 
 export function getIsCloserToLeftSide(coords: Coordinate): boolean {

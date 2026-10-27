@@ -1,4 +1,5 @@
 import {
+  roll20SidesDice,
   teamARimUbication,
   teamBRimUbication,
 } from "../utilities/exportableFunctions";
@@ -209,29 +210,35 @@ export class Player {
   //----------------------------START SET PLAYER STATUS METHODS----------------------------------------------------------------------------------------------------
 
   giveActionPointsToPlayer(): void {
-    this.actionPoints = 0;
-    let diceResult = 1;
+    let diceResult = roll20SidesDice();
+
+    let athleticismBonus = Math.floor(this.atleticism / 25);
+    let modifiedRoll = diceResult + athleticismBonus;
 
     if (this.height <= 192) {
       this.actionPoints = 2;
-
-      if (diceResult > 6) {
+      if (modifiedRoll > 6) {
         this.actionPoints += 1;
       }
     } else if (this.height > 192 && this.height <= 208) {
       this.actionPoints = 2;
-
-      if (diceResult > 10) {
+      if (modifiedRoll > 10) {
         this.actionPoints += 1;
       }
-    } else if (this.height > 208) {
+    } else {
       this.actionPoints = 1;
-
-      if (diceResult > 3 && diceResult < 16) {
+      if (modifiedRoll > 3 && modifiedRoll < 16) {
         this.actionPoints += 1;
-      } else if (diceResult >= 16) {
+      } else if (modifiedRoll >= 16) {
         this.actionPoints += 2;
       }
+    }
+
+    if (this.actionPoints > 3) {
+      this.actionPoints = 3;
+    }
+    if (this.actionPoints < 1) {
+      this.actionPoints = 1;
     }
   }
 

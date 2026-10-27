@@ -1383,14 +1383,14 @@ export class Match {
       let isBallStolen = false;
       let defenderInteracting: Player | undefined;
 
-      //I only need close to where the ball moves since players can't move over other players
-      //Note: ubications are not repeated (done in checkTilesThatWillInfluenceInTheCalculations)
+      // I only need close to where the ball moves since players can't move over other players
+      // Note: ubications are not repeated (done in checkTilesThatWillInfluenceInTheCalculations)
       let tilesThatWillInfluenceInCalculations =
         checkTilesThatWillInfluenceInTheCalculations(
           gameboard,
           oldUbication,
           newUbication,
-        ).flat(); //In this case there will be no defeders in the tile of the ball
+        ).flat(); // In this case there will be no defenders in the tile of the ball
 
       let defensivePlayers = getDefensivePlayersInDribblingAction(
         defensiveTeam,
@@ -1399,45 +1399,42 @@ export class Match {
       let totalDefensivePoints = 0;
       let defensivePlayersPoints: [Player, number][] = [];
 
-      //Loop in the tiles that will influence in the calculations
-      // for (let i = 0; i < tilesThatWillInfluenceInCalculations.length; i++) {
-      //For each defensive player
-      defensivePlayers.forEach((defender) => {
-        //Check if they are in this ubication
-        // if (
-        //   defender.ubicationX == tilesThatWillInfluenceInCalculations[i][0] &&
-        //   defender.ubicationY == tilesThatWillInfluenceInCalculations[i][1]
-        // ) {
-        //Calculate defender points
+      // Loop in the tiles that will influence in the calculations
+      // For each defensive player
+      defensivePlayers.forEach((defender, index) => {
+        // Calculate defender points
         let defenderPoints = calculateDefenderPointsInDribbling(defender);
 
         if (defenderPoints < defensivePointsFoulInDribbling) {
-          //Uncomment to force foul
+          // Uncomment to force foul
           // if (0 < defensivePointsFoulInDribbling) {
           isFoul = true;
         }
 
-        //Add the points to the sumatory of defenders points
-        totalDefensivePoints += defenderPoints;
+        // Tactical weighting: The primary defender contributes 100%,
+        // while help defenders contribute 50% to prevent unrealistic double team blocks.
+        let effectiveDefenderPoints =
+          index === 0 ? defenderPoints : defenderPoints * 0.5;
 
-        //Save data to check who gets the ball in case it's needed
+        // Add the points to the summary of defenders points
+        totalDefensivePoints += effectiveDefenderPoints;
+
+        // Save data to check who gets the ball in case it's needed
         defensivePlayersPoints.push([defender, defenderPoints]);
-        // }
       });
-      // }
 
-      //If defenders were found close to the atacker
+      // If defenders were found close to the attacker
       if (defensivePlayersPoints.length > 0) {
-        //Check the offensive player points on the dribble
+        // Check the offensive player points on the dribble
         let offensivePlayerPoints =
           calculateOffensivePlayerBallHandlingPoints(player);
 
         let sortedPlayersWithPoints = defensivePlayersPoints.sort((a, b) => {
           if (isFoul) {
-            //If it's foul i want to get the defender with the least points
+            // If it's foul I want to get the defender with the least points
             return a[1] - b[1];
           } else {
-            //If it's not then order em to get the player who stole it
+            // If it's not then order them to get the player who stole it
             return b[1] - a[1];
           }
         });
